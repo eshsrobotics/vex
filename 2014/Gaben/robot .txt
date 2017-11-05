@@ -1,0 +1,3 @@
+use the vet robotics controller joy sticks to drive the robot like a tank
+to use the claw use the U8 button to rise the claw and 8D to lower 	\
+to use turntable use 8L and 8R to move the turntable 
