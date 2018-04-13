@@ -27,7 +27,7 @@ SensorValue[Potentiometer] = 0; // Resets the potentiometer before the robot sta
 			motor[right_motor] =x;
 			motor[left_motor] =x;
  		}
- 		else if(SensorValue(Sonar_in)<20){ // This means that if the sensor value is less than 100 
+ 		else if(SensorValue(Sonar_in)<20){ // This means that if the sensor value is greater than around 20 inches then the sonar wille be turned off.
 				distance = SensorValue[Sonar_in]*5;
 			motor[right_motor] =distance;
 			motor[left_motor] =distance;
