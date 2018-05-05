@@ -20,15 +20,15 @@ task main()
 	int degrees; // Number of degrees the potentiometer rotates
 
 	SensorValue[Quad_in] = 0;
-	SensorValue[Potentiometer] = 0; // Resets the potentiometer before the robot starts.
+	SensorValue[Potentiometer] = 0; // Resets the potentiometer before the robot starts
 	while (1 == 1){
  		if(SensorValue(bump) == 1) {
-			x = SensorValue[Quad_in] / 2;	// Changes the value x to be equal to the value the quadrature encoder records.
+			x = SensorValue[Quad_in] / 2;	// Changes the value x to be equal to the value the quadrature encoder records
 			motor[right_motor] = x;
 			motor[left_motor] = x;
  		}
- 		else if(SensorValue(Sonar_in) < 20) {	// This means that if the sensor value is greater than around 20 inches then the sonar wille be turned off.
-				distance = SensorValue[Sonar_in] * 5;
+ 		else if(SensorValue(Sonar_in) < 20) {	// If the sensor value is greater than ~20 inches then the sonar will be be turned off
+			distance = SensorValue[Sonar_in] * 5;
 			motor[right_motor] = distance;
 			motor[left_motor] = distance;
  		}
@@ -36,8 +36,8 @@ task main()
 			light = SensorValue[Light_sensor] / -2;
 			motor[Servo] = light;	// Note: be weary about how much you move this, too much movement could destroy your servo; run this at your own risk!
  		}
-		else if(SensorValue(Potentiometer) > 10){
-			degrees = SensorValue[Potentiometer] / 5;	//Note: be weary about how much you move the potentiometer, too much movement could destroy your servo run this at your own risk!!!!
+		else if(SensorValue(Potentiometer) > 10) {
+			degrees = SensorValue[Potentiometer] / 5;	//Note: be weary about how much you move the potentiometer, too much movement could destroy your servo run this at your own risk!
 			motor[Servo] = degrees;
  		}
 		else {
