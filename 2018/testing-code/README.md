@@ -3,10 +3,15 @@ What are these files?
 
 Whenever we write software for our test-bots and our testing rigs, we keep the code here in hopes that it might be useful later.  We also put a little bit of the story behind the code in this file -- instructions, clever tricks the software does, lessons learned, and so forth.
 
-Testbedmotortest.c ================== A simple program tat shows how
-to use timers and touch sensors to toggle program state.  The
-`toggleMotors` button is not vulnerable to button bounce because the
-program waits before reactivating it.
+Testbedmotortest.c
+==================
+
+A very simple program that shows how to use timers and touch sensors to
+toggle program state.  The `toggleMotors` button is not vulnerable to
+button bounce because the program waits before reactivating it.
+
+This was originally written for @JasperNelson's test bed, but it's
+trivially adapted to anything with a bump sensor and a motor.
 
 MecanumStrafeTest.c
 ===================
