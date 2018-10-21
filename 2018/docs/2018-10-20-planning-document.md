@@ -51,3 +51,44 @@ Arm
   had needing to grease metal surfaces to prevent the sliding
   mechanism from failing have caused us to conclude that such designs
   are more trouble that they're worth.
+
+* Rubber band tension and placement are *very* important for DR4B
+  designs; done right, two motors should be enough to lift even a
+  heavy arm.
+    * Arm motors are preferably placed on the inside of the arm so
+      they don't get caught on anything.
+    * Should the motors be placed on the top gears of the DR4B lift,
+      or on the bottom?
+* Where will the claw be when the arm is down?
+    * Horizontal and aligned with the floor, but in _front_ of the
+      barrel mechanism (see below.)
+
+Flipping mechanism
+------------------
+
+We need to be able to turn the caps to our side's color.  We
+considered three mechanisms:
+1. The "pancake device" -- a stick or spatula at the bottom of the
+   robot which would move upward to flip the tabs
+2. (Possibly rotating) claw
+3. Flipping by using the same barrel design commonly used for bar
+   intake (two sprockets separated by rubber bands), but in reverse
+
+Of the three designs, the barrel mechanism seems the most promising
+for the following reasons:
+* Should be able to flip the caps with ease: Just drive up to them
+* Can *steal balls* by reversing the barrel and intentionally running
+  into the balls
+    * We'd need to determine the height of the barrel carefully to
+      make this happen; remember that the arm still needs to reach the
+      ground.
+        * Possibly use smaller sprockets?
+* Re-reverse the barrel to donate stolen balls to our teammates.
+
+Claw
+----
+
+* Maybe none?  A passive fork design with four prongs may be all we
+  need to pick up the caps
+    * Must be able to pick up the caps _quickly_ and _efficiently_,
+      without a lot of worry about repositioning.
