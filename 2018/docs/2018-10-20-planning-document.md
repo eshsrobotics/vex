@@ -68,7 +68,7 @@ Flipping mechanism
 
 We need to be able to turn the caps to our side's color.  We
 considered three mechanisms:
-1. The "pancake device" -- a stick or spatula at the bottom of the
+1. The "pancake device" - a stick or spatula at the bottom of the
    robot which would move upward to flip the tabs
 2. (Possibly rotating) claw
 3. Flipping by using the same barrel design commonly used for bar
