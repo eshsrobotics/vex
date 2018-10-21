@@ -116,4 +116,4 @@ Platform defense considerations
 
    Therefore, whatever mechanism we deploy to stay on the platform
    must not cause us to exceed a 36" square perimeter.
-1. The platforms themselves are 23.875"x21.70".
+1. The platforms themselves are 23.875"x21.70"x2.4".
