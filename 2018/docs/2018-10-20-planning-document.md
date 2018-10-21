@@ -63,6 +63,10 @@ Arm
     * Horizontal and aligned with the floor, but in _front_ of the
       barrel mechanism (see below.)
 
+* The top of the VEX turning point low flags are approximately 18.3"
+  above the field.  Those are the only flags that our lift needs to
+  reach.
+
 Flipping mechanism
 ------------------
 
@@ -83,6 +87,10 @@ for the following reasons:
       make this happen; remember that the arm still needs to reach the
       ground.
         * Possibly use smaller sprockets?
+    * VEX Turning Point rule *SG4* and *SG5* both stipulate that
+      robots may not _hoard_ (that is, deny enemy access) to more than
+      two balls and one cap at a time.  However, gathering without
+      intent to actively deny is allowed.
 * Re-reverse the barrel to donate stolen balls to our teammates.
 
 Claw
@@ -92,3 +100,20 @@ Claw
   need to pick up the caps
     * Must be able to pick up the caps _quickly_ and _efficiently_,
       without a lot of worry about repositioning.
+
+Platform defense considerations
+-------------------------------
+1. According to VEX Turning Point rules *G12a* and *G12b*, shoving out
+   robot off of the center platform (and only the center platform, not
+   the lower platforms) is legal.  We need to be prepared to defend
+   against this.
+1. VEX Turning Point rule *SG2* stipulates that robots must _start_
+   with dimensions within an 18"x18"x18" cube.  It is allowed to
+   expand to a maximum horizontal extent of 36"x36" during the match
+   and to an unlimited vertical extent, but it must return to an 18"
+   height unless it is in the _expansion zone_ (the area outside of
+   the white tape boundaries.)
+
+   Therefore, whatever mechanism we deploy to stay on the platform
+   must not cause us to exceed a 36" square perimeter.
+1. The platforms themselves are 23.875"x21.70".
