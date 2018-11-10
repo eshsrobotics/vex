@@ -27,6 +27,7 @@ float realForwardBack = 0.0;
 float realTurn = 0.0;
 const float acceleration = 0.1;
 
+// MECHANUM DRIVE
 // Given a holonomic, 4-wheel Mecanum drive and three joystick values, this
 // function moves the robot in the desired direction.
 //
@@ -89,6 +90,7 @@ void mecanumDrive(int leftRight, int forwardBack, int turn) {
 	motor[climb] = forwardBack;
 }
 
+// MECHANUM CONTROL
 // Given a holonomic, 4-wheel Mecanum drive and three joystick channels, this
 // function calls mecanumDrive() correctly to allow a human using those
 // joysticks to drive the bot.
@@ -108,7 +110,6 @@ void mecanumDrive(int leftRight, int forwardBack, int turn) {
 //   tend not to rest at perfect 0.
 //   This variable will only have effect if it is non-negative.  Setting it too
 //   high will make driving unresponsive and difficult.
-//
 void mecanumControl(int leftRightJoystickChannel, int frontBackJoystickChannel, int turnJoystickChannel, int deadzoneThreshold=15) {
 
 	//Create "deadzone" variables. Adjust threshold value to increase/decrease deadzone
