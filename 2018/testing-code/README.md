@@ -72,3 +72,26 @@ Written by @uakotaobi on 2018-10-21 to test a 4-Mecanum-wheel holonomic drive he
 The test bot itself drifts very, _very_ easily when strafing so that
 it seldom stays in alignment over long distances.  There's probably an
 easy fix for this, but @uakotaobi isn't sure what it is.
+
+TestSecondFourBarLiftDesign.c
+=============================
+
+This is the testing code we're using with our second arm design.  As
+of 2018-11-18T13:07:00PST, the arm has not yet been attached to the
+robot.
+
+We committed this code because it represents an arm control scheme
+we're happy with; the arm does not need to constantly be held up with
+a human-driven button because it maintains its velocity and decays
+slowly.  Only a small tweak from a human controller is needed to make
+the arm gently raise or lower.
+
+The arm can hold a full load (that is, a cap and the claw that's
+grabbing it), but only for a short while.  After that, the constant
+acceleration from the motors "burns them out" and they fall back to
+the base position.  So the human controller must be cognizant that
+they only have a brief window of time in which to place the cap before
+having to give the arm a break.
+
+Rubber bands could help, and that's an option, but it's the
+acceleration-based control scheme that we're proudest of here.
