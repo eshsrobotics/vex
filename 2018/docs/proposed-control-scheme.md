@@ -17,7 +17,7 @@ Main teleop controls
 Pre-programmed sequences
 ========================
 
-* Btn7R: Grab with claw, rotate 180 degrees, then release claw [*common*; used for ground flips and for rarer air flips]
-* Btn7U: Raise wrist [**rare**; wrist is lowered and raised automatically at the beginning and end of teleop]
-* Btn7D: Lower wrist [**rare**; wrist is lowered and raised automatically at the beginning and end of teleop]
-* Btn7L: Execute autonomous routine #1 [*extremely rare*; migh require button to be held down]
+* `Btn7R`: Grab with claw, rotate 180 degrees, then release claw [*common*; used for ground flips and for rarer air flips]
+* `Btn7U`: Raise wrist [**rare**; wrist is lowered and raised automatically at the beginning and end of teleop]
+* `Btn7D`: Lower wrist [**rare**; wrist is lowered and raised automatically at the beginning and end of teleop]
+* `Btn7L`: Execute autonomous routine #1 [*extremely rare*; migh require button to be held down]
