@@ -14,13 +14,13 @@ Notes
 
 Proposal
 ========
-1. Back right Mecanum wheel
-2. Climb motor
-3. Front left Mecanum wheel
-4. Right arm motor
-5.
-6.
-7.
-8. Left arm motor
-9. Front right Mecanum wheel
-10. Back left Mecanum wheel
+1. DRIVE: Back right Mecanum wheel
+2. DRIVE: Climb motor
+3. DRIVE: Front left Mecanum wheel
+4. ARM: Right arm motor
+5. ARM: Claw servo
+6. ARM: Wrist rotation motor
+7. ARM: Wrist elevation motor
+8. DRIVE: Left arm motor
+9. DRIVE: Front right Mecanum wheel
+10. DRIVE: Back left Mecanum wheel
