@@ -21,6 +21,6 @@ Proposal
 5. ARM: Claw servo
 6. ARM: Wrist rotation motor
 7. ARM: Wrist elevation motor
-8. DRIVE: Left arm motor
+8. ARM: Left arm motor
 9. DRIVE: Front right Mecanum wheel
 10. DRIVE: Back left Mecanum wheel
