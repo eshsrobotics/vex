@@ -4,7 +4,7 @@ Building tasks
 1. [ ] ROBOT: Add counter-weights to the back of the robot so it does not tip over
    when the arm is extended with a load
 1. [ ] ROBOT: Rewire the motors according to the assignments in
-   [./proposed-motor-port-scheme.md](proposed-motor-port-scheme.md)
+   [proposed-motor-port-scheme.md](./proposed-motor-port-scheme.md)
 1. [ ] ARM: Install a limit switch to prevent the arm from traveling up more
    than it ought to.
 
@@ -16,22 +16,19 @@ Programming tasks
    known distance from clicks to meters using a measuring tape
 1. [ ] DRIVE: Write a `driveForward(float meters)` function and test it
    relentlessly
-1. [ ] DRIVE [gyro]: Mount the gyro on rubber grommets, as
-   [http://vexwiki.org/vex_robotics_platforms/vex_edr/sensors/gyroscope#mountingvibration](this
-   link) (and [https://www.youtube.com/watch?v=KSoC4d5VVsE](this video))
-   recommends
+1. [ ] DRIVE [gyro]: Mount the gyro on rubber grommets, as [this
+   link](http://vexwiki.org/vex_robotics_platforms/vex_edr/sensors/gyroscope#mountingvibration)
+   (and [this video](https://www.youtube.com/watch?v=KSoC4d5VVsE)) recommends
 1. [ ] DRIVE [gyro]: Reset `SensorType[in8]` (or whichever analog port you've
    connected to the gyro) to `sensorNone` for at least 1.5 seconds during the
    pre-autonomous phase, as
-   [http://www.robotc.net/blog/2011/10/13/programming-the-vex-gyro-in-robotc/](this
-   link) suggests
+   [this link](http://www.robotc.net/blog/2011/10/13/programming-the-vex-gyro-in-robotc/) suggests
 1. [ ] DRIVE [gyro]: Write a `turn(float degrees)` function and test it relentlessly
 
 Programming notes
 =================
 1. According to
-   [https://renegaderobotics.org/vex-sensors-jumper-clips-led-indicators/](this
-   link):
+   [this link](https://renegaderobotics.org/vex-sensors-jumper-clips-led-indicators/):
        1. We can get a value from a digital sensor using `SensorValue[dgtl4]`
           (or some other port.)
        1. When a jumper cable is on a digital sensor,
@@ -47,6 +44,12 @@ Programming notes
             by assigning a 0 to it.  When LEDs are set to _Digital Out_, the
             opposite is true.
 1. In autonomous, you don't want to come to sudden stops; inertia will cause
-   the robot to drift.  Instead, when you've reached your goal, [https://renegaderobotics.org/new-programming-concepts/](reverse
-   direction) very briefly (say, 50ms) and _then_ cut the power.  The robot
-   will stop on a dime.
+   the robot to drift.  Instead, when you've reached your goal, [reverse
+   direction](https://renegaderobotics.org/new-programming-concepts/) very
+   briefly (say, 50ms) and _then_ cut the power.  The robot will stop on a
+   dime.
+1. Potentiometers are set up using the Motors and Sensors setup dialog, with
+   an A/D sensor type of "Potentiometer".  Thereafter, you can access its
+   reading with `SensorValue[potentiometerPort]`.
+   * The potentiometer [freely rotates](http://cdn.robotc.net/pdfs/vex/curriculum/Potentiometers.pdf) about 265 degrees and produces sensor
+     readings from 0 to 1023..
