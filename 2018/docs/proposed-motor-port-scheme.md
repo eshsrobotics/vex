@@ -14,13 +14,25 @@ Notes
 
 Proposal
 ========
+
+Motor ports
+-----------
+
 1. DRIVE: Back right Mecanum wheel
 2. DRIVE: Climb motor
 3. DRIVE: Front left Mecanum wheel
 4. ARM: Right arm motor
-5. ARM: Claw servo
+5. ARM: Claw motor
 6. ARM: Wrist rotation motor
 7. ARM: Wrist elevation motor
 8. ARM: Left arm motor
 9. DRIVE: Front right Mecanum wheel
 10. DRIVE: Back left Mecanum wheel
+
+Analog portsc
+------------
+4. ARM: Right arm potentiometer?
+2. DRIVE: Gyro
+5. ARM: Claw potentiometer
+6. ARM: Wrist rotation potentiometer
+7. ARM: Wrist elevation potentiometer
