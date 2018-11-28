@@ -410,11 +410,11 @@ task usercontrol()
     //////////
     // CLAW //
     //////////
-    // Buttons: 8R (open), 8D (close)
+    // Buttons: 8D (open), 8U (close)
 
     if (vexRT[Btn8D] > 0) {
         openClaw();
-    } else if (vexRT[Btn8R] > 0) {
+    } else if (vexRT[Btn8U] > 0) {
         closeClaw();
     } else {
         stopClaw();
