@@ -397,9 +397,9 @@ task usercontrol()
     ///////////////////
     // ARM ELEVATION //
     ///////////////////
-    // While user presses button 5D then arm goes up, and while user presses
+    // While user presses button 6U then arm goes up, and while user presses
     // button 6D the arm goes down.
-    if (vexRT[Btn5D] > 0) {
+    if (vexRT[Btn6U] > 0) {
         raiseArm();
     } else if (vexRT[Btn6D] > 0) {
         lowerArm();
@@ -410,7 +410,7 @@ task usercontrol()
     //////////
     // CLAW //
     //////////
-    // Buttons: 8D (open), 8U (close)
+    // Buttons: 8D (open), 8R (close)
 
     if (vexRT[Btn8D] > 0) {
         openClaw();
@@ -423,7 +423,7 @@ task usercontrol()
     /////////////////////
     // WRIST ELEVATION //
     /////////////////////
-    // Buttons: 7U (up), 7D (down)
+    // Buttons: 8U (up), 8L (down)
 
     if (vexRT[Btn8U] > 0) {
         raiseWrist();
@@ -436,11 +436,11 @@ task usercontrol()
     ////////////////////
     // WRIST ROTATION //
     ////////////////////
-    // Buttons: 5U (counterclockwise), 6U (clockwise)
+    // Buttons: 5U (counterclockwise), 5D (clockwise)
 
     if (vexRT[Btn5U] > 0) {
         rotateWristCounterClockwise();
-    } else if (vexRT[Btn6U] > 0) {
+    } else if (vexRT[Btn5D] > 0) {
         rotateWristClockwise();
     } else {
         stopRotatingWrist();
