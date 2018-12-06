@@ -1,5 +1,7 @@
+#pragma config(I2C_Usage, I2C1, i2cSensors)
 #pragma config(Sensor, in2,    gyro,           sensorAnalog)
-#pragma config(Motor,  port1,           backRight,     tmotorVex393_HBridge, openLoop, reversed)
+#pragma config(Sensor, I2C_1,  ,               sensorQuadEncoderOnI2CPort,    , AutoAssign )
+#pragma config(Motor,  port1,           backRight,     tmotorVex393_HBridge, openLoop, reversed, encoderPort, I2C_1)
 #pragma config(Motor,  port2,           climb,         tmotorVex393_MC29, openLoop, reversed)
 #pragma config(Motor,  port3,           frontLeft,     tmotorVex393_MC29, openLoop)
 #pragma config(Motor,  port4,           armRight,      tmotorVex393_MC29, openLoop, reversed)
@@ -257,24 +259,14 @@ bool autonomousTest(int periodLengthMilliseconds) {
   }
   const float L = periodLengthMilliseconds;
 
-  if (milliseconds >= 0.0 * L && milliseconds < 0.2 * L) {
-    // Drive forward.
-    mecanumDrive(0, 127, 0);
-  } else if (milliseconds >= 0.2 * L && milliseconds < 0.4 * L) {
-    // Drive right.
-    mecanumDrive(127, 0, 0);
-  } else if (milliseconds >= 0.4 * L && milliseconds < 0.6 * L) {
-    // Drive backward.
-    mecanumDrive(0, -127, 0);
-  } else if (milliseconds >= 0.6 * L && milliseconds < 0.8 * L) {
-    // Drive left.
-    mecanumDrive(-127, 0, 0);
+  if (milliseconds < 3000) {
+  	mecanumDrive(0, 127, 0);
+  	return true;
   } else {
     // Stop.
-    mecanumDrive(0, 0, 0);
-    return true;
-  }
-  return false;
+  	mecanumDrive(0, 0, 0);
+  	return false;
+	}
 }
 
 /*---------------------------------------------------------------------------*/
@@ -289,12 +281,21 @@ bool autonomousTest(int periodLengthMilliseconds) {
 
 task autonomous()
 {
+	clearTimer(timer1);
+	while (time1[timer1] < 3000)
+	{
+		mecanumDrive(0, 127, 0);
+	}
+	mecanumDrive(0,0,0);
   // ..........................................................................
-  // Insert user code here.
+  //nMotorEncoder[backRight] = 0;
+  //while(nMotorEncoder[backRight] < "x")
+
+
   // ..........................................................................
 
   // Remove this function call once you have "real" code.
-  AutonomousCodePlaceholderForTesting();
+  //AutonomousCodePlaceholderForTesting();
 }
 
 // MECHANUM CONTROL
@@ -367,7 +368,7 @@ task usercontrol()
       autonomousControl = 1;
       clearTimer(timer2);
     } else if (autonomousControl == 1) {
-      if (vexRT[Btn5U] > 0) {
+      if (vexRT[Btn7L] > 0) {
         if (time1[timer2] > 500) {
           // Button held down for 5 seconds--activate.
           autonomousControl = 2;
