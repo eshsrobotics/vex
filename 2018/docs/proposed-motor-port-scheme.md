@@ -29,10 +29,20 @@ Motor ports
 9. DRIVE: Front right Mecanum wheel
 10. DRIVE: Back left Mecanum wheel
 
-Analog portsc
+We chose drive wheels for ports 1 and 10 since those are two-wire
+ports rather than 3-wire, and thus cannot take a 3-wire extension
+cable.  Better, then, to use motors that are never going to be far
+away from the Cortex.
+
+Analog ports
 ------------
-4. ARM: Right arm potentiometer?
-2. DRIVE: Gyro
-5. ARM: Claw potentiometer
-6. ARM: Wrist rotation potentiometer
-7. ARM: Wrist elevation potentiometer
+4. +ARM: Right arm potentiometer?+
+5. DRIVE: Gyro
+6. ARM: Claw potentiometer
+7. ARM: Wrist rotation potentiometer
+8. +ARM: Wrist elevation potentiometer+
+
+I2C
+---
+
+The Mechanum wheel encoder daisy-chain is connected to the I2C port on the Cortex and is available as `I2C_1`.
