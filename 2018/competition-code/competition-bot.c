@@ -55,9 +55,9 @@ int gyroAngle = 0;
 float realLeftRight = 0.0;
 float realForwardBack = 0.0;
 float realTurn = 0.0;
-const float ACCELERATION = 0.1;
+const float acceleration = 0.1;
 
-// Claw and wrist variables
+// Claw and wrist variables.
 const int CLAW_MOTOR_SPEED = 45;
 const int WRIST_ROTATE_SPEED = 40;
 const int WRIST_ELEVATION_SPEED = 40;
@@ -129,7 +129,7 @@ void stopRotatingWrist() {
 // This function is only meant to be used in response to manual input; this is
 // what gets executed when a human hits the "open claw" button.
 void orientWristAndOpenClaw() {
-	// TODO: Implement
+    // TODO: Implement
 }
 
 // Starts the process of raising the arm.  The arm will not stop until
@@ -139,8 +139,8 @@ void orientWristAndOpenClaw() {
 // provides no feedback when this is done, and it is possible to raise the arm
 // with this function until the gears slip and the motor strains.  Take care!
 void raiseArm() {
-	motor[armRight] = 127;
-	motor[armLeft] = 127;
+    motor[armRight] = 127;
+    motor[armLeft] = 127;
 }
 
 // Starts the process of lowering the arm.  The arm will not stop until
@@ -148,8 +148,8 @@ void raiseArm() {
 //
 // See caveats and warnings in the documentation for raiseArm().
 void lowerArm() {
-	motor[armRight] = -127;
-	motor[armLeft] = -127;
+    motor[armRight] = -127;
+    motor[armLeft] = -127;
 }
 
 // Stops the arm from raising or lowering.
@@ -189,39 +189,39 @@ void stopArm() {
 
 void mecanumDrive(int leftRight, int forwardBack, int turn) {
 
-	// Don't let the controller drive the motors directly.  Instead, the controller
-	// represents the desired state, and we increment our way towards that.
-	realLeftRight += sgn(leftRight - realLeftRight) * ACCELERATION;
-	realForwardBack += sgn(forwardBack - realForwardBack) * ACCELERATION;
-	realTurn += sgn(turn - realTurn) * ACCELERATION;
+  // Don't let the controller drive the motors directly.  Instead, the controller
+  // represents the desired state, and we increment our way towards that.
+  realLeftRight += sgn(leftRight - realLeftRight) * acceleration;
+  realForwardBack += sgn(forwardBack - realForwardBack) * acceleration;
+  realTurn += sgn(turn - realTurn) * acceleration;
 
-	if (leftRight < -127) {
-		leftRight = -127;
-	}
-	if (leftRight > 127) {
-		leftRight = 127;
-	}
-	if (forwardBack < -127) {
-		forwardBack = -127;
-	}
-	if (forwardBack > 127) {
-		forwardBack = 127;
-	}
+  if (leftRight < -127) {
+    leftRight = -127;
+  }
+  if (leftRight > 127) {
+    leftRight = 127;
+  }
+  if (forwardBack < -127) {
+    forwardBack = -127;
+  }
+  if (forwardBack > 127) {
+    forwardBack = 127;
+  }
 
-	if (turn < -127) {
-		turn = -127;
-	}
-	if (turn > 127) {
-		turn = 127;
-	}
+  if (turn < -127) {
+    turn = -127;
+  }
+  if (turn > 127) {
+    turn = 127;
+  }
 
-	motor[frontRight] = realForwardBack - realTurn - realLeftRight;
-	motor[backRight] =  realForwardBack - realTurn + realLeftRight;
-	motor[frontLeft] = realForwardBack + realTurn + realLeftRight;
-	motor[backLeft] =  realForwardBack + realTurn - realLeftRight;
+  motor[frontRight] = realForwardBack - realTurn - realLeftRight;
+  motor[backRight] =  realForwardBack - realTurn + realLeftRight;
+  motor[frontLeft] = realForwardBack + realTurn + realLeftRight;
+  motor[backLeft] =  realForwardBack + realTurn - realLeftRight;
 
-	// Determine when to activate the center climbing assistance wheels.
-	motor[climb] = forwardBack;
+  // Determine when to activate the center climbing assistance wheels.
+  motor[climb] = forwardBack;
 }
 
 task brake()
@@ -321,15 +321,15 @@ task autonomous()
 		mecanumDrive(0, 127, 0);
 	}
 	mecanumDrive(0,0,0);
-	// ..........................................................................
-	//nMotorEncoder[backRight] = 0;
-	//while(nMotorEncoder[backRight] < "x")
+  // ..........................................................................
+  //nMotorEncoder[backRight] = 0;
+  //while(nMotorEncoder[backRight] < "x")
 
 
-	// ..........................................................................
+  // ..........................................................................
 
-	// Remove this function call once you have "real" code.
-	//AutonomousCodePlaceholderForTesting();
+  // Remove this function call once you have "real" code.
+  //AutonomousCodePlaceholderForTesting();
 }
 
 // MECHANUM CONTROL
@@ -354,28 +354,28 @@ task autonomous()
 //   high will make driving unresponsive and difficult.
 void mecanumControl(int leftRightJoystickChannel, int frontBackJoystickChannel, int turnJoystickChannel, int deadzoneThreshold=15) {
 
-	//Create "deadzone" variables. Adjust threshold value to increase/decrease deadzone
-	int X2 = 0, Y1 = 0, X1 = 0;
+  //Create "deadzone" variables. Adjust threshold value to increase/decrease deadzone
+  int X2 = 0, Y1 = 0, X1 = 0;
 
-	//Create "deadzone" for Y1/Ch3
-	if(abs(vexRT[frontBackJoystickChannel]) > deadzoneThreshold)
-		Y1 = vexRT[frontBackJoystickChannel];
-	else
-		Y1 = 0;
+  //Create "deadzone" for Y1/Ch3
+  if(abs(vexRT[frontBackJoystickChannel]) > deadzoneThreshold)
+    Y1 = vexRT[frontBackJoystickChannel];
+  else
+    Y1 = 0;
 
-	//Create "deadzone" for X1/Ch4
-	if(abs(vexRT[leftRightJoystickChannel]) > deadzoneThreshold)
-		X1 = vexRT[leftRightJoystickChannel];
-	else
-		X1 = 0;
+  //Create "deadzone" for X1/Ch4
+  if(abs(vexRT[leftRightJoystickChannel]) > deadzoneThreshold)
+    X1 = vexRT[leftRightJoystickChannel];
+  else
+    X1 = 0;
 
-	//Create "deadzone" for X2/Ch1
-	if(abs(vexRT[turnJoystickChannel]) > deadzoneThreshold)
-		X2 = vexRT[turnJoystickChannel];
-	else
-		X2 = 0;
+  //Create "deadzone" for X2/Ch1
+  if(abs(vexRT[turnJoystickChannel]) > deadzoneThreshold)
+    X2 = vexRT[turnJoystickChannel];
+  else
+    X2 = 0;
 
-	mecanumDrive(X1, Y1, X2);
+  mecanumDrive(X1, Y1, X2);
 }
 
 /*---------------------------------------------------------------------------*/
