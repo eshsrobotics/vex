@@ -55,7 +55,7 @@ int gyroAngle = 0;
 float realLeftRight = 0.0;
 float realForwardBack = 0.0;
 float realTurn = 0.0;
-const float acceleration = 0.1;
+const float ACCELERATION = 0.1;
 
 // Claw and wrist variables.
 const int CLAW_MOTOR_SPEED = 45;
@@ -191,9 +191,9 @@ void mecanumDrive(int leftRight, int forwardBack, int turn) {
 
   // Don't let the controller drive the motors directly.  Instead, the controller
   // represents the desired state, and we increment our way towards that.
-  realLeftRight += sgn(leftRight - realLeftRight) * acceleration;
-  realForwardBack += sgn(forwardBack - realForwardBack) * acceleration;
-  realTurn += sgn(turn - realTurn) * acceleration;
+  realLeftRight += sgn(leftRight - realLeftRight) * ACCELERATION;
+  realForwardBack += sgn(forwardBack - realForwardBack) * ACCELERATION;
+  realTurn += sgn(turn - realTurn) * ACCELERATION;
 
   if (leftRight < -127) {
     leftRight = -127;
