@@ -45,4 +45,4 @@ Analog ports
 I2C
 ---
 
-The Mechanum wheel encoder daisy-chain is connected to the I2C port on the Cortex and is available as `I2C_1`.
+The Mechanum wheel encoder daisy-chain is connected to the I2C port on the Cortex.  The closest motor to the port is available `I2C_1`, the motor after it on the chain is `I2C_2`, and so on.
