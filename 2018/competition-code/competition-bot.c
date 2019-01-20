@@ -2,7 +2,7 @@
 #pragma config(Sensor, in5,    gyro,           sensorGyro)
 #pragma config(Sensor, I2C_1,  ,               sensorQuadEncoderOnI2CPort,    , AutoAssign )
 #pragma config(Motor,  port1,           backRight,     tmotorVex393_HBridge, openLoop, reversed, encoderPort, I2C_1)
-#pragma config(Motor,  port2,           climb,         tmotorVex393_MC29, openLoop, reversed)
+#pragma config(Motor,  port2,           climb,         tmotorVex393_MC29, openLoop)
 #pragma config(Motor,  port3,           frontLeft,     tmotorVex393_MC29, openLoop, encoderPort, I2C_1)
 #pragma config(Motor,  port4,           armRight,      tmotorVex393_MC29, openLoop, reversed)
 #pragma config(Motor,  port5,           clawMotor,     tmotorVex393_MC29, openLoop)
@@ -67,7 +67,7 @@ const int WRIST_ELEVATION_SPEED = 40;
 /* BASIC FUNCTIONS */
 /*******************/
 
-// CLAW ACTIONS \\
+// CLAW ACTIONS
 // Starts process of opening the claw.  It takes about 1.5 secods to complete;
 // the robot code has no other way of knowing when the claw is fully opened
 void openClaw() {
@@ -86,7 +86,7 @@ void stopClaw() {
 }
 
 
-// WRIST ACTIONS \\
+// WRIST ACTIONS
 // Starts process of raising wrist. Takes UNKNOWN seconds to complete
 void raiseWrist() {
 	motor[wristElevation] = WRIST_ELEVATION_SPEED;
@@ -232,7 +232,7 @@ task brake()
 
 	while (abs(startClicks - nMotorEncoder[frontRight]) < clicksToBrake)
 	{
-			mecanumDrive(0, -127, 0)
+			mecanumDrive(0, -127, 0);
 	}
 	mecanumDrive(0, 0, 0);
 }// end (task brake)
@@ -395,7 +395,7 @@ task usercontrol()
 	int autonomousControl = 0;
   while (true)
   {
-  	gyroAngle = sensorValue[in5];
+  	gyroAngle = SensorValue[in5];
   	//sync gyroAngle to gyroValue so that the gyroValue is shown during debugging
     // Button 7L toggles "autonomous"
     // vs. manual mode, but it must be held down for at least half
