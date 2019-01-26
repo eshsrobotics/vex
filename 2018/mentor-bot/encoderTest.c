@@ -28,10 +28,10 @@ task main()
 	bool drivingForward = false;
 	int goalAngle = 0;
 	bool turning = false;
-	//Gyro is set to 0
+	// Gyro is set to 0
 	SensorType[in8] = sensorNone;
 	wait1Msec(1000);
- 	//Reconfigure gyro and calibrates it
+ 	// Reconfigure gyro and calibrates it
  	SensorType[in8] = sensorGyro;
  	wait1Msec(2000);
 
