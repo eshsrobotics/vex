@@ -36,13 +36,13 @@ away from the Cortex.
 
 Analog ports
 ------------
-4. +ARM: Right arm potentiometer?+
+4. ~ARM: Right arm potentiometer?~
 5. DRIVE: Gyro
-6. ARM: Claw potentiometer
+6. ~ARM: Claw potentiometer~
 7. ARM: Wrist rotation potentiometer
-8. +ARM: Wrist elevation potentiometer+
+8. ~ARM: Wrist elevation potentiometer~
 
 I2C
 ---
 
-The Mechanum wheel encoder daisy-chain is connected to the I2C port on the Cortex and is available as `I2C_1`.
+The Mechanum wheel encoder daisy-chain is connected to the I2C port on the Cortex.  The closest motor to the port is available `I2C_1`, the motor after it on the chain is `I2C_2`, and so on.
