@@ -63,10 +63,17 @@ const int CLAW_MOTOR_SPEED = 45;
 const int WRIST_ROTATE_SPEED = 40;
 const int WRIST_ELEVATION_SPEED = 40;
 
-
 /*******************/
 /* BASIC FUNCTIONS */
 /*******************/
+
+//Resest the encoder, must be done before every match
+void clearEncoders() {
+	nMotorEncoder[frontRight] = 0;
+	nMotorEncoder[backRight] = 0;
+	nMotorEncoder[backLeft] = 0;
+	nMotorEncoder[frontLeft] = 0;
+}
 
 // CLAW ACTIONS
 // Starts process of opening the claw.  It takes about 1.5 secods to complete;
@@ -130,7 +137,7 @@ void stopRotatingWrist() {
 // This function is only meant to be used in response to manual input; this is
 // what gets executed when a human hits the "open claw" button.
 void orientWristAndOpenClaw() {
-    // TODO: Implement
+	// TODO: Implement
 }
 
 // Starts the process of raising the arm.  The arm will not stop until
@@ -140,8 +147,8 @@ void orientWristAndOpenClaw() {
 // provides no feedback when this is done, and it is possible to raise the arm
 // with this function until the gears slip and the motor strains.  Take care!
 void raiseArm() {
-    motor[armRight] = 127;
-    motor[armLeft] = 127;
+	motor[armRight] = 127;
+	motor[armLeft] = 127;
 }
 
 // Starts the process of lowering the arm.  The arm will not stop until
@@ -149,8 +156,8 @@ void raiseArm() {
 //
 // See caveats and warnings in the documentation for raiseArm().
 void lowerArm() {
-    motor[armRight] = -127;
-    motor[armLeft] = -127;
+	motor[armRight] = -127;
+	motor[armLeft] = -127;
 }
 
 // Stops the arm from raising or lowering.
@@ -190,39 +197,39 @@ void stopArm() {
 
 void mecanumDrive(int leftRight, int forwardBack, int turn) {
 
-  // Don't let the controller drive the motors directly.  Instead, the controller
-  // represents the desired state, and we increment our way towards that.
-  realLeftRight += sgn(leftRight - realLeftRight) * ACCELERATION;
-  realForwardBack += sgn(forwardBack - realForwardBack) * ACCELERATION;
-  realTurn += sgn(turn - realTurn) * ACCELERATION;
+	// Don't let the controller drive the motors directly.  Instead, the controller
+	// represents the desired state, and we increment our way towards that.
+	realLeftRight += sgn(leftRight - realLeftRight) * ACCELERATION;
+	realForwardBack += sgn(forwardBack - realForwardBack) * ACCELERATION;
+	realTurn += sgn(turn - realTurn) * ACCELERATION;
 
-  if (leftRight < -127) {
-    leftRight = -127;
-  }
-  if (leftRight > 127) {
-    leftRight = 127;
-  }
-  if (forwardBack < -127) {
-    forwardBack = -127;
-  }
-  if (forwardBack > 127) {
-    forwardBack = 127;
-  }
+	if (leftRight < -127) {
+		leftRight = -127;
+	}
+	if (leftRight > 127) {
+		leftRight = 127;
+	}
+	if (forwardBack < -127) {
+		forwardBack = -127;
+	}
+	if (forwardBack > 127) {
+		forwardBack = 127;
+	}
 
-  if (turn < -127) {
-    turn = -127;
-  }
-  if (turn > 127) {
-    turn = 127;
-  }
+	if (turn < -127) {
+		turn = -127;
+	}
+	if (turn > 127) {
+		turn = 127;
+	}
 
-  motor[frontRight] = realForwardBack - realTurn - realLeftRight;
-  motor[backRight] =  realForwardBack - realTurn + realLeftRight;
-  motor[frontLeft] = realForwardBack + realTurn + realLeftRight;
-  motor[backLeft] =  realForwardBack + realTurn - realLeftRight;
+	motor[frontRight] = realForwardBack - realTurn - realLeftRight;
+	motor[backRight] =  realForwardBack - realTurn + realLeftRight;
+	motor[frontLeft] = realForwardBack + realTurn + realLeftRight;
+	motor[backLeft] =  realForwardBack + realTurn - realLeftRight;
 
-  // Determine when to activate the center climbing assistance wheels.
-  motor[climb] = forwardBack;
+	// Determine when to activate the center climbing assistance wheels.
+	motor[climb] = forwardBack;
 }
 
 task brake()
@@ -233,7 +240,7 @@ task brake()
 
 	while (abs(startClicks - nMotorEncoder[frontRight]) < clicksToBrake)
 	{
-			mecanumDrive(0, -127, 0);
+		mecanumDrive(0, -127, 0);
 	}
 	mecanumDrive(0, 0, 0);
 }// end (task brake)
@@ -255,18 +262,18 @@ void pre_auton()
 	SensorType[in5] = sensorGyro;
 	wait1Msec(3500);
 	//in order for the gyro to show the correct values, you must wair l0 mil secs after sensorType = sensorNone, and 3500 mil secs after SensorType = sensorGyro
-  // Set bStopTasksBetweenModes to false if you want to keep user created tasks
-  // running between Autonomous and Driver controlled modes. You will need to
-  // manage all user created tasks if set to false.
-  bStopTasksBetweenModes = true;
+	// Set bStopTasksBetweenModes to false if you want to keep user created tasks
+	// running between Autonomous and Driver controlled modes. You will need to
+	// manage all user created tasks if set to false.
+	bStopTasksBetweenModes = true;
 
-  // Set bDisplayCompetitionStatusOnLcd to false if you don't want the LCD
-  // used by the competition include file, for example, you might want
-  // to display your team name on the LCD in this function.
-  // bDisplayCompetitionStatusOnLcd = false;
+	// Set bDisplayCompetitionStatusOnLcd to false if you don't want the LCD
+	// used by the competition include file, for example, you might want
+	// to display your team name on the LCD in this function.
+	// bDisplayCompetitionStatusOnLcd = false;
 
-  // All activities that occur before the competition starts
-  // Example: clearing encoders, setting servo positions, ...
+	// All activities that occur before the competition starts
+	// Example: clearing encoders, setting servo positions, ...
 }
 
 // Uses the mecanumDrive() function to drive in set patterns, testing whether everything was wired correctly.
@@ -283,24 +290,58 @@ void pre_auton()
 //   will repeat itself again naturally unless you stop calling autonomousTest().
 bool autonomousTest(int periodLengthMilliseconds) {
 
-  float milliseconds = time1[timer1];
-  if (milliseconds > periodLengthMilliseconds) {
-    clearTimer(timer1);
-    milliseconds = 0;
-    nMotorEncoder[frontRight] = 0;
+	float milliseconds = time1[timer1];
+	if (milliseconds > periodLengthMilliseconds) {
+		clearTimer(timer1);
+		milliseconds = 0;
+		nMotorEncoder[frontRight] = 0;
 
-  }
-  const float L = periodLengthMilliseconds;
+	}
+	const float L = periodLengthMilliseconds;
 
-  if (nMotorEncoder[frontRight] < 500) {
-  	mecanumDrive(0, 127, 0);
+	if (nMotorEncoder[frontRight] < 500) {
+		mecanumDrive(0, 127, 0);
 
-  	return true;
-  } else {
-    // Stop.
-  	startTask (brake);
+		return true;
+		} else {
+		// Stop.
+		startTask (brake);
 
-  	return false;
+		return false;
+	}
+}
+
+//Continously adjust the four motors to make the robot drive as straight as possible
+void goStraight(int speed, int margin) {
+	if(abs(nMotorEncoder[backRight]) < abs(nMotorEncoder[backLeft])) {
+		motor[frontRight] = speed;
+		motor[frontLeft] = speed - margin;
+		motor[backRight] = speed;
+		motor[backLeft] = speed - margin;
+	}
+	else if (abs(nMotorEncoder[backLeft]) < abs(nMotorEncoder[backRight])) {
+		motor[frontRight] = speed - margin;
+		motor[frontLeft] = speed;
+		motor[backRight] = speed - margin;
+		motor[backLeft] = speed;
+	}
+	else {
+		motor[frontRight] = speed;
+		motor[frontLeft] = speed;
+		motor[backRight] = speed;
+		motor[backLeft] = speed;
+	}
+}
+
+//Button press to drive robot in straight line
+task driveStraight() {
+	clearEncoders();
+	bool done = false;
+	while(!done) {
+		goStraight(120,50);
+		if (vexRT[Btn8L] > 0) {
+			done = true;
+		}
 	}
 }
 
@@ -322,15 +363,15 @@ task autonomous()
 		mecanumDrive(0, 127, 0);
 	}
 	mecanumDrive(0,0,0);
-  // ..........................................................................
-  //nMotorEncoder[backRight] = 0;
-  //while(nMotorEncoder[backRight] < "x")
+	// ..........................................................................
+	//nMotorEncoder[backRight] = 0;
+	//while(nMotorEncoder[backRight] < "x")
 
 
-  // ..........................................................................
+	// ..........................................................................
 
-  // Remove this function call once you have "real" code.
-  //AutonomousCodePlaceholderForTesting();
+	// Remove this function call once you have "real" code.
+	//AutonomousCodePlaceholderForTesting();
 }
 
 // MECHANUM CONTROL
@@ -355,28 +396,28 @@ task autonomous()
 //   high will make driving unresponsive and difficult.
 void mecanumControl(int leftRightJoystickChannel, int frontBackJoystickChannel, int turnJoystickChannel, int deadzoneThreshold=15) {
 
-  //Create "deadzone" variables. Adjust threshold value to increase/decrease deadzone
-  int X2 = 0, Y1 = 0, X1 = 0;
+	//Create "deadzone" variables. Adjust threshold value to increase/decrease deadzone
+	int X2 = 0, Y1 = 0, X1 = 0;
 
-  //Create "deadzone" for Y1/Ch3
-  if(abs(vexRT[frontBackJoystickChannel]) > deadzoneThreshold)
-    Y1 = vexRT[frontBackJoystickChannel];
-  else
-    Y1 = 0;
+	//Create "deadzone" for Y1/Ch3
+	if(abs(vexRT[frontBackJoystickChannel]) > deadzoneThreshold)
+		Y1 = vexRT[frontBackJoystickChannel];
+	else
+		Y1 = 0;
 
-  //Create "deadzone" for X1/Ch4
-  if(abs(vexRT[leftRightJoystickChannel]) > deadzoneThreshold)
-    X1 = vexRT[leftRightJoystickChannel];
-  else
-    X1 = 0;
+	//Create "deadzone" for X1/Ch4
+	if(abs(vexRT[leftRightJoystickChannel]) > deadzoneThreshold)
+		X1 = vexRT[leftRightJoystickChannel];
+	else
+		X1 = 0;
 
-  //Create "deadzone" for X2/Ch1
-  if(abs(vexRT[turnJoystickChannel]) > deadzoneThreshold)
-    X2 = vexRT[turnJoystickChannel];
-  else
-    X2 = 0;
+	//Create "deadzone" for X2/Ch1
+	if(abs(vexRT[turnJoystickChannel]) > deadzoneThreshold)
+		X2 = vexRT[turnJoystickChannel];
+	else
+		X2 = 0;
 
-  mecanumDrive(X1, Y1, X2);
+	mecanumDrive(X1, Y1, X2);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -391,99 +432,78 @@ void mecanumControl(int leftRightJoystickChannel, int frontBackJoystickChannel, 
 
 task usercontrol()
 {
-  // User control code here, inside the loop
+	// User control code here, inside the loop
 
 	int autonomousControl = 0;
-  while (true)
-  {
-  	gyroAngle = SensorValue[in5];
-  	//sync gyroAngle to gyroValue so that the gyroValue is shown during debugging
-    // Button 7L toggles "autonomous"
-    // vs. manual mode, but it must be held down for at least half
-    // a second.
-    if (autonomousControl == 0 && vexRT[Btn7L] > 0) {
-      autonomousControl = 1;
-      clearTimer(timer2);
-    } else if (autonomousControl == 1) {
-      if (vexRT[Btn7L] > 0) {
-        if (time1[timer2] > 1000) {
-          // Button held down for 1 second--activate.
-          autonomousControl = 2;
-          clearTimer(timer2);
-        }
-      } else {
-        // Button released before we could switch; autonomous canceled.
-        autonomousControl = 0;
-      }
-    }	else if (autonomousControl == 2) {
-      // If the button is pressed again, we cancel, but only after a threshold
-      // (to allow the human to release the button.)
-      if (vexRT[Btn7L] > 0 && time1[timer2] > 500) {
-        autonomousControl = 0;
-      } else {
-        autonomousTest(10000);
-      }
-    }
+	while (true)
+	{
+		gyroAngle = SensorValue[in5];
+		//sync gyroAngle to gyroValue so that the gyroValue is shown during debugging
+		// Button 7L begins "autonomous"
+		if (vexRT[Btn7L] > 0) {
 
-    // If we're not driving in a square, the human can have a go.
-    if (autonomousControl != 2) {
-      //Remote Control Commands
-      int threshold = 50;
-      mecanumControl(Ch4, Ch3, Ch1, threshold);
-    }
+			startTask(driveStraight);
+		}
 
-    ///////////////////
-    // ARM ELEVATION //
-    ///////////////////
-    // While user presses button 5D then arm goes up, and while user presses
-    // button 6D the arm goes down.
-    if (vexRT[Btn5D] > 0) {
-        raiseArm();
-    } else if (vexRT[Btn6D] > 0) {
-        lowerArm();
-    } else {
-        stopArm();
-    }
+		// If we're not driving in a square, the human can have a go.
+		if (autonomousControl != 2) {
+			//Remote Control Commands
+			int threshold = 50;
+			mecanumControl(Ch4, Ch3, Ch1, threshold);
+		}
 
-    //////////
-    // CLAW //
-    //////////
-    // Buttons: 8D (open), 8U (close)
+		///////////////////
+		// ARM ELEVATION //
+		///////////////////
+		// While user presses button 5D then arm goes up, and while user presses
+		// button 6D the arm goes down.
+		if (vexRT[Btn5D] > 0) {
+			raiseArm();
+			} else if (vexRT[Btn6D] > 0) {
+			lowerArm();
+			} else {
+			stopArm();
+		}
 
-    if (vexRT[Btn8D] > 0) {
-        openClaw();
-    } else if (vexRT[Btn8U] > 0) {
-        closeClaw();
-    } else {
-        stopClaw();
-    }
+		//////////
+		// CLAW //
+		//////////
+		// Buttons: 8D (open), 8U (close)
 
-    /////////////////////
-    // WRIST ELEVATION //
-    /////////////////////
-    // Buttons: 7U (up), 7D (down)
+		if (vexRT[Btn8D] > 0) {
+			openClaw();
+			} else if (vexRT[Btn8U] > 0) {
+			closeClaw();
+			} else {
+			stopClaw();
+		}
 
-    if (vexRT[Btn7U] > 0) {
-        raiseWrist();
-    } else if (vexRT[Btn7D] > 0) {
-        lowerWrist();
-    } else {
-        stopWrist();
-    }
+		/////////////////////
+		// WRIST ELEVATION //
+		/////////////////////
+		// Buttons: 7U (up), 7D (down)
 
-    ////////////////////
-    // WRIST ROTATION //
-    ////////////////////
-    // Buttons: 5U (counterclockwise), 6U (clockwise)
+		if (vexRT[Btn7U] > 0) {
+			raiseWrist();
+			} else if (vexRT[Btn7D] > 0) {
+			lowerWrist();
+			} else {
+			stopWrist();
+		}
 
-    if (vexRT[Btn5U] > 0) {
-        rotateWristCounterClockwise();
-    } else if (vexRT[Btn6U] > 0) {
-        rotateWristClockwise();
-    } else {
-        stopRotatingWrist();
-    }
+		////////////////////
+		// WRIST ROTATION //
+		////////////////////
+		// Buttons: 5U (counterclockwise), 6U (clockwise)
+
+		if (vexRT[Btn5U] > 0) {
+			rotateWristCounterClockwise();
+			} else if (vexRT[Btn6U] > 0) {
+			rotateWristClockwise();
+			} else {
+			stopRotatingWrist();
+		}
 
 
-  } // end (while true)
+	} // end (while true)
 } // end (task usercontrol)
