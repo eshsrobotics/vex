@@ -1,2 +1,2 @@
 # vex
-A new repository meant to hold all student VEX code for every school year.
+Holds all student code for the V.E.X. Robotics Competition (V.R.C.). Student code is separated by year.
