@@ -8,9 +8,7 @@
 #pragma config(Motor,  port2,           climb,         tmotorVex393_MC29, openLoop)
 #pragma config(Motor,  port3,           frontLeft,     tmotorVex393_MC29, openLoop, encoderPort, I2C_3)
 #pragma config(Motor,  port4,           armRight,      tmotorVex393_MC29, openLoop, reversed)
-#pragma config(Motor,  port5,           clawMotor,     tmotorVex393_MC29, openLoop)
 #pragma config(Motor,  port6,           wristRotate,   tmotorVex393_MC29, openLoop)
-#pragma config(Motor,  port7,           wristElevation, tmotorVex393_MC29, openLoop, reversed)
 #pragma config(Motor,  port8,           armLeft,       tmotorVex393_MC29, openLoop)
 #pragma config(Motor,  port9,           frontRight,    tmotorVex393_MC29, openLoop, reversed, encoderPort, I2C_4)
 #pragma config(Motor,  port10,          backLeft,      tmotorVex393_HBridge, openLoop, encoderPort, I2C_2)
@@ -53,7 +51,7 @@
 /********************/
 /* GLOBAL VARIABLES */
 /********************/
-      int gyroAngle = 0;
+int gyroAngle = 0;
 // These variables control acceleration of the robot's drive.
 float realLeftRight = 0.0;
 float realForwardBack = 0.0;
@@ -91,19 +89,6 @@ void rotateWristCounterClockwise() {
 // Completely stops wrist rotation
 void stopRotatingWrist() {
     motor[wristRotate] = 0;
-}
-
-
-// ORIENT WRIST AND OPEN CLAW
-// If the claw is right-side up already, this function just opens the claw.
-// If the claw is upside-down, this function instructs the wrist to orient
-// itself properly (so the claw's moving portion is oriented upward) before
-// opening the claw.
-//
-// This function is only meant to be used in response to manual input; this is
-// what gets executed when a human hits the "open claw" button.
-void orientWristAndOpenClaw() {
-    // TODO: Implement
 }
 
 // Starts the process of raising the arm.  The arm will not stop until
