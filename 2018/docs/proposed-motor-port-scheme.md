@@ -39,7 +39,7 @@ Analog ports
 4. ~ARM: Right arm potentiometer?~
 5. DRIVE: Gyro
 6. ~ARM: Claw potentiometer~
-7. ARM: Wrist rotation potentiometer
+7. ~ARM: Wrist rotation potentiometer~
 8. ~ARM: Wrist elevation potentiometer~
 
 I2C
