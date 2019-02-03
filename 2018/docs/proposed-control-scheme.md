@@ -8,8 +8,8 @@ Main teleop controls
   * `Btn5D` [front of controller, bottom right]: Raise arm [**common**]
   * `Btn6D` [front of controller, bottom left]: Lower arm [**common**]
 * Wrist
-  * `Btn7U` [front of controller, top left]: Rotate wrist clockwise
-  * `Btn7D` [front of controller, top right]: Rotate wrist counterclockwise
+  * `Btn7U` [top left button pad of controller, top button]: Rotate wrist clockwise
+  * `Btn7D` [top left button pad of controller, bottom button]: Rotate wrist counterclockwise
 * ~Claw~
   * ~`Btn8R` [top right button-pad of controller, right button]: Open claw [**common**]~
   * ~`Btn8D` [top right button-pad of controller, bottom button]: Close claw [**common**]~

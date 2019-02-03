@@ -11,6 +11,7 @@ Notes
    are always close to the Cortex, like drive motors.
 4. See http://vexwiki.org/vex_robotics_platforms/vex_edr/cpu/cortex/motor_ports
    for more information.
+5. Items that are ~crossed out~ no longer exist on the robot.
 
 Proposal
 ========
@@ -22,9 +23,9 @@ Motor ports
 2. DRIVE: Climb motor
 3. DRIVE: Front left Mecanum wheel
 4. ARM: Right arm motor
-5. ARM: Claw motor
+5. ~ARM: Claw motor~
 6. ARM: Wrist rotation motor
-7. ARM: Wrist elevation motor
+7. ~ARM: Wrist elevation motor~
 8. ARM: Left arm motor
 9. DRIVE: Front right Mecanum wheel
 10. DRIVE: Back left Mecanum wheel
