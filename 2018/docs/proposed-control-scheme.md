@@ -10,15 +10,13 @@ Main teleop controls
 * Wrist
   * `Btn7U` [top left button pad of controller, top button]: Rotate wrist clockwise
   * `Btn7D` [top left button pad of controller, bottom button]: Rotate wrist counterclockwise
-* ~Claw~
-  * ~`Btn8R` [top right button-pad of controller, right button]: Open claw [**common**]~
-  * ~`Btn8D` [top right button-pad of controller, bottom button]: Close claw [**common**]~
+* Precision
+  * `Btn5U` [front of controller, top left]: When held down, movements
+    in the main drive and wrist rotation motor are slowed by 50%.
+    Note that the arm is not affected.
 
 Pre-programmed sequences
 ========================
 
-* ~`Btn7R`: Grab with claw, rotate 180 degrees, then release claw [*common*; used for ground flips and for rarer air flips]~
-* ~`Btn7U`: Raise wrist [**rare**; wrist is lowered and raised automatically at the beginning and end of teleop]~
-* ~`Btn7D`: Lower wrist [**rare**; wrist is lowered and raised automatically at the beginning and end of teleop]~
 * `Btn7L`: Execute autonomous routine #1 [*extremely rare*; might require button to be held down]
 * `Btn8L`: Stop execution of autonomous test routine, returning to full teleop
