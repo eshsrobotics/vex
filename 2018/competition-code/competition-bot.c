@@ -58,6 +58,14 @@ float realForwardBack = 0.0;
 float realTurn = 0.0;
 const float ACCELERATION = 0.1;
 
+// At all times, the four main drive motors and the wrist rotation
+// motor will travel at this many times their natural speed.  The user
+// can voluntarily reduce this value, causing the robot to make finer
+// wrist rotation and drive movements until they release the precision
+// button.
+float precisionFactor = 1.0;
+
+
 // Claw and wrist variables.
 const int WRIST_ROTATE_SPEED = 40;
 
@@ -77,13 +85,13 @@ void clearEncoders() {
 // Starts process of rotating wrist clockwise. Takes UNKNOWN seconds to
 // complete and moves UNKONWN degrees
 void rotateWristClockwise() {
-    motor[wristRotate] = WRIST_ROTATE_SPEED;
+    motor[wristRotate] = precisionFactor * WRIST_ROTATE_SPEED;
 }
 
 // Starts process of rotating wrist counterclockwise. Takes UNKNOWN
 // seconds to complete and moves UNKONWN degrees
 void rotateWristCounterClockwise() {
-    motor[wristRotate] = -WRIST_ROTATE_SPEED;
+    motor[wristRotate] = precisionFactor * -WRIST_ROTATE_SPEED;
 }
 
 // Completely stops wrist rotation
@@ -174,10 +182,10 @@ void mecanumDrive(int leftRight, int forwardBack, int turn) {
 	turn = 127;
     }
 
-    motor[frontRight] = realForwardBack - realTurn - realLeftRight;
-    motor[backRight] =  realForwardBack - realTurn + realLeftRight;
-    motor[frontLeft] = realForwardBack + realTurn + realLeftRight;
-    motor[backLeft] =  realForwardBack + realTurn - realLeftRight;
+    motor[frontRight] = precisionFactor * (realForwardBack - realTurn - realLeftRight);
+    motor[backRight] =  precisionFactor * (realForwardBack - realTurn + realLeftRight);
+    motor[frontLeft] = precisionFactor * (realForwardBack + realTurn + realLeftRight);
+    motor[backLeft] =  precisionFactor * (realForwardBack + realTurn - realLeftRight);
 
     // Determine when to activate the center climbing assistance wheels.
     motor[climb] = forwardBack;
@@ -262,6 +270,26 @@ bool autonomousTest(int periodLengthMilliseconds) {
     }
 }
 
+// Helper function for task driveStraight().
+//
+// Ensures that the two given motors are traveling at the same _rate_,
+// so that their encoder clicks match up, regardless of the load on
+// either wheel.
+//
+// Once the encoder clicks are synced, this function then tries to
+// ramp up the speeds of both motors until one of them has reached the
+// desired speed.
+//
+// @param leftMotor    The index of the left motor to adjust.
+// @param rightMotor   The index of the rightleft motor to adjust.
+// @param desiredSpeed The speed that at least one motor should eventually
+//                     have.  This should be between -127 and 127.
+// @param maxSpeed     The maximum speed to apply to either motor.  This should
+//                     be between -127 and 127.
+// @param increment    The smallest amount by which to increment the motor
+//                     speeds when adjusting.  Don't be afraid to use a larger
+//                     value like 5.0 here; fine granularity just makes the
+//                     adjustments slower.
 void adjustMotorSpeeds(int leftMotor, int rightMotor, float desiredSpeed, float maxSpeed, float increment) {
 
     float leftSpeed = motor[leftMotor];
@@ -456,6 +484,13 @@ task usercontrol()
 		stopRotatingWrist();
 	    }
 
+	    // PRECISION MODE
+	    // While button 5U is held down, the robot's drive and wrist rotation motors slow by 50%.
+	    if (vexRT[Btn5U] > 0) {
+		precisionFactor = 0.5;
+	    } else {
+	      precisionFactor = 1.0;
+	    }
 
 	} // end (while true)
 } // end (task usercontrol)
