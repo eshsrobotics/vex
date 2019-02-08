@@ -52,6 +52,7 @@
 /* GLOBAL VARIABLES */
 /********************/
 int gyroAngle = 0;
+
 // These variables control acceleration of the robot's drive.
 float realLeftRight = 0.0;
 float realForwardBack = 0.0;
@@ -65,15 +66,45 @@ const float ACCELERATION = 0.1;
 // button.
 float precisionFactor = 1.0;
 
-
 // Claw and wrist variables.
 const int WRIST_ROTATE_SPEED = 40;
+
+// ------------------------------------------------------------------------------
+// Constants used for the driveStraight() task.
+
+// How fast to drive in a straight line.
+const float DRIVE_STRAIGHT_MAX_SPEED = 120;
+
+// Our target traveling distance, in inches.  If this is less than 0, it is
+// ignored.
+//
+// Before calling task driveStraight(), unless you intend for the robot to
+// drive forever absent human intervention, you should set this variable to a
+// non-negative value.  driveStraight() will then attempt to travel that many
+// inches and no more.
+float targetDistanceInches = -1;
+
+// A conversion factor mapping distance traveled...
+// - ...By the Spudnik 1's Mecanum wheels,
+// - ...At the Spudnik 1's voltage level as it was during our measurement,
+// - ...On the soft foam surface that we drove the robot on,
+// - ...With the robot's weight at the time of the measurement
+// ...to encoder clicks.
+const float ENCODER_CLICKS_PER_INCH = 42.432; // WARNING: THIS IS **UNTESTED**!
+
+// At what percentage of our (targetDistanceInches)-inch
+// journey should we start to slow down?
+const float DRIVE_STRAIGHT_SLOWDOWN_THRESHOLD = 0.94; // WARNING: THIS IS **UNTESTED**!
+
+// What is the decay factor we should use to diminish our speed once we reach
+// the DRIVE_STRAIGHT_SLOWDOWN_THRESHOLD?
+const float DRIVE_STRAIGHT_SLOWDOWN_DECAY_FACTOR = 0.849; // Warning: This number was tested with the Mentor-Bot and is **UNTESTED** for the Spudnik 1.
 
 /*******************/
 /* BASIC FUNCTIONS */
 /*******************/
 
-//Resest the encoder, must be done before every match
+// Resets the encoder, must be done before every match
 void clearEncoders() {
     nMotorEncoder[frontRight] = 0;
     nMotorEncoder[backRight] = 0;
@@ -163,23 +194,23 @@ void mecanumDrive(int leftRight, int forwardBack, int turn) {
     realTurn += sgn(turn - realTurn) * ACCELERATION;
 
     if (leftRight < -127) {
-	leftRight = -127;
+        leftRight = -127;
     }
     if (leftRight > 127) {
-	leftRight = 127;
+        leftRight = 127;
     }
     if (forwardBack < -127) {
-	forwardBack = -127;
+        forwardBack = -127;
     }
     if (forwardBack > 127) {
-	forwardBack = 127;
+        forwardBack = 127;
     }
 
     if (turn < -127) {
-	turn = -127;
+        turn = -127;
     }
     if (turn > 127) {
-	turn = 127;
+        turn = 127;
     }
 
     motor[frontRight] = precisionFactor * (realForwardBack - realTurn - realLeftRight);
@@ -190,19 +221,6 @@ void mecanumDrive(int leftRight, int forwardBack, int turn) {
     // Determine when to activate the center climbing assistance wheels.
     motor[climb] = forwardBack;
 }
-
-task brake()
-{
-
-    const int clicksToBrake = 20;
-    int startClicks = nMotorEncoder[frontRight];
-
-    while (abs(startClicks - nMotorEncoder[frontRight]) < clicksToBrake)
-	{
-	    mecanumDrive(0, -127, 0);
-	}
-    mecanumDrive(0, 0, 0);
-}// end (task brake)
 
 /*---------------------------------------------------------------------------*/
 /*                          Pre-Autonomous Functions                         */
@@ -251,22 +269,22 @@ bool autonomousTest(int periodLengthMilliseconds) {
 
     float milliseconds = time1[timer1];
     if (milliseconds > periodLengthMilliseconds) {
-	clearTimer(timer1);
-	milliseconds = 0;
-	nMotorEncoder[frontRight] = 0;
+        clearTimer(timer1);
+        milliseconds = 0;
+        nMotorEncoder[frontRight] = 0;
 
     }
     const float L = periodLengthMilliseconds;
 
     if (nMotorEncoder[frontRight] < 500) {
-	mecanumDrive(0, 127, 0);
+        mecanumDrive(0, 127, 0);
 
-	return true;
+        return true;
     } else {
-	// Stop.
-	startTask (brake);
+        // Stop.
+        startTask (brake);
 
-	return false;
+        return false;
     }
 }
 
@@ -297,58 +315,98 @@ void adjustMotorSpeeds(int leftMotor, int rightMotor, float desiredSpeed, float 
 
     if (nMotorEncoder[leftMotor] < nMotorEncoder[rightMotor]) {
 
-	// If the left motor is lagging behind right motor. Speed the left motor up...
-	if (leftSpeed > maxSpeed) {
-	    // ...Unless it's already going as fast as possible, in which case we slow the _right_ motor down instead.
-	    rightSpeed -= increment;
-	} else {
-	    leftSpeed += increment;
-	}
+        // If the left motor is lagging behind right motor. Speed the left motor up...
+        if (leftSpeed > maxSpeed) {
+            // ...Unless it's already going as fast as possible, in which case we slow the _right_ motor down instead.
+            rightSpeed -= increment;
+        } else {
+            leftSpeed += increment;
+        }
 
     } else if (nMotorEncoder[leftMotor] > nMotorEncoder[rightMotor]) {
 
-	// Right motor is lagging behind the left motor.  Speed the right motor up...
-	if (rightSpeed > maxSpeed) {
-	    // ...Unless it's already going as fast as possible, in which case we slow the _left_ motor ow instead.
-	    leftSpeed -= increment;
-	} else {
-	    rightSpeed += increment;
-	}
+        // Right motor is lagging behind the left motor.  Speed the right motor up...
+        if (rightSpeed > maxSpeed) {
+            // ...Unless it's already going as fast as possible, in which case we slow the _left_ motor ow instead.
+            leftSpeed -= increment;
+        } else {
+            rightSpeed += increment;
+        }
     } else {
-	// Motors are traveling at the same rate.
-	if (leftSpeed < desiredSpeed || rightSpeed < desiredSpeed) {
-	    // But is the rate too low?
-	    leftSpeed += increment;
-	    rightSpeed += increment;
-	} else if (leftSpeed > desiredSpeed || rightSpeed > desiredSpeed) {
-	    // But is the rate too high?
-	    leftSpeed -= increment;
-	    rightSpeed -= increment;
-	}
+        // Motors are traveling at the same rate.
+        if (leftSpeed < desiredSpeed || rightSpeed < desiredSpeed) {
+            // But is the rate too low?
+            leftSpeed += increment;
+            rightSpeed += increment;
+        } else if (leftSpeed > desiredSpeed || rightSpeed > desiredSpeed) {
+            // But is the rate too high?
+            leftSpeed -= increment;
+            rightSpeed -= increment;
+        }
     }
 
     motor[leftMotor] += leftSpeed;
     motor[rightMotor] += rightSpeed;
 }
 
+// Helper function for task driveStraight().
+//
+// Given a present speed, a motor whose encoders we will examine, and a target
+// distance, calculates the "ideal" speed that should be applied to all of the
+// motors (not just the one you passed in!) so that we are fully stopped by
+// the time we hit the target distance.
+//
+// This function does not actually change the speed of the robot--it just
+// returns the new speed that the robot _should_ have
+float reduceSpeedIfNeeded(float currentSpeed, int motor, float targetDistanceInches) {
 
-// Button press to drive robot in straight line
+    // VEX 393 motors don't give any useful output below this speed.
+    const float MIN_MOTOR_SPEED = 20.0;
+
+    float speed                 = currentSpeed;
+    float clicks                = nMotorEncoder[motor];
+    float currentDistanceInches = clicks / ENCODER_CLICKS_PER_INCH;
+
+    if (targetDistanceInches >= 0 &&
+        currentDistanceInches > DRIVE_STRAIGHT_SLOWDOWN_THRESHOLD * targetDistanceInches) {
+
+        speed *= DRIVE_STRAIGHT_SLOWDOWN_DECAY_FACTOR;
+
+        if (speed < MIN_MOTOR_SPEED) {
+            speed = 0;
+        }
+    }
+    return speed;
+}
+
+// An autonomous, asynchronous task whose only purpose is to drive the robot
+// in a straight line.
+//
+// Tasks don't take arguments.  Nonetheless, we do have one:
+//
+// - targetDistanceInches, a global variable that, if non-negative, tells us
+//   how far we should drive before quitting from this task.
+//
+// You can also quit from the task by pressing Btn8L (at least right now.)
 task driveStraight() {
     clearEncoders();
     bool done = false;
+    const float epsilon = 0.01;
     float speed = 120;
 
-    motor[frontLeft] = speed;
+    motor[frontLeft]  = speed;
     motor[frontRight] = speed;
-    motor[backRight] = speed;
-    motor[backLeft] = speed;
+    motor[backRight]  = speed;
+    motor[backLeft]   = speed;
 
     while(!done) {
-	adjustMotorSpeeds(frontLeft, frontRight, 120, 127, 10.0);
-	adjustMotorSpeeds(backLeft, backRight, 120, 127, 10.0);
-	if (vexRT[Btn8L] > 0) {
-	    done = true;
-	}
+        adjustMotorSpeeds(frontLeft,  frontRight, speed, 127, 10.0);
+        adjustMotorSpeeds(backLeft,   backRight,  speed, 127, 10.0);
+        speed = reduceSpeedIfNeeded(speed, frontLeft, targetDistanceInches);
+
+        if (vexRT[Btn8L] > 0 || abs(speed) < epsilon) {
+            done = true;
+        }
     }
 }
 
@@ -366,9 +424,9 @@ task autonomous()
 {
     clearTimer(timer1);
     while (time1[timer1] < 3000)
-	{
-	    mecanumDrive(0, 127, 0);
-	}
+        {
+            mecanumDrive(0, 127, 0);
+        }
     mecanumDrive(0,0,0);
     // ..........................................................................
     //nMotorEncoder[backRight] = 0;
@@ -408,21 +466,21 @@ void mecanumControl(int leftRightJoystickChannel, int frontBackJoystickChannel, 
 
     //Create "deadzone" for Y1/Ch3
     if(abs(vexRT[frontBackJoystickChannel]) > deadzoneThreshold)
-	Y1 = vexRT[frontBackJoystickChannel];
+        Y1 = vexRT[frontBackJoystickChannel];
     else
-	Y1 = 0;
+        Y1 = 0;
 
     //Create "deadzone" for X1/Ch4
     if(abs(vexRT[leftRightJoystickChannel]) > deadzoneThreshold)
-	X1 = vexRT[leftRightJoystickChannel];
+        X1 = vexRT[leftRightJoystickChannel];
     else
-	X1 = 0;
+        X1 = 0;
 
     //Create "deadzone" for X2/Ch1
     if(abs(vexRT[turnJoystickChannel]) > deadzoneThreshold)
-	X2 = vexRT[turnJoystickChannel];
+        X2 = vexRT[turnJoystickChannel];
     else
-	X2 = 0;
+        X2 = 0;
 
     mecanumDrive(X1, Y1, X2);
 }
@@ -443,54 +501,54 @@ task usercontrol()
 
     int autonomousControl = 0;
     while (true)
-	{
-	    gyroAngle = SensorValue[in5];
-	    //sync gyroAngle to gyroValue so that the gyroValue is shown during debugging
-	    // Button 7L begins "autonomous"
-	    if (vexRT[Btn7L] > 0) {
-		startTask(driveStraight);
-	    }
+        {
+            gyroAngle = SensorValue[in5];
+            //sync gyroAngle to gyroValue so that the gyroValue is shown during debugging
+            // Button 7L begins "autonomous"
+            if (vexRT[Btn7L] > 0) {
+                startTask(driveStraight);
+            }
 
-	    // If we're not driving in a square, the human can have a go.
-	    if (autonomousControl != 2) {
-		//Remote Control Commands
-		int threshold = 50;
-		mecanumControl(Ch4, Ch3, Ch1, threshold);
-	    }
+            // If we're not driving in a square, the human can have a go.
+            if (autonomousControl != 2) {
+                //Remote Control Commands
+                int threshold = 50;
+                mecanumControl(Ch4, Ch3, Ch1, threshold);
+            }
 
-	    ///////////////////
-	    // ARM ELEVATION //
-	    ///////////////////
-	    // While user presses button 5D then arm goes up, and while user presses
-	    // button 6D the arm goes down.
-	    if (vexRT[Btn5D] > 0) {
-		raiseArm();
-	    } else if (vexRT[Btn6D] > 0) {
-		lowerArm();
-	    } else {
-		stopArm();
-	    }
+            ///////////////////
+            // ARM ELEVATION //
+            ///////////////////
+            // While user presses button 5D then arm goes up, and while user presses
+            // button 6D the arm goes down.
+            if (vexRT[Btn5D] > 0) {
+                raiseArm();
+            } else if (vexRT[Btn6D] > 0) {
+                lowerArm();
+            } else {
+                stopArm();
+            }
 
-	    ////////////////////
-	    // WRIST ROTATION //
-	    ////////////////////
-	    // Buttons: 7D (counterclockwise), 7U (clockwise)
+            ////////////////////
+            // WRIST ROTATION //
+            ////////////////////
+            // Buttons: 7D (counterclockwise), 7U (clockwise)
 
-	    if (vexRT[Btn7D] > 0) {
-		rotateWristCounterClockwise();
-	    } else if (vexRT[Btn7U] > 0) {
-		rotateWristClockwise();
-	    } else {
-		stopRotatingWrist();
-	    }
+            if (vexRT[Btn7D] > 0) {
+                rotateWristCounterClockwise();
+            } else if (vexRT[Btn7U] > 0) {
+                rotateWristClockwise();
+            } else {
+                stopRotatingWrist();
+            }
 
-	    // PRECISION MODE
-	    // While button 5U is held down, the robot's drive and wrist rotation motors slow by 50%.
-	    if (vexRT[Btn5U] > 0) {
-		precisionFactor = 0.5;
-	    } else {
-	      precisionFactor = 1.0;
-	    }
+            // PRECISION MODE
+            // While button 5U is held down, the robot's drive and wrist rotation motors slow by 50%.
+            if (vexRT[Btn5U] > 0) {
+                precisionFactor = 0.5;
+            } else {
+              precisionFactor = 1.0;
+            }
 
-	} // end (while true)
+        } // end (while true)
 } // end (task usercontrol)
