@@ -70,7 +70,17 @@ float precisionFactor = 1.0;
 const int WRIST_ROTATE_SPEED = 40;
 
 // ------------------------------------------------------------------------------
+// Constants and variables used for the rotate() task.
+
+// Before calling task rotate(), you should set this variable to a value
+// between 0 and 359 degrees.
+float targetOrientationDegrees = 0;
+
+// ------------------------------------------------------------------------------
 // Constants and variables used for the driveStraight() task.
+
+// How close do we need to be to the target angle before our rotation slows down?
+const float ROTATE_SLOWDOWN_THRESHOLD_DEGREES = 15;
 
 // How fast to drive in a straight line.  This should be grater than
 // (say) 30 and less than 128.
@@ -253,11 +263,6 @@ void mecanumDrive(int leftRight, int forwardBack, int turn) {
 
 void pre_auton()
 {
-     SensorType[in5] = sensorNone;
-     wait1Msec(10);
-     SensorType[in5] = sensorGyro;
-     wait1Msec(3500);
-     //in order for the gyro to show the correct values, you must wair l0 mil secs after sensorType = sensorNone, and 3500 mil secs after SensorType = sensorGyro
      // Set bStopTasksBetweenModes to false if you want to keep user created tasks
      // running between Autonomous and Driver controlled modes. You will need to
      // manage all user created tasks if set to false.
@@ -270,6 +275,46 @@ void pre_auton()
 
      // All activities that occur before the competition starts
      // Example: clearing encoders, setting servo positions, ...
+
+     // in order for the gyro to show the correct values, you must wait l0 mil
+     // secs after sensorType = sensorNone, and 3500 mil secs after SensorType
+     // = sensorGyro
+     SensorType[in5] = sensorNone;
+     wait1Msec(10);
+     SensorType[in5] = sensorGyro;
+     wait1Msec(3500);
+}
+
+// Floating-point modulus.  fmod(364.7, 360) = 4.7.
+//
+// This code comes to you courtesy of https://pastebin.com/Y1fUUnHi.
+float fmod(float a, float b) { return a - b * floor(a/b); }
+
+// Returns the smallest angle between the two given bearings using clever
+// subtraction.
+//
+// Both bearings should be between 0 and 360 degrees.  The result ill be
+// between -180 and +180 degrees.
+//
+// Code is from https://gamedev.stackexchange.com/a/4470 and is *untested*.
+float angleBetween(float aDegrees, float bDegrees) {
+    return min(fmod(aDegrees - bDegrees + 360, 360),
+               fmod(bDegrees - aDegrees + 360, 360));
+}
+
+// An autonomous, asynchronous task whose only purpose is to rotate the robot
+// toward a target orientation.
+//
+// Tasks don't take arguments.  Nonetheless, we do have one:
+//
+// - targetOrientationDegrees, a global variable that tells us at which
+//   orientation we should stop rotating.
+
+task rotate() {
+
+    float currentBearing = SensorValue[in5] / 10.0;
+
+
 }
 
 // Uses the mecanumDrive() function to drive in set patterns, testing whether everything was wired correctly.
