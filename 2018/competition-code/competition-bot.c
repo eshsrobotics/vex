@@ -72,6 +72,12 @@ const int WRIST_ROTATE_SPEED = 40;
 // ------------------------------------------------------------------------------
 // Constants and variables used for the rotate() task.
 
+// How fast we rotate during task rotate().
+const float ROTATE_SPEED = 127;
+
+// How close do we need to be to the target angle before our rotation slows down?
+const float ROTATE_SLOWDOWN_THRESHOLD_DEGREES = 3.0;
+
 // Before calling task rotate(), you should set this variable to a value
 // between 0 and 359 degrees.
 float targetOrientationDegrees = 0;
@@ -79,8 +85,6 @@ float targetOrientationDegrees = 0;
 // ------------------------------------------------------------------------------
 // Constants and variables used for the driveStraight() task.
 
-// How close do we need to be to the target angle before our rotation slows down?
-const float ROTATE_SLOWDOWN_THRESHOLD_DEGREES = 15;
 
 // How fast to drive in a straight line.  This should be grater than
 // (say) 30 and less than 128.
@@ -289,17 +293,33 @@ void pre_auton()
 //
 // This code comes to you courtesy of https://pastebin.com/Y1fUUnHi.
 float fmod(float a, float b) { return a - b * floor(a/b); }
+float min(float a, float b) {
+	if(a > b){
+		return(b);
+	}
+	return(a);
+}
+
+// Returns the robot's current gyro angle, in degrees, relative to the initial
+// orientation of the robot.
+float getCurrentOrientationDegrees() {
+	//sync gyroAngle to gyroValue so that the gyroValue is shown during debugging
+  gyroAngle = SensorValue[in5] / 10.0;
+	return gyroAngle;
+}
 
 // Returns the smallest angle between the two given bearings using clever
 // subtraction.
 //
-// Both bearings should be between 0 and 360 degrees.  The result ill be
+// Both bearings should be between 0 and 360 degrees.  The result will be
 // between -180 and +180 degrees.
 //
 // Code is from https://gamedev.stackexchange.com/a/4470 and is *untested*.
 float angleBetween(float aDegrees, float bDegrees) {
-    return min(fmod(aDegrees - bDegrees + 360, 360),
-               fmod(bDegrees - aDegrees + 360, 360));
+
+    float result = min(fmod(aDegrees - bDegrees + 360, 360),
+               				 fmod(bDegrees - aDegrees + 360, 360));
+		return (aDegrees < bDegrees ? result : -result);
 }
 
 // An autonomous, asynchronous task whose only purpose is to rotate the robot
@@ -308,13 +328,45 @@ float angleBetween(float aDegrees, float bDegrees) {
 // Tasks don't take arguments.  Nonetheless, we do have one:
 //
 // - targetOrientationDegrees, a global variable that tells us at which
-//   orientation we should stop rotating.
-
+//   orientation, relative to the initial orientation of the robot, we
+//   should stop rotating.
+float errorDegrees;
 task rotate() {
 
-    float currentBearing = SensorValue[in5] / 10.0;
+		float rotationSpeed = ROTATE_SPEED;
+		errorDegrees = 360;
+		float previousErrorDegrees = -360;
+		const float MIN_ROTATION_SPEED = 30; // We don't slow down less than this.
+		const float ROTATE_STOPPING_THRESHOLD_DEGREES = 2; // Lower than this is quits.
+		const float k = 0.95; // How rapidly the robots speed decays (lower = faster.)
+
+		while (abs(errorDegrees) > ROTATE_STOPPING_THRESHOLD_DEGREES) {
+
+			float errorDegrees = angleBetween(getCurrentOrientationDegrees(),
+			                                  targetOrientationDegrees);
+
+			if (abs(previousErrorDegrees) > abs(errorDegrees)) {
+				// We just rotated further away.  We're rotating in the wrong direction!
+				rotationSpeed = -rotationSpeed;
+			}
 
 
+			if (abs(errorDegrees) < ROTATE_SLOWDOWN_THRESHOLD_DEGREES) {
+				// We are preparing to slow to a stop.
+				rotationSpeed *= k;
+				if (rotationSpeed < MIN_ROTATION_SPEED) {
+					rotationSpeed = MIN_ROTATION_SPEED;
+				}
+			}
+
+			// Rotate in the direction that minimizes the error.
+			// mecanumDrive(0, 0, rotationSpeed * sgn(errorDegrees));
+
+			previousErrorDegrees = abs(errorDegrees);
+		}
+
+		// Let the world know we have ended.
+		gyroAngle = -361;
 }
 
 // Uses the mecanumDrive() function to drive in set patterns, testing whether everything was wired correctly.
@@ -564,16 +616,17 @@ void mecanumControl(int leftRightJoystickChannel, int frontBackJoystickChannel, 
 task usercontrol()
 {
      // User control code here, inside the loop
-
+		 targetOrientationDegrees = 90;
+		 startTask(rotate);
      int autonomousControl = 0;
      while (true)
      {
-          gyroAngle = SensorValue[in5];
-          //sync gyroAngle to gyroValue so that the gyroValue is shown during debugging
           // Button 7L begins "autonomous"
           if (vexRT[Btn7L] > 0) {
-               targetDistanceInches = 100.0;
-               startTask(driveStraight);
+               //targetDistanceInches = 100.0;
+               //startTask(driveStraight);
+          		 targetOrientationDegrees = 90;
+          		 startTask(rotate);
           }
 
           // If we're not driving in a square, the human can have a go.
