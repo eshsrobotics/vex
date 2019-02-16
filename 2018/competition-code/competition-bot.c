@@ -290,6 +290,14 @@ void pre_auton()
 // This code comes to you courtesy of https://pastebin.com/Y1fUUnHi.
 float fmod(float a, float b) { return a - b * floor(a/b); }
 
+float min(float a, float b) {
+	if (a > b){
+		return b;
+	}	else {
+		return a;
+	}
+}
+
 // Returns the smallest angle between the two given bearings using clever
 // subtraction.
 //
@@ -302,6 +310,13 @@ float angleBetween(float aDegrees, float bDegrees) {
                fmod(bDegrees - aDegrees + 360, 360));
 }
 
+// This shows the current bearing given by the gyro without having to
+// retype this every time the current bearing is mentioned.
+float getCurrentBearing() {
+		float currentBearing = SensorValue[in5] / 10.0;
+		return currentBearing;
+}
+
 // An autonomous, asynchronous task whose only purpose is to rotate the robot
 // toward a target orientation.
 //
@@ -311,8 +326,29 @@ float angleBetween(float aDegrees, float bDegrees) {
 //   orientation we should stop rotating.
 
 task rotate() {
+		const float EPSILON = 0.01;
 
-    float currentBearing = SensorValue[in5] / 10.0;
+		// This value was chosen because it will slow down the speed of rotation without bringing
+		// it to a complete stop too quickly.
+		const float SLOWDOWN_CONSTANT = 0.9985;
+
+		float speed = 127;
+		float errorDegrees = 0;
+
+    // Our goal is to minimize angleBetween(our current bearing, target bearing).
+		do {
+
+			errorDegrees = abs(angleBetween(getCurrentBearing(),
+			                     						targetOrientationDegrees));
+
+			// Rotate in a way that minimizes the angleBetween.
+			mecanumDrive(0, 0, speed);
+
+			// Slow down as we get closer to the target bearing.
+			if (errorDegrees < ROTATE_SLOWDOWN_THRESHOLD_DEGREES) {
+				speed = speed*SLOWDOWN_CONSTANT;
+			}
+		} while (errorDegrees > EPSILON);
 
 
 }
@@ -572,8 +608,10 @@ task usercontrol()
           //sync gyroAngle to gyroValue so that the gyroValue is shown during debugging
           // Button 7L begins "autonomous"
           if (vexRT[Btn7L] > 0) {
-               targetDistanceInches = 100.0;
-               startTask(driveStraight);
+               // targetDistanceInches = 100.0;
+               // startTask(driveStraight);
+          		targetOrientationDegrees = 90;
+          		startTask(rotate);
           }
 
           // If we're not driving in a square, the human can have a go.
