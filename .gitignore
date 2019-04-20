@@ -1,3 +1,8 @@
+# -*- mode: conf; -*-
+# --------------------------------------------------------------------------
+# C++ ignores.
+# From https://github.com/github/gitignore/blob/master/C%2B%2B.gitignore.
+# --------------------------------------------------------------------------
 # Prerequisites
 *.d
 
@@ -31,5 +36,92 @@
 *.out
 *.app
 
-# Emacs backup files
+# --------------------------------------------------------------------------
+# Emacs ignores.
+# From https://github.com/github/gitignore/blob/master/Global/Emacs.gitignore
+# --------------------------------------------------------------------------
+
 *~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
+
+# Org-mode
+.org-id-locations
+*_archive
+
+# flymake-mode
+*_flymake.*
+
+# eshell files
+/eshell/history
+/eshell/lastdir
+
+# elpa packages
+/elpa/
+
+# reftex files
+*.rel
+
+# AUCTeX auto folder
+/auto/
+
+# cask packages
+.cask/
+dist/
+
+# Flycheck
+flycheck_*.el
+
+# server auth directory
+/server/
+
+# projectiles files
+.projectile
+
+# directory configuration
+.dir-locals.el
+
+# --------------------------------------------------------------------------
+# CMake ignores.
+# From https://github.com/github/gitignore/blob/master/CMake.gitignore
+# --------------------------------------------------------------------------
+
+CMakeCache.txt
+CMakeFiles
+CMakeScripts
+Testing
+Makefile
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+CTestTestfile.cmake
+
+# --------------------------------------------------------------------------
+# PROS ignores.
+# --------------------------------------------------------------------------
+
+# From # From https://7842navigators.com/tutorials/walkthroughs/introduction-to-github/
+*.log
+bin/output.elf
+*.bin
+bin/output.bin
+bin/_pros_ld_timestamp.o
+*.ini
+compile_commands.json
+desktop.ini
+.vscode/*
+
+# Additional recommendations, adapted from  jpearman's suggestions at https://www.vexforum.com/t/github-with-pros/52291/8.
+**/include/pros
+**/include/okapi
+**/include/display
+**/include/api.h
+**/firmware
+**/common.mk
+**/bin/monolith.elf
+
