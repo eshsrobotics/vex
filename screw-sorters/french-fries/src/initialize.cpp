@@ -1,4 +1,11 @@
 #include "main.h"
+#include <functional>
+
+pros::ADIMotor turntable(5); // Legacy Port E
+
+void move_turntable(int8_t speed) {
+	turntable.set_value(speed);
+}
 
 void on_center_button() {
 	static bool pressed = false;
@@ -18,9 +25,12 @@ void on_center_button() {
  */
 void initialize() {
 	pros::lcd::initialize();
-	pros::lcd::set_text(1, "Hello PROS User!");
+	pros::lcd::set_text(7, "<- Turn Left        Stop       Turn Right ->");
 
 	pros::lcd::register_btn1_cb(on_center_button);
+	pros::lcd::register_btn0_cb([] () { move_turntable(64); });
+	pros::lcd::register_btn1_cb([] () { move_turntable(0); });
+	pros::lcd::register_btn2_cb([] () { move_turntable(-64); });
 }
 
 /**
