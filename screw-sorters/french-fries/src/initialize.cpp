@@ -1,7 +1,8 @@
 #include "main.h"
+#include <iostream>
 
+using std::cout;
 pros::ADIMotor turntable(5); // Legacy Port E
-pros::ADIEncoder quadEncoder(1, 2, false);
 
 void move_turntable(int8_t speed) {
 	turntable.set_value(speed);
@@ -26,13 +27,12 @@ void on_center_button() {
 void initialize() {
 	pros::lcd::initialize();
 
-	pros::lcd::print(3, "%d, %d  ", quadEncoder.get_value() + 1, 16);
 	pros::lcd::set_text(7, "<- Turn Left        Stop       Turn Right ->");
 
 	pros::lcd::register_btn1_cb(on_center_button);
-	pros::lcd::register_btn0_cb([] () { move_turntable(64); });
+	pros::lcd::register_btn0_cb([] () { currentPosition = currentPosition + 1; if (currentPosition >= 9) currentPosition = 8; });
 	pros::lcd::register_btn1_cb([] () { move_turntable(0); });
-	pros::lcd::register_btn2_cb([] () { move_turntable(-64); });
+	pros::lcd::register_btn2_cb([] () { currentPosition = currentPosition - 1; if (currentPosition < 0) currentPosition = 0; });
 }
 
 /**
