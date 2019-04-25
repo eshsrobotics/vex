@@ -42,7 +42,13 @@
 #include "okapi/api.hpp"
 //#include "pros/api_legacy.h"
 
+// Our current slot within the waypoints[] array.  Each of these values is a desired
+// angle in degrees; this allows the human operator to test moving the turntable directly
+// to those waypoints.
 extern int currentPosition;
+
+// Returns the arm to its home position.
+void home_position();
 
 /**
  * If you find doing pros::Motor() to be tedious and you'd prefer just to do
