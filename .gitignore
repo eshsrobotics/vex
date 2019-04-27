@@ -87,21 +87,6 @@ flycheck_*.el
 .dir-locals.el
 
 # --------------------------------------------------------------------------
-# CMake ignores.
-# From https://github.com/github/gitignore/blob/master/CMake.gitignore
-# --------------------------------------------------------------------------
-
-CMakeCache.txt
-CMakeFiles
-CMakeScripts
-Testing
-Makefile
-cmake_install.cmake
-install_manifest.txt
-compile_commands.json
-CTestTestfile.cmake
-
-# --------------------------------------------------------------------------
 # PROS ignores.
 # --------------------------------------------------------------------------
 
