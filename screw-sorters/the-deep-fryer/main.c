@@ -32,18 +32,18 @@
 
 void pre_auton()
 {
-  // Set bStopTasksBetweenModes to false if you want to keep user created tasks
-  // running between Autonomous and Driver controlled modes. You will need to
-  // manage all user created tasks if set to false.
-  bStopTasksBetweenModes = true;
+    // Set bStopTasksBetweenModes to false if you want to keep user created tasks
+    // running between Autonomous and Driver controlled modes. You will need to
+    // manage all user created tasks if set to false.
+    bStopTasksBetweenModes = true;
 
-	// Set bDisplayCompetitionStatusOnLcd to false if you don't want the LCD
-	// used by the competition include file, for example, you might want
-	// to display your team name on the LCD in this function.
-	// bDisplayCompetitionStatusOnLcd = false;
+    // Set bDisplayCompetitionStatusOnLcd to false if you don't want the LCD
+    // used by the competition include file, for example, you might want
+    // to display your team name on the LCD in this function.
+    // bDisplayCompetitionStatusOnLcd = false;
 
-  // All activities that occur before the competition starts
-  // Example: clearing encoders, setting servo positions, ...
+    // All activities that occur before the competition starts
+    // Example: clearing encoders, setting servo positions, ...
 }
 
 /*---------------------------------------------------------------------------*/
@@ -58,12 +58,12 @@ void pre_auton()
 
 task autonomous()
 {
-  // ..........................................................................
-  // Insert user code here.
-  // ..........................................................................
+    // ..........................................................................
+    // Insert user code here.
+    // ..........................................................................
 
-  // Remove this function call once you have "real" code.
-  AutonomousCodePlaceholderForTesting();
+    // Remove this function call once you have "real" code.
+    AutonomousCodePlaceholderForTesting();
 }
 
 /*---------------------------------------------------------------------------*/
@@ -78,65 +78,65 @@ task autonomous()
 
 task usercontrol()
 {
-	bool started = false;
-	bool startButtonChanged = false;
-	float vibrationSpeed = 0;
-	float impellerSpeed = 0;
-	const float MAX_VIBRATION_SPEED = 127.0;
-	const float MAX_IMPELLER_SPEED = 64.0; // Make this too high and stuck screws get *LAUNCHED* out of the impeller.  WEAR EYE PROTECTION.
+    bool started = false;
+    bool startButtonChanged = false;
+    float vibrationSpeed = 0;
+    float impellerSpeed = 0;
+    const float MAX_VIBRATION_SPEED = 127.0;
+    const float MAX_IMPELLER_SPEED = 64.0; // Make this too high and stuck screws get *LAUNCHED* out of the impeller.  WEAR EYE PROTECTION.
 
-	// These values must be measured.
-	const float MIN_VIBRATION_ADJUST = 0;
-	const float MAX_VIBRATION_ADJUST = 4096.0;
-	const float MIN_IMPELLER_ADJUST = 0;
-	const float MAX_IMPELLER_ADJUST = 4096.0;
+    // These values must be measured.
+    const float MIN_VIBRATION_ADJUST = 0;
+    const float MAX_VIBRATION_ADJUST = 4096.0;
+    const float MIN_IMPELLER_ADJUST = 0;
+    const float MAX_IMPELLER_ADJUST = 4096.0;
 
-  // Main loop.
-  while (true)
-  {
-    // This is the main execution loop for the user control program.
-    // Each time through the loop your program should update motor + servo
-    // values based on feedback from the joysticks.
+    // Main loop.
+    while (true)
+    {
+        // This is the main execution loop for the user control program.
+        // Each time through the loop your program should update motor + servo
+        // values based on feedback from the joysticks.
 
-    // ........................................................................
-    // Insert user code here. This is where you use the joystick values to
-    // update your motors, etc.
-    // ........................................................................
+        // ........................................................................
+        // Insert user code here. This is where you use the joystick values to
+        // update your motors, etc.
+        // ........................................................................
 
-  	if (started) {
-  		// Use linear interpolation to convert the potentiometer values
-  	  // into motor speeds.
+        if (started) {
+            // Use linear interpolation to convert the potentiometer values
+            // into motor speeds.
 
-  		// The linear interpolation formula:
-  		//
-  		//   u = (current - min) / (max - min)
-  		//
-  		// When current == min, u == 0.0, and when current == max, u == 1.0.  So u is a percentage.
+            // The linear interpolation formula:
+            //
+            //   u = (current - min) / (max - min)
+            //
+            // When current == min, u == 0.0, and when current == max, u == 1.0.  So u is a percentage.
 
-  		float vibrationSpeedPercentage = (SensorValue[vibrationAdjust] - MIN_VIBRATION_ADJUST) / (MAX_VIBRATION_ADJUST - MIN_VIBRATION_ADJUST);
-			vibrationSpeed = vibrationSpeedPercentage * MAX_VIBRATION_SPEED;
-  		float impellerSpeedPercentage = (SensorValue[impellerAdjust] - MIN_IMPELLER_ADJUST) / (MAX_IMPELLER_ADJUST - MIN_IMPELLER_ADJUST);
-			impellerSpeed = impellerSpeedPercentage * MAX_IMPELLER_SPEED;
-  	}
+            float vibrationSpeedPercentage = (SensorValue[vibrationAdjust] - MIN_VIBRATION_ADJUST) / (MAX_VIBRATION_ADJUST - MIN_VIBRATION_ADJUST);
+            vibrationSpeed = vibrationSpeedPercentage * MAX_VIBRATION_SPEED;
+            float impellerSpeedPercentage = (SensorValue[impellerAdjust] - MIN_IMPELLER_ADJUST) / (MAX_IMPELLER_ADJUST - MIN_IMPELLER_ADJUST);
+            impellerSpeed = impellerSpeedPercentage * MAX_IMPELLER_SPEED;
+        }
 
-  	// Was the start button pressed?
-  	if (SensorValue[startButton]) {
-  		started = !started;
-  		if (!started) {
-  			impellerSpeed = 0;
-  			vibrationSpeed = 0;
-  		}
-  		startButtonChanged = true; // We need this flag for button debouncing.
-  	}
+        // Was the start button pressed?
+        if (SensorValue[startButton]) {
+            started = !started;
+            if (!started) {
+                impellerSpeed = 0;
+                vibrationSpeed = 0;
+            }
+            startButtonChanged = true; // We need this flag for button debouncing.
+        }
 
-  	motor[impeller] = (int)impellerSpeed;
-  	motor[vibration] = (int)vibrationSpeed;
+        motor[impeller] = (int)impellerSpeed;
+        motor[vibration] = (int)vibrationSpeed;
 
-  	if (startButtonChanged) {
-			// Ignore button changes for a fraction of a second.
-  		delay(300);
-  		startButtonChanged = false;
-  	}
+        if (startButtonChanged) {
+            // Ignore button changes for a fraction of a second.
+            delay(300);
+            startButtonChanged = false;
+        }
 
-  } // end (loop forever)
+    } // end (loop forever)
 }
