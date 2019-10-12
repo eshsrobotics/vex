@@ -20,6 +20,7 @@ using namespace vex;
 
 int main() {
   // Initializing Robot Configuration. DO NOT REMOVE!
+  elevatorMotor.setVelocity(100,percent);
   vexcodeInit();
   
 }
