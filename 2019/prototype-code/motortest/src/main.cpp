@@ -189,11 +189,18 @@ int main() {
     //axis 1 is the right joystick horizontal movement and will be used for turning
     int turn = Controller1.Axis1.position(percent);
 
+    // For whatever reason, channels 1 and 3 are flipped in our tests:
+    // though our mecanum formula is correct (and copied from last
+    // year's bot), the controls for channel 3 are firing when we
+    // move channel 1, and vice versa.
+    //
+    // We can fix this in software, but we are not happy about having to
+    // do so.
+    int temp = turn;
+    turn = forwardBack;
+    forwardBack = temp;
+
     //update drive motor values continously as the driver changes the joystick
     mecanumDrive(leftRight, forwardBack, turn);
-
-    //This is a throw-away code for testing
-    int upDown = Controller1.Axis2.position(percent);
-    TrayPusher.spin(forward, upDown, percent);
   }
 }
