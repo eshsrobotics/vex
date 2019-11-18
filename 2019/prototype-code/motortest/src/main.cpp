@@ -36,17 +36,23 @@ void mecanumDrive (int leftRight, int forwardBack, int turn) {
 }
 
 int main() {
-  IntakeLift.setVelocity(95, percent);
+  // Enough with the slow motors out of the box already!
+  IntakeLift.setVelocity(100, percent);
+  LeftIntake.setVelocity(100, percent);
+  RightIntake.setVelocity(100, percent);
   
   // Initializing Robot Configuration. DO NOT REMOVE!
   vexcodeInit();
   
   while(true) {
     // allows controller to control both intakes with one button (the left trigger)
-    //left intake is automatically configured with robot config
-    int v = LeftIntake.velocity(percent);
-    RightIntake.setVelocity(v, percent);
-
+    //
+    // left intake is automatically configured with robot config    
+    if (LeftIntake.isSpinning()) {
+      RightIntake.spin(LeftIntake.direction());
+    } else {
+      RightIntake.stop();
+    }
     
     //axis 4 is left joysticks horizontal movement and will be used for straffing 
     int leftRight = Controller1.Axis4.position(percent);
