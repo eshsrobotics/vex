@@ -7,7 +7,7 @@
 // BackLeftWheel        motor         4               
 // LeftIntake           motor         5               
 // RightIntake          motor         6               
-// IntakeLift           motor         7               
+// IntakeLift           motor         10              
 // TrayPusher           motor         8               
 // Controller1          controller                    
 // ---- END VEXCODE CONFIGURED DEVICES ----

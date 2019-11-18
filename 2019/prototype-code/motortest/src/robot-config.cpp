@@ -14,7 +14,7 @@ motor BackRightWheel = motor(PORT3, ratio18_1, false);
 motor BackLeftWheel = motor(PORT4, ratio18_1, false);
 motor LeftIntake = motor(PORT5, ratio18_1, false);
 motor RightIntake = motor(PORT6, ratio18_1, false);
-motor IntakeLift = motor(PORT7, ratio6_1, false);
+motor IntakeLift = motor(PORT10, ratio6_1, false);
 motor TrayPusher = motor(PORT8, ratio18_1, false);
 controller Controller1 = controller(primary);
 
