@@ -26,23 +26,22 @@
 
 #include "vex.h"
 
-using namespace vex;
-
 void mecanumDrive (int leftRight, int forwardBack, int turn) {
-  FrontRightWheel.spin(forward, forwardBack - turn - leftRight, percent);
-  BackRightWheel.spin(forward, forwardBack - turn + leftRight, percent);
+  FrontRightWheel.spin(forward, forwardBack - turn + leftRight, percent);
+  BackRightWheel.spin(forward, forwardBack - turn - leftRight, percent);      
   FrontLeftWheel.spin(forward, forwardBack + turn + leftRight, percent);
   BackLeftWheel.spin(forward, forwardBack + turn - leftRight, percent);
 }
 
 int main() {
+  vexcodeInit();
   // Enough with the slow motors out of the box already!
   IntakeLift.setVelocity(100, percent);
   LeftIntake.setVelocity(100, percent);
   RightIntake.setVelocity(100, percent);
   
   // Initializing Robot Configuration. DO NOT REMOVE!
-  vexcodeInit();
+  
   
   while(true) {
     // allows controller to control both intakes with one button (the left trigger)
