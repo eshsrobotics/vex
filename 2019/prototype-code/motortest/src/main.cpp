@@ -37,8 +37,8 @@ int main() {
   vexcodeInit();
   // Enough with the slow motors out of the box already!
   IntakeLift.setVelocity(100, percent);
-  LeftIntake.setVelocity(100, percent);
-  RightIntake.setVelocity(100, percent);
+  LeftIntake.setVelocity(90, percent);
+  RightIntake.setVelocity(90, percent);
   
   // Initializing Robot Configuration. DO NOT REMOVE!
   
@@ -47,13 +47,22 @@ int main() {
     // allows controller to control both intakes with one button (the left trigger)
     //
     // left intake is automatically configured with robot config    
-    if (LeftIntake.isSpinning()) {
-      RightIntake.spin(LeftIntake.direction());
+    
+    bool pressedTrigger = false;
+    if (Controller1.ButtonL1.pressing()) {
+      RightIntake.spin(reverse);
+      LeftIntake.spin(fwd);
+      pressedTrigger = true;
+    } else if (Controller1.ButtonL2.pressing()) {
+      RightIntake.spin(fwd);
+      LeftIntake.spin(reverse);
+      pressedTrigger = true;
     } else {
       RightIntake.stop();
+      LeftIntake.stop();
     }
     
-    //axis 4 is left joysticks horizontal movement and will be used for straffing 
+    //axis 4 is left joysticks horizontal movement and will be used for strafing 
     int leftRight = Controller1.Axis4.position(percent);
 
     //axis 3 is the left joysticks vertical movement will be used for forward-backward movement
@@ -69,11 +78,16 @@ int main() {
     //
     // We can fix this in software, but we are not happy about having to
     // do so.
-    int temp = turn;
-    turn = forwardBack;
-    forwardBack = temp;
+    std::swap(turn, forwardBack);
 
     //update drive motor values continously as the driver changes the joystick
-    mecanumDrive(leftRight, forwardBack, turn);
-  }
+    //
+    // 2019-11-21: The robot's mecanum wheels were accidentally moved into a
+    //             diamond configuration rather than an "X" configuration, so
+    //             strafing was reversed.  It's easy to correct in software,
+    //             though.
+    //
+    //   mecanumDrive(leftRight, forwardBack, turn);    
+	  mecanumDrive(-leftRight, forwardBack, turn);
+  } // end (loop forever)
 }
