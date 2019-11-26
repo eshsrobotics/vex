@@ -1,15 +1,15 @@
 // ---- START VEXCODE CONFIGURED DEVICES ----
 // Robot Configuration:
 // [Name]               [Type]        [Port(s)]
-// FrontRightWheel      motor         1               
-// FrontLeftWheel       motor         2               
-// BackRightWheel       motor         3               
-// BackLeftWheel        motor         4               
-// LeftIntake           motor         5               
-// RightIntake          motor         6               
-// IntakeLift           motor         10              
-// TrayPusher           motor         8               
-// Controller1          controller                    
+// FrontRightWheel      motor         1
+// FrontLeftWheel       motor         2
+// BackRightWheel       motor         3
+// BackLeftWheel        motor         4
+// LeftIntake           motor         5
+// RightIntake          motor         6
+// IntakeLift           motor         10
+// TrayPusher           motor         8
+// Controller1          controller
 // ---- END VEXCODE CONFIGURED DEVICES ----
 
 /*----------------------------------------------------------------------------*/
@@ -28,26 +28,25 @@
 
 void mecanumDrive (int leftRight, int forwardBack, int turn) {
   FrontRightWheel.spin(forward, forwardBack - turn + leftRight, percent);
-  BackRightWheel.spin(forward, forwardBack - turn - leftRight, percent);      
+  BackRightWheel.spin(forward, forwardBack - turn - leftRight, percent);
   FrontLeftWheel.spin(forward, forwardBack + turn + leftRight, percent);
   BackLeftWheel.spin(forward, forwardBack + turn - leftRight, percent);
 }
 
 int main() {
+    // Initializing Robot Configuration. DO NOT REMOVE!
   vexcodeInit();
+
   // Enough with the slow motors out of the box already!
   IntakeLift.setVelocity(100, percent);
   LeftIntake.setVelocity(90, percent);
   RightIntake.setVelocity(90, percent);
-  
-  // Initializing Robot Configuration. DO NOT REMOVE!
-  
-  
+
   while(true) {
     // allows controller to control both intakes with one button (the left trigger)
     //
-    // left intake is automatically configured with robot config    
-    
+    // left intake is automatically configured with robot config
+
     bool pressedTrigger = false;
     if (Controller1.ButtonL1.pressing()) {
       RightIntake.spin(reverse);
@@ -61,8 +60,8 @@ int main() {
       RightIntake.stop();
       LeftIntake.stop();
     }
-    
-    //axis 4 is left joysticks horizontal movement and will be used for strafing 
+
+    //axis 4 is left joysticks horizontal movement and will be used for strafing
     int leftRight = Controller1.Axis4.position(percent);
 
     //axis 3 is the left joysticks vertical movement will be used for forward-backward movement
@@ -87,7 +86,7 @@ int main() {
     //             strafing was reversed.  It's easy to correct in software,
     //             though.
     //
-    //   mecanumDrive(leftRight, forwardBack, turn);    
-	  mecanumDrive(-leftRight, forwardBack, turn);
+    //   mecanumDrive(leftRight, forwardBack, turn);
+          mecanumDrive(-leftRight, forwardBack, turn);
   } // end (loop forever)
 }
