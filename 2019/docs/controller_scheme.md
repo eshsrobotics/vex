@@ -12,3 +12,8 @@ CONTROLLER SCHEME FOR THE 2019 ESHS ROBOTICS VEX BOT
 - Button pad: Dumptruck mechanism (`TrayPusher`)
   - **X button**: _Push_ -- Move the cube stack to a vertical position
   - **B button**: _Pull_ -- Move the cube stack into a reclining position
+- Joysticks and button pad: Drive (`FrontRightWheel`, `FrontLeftWheel`, `BackRightWheel`, `BackLeftWheel`)
+  - **Axis 1** (right joystick, horizontal): _Turn_ -- Rotates the robot around its central axis
+  - **Axis 3** (left joystick, vertical): _Forward/Backward_ -- Controls front-to-back movement
+  - **Axis 4** (left joystick, horizontal): _Strafe_ -- Controls side-to-side movement
+  - **A button**: _Sneak_ -- Slow drive down by half
