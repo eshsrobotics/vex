@@ -97,14 +97,8 @@ int main() {
     // do so.
     std::swap(turn, forwardBack);
 
-    //update drive motor values continously as the driver changes the joystick
-    //
-    // 2019-11-21: The robot's mecanum wheels were accidentally moved into a
-    //             diamond configuration rather than an "X" configuration, so
-    //             strafing was reversed.  It's easy to correct in software,
-    //             though.
-    //
-    //   mecanumDrive(leftRight, forwardBack, turn);
-          mecanumDrive(-leftRight, forwardBack, turn);
+    // update drive motor values continously as the driver changes the joystick    
+    mecanumDrive(leftRight, forwardBack, turn);    
+
   } // end (loop forever)
 }
