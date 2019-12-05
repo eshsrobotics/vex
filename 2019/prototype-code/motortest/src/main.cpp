@@ -26,15 +26,23 @@
 
 #include "vex.h"
 
-void mecanumDrive (int leftRight, int forwardBack, int turn) {
-  FrontRightWheel.spin(forward, forwardBack - turn + leftRight, percent);
-  BackRightWheel.spin(forward, forwardBack - turn - leftRight, percent);
-  FrontLeftWheel.spin(forward, forwardBack + turn + leftRight, percent);
-  BackLeftWheel.spin(forward, forwardBack + turn - leftRight, percent);
+bool sneak = false;
+
+void mecanumDrive(int leftRight, int forwardBack, int turn) {
+  // If sneak is enabled, reduce speed.
+  double multiplier = 1.0;
+  if (sneak) {
+    multiplier = SNEAK_PERCENTAGE;
+  }
+
+  FrontRightWheel.spin(forward, multiplier * (forwardBack - turn + leftRight), percent);
+  BackRightWheel.spin(forward,  multiplier * (forwardBack - turn - leftRight), percent);
+  FrontLeftWheel.spin(forward,  multiplier * (forwardBack + turn + leftRight), percent);
+  BackLeftWheel.spin(forward,   multiplier * (forwardBack + turn - leftRight), percent);
 }
 
 int main() {
-    // Initializing Robot Configuration. DO NOT REMOVE!
+  // Initializing Robot Configuration. DO NOT REMOVE!
   vexcodeInit();
 
   // Enough with the slow motors out of the box already!
@@ -61,13 +69,23 @@ int main() {
       LeftIntake.stop();
     }
 
-    //axis 4 is left joysticks horizontal movement and will be used for strafing
+    // Sneak control
+    if (Controller1.ButtonA.pressing()) {
+      sneak = true;
+    } else {
+      sneak = false;
+    }
+
+    // axis 4 is left joysticks horizontal movement and will be used for
+    // strafing
     int leftRight = Controller1.Axis4.position(percent);
 
-    //axis 3 is the left joysticks vertical movement will be used for forward-backward movement
+    // axis 3 is the left joysticks vertical movement will be used for
+    // forward-backward movement
     int forwardBack = Controller1.Axis3.position(percent);
 
-    //axis 1 is the right joystick horizontal movement and will be used for turning
+    // axis 1 is the right joystick horizontal movement and will be used for
+    // turning
     int turn = Controller1.Axis1.position(percent);
 
     // For whatever reason, channels 1 and 3 are flipped in our tests:

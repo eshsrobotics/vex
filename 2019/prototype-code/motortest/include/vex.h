@@ -18,6 +18,11 @@
 
 #include "robot-config.h"
 
+// If this variable is true, mecanumDrive() will slow to SNEAK_PERCENTAGE of
+// normal velocity.  Default is false.
+extern bool sneak;
+const double SNEAK_PERCENTAGE = 0.50;
+
 #define waitUntil(condition)                                                   \
   do {                                                                         \
     wait(5, msec);                                                             \
