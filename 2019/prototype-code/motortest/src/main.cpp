@@ -44,26 +44,32 @@ void mecanumDrive(int leftRight, int forwardBack, int turn) {
 int main() {
   // Initializing Robot Configuration. DO NOT REMOVE!
   vexcodeInit();
+  // Unlike our other motors, the IntakeLift needs to maintain its position by
+  // expending electrical power.  So we're not just going to set a speed and cut
+  // off power when controls are released; instead, we adjust *this* variable,
+  // and set position to it.
+  double position = IntakeLift.position(turns);
+  const double BOTTOM_POSITION = position;
+  const double TOP_POSITION = position + 75;
+  double positionIncrement = 0.05;
+  const double positionIncrementIncrement = 0.05; // 0.01;
 
   // Enough with the slow motors out of the box already!
   IntakeLift.setVelocity(100, percent);
   LeftIntake.setVelocity(90, percent);
   RightIntake.setVelocity(90, percent);
 
-  while(true) {
-    // allows controller to control both intakes with one button (the left trigger)
+  while (true) {
+    // allows controller to control both intakes with one button (the left
+    // trigger)
     //
     // left intake is automatically configured with robot config
-
-    bool pressedTrigger = false;
-    if (Controller1.ButtonL1.pressing()) {
+    if (Controller1.ButtonL2.pressing()) {
       RightIntake.spin(reverse);
       LeftIntake.spin(fwd);
-      pressedTrigger = true;
-    } else if (Controller1.ButtonL2.pressing()) {
+    } else if (Controller1.ButtonL1.pressing()) {
       RightIntake.spin(fwd);
       LeftIntake.spin(reverse);
-      pressedTrigger = true;
     } else {
       RightIntake.stop();
       LeftIntake.stop();
@@ -97,8 +103,43 @@ int main() {
     // do so.
     std::swap(turn, forwardBack);
 
-    // update drive motor values continously as the driver changes the joystick    
-    mecanumDrive(leftRight, forwardBack, turn);    
+    // update drive motor values continously as the driver changes the joystick
+    mecanumDrive(leftRight, forwardBack, turn);
 
+    // Sets the position of the intake lift using increments of 5 degrees
+    //
+    // We know the proper way to move the motor via encoders: IntakeLift.spinToPosition().
+    //
+    // But it is not easy to detemrine when that function should be called.
+    if (Controller1.ButtonR2.pressing()) {
+      IntakeLift.spin(forward);
+      // We're assuming that this will be downward movement
+      // position -= positionIncrement;      
+      // positionIncrement += positionIncrementIncrement;
+      // if (position < BOTTOM_POSITION) {
+      //   position = BOTTOM_POSITION;
+      // } else {
+        
+      // }      
+    } else if (Controller1.ButtonR1.pressing()) {
+      IntakeLift.spin(reverse);
+      // This is presumed to be upward movement.
+      // position += positionIncrement;      
+      // positionIncrement += positionIncrementIncrement;
+      // if (position > TOP_POSITION) {
+      //   position = TOP_POSITION;
+      // } else {
+        
+      // }      
+    } else {
+      bool waitForCompletion = false;
+      IntakeLift.spinToPosition(IntakeLift.position(degrees), degrees, waitForCompletion);
+      // Decelerate.
+      // positionIncrement -= positionIncrementIncrement;
+      // if (positionIncrement < 0) {
+      //   positionIncrement = 0;
+      // }
+    }    
+    
   } // end (loop forever)
 }
