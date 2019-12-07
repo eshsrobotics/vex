@@ -61,6 +61,9 @@ using namespace vex;
 // A global instance of competition
 competition Competition;
 
+
+const double SNEAK_PERCENTAGE = 0.50;
+
 // define your global instances of motors and other devices here
 
 /*---------------------------------------------------------------------------*/

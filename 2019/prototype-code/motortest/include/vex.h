@@ -21,7 +21,8 @@
 // If this variable is true, mecanumDrive() will slow to SNEAK_PERCENTAGE of
 // normal velocity.  Default is false.
 extern bool sneak;
-const double SNEAK_PERCENTAGE = 0.50;
+
+extern const double SNEAK_PERCENTAGE;
 
 #define waitUntil(condition)                                                   \
   do {                                                                         \
