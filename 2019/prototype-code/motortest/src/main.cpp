@@ -82,6 +82,11 @@ void pre_auton(void) {
 
   // All activities that occur before the competition starts
   // Example: clearing encoders, setting servo positions, ...
+  
+  // Enough with the slow motors out of the box already!
+  IntakeLift.setVelocity(100, percent);
+  LeftIntake.setVelocity(90, percent);
+  RightIntake.setVelocity(90, percent);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -112,21 +117,6 @@ void autonomous(void) {
 
 void usercontrol(void) {
   // User control code here, inside the loop
-
-  // Unlike our other motors, the IntakeLift needs to maintain its position by
-  // expending electrical power.  So we're not just going to set a speed and cut
-  // off power when controls are released; instead, we adjust *this* variable,
-  // and set position to it.
-  double position = IntakeLift.position(turns);
-  const double BOTTOM_POSITION = position;
-  const double TOP_POSITION = position + 75;
-  double positionIncrement = 0.05;
-  const double positionIncrementIncrement = 0.05; // 0.01;
-
-  // Enough with the slow motors out of the box already!
-  IntakeLift.setVelocity(100, percent);
-  LeftIntake.setVelocity(90, percent);
-  RightIntake.setVelocity(90, percent);
 
   // This is the main execution loop for the user control program.
   // Each time through the loop your program should update motor + servo
