@@ -103,6 +103,18 @@ void autonomous(void) {
   // ..........................................................................
   // Insert autonomous user code here.
   // ..........................................................................
+  // Drive the robot forwad for a few seconds, then drive back.
+  mecanumDrive(0, 0, 100);
+  const int DRIVE_TIME_MILISECONDS = 500;
+  wait(DRIVE_TIME_MILISECONDS, msec);
+  mecanumDrive(0, 0, -100);
+  wait(DRIVE_TIME_MILISECONDS, msec);
+  
+  // Done.
+  FrontLeftWheel.stop();
+  FrontRightWheel.stop();
+  BackLeftWheel.stop();
+  BackRightWheel.stop(); 
 }
 
 /*---------------------------------------------------------------------------*/
