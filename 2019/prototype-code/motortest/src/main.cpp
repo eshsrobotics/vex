@@ -175,32 +175,11 @@ void usercontrol(void) {
     // But it is not easy to detemrine when that function should be called.
     if (Controller1.ButtonR2.pressing()) {
       IntakeLift.spin(forward);
-      // We're assuming that this will be downward movement
-      // position -= positionIncrement;      
-      // positionIncrement += positionIncrementIncrement;
-      // if (position < BOTTOM_POSITION) {
-      //   position = BOTTOM_POSITION;
-      // } else {
-        
-      // }      
     } else if (Controller1.ButtonR1.pressing()) {
       IntakeLift.spin(reverse);
-      // This is presumed to be upward movement.
-      // position += positionIncrement;      
-      // positionIncrement += positionIncrementIncrement;
-      // if (position > TOP_POSITION) {
-      //   position = TOP_POSITION;
-      // } else {
-        
-      // }      
     } else {
       bool waitForCompletion = false;
       IntakeLift.spinToPosition(IntakeLift.position(degrees), degrees, waitForCompletion);
-      // Decelerate.
-      // positionIncrement -= positionIncrementIncrement;
-      // if (positionIncrement < 0) {
-      //   positionIncrement = 0;
-      // }
     }    
     wait(20, msec); // Sleep the task for a short amount of time to
                     // prevent wasted resources.    
