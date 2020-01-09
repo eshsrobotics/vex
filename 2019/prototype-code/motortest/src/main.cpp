@@ -9,8 +9,8 @@
 // RightIntake          motor         6
 // IntakeLift           motor         10
 // TrayPusher           motor         8
-// Controller1          controller
 // ---- END VEXCODE CONFIGURED DEVICES ----
+// Controller1          controller
 
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
@@ -26,7 +26,10 @@
 
 #include "vex.h"
 
+void deployCubes();
+
 bool sneak = false;
+bool deployingCubes = false;
 
 void mecanumDrive(int leftRight, int forwardBack, int turn) {
   // If sneak is enabled, reduce speed.
@@ -82,11 +85,11 @@ void pre_auton(void) {
 
   // All activities that occur before the competition starts
   // Example: clearing encoders, setting servo positions, ...
-  
+
   // Enough with the slow motors out of the box already!
   IntakeLift.setVelocity(100, percent);
-  LeftIntake.setVelocity(90, percent);
-  RightIntake.setVelocity(90, percent);
+  LeftIntake.setVelocity(100, percent);
+  RightIntake.setVelocity(100, percent);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -103,18 +106,18 @@ void autonomous(void) {
   // ..........................................................................
   // Insert autonomous user code here.
   // ..........................................................................
-  // Drive the robot forwad for a few seconds, then drive back.
+  // Drive the robot forward for a few seconds, then drive back.
   mecanumDrive(0, 0, 100);
   const int DRIVE_TIME_MILISECONDS = 500;
   wait(DRIVE_TIME_MILISECONDS, msec);
   mecanumDrive(0, 0, -100);
   wait(DRIVE_TIME_MILISECONDS, msec);
-  
+
   // Done.
   FrontLeftWheel.stop();
   FrontRightWheel.stop();
   BackLeftWheel.stop();
-  BackRightWheel.stop(); 
+  BackRightWheel.stop();
 }
 
 /*---------------------------------------------------------------------------*/
@@ -144,7 +147,7 @@ void usercontrol(void) {
     } else if (Controller1.ButtonL1.pressing()) {
       RightIntake.spin(fwd);
       LeftIntake.spin(reverse);
-    } else {
+    } else if (!deployingCubes) {
       RightIntake.stop();
       LeftIntake.stop();
     }
@@ -189,12 +192,21 @@ void usercontrol(void) {
       IntakeLift.spin(forward);
     } else if (Controller1.ButtonR1.pressing()) {
       IntakeLift.spin(reverse);
-    } else {
+    } else if (!deployingCubes) {
       bool waitForCompletion = false;
       IntakeLift.spinToPosition(IntakeLift.position(degrees), degrees, waitForCompletion);
-    }    
+    }
+
+    Controller1.ButtonA.pressed([] () {
+      if (!deployingCubes) {
+        deployCubes();
+      }
+    });
+
+
+
     wait(20, msec); // Sleep the task for a short amount of time to
-                    // prevent wasted resources.    
+                    // prevent wasted resources.
   } // end (loop forever)
 }
 
@@ -211,4 +223,128 @@ int main() {
 
   // Run the pre-autonomous function.
   pre_auton();
+}
+
+void deployCubes() {
+  deployingCubes = true;
+
+  // The order of events is:
+  // (1) Push the tray
+  // (2) Right before the tray is fully pushed, lift the intake and start reversing the intake motors
+  // (3) Stop the intake lift and back off while the intake motors are still hot
+  // (4) Stop the intake motors and return the tray and lift to start position
+  const double TRAY_PUSH_START_SECONDS = 0.0;
+  const double TRAY_PUSH_DURATION_SECONDS = 5.0;
+  const double TRAY_SPEED_PERCENT = 25.0;
+
+  const double INTAKE_LIFT_START_SECONDS = 1.0;
+  const double INTAKE_LIFT_DURATION_SECONDS = 3.0;
+  const double INTAKE_LIFT_SPEED_PERCENT = 20.0;
+
+  const double INTAKE_SPEED_PERCENT = 25.0;
+
+  const double BACKOFF_START_SECONDS = 5.0;
+  const double BACKOFF_DURATION_SECONDS = 3.0;
+  const double BACKOFF_SPEED_PERCENT = 100.0;
+
+  // Set initial velocities
+  IntakeLift.setVelocity(INTAKE_LIFT_SPEED_PERCENT, percent);
+  TrayPusher.setVelocity(TRAY_SPEED_PERCENT, percent);
+  LeftIntake.setVelocity(INTAKE_SPEED_PERCENT, percent);
+  RightIntake.setVelocity(INTAKE_SPEED_PERCENT, percent);
+
+  double startTimeMilliseconds = Brain.timer(msec);
+  while (true) {
+
+    double elapsedTimeSeconds = (Brain.timer(msec) - startTimeMilliseconds) / 1000.0;
+    bool trayDone = false, liftDone = false, driveDone = false;
+
+    ///////////////////
+    // MOVE THE TRAY //
+    ///////////////////
+
+    if (elapsedTimeSeconds > TRAY_PUSH_START_SECONDS &&
+        elapsedTimeSeconds < TRAY_PUSH_START_SECONDS + TRAY_PUSH_DURATION_SECONDS) {
+
+      // Push the tray out.
+      TrayPusher.spin(reverse);
+
+    } else if (elapsedTimeSeconds > BACKOFF_START_SECONDS + BACKOFF_DURATION_SECONDS &&
+               elapsedTimeSeconds < BACKOFF_START_SECONDS + BACKOFF_DURATION_SECONDS + TRAY_PUSH_DURATION_SECONDS) {
+
+      // Return the tray to position.
+      TrayPusher.spin(forward);
+
+    } else {
+
+      TrayPusher.stop();
+      trayDone = true;
+    }
+
+    //////////////////////////
+    // MOVE THE INTAKE LIFT //
+    //////////////////////////
+
+    if (elapsedTimeSeconds > INTAKE_LIFT_START_SECONDS &&
+        elapsedTimeSeconds < INTAKE_LIFT_START_SECONDS + INTAKE_LIFT_DURATION_SECONDS) {
+
+      IntakeLift.spin(forward);
+
+      // Start the intake motors here.
+      LeftIntake.spin(reverse);
+      RightIntake.spin(forward);
+
+    } else if (elapsedTimeSeconds > BACKOFF_START_SECONDS + BACKOFF_DURATION_SECONDS &&
+               elapsedTimeSeconds < BACKOFF_START_SECONDS + BACKOFF_DURATION_SECONDS + INTAKE_LIFT_DURATION_SECONDS) {
+
+      // Return the intake lift to position...gently.
+      IntakeLift.setVelocity(INTAKE_LIFT_SPEED_PERCENT * 0.1, percent);
+      IntakeLift.spin(reverse);
+
+    } else {
+
+      IntakeLift.stop();
+      liftDone = true;
+    }
+
+    ////////////////////
+    // MOVE THE DRIVE //
+    ////////////////////
+
+    if (elapsedTimeSeconds > BACKOFF_START_SECONDS &&
+        elapsedTimeSeconds < BACKOFF_START_SECONDS + BACKOFF_DURATION_SECONDS) {
+
+      // Back away.
+      //
+      // Yeah, the channels are still flipped.
+      mecanumDrive(0, 0, -100);
+
+    } else {
+      // Stop the drive.
+      mecanumDrive(0, 0, 0);
+      driveDone = true;
+    }
+
+    // Are we finished?
+    if (elapsedTimeSeconds > BACKOFF_START_SECONDS + BACKOFF_DURATION_SECONDS) {
+      // Stop the intake motors
+      LeftIntake.stop();
+      RightIntake.stop();
+
+      if (trayDone && liftDone && driveDone) {
+        // Sequence complete!
+        break;
+      }
+    }
+
+    wait(10, msec); // Play nice with the CPU.
+  }
+
+  // Reset all velocities.
+  IntakeLift.setVelocity(100, percent);
+  LeftIntake.setVelocity(100, percent);
+  RightIntake.setVelocity(100, percent);
+  TrayPusher.setVelocity(100, percent);
+
+  deployingCubes = false;
 }
