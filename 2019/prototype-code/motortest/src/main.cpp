@@ -243,14 +243,14 @@ void deployCubes() {
   const double TRAY_SPEED_PERCENT = 15.0;
 
   const double INTAKE_LIFT_START_SECONDS = 0.5;
-  const double INTAKE_LIFT_DURATION_SECONDS = 2.0;
-  const double INTAKE_LIFT_SPEED_PERCENT = 20.0;
+  const double INTAKE_LIFT_DURATION_SECONDS = 3.0;
+  const double INTAKE_LIFT_SPEED_PERCENT = 50.0;
 
-  const double INTAKE_SPEED_PERCENT = 25.0;
-  const double INTAKE_ACTIVATION_DELAY = 1.5;
+  const double INTAKE_SPEED_PERCENT = 38.0;
+  const double INTAKE_ACTIVATION_DELAY = 2.0;
 
   const double BACKOFF_START_SECONDS = 5.0;
-  const double BACKOFF_DURATION_SECONDS = 2.0;
+  const double BACKOFF_DURATION_SECONDS = 1.0;
   const double BACKOFF_SPEED_PERCENT = 50.0;
 
   // Set initial velocities
@@ -258,6 +258,10 @@ void deployCubes() {
   TrayPusher.setVelocity(TRAY_SPEED_PERCENT, percent);
   LeftIntake.setVelocity(INTAKE_SPEED_PERCENT, percent);
   RightIntake.setVelocity(INTAKE_SPEED_PERCENT, percent);
+
+  // We don't want the intakes moving until we say so.
+  LeftIntake.stop();
+  RightIntake.stop();
 
   double startTimeMilliseconds = Brain.timer(msec);
   while (true) {
