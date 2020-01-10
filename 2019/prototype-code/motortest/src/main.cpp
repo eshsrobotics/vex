@@ -66,6 +66,7 @@ competition Competition;
 
 
 const double SNEAK_PERCENTAGE = 0.50;
+const double INTAKE_LIFT_VELOCITY = 85; // Out of 100
 
 // define your global instances of motors and other devices here
 
@@ -87,7 +88,7 @@ void pre_auton(void) {
   // Example: clearing encoders, setting servo positions, ...
 
   // Enough with the slow motors out of the box already!
-  IntakeLift.setVelocity(100, percent);
+  IntakeLift.setVelocity(INTAKE_LIFT_VELOCITY, percent);
   LeftIntake.setVelocity(100, percent);
   RightIntake.setVelocity(100, percent);
 }
@@ -181,7 +182,11 @@ void usercontrol(void) {
     std::swap(turn, forwardBack);
 
     // update drive motor values continously as the driver changes the joystick
-    mecanumDrive(leftRight, forwardBack, turn);
+    if (!deployingCubes) {
+      mecanumDrive(leftRight, forwardBack, turn);
+    }
+    
+  
 
     // Sets the position of the intake lift using increments of 5 degrees
     //
@@ -234,18 +239,19 @@ void deployCubes() {
   // (3) Stop the intake lift and back off while the intake motors are still hot
   // (4) Stop the intake motors and return the tray and lift to start position
   const double TRAY_PUSH_START_SECONDS = 0.0;
-  const double TRAY_PUSH_DURATION_SECONDS = 5.0;
-  const double TRAY_SPEED_PERCENT = 25.0;
+  const double TRAY_PUSH_DURATION_SECONDS = 3.5;
+  const double TRAY_SPEED_PERCENT = 15.0;
 
-  const double INTAKE_LIFT_START_SECONDS = 1.0;
-  const double INTAKE_LIFT_DURATION_SECONDS = 3.0;
+  const double INTAKE_LIFT_START_SECONDS = 0.5;
+  const double INTAKE_LIFT_DURATION_SECONDS = 2.0;
   const double INTAKE_LIFT_SPEED_PERCENT = 20.0;
 
   const double INTAKE_SPEED_PERCENT = 25.0;
+  const double INTAKE_ACTIVATION_DELAY = 1.5;
 
   const double BACKOFF_START_SECONDS = 5.0;
-  const double BACKOFF_DURATION_SECONDS = 3.0;
-  const double BACKOFF_SPEED_PERCENT = 100.0;
+  const double BACKOFF_DURATION_SECONDS = 2.0;
+  const double BACKOFF_SPEED_PERCENT = 50.0;
 
   // Set initial velocities
   IntakeLift.setVelocity(INTAKE_LIFT_SPEED_PERCENT, percent);
@@ -269,8 +275,8 @@ void deployCubes() {
       // Push the tray out.
       TrayPusher.spin(reverse);
 
-    } else if (elapsedTimeSeconds > BACKOFF_START_SECONDS + BACKOFF_DURATION_SECONDS &&
-               elapsedTimeSeconds < BACKOFF_START_SECONDS + BACKOFF_DURATION_SECONDS + TRAY_PUSH_DURATION_SECONDS) {
+    } else if (elapsedTimeSeconds > BACKOFF_START_SECONDS - 1 &&
+               elapsedTimeSeconds < BACKOFF_START_SECONDS - 1 + TRAY_PUSH_DURATION_SECONDS) {
 
       // Return the tray to position.
       TrayPusher.spin(forward);
@@ -291,8 +297,10 @@ void deployCubes() {
       IntakeLift.spin(forward);
 
       // Start the intake motors here.
-      LeftIntake.spin(reverse);
-      RightIntake.spin(forward);
+      if (elapsedTimeSeconds > INTAKE_LIFT_START_SECONDS + INTAKE_ACTIVATION_DELAY) {
+        LeftIntake.spin(reverse);
+        RightIntake.spin(forward);
+      }
 
     } else if (elapsedTimeSeconds > BACKOFF_START_SECONDS + BACKOFF_DURATION_SECONDS &&
                elapsedTimeSeconds < BACKOFF_START_SECONDS + BACKOFF_DURATION_SECONDS + INTAKE_LIFT_DURATION_SECONDS) {
@@ -317,7 +325,7 @@ void deployCubes() {
       // Back away.
       //
       // Yeah, the channels are still flipped.
-      mecanumDrive(0, 0, -100);
+      mecanumDrive(0, 0, -BACKOFF_SPEED_PERCENT);
 
     } else {
       // Stop the drive.
@@ -341,7 +349,7 @@ void deployCubes() {
   }
 
   // Reset all velocities.
-  IntakeLift.setVelocity(100, percent);
+  IntakeLift.setVelocity(INTAKE_LIFT_VELOCITY, percent);
   LeftIntake.setVelocity(100, percent);
   RightIntake.setVelocity(100, percent);
   TrayPusher.setVelocity(100, percent);
