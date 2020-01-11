@@ -109,6 +109,15 @@ void autonomous(void) {
   // ..........................................................................
   // Insert autonomous user code here.
   // ..........................................................................
+
+  
+
+  // const double startTimeMilliseconds = Brain.timer(msec);
+  // while(true) {
+
+
+  // }
+
   // Drive the robot forward for a few seconds, then drive back.
   mecanumDrive(0, 0, 100);
   const int DRIVE_TIME_MILISECONDS = 500;
@@ -121,6 +130,17 @@ void autonomous(void) {
   FrontRightWheel.stop();
   BackLeftWheel.stop();
   BackRightWheel.stop();
+
+  const double INTAKE_LIFT_DURATION_MILLISECONDS = 1350;
+
+  // Deploy by lifting and then lowering the arm.
+  IntakeLift.setVelocity(100, percent);
+  IntakeLift.spin(forward);
+  wait(INTAKE_LIFT_DURATION_MILLISECONDS, msec);
+  IntakeLift.spin(reverse);
+  wait(INTAKE_LIFT_DURATION_MILLISECONDS, msec);
+  IntakeLift.stop();
+  IntakeLift.setVelocity(INTAKE_LIFT_VELOCITY, percent);  
 }
 
 /*---------------------------------------------------------------------------*/
@@ -204,11 +224,11 @@ void usercontrol(void) {
       IntakeLift.spinToPosition(IntakeLift.position(degrees), degrees, waitForCompletion);
     }
 
-    Controller1.ButtonA.pressed([] () {
-      if (!deployingCubes) {
-        deployCubes();
-      }
-    });
+    // Controller1.ButtonA.pressed([] () {
+    //   if (!deployingCubes) {
+    //     deployCubes();
+    //   }
+    // });
 
 
 
