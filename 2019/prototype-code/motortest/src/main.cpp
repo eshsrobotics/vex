@@ -67,6 +67,7 @@ competition Competition;
 
 const double SNEAK_PERCENTAGE = 0.50;
 const double INTAKE_LIFT_VELOCITY = 85; // Out of 100
+const double TRAY_PUSH_VELOCITY = 20;
 
 // define your global instances of motors and other devices here
 
@@ -89,6 +90,7 @@ void pre_auton(void) {
 
   // Enough with the slow motors out of the box already!
   IntakeLift.setVelocity(INTAKE_LIFT_VELOCITY, percent);
+  TrayPusher.setVelocity(TRAY_PUSH_VELOCITY, percent);
   LeftIntake.setVelocity(100, percent);
   RightIntake.setVelocity(100, percent);
 }
@@ -247,7 +249,7 @@ void deployCubes() {
   const double INTAKE_LIFT_SPEED_PERCENT = 50.0;
 
   const double INTAKE_SPEED_PERCENT = 38.0;
-  const double INTAKE_ACTIVATION_DELAY = 2.0;
+  const double INTAKE_ACTIVATION_DELAY = 3.0;
 
   const double BACKOFF_START_SECONDS = 5.0;
   const double BACKOFF_DURATION_SECONDS = 1.0;
@@ -356,7 +358,7 @@ void deployCubes() {
   IntakeLift.setVelocity(INTAKE_LIFT_VELOCITY, percent);
   LeftIntake.setVelocity(100, percent);
   RightIntake.setVelocity(100, percent);
-  TrayPusher.setVelocity(100, percent);
+  TrayPusher.setVelocity(TRAY_PUSH_VELOCITY, percent);
 
   deployingCubes = false;
 }
