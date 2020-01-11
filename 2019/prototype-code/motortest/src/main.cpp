@@ -118,11 +118,11 @@ void autonomous(void) {
 
   // }
 
-  // Drive the robot forward for a few seconds, then drive back.
-  mecanumDrive(0, 0, 100);
+  // Drive the robot backward for a few seconds, then drive forward.
+  mecanumDrive(0, 0, -100);
   const int DRIVE_TIME_MILISECONDS = 500;
   wait(DRIVE_TIME_MILISECONDS, msec);
-  mecanumDrive(0, 0, -100);
+  mecanumDrive(0, 0, 100);
   wait(DRIVE_TIME_MILISECONDS, msec);
 
   // Done.
