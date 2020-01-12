@@ -28,6 +28,11 @@
 
 void deployCubes();
 
+
+const double SNEAK_PERCENTAGE = 0.50;
+const double INTAKE_LIFT_VELOCITY = 85; // Out of 100
+const double TRAY_PUSH_VELOCITY = 20;
+
 bool sneak = false;
 bool deployingCubes = false;
 
@@ -44,6 +49,114 @@ void mecanumDrive(int leftRight, int forwardBack, int turn) {
   BackLeftWheel.spin(forward,   multiplier * (forwardBack + turn - leftRight), percent);
 }
 
+int autonomousLeftRight = 0;
+int autonomousForwardBack = 0;
+int autonomousTurn = 0;
+
+enum Operation {
+  START_DRIVING_STRAIGHT,
+  STOP_DRIVING_STRAIGHT,
+  START_DRIVING_SIDEWAYS,
+  STOP_DRIVING_SIDEWAYS,
+  START_TURNING,
+  STOP_TURNING,
+  STOP_DRIVING,
+  START_INTAKE_LIFT,
+  STOP_INTAKE_LIFT
+};
+
+// Spontaneously drive in the direction that auton told us to drive in.
+//
+// This is called by all of the other driving functions, and so doesa not need
+// to be invoked explicitly.
+void drive() {
+  // Remember: Until we fix the formula, turn and forwardBack are swapped.
+  mecanumDrive(autonomousLeftRight, autonomousTurn, autonomousForwardBack);
+}
+
+struct ScheduledOperation {
+  Operation operation;
+  double start;
+  double power; // -100.0 <= power <= 100.0
+
+  //ScheduledOperation(Operation o, double s, double p) : operation(o), start(s), power(p) { }
+  //ScheduledOperation(Operation o, double s) : operation(o), start(s), power(0) { }
+
+  // Allowed ScheduledOperations to be sorted by start time.
+  friend bool operator< (const ScheduledOperation a, const ScheduledOperation& b) { return (a.start < b.start); }
+};
+
+
+void execute(const std::vector<ScheduledOperation>& ops) {
+  // We assume that the ops have been sorted by start time.
+  //
+  // You should have a final operation that stops everything, because otherwise we might end prematurely.
+
+  int index = 0;
+
+  const double START_TIME_MILLISECONDS = Brain.timer(msec) / 1000.0;
+  while (index < ops.size()) {
+    double elapsedSeconds = (Brain.timer(msec) - START_TIME_MILLISECONDS) / 1000.0;
+    double percentage = ops[index].power;
+
+    if (ops[index].start <= elapsedSeconds) {
+      // Perform the operation.
+      switch(ops[index].operation) {
+        case START_DRIVING_STRAIGHT:
+          autonomousForwardBack = static_cast<int>(percentage);
+          drive();
+          break;
+        case STOP_DRIVING_STRAIGHT:
+          autonomousForwardBack = 0;
+          drive();
+          break;
+        case START_DRIVING_SIDEWAYS:
+          autonomousLeftRight = static_cast<int>(percentage);
+          drive();
+          break;
+        case STOP_DRIVING_SIDEWAYS:
+          autonomousLeftRight = 0;
+          drive();
+          break;
+        case START_TURNING:
+          autonomousTurn = static_cast<int>(percentage);
+          drive();
+          break;
+        case STOP_TURNING:
+          autonomousTurn = 0; 
+          drive();
+          break;
+        case STOP_DRIVING:
+          autonomousForwardBack = autonomousLeftRight = autonomousTurn = 0;
+          FrontLeftWheel.stop();
+          FrontRightWheel.stop();
+          BackLeftWheel.stop();
+          BackRightWheel.stop();
+          break;
+        case START_INTAKE_LIFT:
+          IntakeLift.setVelocity(fabs(percentage), percent);
+          if (percentage > 0) {
+            IntakeLift.spin(forward);
+          } else {
+            IntakeLift.spin(reverse);
+          }          
+          break;
+        case STOP_INTAKE_LIFT:
+          // Return to default velocity
+          IntakeLift.setVelocity(INTAKE_LIFT_VELOCITY, percent);
+          // (...but don't actually move.)
+          IntakeLift.stop();
+          break;
+      }
+
+      // Next operation.
+      index += 1;
+    } // end (if it's time for the next operation)
+
+    // Wait in order to play nice with the CPU.
+    wait(10, msec);
+  } // end (while there are still operations to perform)
+}
 
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
@@ -63,11 +176,6 @@ using namespace vex;
 
 // A global instance of competition
 competition Competition;
-
-
-const double SNEAK_PERCENTAGE = 0.50;
-const double INTAKE_LIFT_VELOCITY = 85; // Out of 100
-const double TRAY_PUSH_VELOCITY = 20;
 
 // define your global instances of motors and other devices here
 
@@ -110,37 +218,21 @@ void autonomous(void) {
   // Insert autonomous user code here.
   // ..........................................................................
 
-  
-
-  // const double startTimeMilliseconds = Brain.timer(msec);
-  // while(true) {
-
-
-  // }
-
-  // Drive the robot backward for a few seconds, then drive forward.
-  mecanumDrive(0, 0, -100);
-  const int DRIVE_TIME_MILISECONDS = 500;
-  wait(DRIVE_TIME_MILISECONDS, msec);
-  mecanumDrive(0, 0, 100);
-  wait(DRIVE_TIME_MILISECONDS, msec);
-
-  // Done.
-  FrontLeftWheel.stop();
-  FrontRightWheel.stop();
-  BackLeftWheel.stop();
-  BackRightWheel.stop();
-
+  const double DRIVE_TIME_SECONDS = 0.5;
   const double INTAKE_LIFT_DURATION_MILLISECONDS = 1350;
+  std::vector<ScheduledOperation> operations = {
+    // Drive the robot backward for a few seconds, then drive forward.
+    { START_DRIVING_STRAIGHT, 0.0,                    -100 },
+    { START_DRIVING_STRAIGHT, DRIVE_TIME_SECONDS,     100 },
+    { STOP_DRIVING,           2 * DRIVE_TIME_SECONDS, 0 },
+    // Free the tray by lifting the intake lift just high enough.
+    { START_INTAKE_LIFT,      0, 100},    
+    { START_INTAKE_LIFT,      INTAKE_LIFT_DURATION_MILLISECONDS / 1000.0, 100},
+    { STOP_INTAKE_LIFT,       2 * INTAKE_LIFT_DURATION_MILLISECONDS / 1000.0, -100}
+  };
 
-  // Deploy by lifting and then lowering the arm.
-  IntakeLift.setVelocity(100, percent);
-  IntakeLift.spin(forward);
-  wait(INTAKE_LIFT_DURATION_MILLISECONDS, msec);
-  IntakeLift.spin(reverse);
-  wait(INTAKE_LIFT_DURATION_MILLISECONDS, msec);
-  IntakeLift.stop();
-  IntakeLift.setVelocity(INTAKE_LIFT_VELOCITY, percent);  
+  std::sort(operations.begin(), operations.end());
+  execute(operations);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -207,8 +299,8 @@ void usercontrol(void) {
     if (!deployingCubes) {
       mecanumDrive(leftRight, forwardBack, turn);
     }
-    
-  
+
+
 
     // Sets the position of the intake lift using increments of 5 degrees
     //
