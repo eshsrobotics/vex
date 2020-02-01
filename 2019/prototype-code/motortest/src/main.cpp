@@ -1,8 +1,13 @@
 // ---- START VEXCODE CONFIGURED DEVICES ----
+
+
+//ports 2 and 6 DO NOT WORK !!!!!!!!!!!
+
+
 // Robot Configuration:
 // [Name]               [Type]        [Port(s)]
 // FrontRightWheel      motor         1
-// FrontLeftWheel       motor         2
+// FrontLeftWheel       motor         9
 // BackRightWheel       motor         3
 // BackLeftWheel        motor         4
 // LeftIntake           motor         5
@@ -11,6 +16,7 @@
 // TrayPusher           motor         8
 // Controller1          controller
 // ---- END VEXCODE CONFIGURED DEVICES ----
+
 
 
 /*----------------------------------------------------------------------------*/
@@ -355,7 +361,7 @@ void deployCubes() {
   // (4) Stop the intake motors and return the tray and lift to start position
   const double TRAY_PUSH_START_SECONDS = 0.0;
   const double TRAY_PUSH_DURATION_SECONDS = 3.5;
-  const double TRAY_SPEED_PERCENT = 15.0;
+  const double TRAY_SPEED_PERCENT = 10.0;
 
   const double INTAKE_LIFT_START_SECONDS = 0.5;
   const double INTAKE_LIFT_DURATION_SECONDS = 3.0;
