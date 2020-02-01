@@ -6,11 +6,12 @@
 // BackRightWheel       motor         3
 // BackLeftWheel        motor         4
 // LeftIntake           motor         5
-// RightIntake          motor         6
+// RightIntake          motor         7
 // IntakeLift           motor         10
 // TrayPusher           motor         8
-// ---- END VEXCODE CONFIGURED DEVICES ----
 // Controller1          controller
+// ---- END VEXCODE CONFIGURED DEVICES ----
+
 
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
@@ -123,7 +124,7 @@ void execute(const std::vector<ScheduledOperation>& ops) {
           drive();
           break;
         case STOP_TURNING:
-          autonomousTurn = 0; 
+          autonomousTurn = 0;
           drive();
           break;
         case STOP_DRIVING:
@@ -139,7 +140,7 @@ void execute(const std::vector<ScheduledOperation>& ops) {
             IntakeLift.spin(forward);
           } else {
             IntakeLift.spin(reverse);
-          }          
+          }
           break;
         case STOP_INTAKE_LIFT:
           // Return to default velocity
@@ -226,7 +227,7 @@ void autonomous(void) {
     { START_DRIVING_STRAIGHT, DRIVE_TIME_SECONDS,     100 },
     { STOP_DRIVING,           2 * DRIVE_TIME_SECONDS, 0 },
     // Free the tray by lifting the intake lift just high enough.
-    { START_INTAKE_LIFT,      0, 100},    
+    { START_INTAKE_LIFT,      0, 100},
     { START_INTAKE_LIFT,      INTAKE_LIFT_DURATION_MILLISECONDS / 1000.0, 100},
     { STOP_INTAKE_LIFT,       2 * INTAKE_LIFT_DURATION_MILLISECONDS / 1000.0, -100}
   };
