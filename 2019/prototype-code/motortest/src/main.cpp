@@ -176,7 +176,7 @@ void execute(std::vector<ScheduledOperation> &ops) {
       case START_INTAKE:
         LeftIntake.setVelocity(fabs(percentage), percent);
         RightIntake.setVelocity(fabs(percentage), percent); 
-        if (percentage < 0) {        // Pushing out. 
+        if (percentage > 0) {        // Pushing out. 
           RightIntake.spin(reverse);
           LeftIntake.spin(fwd);
         } else {                     // Pulling In. 
@@ -276,9 +276,12 @@ void autonomous(void) {
   // Insert autonomous user code here.
   // ..........................................................................
 
-  const double DRIVE_TIME_SECONDS = 0.5;
+  const double DRIVE_SIDEWAYS_START_MILLISECONDS = 5000; 
+  const double DRIVE_SIDEWAYS_DURATION_MILLISECONDS = 450;
   const double INTAKE_LIFT_DURATION_MILLISECONDS = 1400;
-  const double INITIAL_DRIVE_FORWARD_MILLISECONDS = 3000;  
+  const double DRIVE_FORWARD_START_MILLISECONDS = DRIVE_SIDEWAYS_START_MILLISECONDS + DRIVE_SIDEWAYS_DURATION_MILLISECONDS;
+  const double DRIVE_FORWARD_DURATION_MILLISECONDS = 500;
+  
   std::vector<ScheduledOperation> operations = {
       // Drive the robot backward for a few seconds, then drive forward.
       // {START_DRIVING_STRAIGHT, 0.0, -100},
@@ -288,12 +291,20 @@ void autonomous(void) {
       // Free the tray by lifting the intake lift just high enough.
       {START_INTAKE_LIFT, 0, 100},
       {START_INTAKE_LIFT, INTAKE_LIFT_DURATION_MILLISECONDS / 1000.0, 100},
-      {START_INTAKE_LIFT, 2 * INTAKE_LIFT_DURATION_MILLISECONDS / 1000.0, -80},
-      {STOP_INTAKE_LIFT, 3.2 * INTAKE_LIFT_DURATION_MILLISECONDS / 1000.0, 0}, 
+      {START_INTAKE_LIFT, 2 * INTAKE_LIFT_DURATION_MILLISECONDS / 1000.0, -85},
+      {STOP_INTAKE_LIFT, 3.3 * INTAKE_LIFT_DURATION_MILLISECONDS / 1000.0, 0}, 
 
-      // Driving forward and activate intake in order to suck up first cube. 
-      {START_DRIVING_STRAIGHT, 0, 100}, 
-      {STOP_DRIVING_STRAIGHT, INITIAL_DRIVE_FORWARD_MILLISECONDS / 1000.0, 0},  
+      // We're not aligned with the row of 4 cubes at the beginning.
+      {START_DRIVING_SIDEWAYS, DRIVE_SIDEWAYS_START_MILLISECONDS / 1000.0, -100},
+
+      // Driving forward and activate intake in order to suck up first cube. Stop driving and stop strafing. 
+      {START_DRIVING_STRAIGHT, DRIVE_FORWARD_START_MILLISECONDS / 1000.0, 100}, 
+      {STOP_DRIVING_STRAIGHT, (DRIVE_FORWARD_START_MILLISECONDS +  DRIVE_FORWARD_DURATION_MILLISECONDS) / 1000.0, 0}, 
+      {STOP_DRIVING_SIDEWAYS, (DRIVE_SIDEWAYS_START_MILLISECONDS + DRIVE_SIDEWAYS_DURATION_MILLISECONDS) / 1000.0, 0}, 
+
+      // Intaking Cubes
+      {START_INTAKE, 0, 100},
+      {STOP_INTAKE, 10, 100},  
     };
 
   execute(operations);
