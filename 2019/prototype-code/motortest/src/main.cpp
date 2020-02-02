@@ -1,8 +1,6 @@
 // ---- START VEXCODE CONFIGURED DEVICES ----
 
-
-//ports 2 and 6 DO NOT WORK !!!!!!!!!!!
-
+// ports 2 and 6 DO NOT WORK !!!!!!!!!!!
 
 // Robot Configuration:
 // [Name]               [Type]        [Port(s)]
@@ -16,8 +14,6 @@
 // TrayPusher           motor         8
 // Controller1          controller
 // ---- END VEXCODE CONFIGURED DEVICES ----
-
-
 
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
@@ -35,10 +31,9 @@
 
 void deployCubes();
 
-
 const double SNEAK_PERCENTAGE = 0.50;
 const double INTAKE_LIFT_VELOCITY = 85; // Out of 100
-const double TRAY_PUSH_VELOCITY = 20;
+const double TRAY_PUSH_VELOCITY = 13;
 
 bool sneak = false;
 bool deployingCubes = false;
@@ -50,16 +45,28 @@ void mecanumDrive(int leftRight, int forwardBack, int turn) {
     multiplier = SNEAK_PERCENTAGE;
   }
 
-  FrontRightWheel.spin(forward, multiplier * (forwardBack - turn + leftRight), percent);
-  BackRightWheel.spin(forward,  multiplier * (forwardBack - turn - leftRight), percent);
-  FrontLeftWheel.spin(forward,  multiplier * (forwardBack + turn + leftRight), percent);
-  BackLeftWheel.spin(forward,   multiplier * (forwardBack + turn - leftRight), percent);
+  FrontRightWheel.spin(forward, multiplier * (forwardBack - turn + leftRight),
+                       percent);
+  BackRightWheel.spin(forward, multiplier * (forwardBack - turn - leftRight),
+                      percent);
+  FrontLeftWheel.spin(forward, multiplier * (forwardBack + turn + leftRight),
+                      percent);
+  BackLeftWheel.spin(forward, multiplier * (forwardBack + turn - leftRight),
+                     percent);
 }
 
+// During autonomous, this variable controls what percentage
+// speed we are instantianuesly feed into the left/right arg of the
+// mecanumDrive() function.
 int autonomousLeftRight = 0;
+
+// Same as above for yhe forward/back arg
 int autonomousForwardBack = 0;
+
+// Same as above for the turning arg
 int autonomousTurn = 0;
 
+// All the operations the robot can perform.
 enum Operation {
   START_DRIVING_STRAIGHT,
   STOP_DRIVING_STRAIGHT,
@@ -69,12 +76,16 @@ enum Operation {
   STOP_TURNING,
   STOP_DRIVING,
   START_INTAKE_LIFT,
-  STOP_INTAKE_LIFT
+  STOP_INTAKE_LIFT,
+  START_INTAKE,
+  STOP_INTAKE,
+  START_TRAY,
+  STOP_TRAY,
 };
 
 // Spontaneously drive in the direction that auton told us to drive in.
 //
-// This is called by all of the other driving functions, and so doesa not need
+// This is called by all of the other driving functions, and so does not need
 // to be invoked explicitly.
 void drive() {
   // Remember: Until we fix the formula, turn and forwardBack are swapped.
@@ -86,74 +97,114 @@ struct ScheduledOperation {
   double start;
   double power; // -100.0 <= power <= 100.0
 
-  //ScheduledOperation(Operation o, double s, double p) : operation(o), start(s), power(p) { }
-  //ScheduledOperation(Operation o, double s) : operation(o), start(s), power(0) { }
+  // ScheduledOperation(Operation o, double s, double p) : operation(o),
+  // start(s), power(p) { } ScheduledOperation(Operation o, double s) :
+  // operation(o), start(s), power(0) { }
 
   // Allowed ScheduledOperations to be sorted by start time.
-  friend bool operator< (const ScheduledOperation a, const ScheduledOperation& b) { return (a.start < b.start); }
+  friend bool operator<(const ScheduledOperation a,
+                        const ScheduledOperation &b) {
+    return (a.start < b.start);
+  }
 };
 
+// Executes sequences of operations, one after another untill last operation has
+// been excecuted.
+void execute(std::vector<ScheduledOperation> &ops) {
+  // Sort the ops by start time.
+  std::sort(ops.begin(), ops.end());
 
-void execute(const std::vector<ScheduledOperation>& ops) {
-  // We assume that the ops have been sorted by start time.
-  //
-  // You should have a final operation that stops everything, because otherwise we might end prematurely.
+  // You should have a final operation that stops everything, because otherwise
+  // we might end prematurely.
 
   int index = 0;
 
   const double START_TIME_MILLISECONDS = Brain.timer(msec) / 1000.0;
   while (index < ops.size()) {
-    double elapsedSeconds = (Brain.timer(msec) - START_TIME_MILLISECONDS) / 1000.0;
+    double elapsedSeconds =
+        (Brain.timer(msec) - START_TIME_MILLISECONDS) / 1000.0;
     double percentage = ops[index].power;
 
     if (ops[index].start <= elapsedSeconds) {
       // Perform the operation.
-      switch(ops[index].operation) {
-        case START_DRIVING_STRAIGHT:
-          autonomousForwardBack = static_cast<int>(percentage);
-          drive();
-          break;
-        case STOP_DRIVING_STRAIGHT:
-          autonomousForwardBack = 0;
-          drive();
-          break;
-        case START_DRIVING_SIDEWAYS:
-          autonomousLeftRight = static_cast<int>(percentage);
-          drive();
-          break;
-        case STOP_DRIVING_SIDEWAYS:
-          autonomousLeftRight = 0;
-          drive();
-          break;
-        case START_TURNING:
-          autonomousTurn = static_cast<int>(percentage);
-          drive();
-          break;
-        case STOP_TURNING:
-          autonomousTurn = 0;
-          drive();
-          break;
-        case STOP_DRIVING:
-          autonomousForwardBack = autonomousLeftRight = autonomousTurn = 0;
-          FrontLeftWheel.stop();
-          FrontRightWheel.stop();
-          BackLeftWheel.stop();
-          BackRightWheel.stop();
-          break;
-        case START_INTAKE_LIFT:
-          IntakeLift.setVelocity(fabs(percentage), percent);
-          if (percentage > 0) {
-            IntakeLift.spin(forward);
-          } else {
-            IntakeLift.spin(reverse);
-          }
-          break;
-        case STOP_INTAKE_LIFT:
-          // Return to default velocity
-          IntakeLift.setVelocity(INTAKE_LIFT_VELOCITY, percent);
-          // (...but don't actually move.)
-          IntakeLift.stop();
-          break;
+      switch (ops[index].operation) {
+      case START_DRIVING_STRAIGHT:
+        autonomousForwardBack = static_cast<int>(percentage);
+        drive();
+        break;
+      case STOP_DRIVING_STRAIGHT:
+        autonomousForwardBack = 0;
+        drive();
+        break;
+      case START_DRIVING_SIDEWAYS:
+        autonomousLeftRight = static_cast<int>(percentage);
+        drive();
+        break;
+      case STOP_DRIVING_SIDEWAYS:
+        autonomousLeftRight = 0;
+        drive();
+        break;
+      case START_TURNING:
+        autonomousTurn = static_cast<int>(percentage);
+        drive();
+        break;
+      case STOP_TURNING:
+        autonomousTurn = 0;
+        drive();
+        break;
+      case STOP_DRIVING:
+        autonomousForwardBack = autonomousLeftRight = autonomousTurn = 0;
+        FrontLeftWheel.stop();
+        FrontRightWheel.stop();
+        BackLeftWheel.stop();
+        BackRightWheel.stop();
+        break;
+      case START_INTAKE_LIFT:
+        IntakeLift.setVelocity(fabs(percentage), percent);
+        if (percentage < 0) {
+          IntakeLift.spin(forward);
+        } else {
+          IntakeLift.spin(reverse);
+        }
+        break;
+      case STOP_INTAKE_LIFT:
+        // Return to default velocity
+        IntakeLift.setVelocity(INTAKE_LIFT_VELOCITY, percent);
+        // (...but don't actually move.)
+        IntakeLift.stop();
+        break;
+      case START_INTAKE:
+        LeftIntake.setVelocity(fabs(percentage), percent);
+        RightIntake.setVelocity(fabs(percentage), percent); 
+        if (percentage < 0) {        // Pushing out. 
+          RightIntake.spin(reverse);
+          LeftIntake.spin(fwd);
+        } else {                     // Pulling In. 
+          RightIntake.spin(fwd);
+          LeftIntake.spin(reverse);
+        }
+        break;
+      case STOP_INTAKE:
+        // Return to default velocity. 
+        LeftIntake.setVelocity(100, percent); 
+        RightIntake.setVelocity(100, percent);  
+        // But don't actually move. 
+        RightIntake.stop();
+        LeftIntake.stop();
+        break;
+      case START_TRAY:
+        TrayPusher.setVelocity(fabs(percentage), percent); 
+        if (percentage < 0) {
+          // More than 0 pushing, less than 0 pulling. 
+          TrayPusher.spin(forward);
+        } else { 
+          TrayPusher.spin(reverse);
+        } 
+        break;
+      case STOP_TRAY:
+        TrayPusher.setVelocity(TRAY_PUSH_VELOCITY, percent); 
+        TrayPusher.stop(); 
+        break;
       }
 
       // Next operation.
@@ -226,19 +277,25 @@ void autonomous(void) {
   // ..........................................................................
 
   const double DRIVE_TIME_SECONDS = 0.5;
-  const double INTAKE_LIFT_DURATION_MILLISECONDS = 1350;
+  const double INTAKE_LIFT_DURATION_MILLISECONDS = 1400;
+  const double INITIAL_DRIVE_FORWARD_MILLISECONDS = 3000;  
   std::vector<ScheduledOperation> operations = {
-    // Drive the robot backward for a few seconds, then drive forward.
-    { START_DRIVING_STRAIGHT, 0.0,                    -100 },
-    { START_DRIVING_STRAIGHT, DRIVE_TIME_SECONDS,     100 },
-    { STOP_DRIVING,           2 * DRIVE_TIME_SECONDS, 0 },
-    // Free the tray by lifting the intake lift just high enough.
-    { START_INTAKE_LIFT,      0, 100},
-    { START_INTAKE_LIFT,      INTAKE_LIFT_DURATION_MILLISECONDS / 1000.0, 100},
-    { STOP_INTAKE_LIFT,       2 * INTAKE_LIFT_DURATION_MILLISECONDS / 1000.0, -100}
-  };
+      // Drive the robot backward for a few seconds, then drive forward.
+      // {START_DRIVING_STRAIGHT, 0.0, -100},
+      // {START_DRIVING_STRAIGHT, DRIVE_TIME_SECONDS, 100},
+      // {STOP_DRIVING, 2 * DRIVE_TIME_SECONDS, 0},
 
-  std::sort(operations.begin(), operations.end());
+      // Free the tray by lifting the intake lift just high enough.
+      {START_INTAKE_LIFT, 0, 100},
+      {START_INTAKE_LIFT, INTAKE_LIFT_DURATION_MILLISECONDS / 1000.0, 100},
+      {START_INTAKE_LIFT, 2 * INTAKE_LIFT_DURATION_MILLISECONDS / 1000.0, -80},
+      {STOP_INTAKE_LIFT, 3.2 * INTAKE_LIFT_DURATION_MILLISECONDS / 1000.0, 0}, 
+
+      // Driving forward and activate intake in order to suck up first cube. 
+      {START_DRIVING_STRAIGHT, 0, 100}, 
+      {STOP_DRIVING_STRAIGHT, INITIAL_DRIVE_FORWARD_MILLISECONDS / 1000.0, 0},  
+    };
+
   execute(operations);
 }
 
@@ -307,11 +364,10 @@ void usercontrol(void) {
       mecanumDrive(leftRight, forwardBack, turn);
     }
 
-
-
     // Sets the position of the intake lift using increments of 5 degrees
     //
-    // We know the proper way to move the motor via encoders: IntakeLift.spinToPosition().
+    // We know the proper way to move the motor via encoders:
+    // IntakeLift.spinToPosition().
     //
     // But it is not easy to detemrine when that function should be called.
     if (Controller1.ButtonR2.pressing()) {
@@ -320,7 +376,8 @@ void usercontrol(void) {
       IntakeLift.spin(reverse);
     } else if (!deployingCubes) {
       bool waitForCompletion = false;
-      IntakeLift.spinToPosition(IntakeLift.position(degrees), degrees, waitForCompletion);
+      IntakeLift.spinToPosition(IntakeLift.position(degrees), degrees,
+                                waitForCompletion);
     }
 
     // Controller1.ButtonA.pressed([] () {
@@ -329,11 +386,9 @@ void usercontrol(void) {
     //   }
     // });
 
-
-
     wait(20, msec); // Sleep the task for a short amount of time to
                     // prevent wasted resources.
-  } // end (loop forever)
+  }                 // end (loop forever)
 }
 
 //
@@ -356,12 +411,13 @@ void deployCubes() {
 
   // The order of events is:
   // (1) Push the tray
-  // (2) Right before the tray is fully pushed, lift the intake and start reversing the intake motors
-  // (3) Stop the intake lift and back off while the intake motors are still hot
-  // (4) Stop the intake motors and return the tray and lift to start position
+  // (2) Right before the tray is fully pushed, lift the intake and start
+  // reversing the intake motors (3) Stop the intake lift and back off while the
+  // intake motors are still hot (4) Stop the intake motors and return the tray
+  // and lift to start position
   const double TRAY_PUSH_START_SECONDS = 0.0;
   const double TRAY_PUSH_DURATION_SECONDS = 3.5;
-  const double TRAY_SPEED_PERCENT = 10.0;
+  const double TRAY_SPEED_PERCENT = 13.0;
 
   const double INTAKE_LIFT_START_SECONDS = 0.5;
   const double INTAKE_LIFT_DURATION_SECONDS = 3.0;
@@ -387,7 +443,8 @@ void deployCubes() {
   double startTimeMilliseconds = Brain.timer(msec);
   while (true) {
 
-    double elapsedTimeSeconds = (Brain.timer(msec) - startTimeMilliseconds) / 1000.0;
+    double elapsedTimeSeconds =
+        (Brain.timer(msec) - startTimeMilliseconds) / 1000.0;
     bool trayDone = false, liftDone = false, driveDone = false;
 
     ///////////////////
@@ -395,13 +452,15 @@ void deployCubes() {
     ///////////////////
 
     if (elapsedTimeSeconds > TRAY_PUSH_START_SECONDS &&
-        elapsedTimeSeconds < TRAY_PUSH_START_SECONDS + TRAY_PUSH_DURATION_SECONDS) {
+        elapsedTimeSeconds <
+            TRAY_PUSH_START_SECONDS + TRAY_PUSH_DURATION_SECONDS) {
 
       // Push the tray out.
       TrayPusher.spin(reverse);
 
     } else if (elapsedTimeSeconds > BACKOFF_START_SECONDS - 1 &&
-               elapsedTimeSeconds < BACKOFF_START_SECONDS - 1 + TRAY_PUSH_DURATION_SECONDS) {
+               elapsedTimeSeconds <
+                   BACKOFF_START_SECONDS - 1 + TRAY_PUSH_DURATION_SECONDS) {
 
       // Return the tray to position.
       TrayPusher.spin(forward);
@@ -417,18 +476,23 @@ void deployCubes() {
     //////////////////////////
 
     if (elapsedTimeSeconds > INTAKE_LIFT_START_SECONDS &&
-        elapsedTimeSeconds < INTAKE_LIFT_START_SECONDS + INTAKE_LIFT_DURATION_SECONDS) {
+        elapsedTimeSeconds <
+            INTAKE_LIFT_START_SECONDS + INTAKE_LIFT_DURATION_SECONDS) {
 
       IntakeLift.spin(forward);
 
       // Start the intake motors here.
-      if (elapsedTimeSeconds > INTAKE_LIFT_START_SECONDS + INTAKE_ACTIVATION_DELAY) {
+      if (elapsedTimeSeconds >
+          INTAKE_LIFT_START_SECONDS + INTAKE_ACTIVATION_DELAY) {
         LeftIntake.spin(reverse);
         RightIntake.spin(forward);
       }
 
-    } else if (elapsedTimeSeconds > BACKOFF_START_SECONDS + BACKOFF_DURATION_SECONDS &&
-               elapsedTimeSeconds < BACKOFF_START_SECONDS + BACKOFF_DURATION_SECONDS + INTAKE_LIFT_DURATION_SECONDS) {
+    } else if (elapsedTimeSeconds >
+                   BACKOFF_START_SECONDS + BACKOFF_DURATION_SECONDS &&
+               elapsedTimeSeconds < BACKOFF_START_SECONDS +
+                                        BACKOFF_DURATION_SECONDS +
+                                        INTAKE_LIFT_DURATION_SECONDS) {
 
       // Return the intake lift to position...gently.
       IntakeLift.setVelocity(INTAKE_LIFT_SPEED_PERCENT * 0.1, percent);
