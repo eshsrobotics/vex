@@ -276,12 +276,12 @@ void autonomous(void) {
   // Insert autonomous user code here.
   // ..........................................................................
 
-  const double DRIVE_SIDEWAYS_START_MILLISECONDS = 5000; 
-  const double DRIVE_SIDEWAYS_DURATION_MILLISECONDS = 450;
-  const double INTAKE_LIFT_DURATION_MILLISECONDS = 1400;
+  const double INTAKE_LIFT_DURATION_MILLISECONDS = 500;
+  const double DRIVE_SIDEWAYS_START_MILLISECONDS = 100 + (3.3 * INTAKE_LIFT_DURATION_MILLISECONDS); // 5000; 
+  const double DRIVE_SIDEWAYS_DURATION_MILLISECONDS = 350;
   const double DRIVE_FORWARD_START_MILLISECONDS = DRIVE_SIDEWAYS_START_MILLISECONDS + DRIVE_SIDEWAYS_DURATION_MILLISECONDS;
-  const double DRIVE_FORWARD_DURATION_MILLISECONDS = 500;
-  
+  const double DRIVE_FORWARD_DURATION_MILLISECONDS = 2000;
+
   std::vector<ScheduledOperation> operations = {
       // Drive the robot backward for a few seconds, then drive forward.
       // {START_DRIVING_STRAIGHT, 0.0, -100},
@@ -291,14 +291,14 @@ void autonomous(void) {
       // Free the tray by lifting the intake lift just high enough.
       {START_INTAKE_LIFT, 0, 100},
       {START_INTAKE_LIFT, INTAKE_LIFT_DURATION_MILLISECONDS / 1000.0, 100},
-      {START_INTAKE_LIFT, 2 * INTAKE_LIFT_DURATION_MILLISECONDS / 1000.0, -85},
+      {START_INTAKE_LIFT, 2 * INTAKE_LIFT_DURATION_MILLISECONDS / 1000.0, -100},
       {STOP_INTAKE_LIFT, 3.3 * INTAKE_LIFT_DURATION_MILLISECONDS / 1000.0, 0}, 
 
       // We're not aligned with the row of 4 cubes at the beginning.
       {START_DRIVING_SIDEWAYS, DRIVE_SIDEWAYS_START_MILLISECONDS / 1000.0, -100},
 
       // Driving forward and activate intake in order to suck up first cube. Stop driving and stop strafing. 
-      {START_DRIVING_STRAIGHT, DRIVE_FORWARD_START_MILLISECONDS / 1000.0, 100}, 
+      {START_DRIVING_STRAIGHT, DRIVE_FORWARD_START_MILLISECONDS / 1000.0, 50}, 
       {STOP_DRIVING_STRAIGHT, (DRIVE_FORWARD_START_MILLISECONDS +  DRIVE_FORWARD_DURATION_MILLISECONDS) / 1000.0, 0}, 
       {STOP_DRIVING_SIDEWAYS, (DRIVE_SIDEWAYS_START_MILLISECONDS + DRIVE_SIDEWAYS_DURATION_MILLISECONDS) / 1000.0, 0}, 
 
