@@ -1,6 +1,32 @@
 // ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// FrontRightWheel      motor         1               
+// FrontLeftWheel       motor         9               
+// BackRightWheel       motor         3               
+// BackLeftWheel        motor         4               
+// LeftIntake           motor         12              
+// RightIntake          motor         7               
+// IntakeLift           motor         10              
+// TrayPusher           motor         8               
+// Controller1          controller                    
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// FrontRightWheel      motor         1               
+// FrontLeftWheel       motor         9               
+// BackRightWheel       motor         3               
+// BackLeftWheel        motor         4               
+// LeftIntake           motor         12               
+// RightIntake          motor         7               
+// IntakeLift           motor         10              
+// TrayPusher           motor         8               
+// Controller1          controller                    
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
 
-// ports 2 and 6 DO NOT WORK !!!!!!!!!!!
+// ports 2, 5, and 6 DO NOT WORK !!!!!!!!!!!,
 
 // Robot Configuration:
 // [Name]               [Type]        [Port(s)]
@@ -280,9 +306,9 @@ void autonomous(void) {
   const double DRIVE_SIDEWAYS_START_MILLISECONDS = 100 + (3.3 * INTAKE_LIFT_DURATION_MILLISECONDS); // 5000; 
   const double DRIVE_SIDEWAYS_DURATION_MILLISECONDS = 350;
   const double DRIVE_FORWARD_START_MILLISECONDS = DRIVE_SIDEWAYS_START_MILLISECONDS + DRIVE_SIDEWAYS_DURATION_MILLISECONDS;
-  const double DRIVE_FORWARD_DURATION_MILLISECONDS = 2000;
+  const double DRIVE_FORWARD_DURATION_MILLISECONDS = 2025;
   const double START_TURNING_MILLISECONDS = DRIVE_FORWARD_START_MILLISECONDS + DRIVE_FORWARD_DURATION_MILLISECONDS;
-  const double TURN_DURATION_MILLISECONDS = 1205;
+  const double TURN_DURATION_MILLISECONDS = 1200;
   const double RETURN_TIME_MILLISECONDS = START_TURNING_MILLISECONDS + TURN_DURATION_MILLISECONDS;
   const double RETURN_DURATION_MILLISECONDS = DRIVE_FORWARD_DURATION_MILLISECONDS; 
   const double TRAY_PUSH_MILLISECONDS = RETURN_TIME_MILLISECONDS + RETURN_DURATION_MILLISECONDS;
@@ -304,20 +330,20 @@ void autonomous(void) {
       {START_DRIVING_SIDEWAYS, DRIVE_SIDEWAYS_START_MILLISECONDS / 1000.0, -100},
 
       // Driving forward and activate intake in order to suck up first cube. Stop driving and stop strafing. 
-      {START_DRIVING_STRAIGHT, DRIVE_FORWARD_START_MILLISECONDS / 1000.0, 50}, 
+      {START_DRIVING_STRAIGHT, DRIVE_FORWARD_START_MILLISECONDS / 1000.0, 55}, 
       {STOP_DRIVING_STRAIGHT, (DRIVE_FORWARD_START_MILLISECONDS +  DRIVE_FORWARD_DURATION_MILLISECONDS) / 1000.0, 0}, 
       {STOP_DRIVING_SIDEWAYS, (DRIVE_SIDEWAYS_START_MILLISECONDS + DRIVE_SIDEWAYS_DURATION_MILLISECONDS) / 1000.0, 0}, 
 
       // Intaking Cubes. 
       {START_INTAKE, 0, 100},
-      {STOP_INTAKE, TRAY_PUSH_MILLISECONDS / 1000.0, 0},  
+      {STOP_INTAKE, START_TURNING_MILLISECONDS / 1000.0, 0},  
 
       // Rotating after intaking cubes. 
       {START_TURNING, START_TURNING_MILLISECONDS / 1000.0, -70.0},
       {STOP_TURNING, (START_TURNING_MILLISECONDS + TURN_DURATION_MILLISECONDS) / 1000.0, 0},
 
       // Return to the blue goal.
-      {START_DRIVING_STRAIGHT, RETURN_TIME_MILLISECONDS / 1000.0, 50},
+      {START_DRIVING_STRAIGHT, RETURN_TIME_MILLISECONDS / 1000.0, 55},
       {STOP_DRIVING_STRAIGHT, (RETURN_TIME_MILLISECONDS + RETURN_DURATION_MILLISECONDS) / 1000.0, 0}, 
       
       // Cube Release: push tray and reverse it
@@ -327,12 +353,12 @@ void autonomous(void) {
 
 
       // Cube release: reverse the intake
-      {START_INTAKE, (TRAY_PUSH_MILLISECONDS + TRAY_PUSH_DURATION_MILLISECONDS - 250) / 1000.0, -100},
+      {START_INTAKE, (TRAY_PUSH_MILLISECONDS + TRAY_PUSH_DURATION_MILLISECONDS + 250) / 1000.0, -100},
       {STOP_INTAKE, (TRAY_PUSH_MILLISECONDS + TRAY_PUSH_DURATION_MILLISECONDS + 500) / 1000.0, 0},
 
       // Cube release: drive backward
-      {START_DRIVING_STRAIGHT, (TRAY_PUSH_MILLISECONDS + TRAY_PUSH_DURATION_MILLISECONDS+ 300) / 1000.0, -100},
-      {STOP_DRIVING_STRAIGHT, (TRAY_PUSH_MILLISECONDS + TRAY_PUSH_DURATION_MILLISECONDS + 1000) / 1000.0, 0},       
+      {START_DRIVING_STRAIGHT, (TRAY_PUSH_MILLISECONDS + TRAY_PUSH_DURATION_MILLISECONDS + 2000) / 1000.0, -100},
+      {STOP_DRIVING_STRAIGHT, (TRAY_PUSH_MILLISECONDS + TRAY_PUSH_DURATION_MILLISECONDS + 4000) / 1000.0, 0},       
     };
 
   execute(operations);
