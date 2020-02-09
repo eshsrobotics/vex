@@ -24,6 +24,9 @@
 extern bool sneak;
 
 extern const double SNEAK_PERCENTAGE;
+extern const double INTAKE_LIFT_VELOCITY;
+extern const double TRAY_PUSH_VELOCITY;
+
 
 #define waitUntil(condition)                                                   \
   do {                                                                         \
