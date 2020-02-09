@@ -56,12 +56,14 @@ struct ScheduledOperation {
 // of some sort.)
 void execute(std::vector<ScheduledOperation>& ops);
 
+// second square aligned with wall
+// align cube with middle of tray 
 // The schedule of operations for autonomous on the red side.
-// - Target: The small red scoring area.
-// - Goal: 5 cubes.
-extern std::vector<ScheduledOperation> red_operations;
-
-// The schedule of operations for autonomous on the blue side.
 // - Target: The small blue scoring area.
 // - Goal: 5 cubes.
 extern std::vector<ScheduledOperation> blue_operations;
+
+// The schedule of operations for autonomous on the blue side.
+// - Target: The small red scoring area.
+// - Goal: 5 cubes.
+extern std::vector<ScheduledOperation> red_operations;

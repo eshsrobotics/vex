@@ -117,7 +117,7 @@ void autonomous(void) {
   // Insert autonomous user code here.
   // ..........................................................................
 
-  execute(red_operations);
+  execute(blue_operations);
 }
 
 
