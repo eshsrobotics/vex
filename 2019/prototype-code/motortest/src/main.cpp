@@ -1,19 +1,20 @@
 // ---- START VEXCODE CONFIGURED DEVICES ----
-
-// ports 2 and 6 DO NOT WORK !!!!!!!!!!!
-
 // Robot Configuration:
 // [Name]               [Type]        [Port(s)]
 // FrontRightWheel      motor         1
 // FrontLeftWheel       motor         9
 // BackRightWheel       motor         3
 // BackLeftWheel        motor         4
-// LeftIntake           motor         5
+// LeftIntake           motor         12
 // RightIntake          motor         7
 // IntakeLift           motor         10
 // TrayPusher           motor         8
 // Controller1          controller
 // ---- END VEXCODE CONFIGURED DEVICES ----
+
+///////////////////////////////////////////////
+// ports 2, 5, and 6 DO NOT WORK !!!!!!!!!!! //
+///////////////////////////////////////////////
 
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
