@@ -120,6 +120,7 @@ void autonomous(void) {
   execute(red_operations);
 }
 
+
 /*---------------------------------------------------------------------------*/
 /*                                                                           */
 /*                              User Control Task                            */
@@ -238,7 +239,7 @@ void deployCubes() {
   // and lift to start position
   const double TRAY_PUSH_START_SECONDS = 0.0;
   const double TRAY_PUSH_DURATION_SECONDS = 3.5;
-  const double TRAY_SPEED_PERCENT = 13.0;
+  const double TRAY_SPEED_PERCENT = 15.0;
 
   const double INTAKE_LIFT_START_SECONDS = 0.5;
   const double INTAKE_LIFT_DURATION_SECONDS = 3.0;
