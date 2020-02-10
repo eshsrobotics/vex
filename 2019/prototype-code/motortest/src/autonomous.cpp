@@ -161,7 +161,7 @@ void execute(std::vector<ScheduledOperation>& ops) {
 
       // Intaking Cubes.
       {START_INTAKE, 0.5, 100},
-      {STOP_INTAKE, START_TURNING_MILLISECONDS + 500 / 1000.0, 0},
+      {STOP_INTAKE, (START_TURNING_MILLISECONDS + 400) / 1000.0, 0},
 
       // Rotating after intaking cubes.
       {START_TURNING, START_TURNING_MILLISECONDS / 1000.0, -70.0},
@@ -181,7 +181,7 @@ void execute(std::vector<ScheduledOperation>& ops) {
       {STOP_TRAY, (TRAY_PUSH_MILLISECONDS + TRAY_PUSH_DURATION_MILLISECONDS + TRAY_PUSH_DURATION_MILLISECONDS) / 1000.0, 0},
 
       // Cube release: reverse the intake
-      {START_INTAKE, (TRAY_PUSH_MILLISECONDS + TRAY_PUSH_DURATION_MILLISECONDS + 1700) / 1000.0, -100},
+      {START_INTAKE, (TRAY_PUSH_MILLISECONDS + TRAY_PUSH_DURATION_MILLISECONDS + 1700) / 1000.0, -50},
       {STOP_INTAKE, (TRAY_PUSH_MILLISECONDS + TRAY_PUSH_DURATION_MILLISECONDS + 2500) / 1000.0, 0},
 
       // Cube release: drive backward
