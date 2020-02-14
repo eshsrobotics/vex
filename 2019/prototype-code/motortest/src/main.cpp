@@ -1,58 +1,6 @@
 // ---- START VEXCODE CONFIGURED DEVICES ----
 // Robot Configuration:
 // [Name]               [Type]        [Port(s)]
-// FrontRightWheel      motor         1               
-// FrontLeftWheel       motor         9               
-// BackRightWheel       motor         3               
-// BackLeftWheel        motor         4               
-// LeftIntake           motor         7               
-// RightIntake          motor         13              
-// IntakeLift           motor         10              
-// TrayPusher           motor         8               
-// Controller1          controller                    
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// FrontRightWheel      motor         1               
-// FrontLeftWheel       motor         9               
-// BackRightWheel       motor         3               
-// BackLeftWheel        motor         4               
-// LeftIntake           motor         2               
-// RightIntake          motor         13              
-// IntakeLift           motor         10              
-// TrayPusher           motor         8               
-// Controller1          controller                    
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// FrontRightWheel      motor         1               
-// FrontLeftWheel       motor         9               
-// BackRightWheel       motor         3               
-// BackLeftWheel        motor         4               
-// LeftIntake           motor         2               
-// RightIntake          motor         7               
-// IntakeLift           motor         10              
-// TrayPusher           motor         8               
-// Controller1          controller                    
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// FrontRightWheel      motor         1               
-// FrontLeftWheel       motor         9               
-// BackRightWheel       motor         3               
-// BackLeftWheel        motor         4               
-// LeftIntake           motor         13             
-// RightIntake          motor         7               
-// IntakeLift           motor         10              
-// TrayPusher           motor         8               
-// Controller1          controller                    
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
 // FrontRightWheel      motor         1
 // FrontLeftWheel       motor         9
 // BackRightWheel       motor         3
@@ -62,6 +10,9 @@
 // IntakeLift           motor         10
 // TrayPusher           motor         8
 // Controller1          controller
+// PotentiometerA       pot           A
+// RED_AUTON_LED        led           B
+// BLUE_AUTON_LED       led           C
 // ---- END VEXCODE CONFIGURED DEVICES ----
 
 ///////////////////////////////////////////////
@@ -89,6 +40,7 @@ const double SNEAK_PERCENTAGE = 0.50;
 const double INTAKE_LIFT_VELOCITY = 85; // Out of 100
 const double TRAY_PUSH_VELOCITY = 13;
 
+AutonomousSelection autonomous_selection = RED;
 bool sneak = false;
 bool deployingCubes = false;
 
@@ -107,6 +59,33 @@ void mecanumDrive(int leftRight, int forwardBack, int turn) {
                       percent);
   BackLeftWheel.spin(forward, multiplier * (forwardBack + turn - leftRight),
                      percent);
+}
+
+// Switches the autonomous selection from RED to BLUE based on the potentiometer value.
+// We also take care of firing the respective LEDs.
+//
+// This code is meant to be called as part of the changed() function for the
+// selection potentiometer.
+void update_autonomous_selection() {
+
+  // Are we going with the red sequence of autonomous operations, or
+  // the blue sequence?
+  //
+  // The VEX potentiometer has a range of 250 ± 20º, giving an effective
+  // range of 230º.
+  const double MIN_ANGLE_DEGREES = 0.0;
+  const double MAX_ANGLE_DEGREES = 250.0;
+  double angle = PotentiometerA.angle(degrees);
+  double range = MAX_ANGLE_DEGREES - MIN_ANGLE_DEGREES;
+  if (angle < 0.50 * range) {
+    autonomous_selection = RED;
+    RED_AUTON_LED.on();
+    BLUE_AUTON_LED.off();
+  } else {
+    autonomous_selection = BLUE;
+    BLUE_AUTON_LED.on();
+    RED_AUTON_LED.off();
+  }
 }
 
 /*----------------------------------------------------------------------------*/
@@ -144,6 +123,14 @@ void pre_auton(void) {
   // Initializing Robot Configuration. DO NOT REMOVE!
   vexcodeInit();
 
+  // Just in case.
+  RED_AUTON_LED.off();
+  BLUE_AUTON_LED.off();
+
+  // Register a handler to be fired whenever the potentiometer changes (and
+  // not just during pre-auton().)
+  PotentiometerA.changed(update_autonomous_selection);
+
   // All activities that occur before the competition starts
   // Example: clearing encoders, setting servo positions, ...
 
@@ -169,7 +156,11 @@ void autonomous(void) {
   // Insert autonomous user code here.
   // ..........................................................................
 
-  execute(blue_operations);
+  if (autonomous_selection == RED) {
+    execute(red_operations);
+  } else {
+    execute(blue_operations);
+  }
 }
 
 

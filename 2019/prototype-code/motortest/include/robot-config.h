@@ -12,6 +12,9 @@ extern motor RightIntake;
 extern motor IntakeLift;
 extern motor TrayPusher;
 extern controller Controller1;
+extern pot PotentiometerA;
+extern led RED_AUTON_LED;
+extern led BLUE_AUTON_LED;
 
 /**
  * Used to initialize code/tasks/devices added using tools in VEXcode Text.

@@ -136,7 +136,7 @@ void execute(std::vector<ScheduledOperation>& ops) {
   const double START_ROTATE_LINEUP_MILLISECONDS = RETURN_TIME_MILLISECONDS + RETURN_DURATION_MILLISECONDS;
   const double ROTATE_LINEUP_DURATION = 200;
   const double START_STRAIGHT_ALIGNMENT = START_ROTATE_LINEUP_MILLISECONDS + ROTATE_LINEUP_DURATION ;
-  const double FORWARD_ALIGNMENT_DURATION = 225; 
+  const double FORWARD_ALIGNMENT_DURATION = 225;
   const double TRAY_PUSH_MILLISECONDS = START_STRAIGHT_ALIGNMENT + FORWARD_ALIGNMENT_DURATION;
   const double TRAY_PUSH_DURATION_MILLISECONDS = 2550;
 
@@ -178,7 +178,7 @@ void execute(std::vector<ScheduledOperation>& ops) {
       {START_TURNING, START_ROTATE_LINEUP_MILLISECONDS / 1000.0, 100.0},
       {STOP_TURNING, (START_ROTATE_LINEUP_MILLISECONDS + ROTATE_LINEUP_DURATION) / 1000.0, 0},
 
-      // Move forward to line up tray for full release. 
+      // Move forward to line up tray for full release.
       //{START_DRIVING_STRAIGHT, START_STRAIGHT_ALIGNMENT / 1000.0, 50},
       //{STOP_DRIVING_STRAIGHT, (START_STRAIGHT_ALIGNMENT + FORWARD_ALIGNMENT_DURATION) / 1000.0, 0},
 
@@ -196,3 +196,6 @@ void execute(std::vector<ScheduledOperation>& ops) {
       {STOP_DRIVING_STRAIGHT, (TRAY_PUSH_MILLISECONDS + TRAY_PUSH_DURATION_MILLISECONDS + 3000) / 1000.0, 0},
 
     };
+
+// TODO: Finish this.
+std::vector<ScheduledOperation> red_operations = {};
