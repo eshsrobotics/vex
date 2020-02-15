@@ -40,7 +40,7 @@ const double SNEAK_PERCENTAGE = 0.50;
 const double INTAKE_LIFT_VELOCITY = 85; // Out of 100
 const double TRAY_PUSH_VELOCITY = 13;
 
-AutonomousSelection autonomous_selection = RED;
+AutonomousSelection autonomous_selection;
 bool sneak = false;
 bool deployingCubes = false;
 
@@ -78,8 +78,8 @@ void update_autonomous_selection() {
   double angle = PotentiometerA.angle(degrees);
   double range = MAX_ANGLE_DEGREES - MIN_ANGLE_DEGREES;
   if (angle < 0.50 * range) {
-    autonomous_selection = RED;
-    RED_AUTON_LED.on();
+    autonomous_selection = BLUE;
+    RED_AUTON_LED.on();   
     BLUE_AUTON_LED.off();
   } else {
     autonomous_selection = BLUE;
@@ -122,7 +122,6 @@ competition Competition;
 void pre_auton(void) {
   // Initializing Robot Configuration. DO NOT REMOVE!
   vexcodeInit();
-
   // Just in case.
   RED_AUTON_LED.off();
   BLUE_AUTON_LED.off();
@@ -155,11 +154,11 @@ void autonomous(void) {
   // ..........................................................................
   // Insert autonomous user code here.
   // ..........................................................................
-
+  PotentiometerA.changed(update_autonomous_selection);
   if (autonomous_selection == RED) {
     execute(red_operations);
   } else {
-    execute(blue_operations);
+    //execute(blue_operations);
   }
 }
 
