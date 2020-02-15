@@ -22,9 +22,10 @@ void execute(std::vector<ScheduledOperation>& ops) {
     // You should have a final operation that stops everything, because otherwise
     // we might end prematurely.
 
+
     int index = 0;
 
-    const double START_TIME_MILLISECONDS = Brain.timer(msec) / 1000.0;
+    const double START_TIME_MILLISECONDS = Brain.timer(msec);
     while (index < ops.size()) {
         double elapsedSeconds =
             (Brain.timer(msec) - START_TIME_MILLISECONDS) / 1000.0;

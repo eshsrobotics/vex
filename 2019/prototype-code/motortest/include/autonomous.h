@@ -69,6 +69,7 @@ extern std::vector<ScheduledOperation> blue_operations;
 extern std::vector<ScheduledOperation> red_operations;
 
 enum AutonomousSelection {
+  UNDEFINED,
   RED,
   BLUE
 };

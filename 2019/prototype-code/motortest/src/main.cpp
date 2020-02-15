@@ -77,15 +77,20 @@ void update_autonomous_selection() {
   const double MAX_ANGLE_DEGREES = 250.0;
   double angle = PotentiometerA.angle(degrees);
   double range = MAX_ANGLE_DEGREES - MIN_ANGLE_DEGREES;
-  if (angle < 0.50 * range) {
+  if (angle > 0.50 * range) {
     autonomous_selection = BLUE;
-    RED_AUTON_LED.on();   
-    BLUE_AUTON_LED.off();
-  } else {
-    autonomous_selection = BLUE;
-    BLUE_AUTON_LED.on();
     RED_AUTON_LED.off();
+    BLUE_AUTON_LED.on();
+  } else {
+    autonomous_selection = RED;
+    BLUE_AUTON_LED.off();
+    RED_AUTON_LED.on();
   }
+  Controller1.Screen.clearScreen();
+  Controller1.Screen.setCursor(1, 3);
+  Controller1.Screen.print("Pot = %.2f", angle);
+  Controller1.Screen.setCursor(2, 3);
+  Controller1.Screen.print("Sel = %d", autonomous_selection);
 }
 
 /*----------------------------------------------------------------------------*/
@@ -122,13 +127,14 @@ competition Competition;
 void pre_auton(void) {
   // Initializing Robot Configuration. DO NOT REMOVE!
   vexcodeInit();
-  // Just in case.
-  RED_AUTON_LED.off();
-  BLUE_AUTON_LED.off();
 
   // Register a handler to be fired whenever the potentiometer changes (and
   // not just during pre-auton().)
   PotentiometerA.changed(update_autonomous_selection);
+
+  // Read the potentiometer value at program start.
+  // Calling changed() will only read the potentiometer when it is turned by hand!
+  update_autonomous_selection();
 
   // All activities that occur before the competition starts
   // Example: clearing encoders, setting servo positions, ...
@@ -154,12 +160,22 @@ void autonomous(void) {
   // ..........................................................................
   // Insert autonomous user code here.
   // ..........................................................................
-  PotentiometerA.changed(update_autonomous_selection);
-  if (autonomous_selection == RED) {
-    execute(red_operations);
-  } else {
-    //execute(blue_operations);
-  }
+  execute(blue_operations); 
+  
+  // update_autonomous_selection();
+  // switch (autonomous_selection) {
+  //   case UNDEFINED:
+  //     break;
+  //   case RED:
+  //     execute(red_operations);
+  //     break;
+
+  // }
+  // if (autonomous_selection == BLUE) {
+  //   execute(blue_operations);
+  // } else {
+  //   // execute(red_operations);
+  // }
 }
 
 
@@ -175,7 +191,7 @@ void autonomous(void) {
 
 void usercontrol(void) {
   // User control code here, inside the loop
-
+  update_autonomous_selection();
   // This is the main execution loop for the user control program.
   // Each time through the loop your program should update motor + servo
   // values based on feedback from the joysticks.
