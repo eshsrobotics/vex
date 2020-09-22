@@ -39,5 +39,13 @@ void mechDrive(int strafeLeftRight, int forwardBack, int turnLeftRight) {
 int main() {
   // Initializing Robot Configuration. DO NOT REMOVE!
   vexcodeInit();
+  while(true) {
+   int leftright = Controller1.Axis4.position(percent);
+   int forwardbackward = Controller1.Axis3.position(percent);
+   int turnclockwise = Controller1.Axis1.position(percent);
+
+   mechDrive(leftright, forwardbackward, turnclockwise);
+
+  }
   
 }
