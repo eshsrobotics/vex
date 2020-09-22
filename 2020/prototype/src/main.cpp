@@ -7,33 +7,6 @@
 // LeftBack             motor         4               
 // Controller1          controller                    
 // ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// RightFront           motor         1               
-// LeftFront            motor         19              
-// RightBack            motor         3               
-// LeftBack             motor         4               
-// Controller1          controller                    
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// RightFront           motor         1               
-// LeftFront            motor         19              
-// RightBack            motor         3               
-// LeftBack             motor         4               
-// Controller1          controller                    
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// RightFront           motor         1               
-// LeftFront            motor         19              
-// RightBack            motor         3               
-// LeftBack             motor         4               
-// Controller1          controller                    
-// ---- END VEXCODE CONFIGURED DEVICES ----
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /*    Module:       main.cpp                                                  */
@@ -42,16 +15,6 @@
 /*    Description:  V5 project                                                */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// RightFront           motor         1               
-// LeftFront            motor         2               
-// RightBack            motor         3               
-// LeftBack             motor         4               
-// Controller1          controller                    
-// ---- END VEXCODE CONFIGURED DEVICES ----
 
 #include "vex.h"
 
