@@ -21,8 +21,19 @@
 
 using namespace vex;
 
+// This is a loop fuction for the drive motors
+//
+// strafeLeftRight: the percentage (-100 to 100) of speed of which the robot will go- either strafing to the left or right
+// forwardBack: the percentage (-100 to 100) of speed of which the robot will go- either forward or back 
+// turnLeftRight:the percentage (-100 to 100) of speed of which the robot will go-  either turning left or right
+
 void mechDrive(int strafeLeftRight, int forwardBack, int turnLeftRight) {
   
+  RightFront.spin(forward, forwardBack - strafeLeftRight - turnLeftRight, percent);
+  RightBack.spin(forward, forwardBack + strafeLeftRight - turnLeftRight, percent);
+  LeftFront.spin(forward, forwardBack + strafeLeftRight + turnLeftRight, percent);
+  LeftBack.spin(forward, forwardBack - strafeLeftRight + turnLeftRight, percent);
+
 }
 
 int main() {
