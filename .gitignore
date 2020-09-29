@@ -105,3 +105,8 @@ desktop.ini
 # https://www.vexforum.com/t/github-with-pros/52291/8.
 **/bin/monolith.elf
 **/bin/monolith.bin
+
+# --------------------------------------------------------------------------
+# VEXcode Pro V5 ignores.
+# --------------------------------------------------------------------------
+**/build
