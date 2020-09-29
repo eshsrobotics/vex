@@ -35,6 +35,28 @@ void mechDrive(int strafeLeftRight, int forwardBack, int turnLeftRight) {
   LeftBack.spin(forward, forwardBack - strafeLeftRight + turnLeftRight, percent);
 
 }
+enum State {
+  START = 1, 
+  LEFT_FORWARD,
+  RIGHT_FORWARD,
+  RIGHT_BACKWARD,
+  LEFT_BACKWARD,
+  END
+};
+State state = START;
+int drive_time_ms = 1500;
+int drive_speed_percentage = 55;
+
+
+void diamond_drive(double button_press_time_ms) {
+  double elapsed_time_ms = Brain.timer(msec) - button_press_time_ms;
+  if (state == START) {
+    state = LEFT_FORWARD;
+  
+  } else if (state == LEFT_FORWARD) {
+    
+  }
+}
 
 int main() {
   // Initializing Robot Configuration. DO NOT REMOVE!
