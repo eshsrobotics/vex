@@ -66,7 +66,14 @@ int main() {
    int turnclockwise = Controller1.Axis1.position(percent);
 
    mechDrive(leftright, forwardbackward, turnclockwise);
-
+   if (Controller1.ButtonLeft.pressing() && state == START) {
+     // Initialize autonomous.
+     state = LEFT_FORWARD;
+     
+   } else if (!Controller1.ButtonLeft.pressing()) {
+     // Terminate autonomous. 
+     state = END;
+   } 
   }
   
 }
