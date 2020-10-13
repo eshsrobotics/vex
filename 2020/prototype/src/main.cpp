@@ -39,6 +39,15 @@ void mechDrive(int strafeLeftRight, int forwardBack, int turnLeftRight) {
   LeftBack.spin(forward, forwardBack - strafeLeftRight + turnLeftRight,
                 percent);
 }
+const int deadzone_threshold = 10;
+
+int threshold(int joystickValue) {
+  if (joystickValue >= -deadzone_threshold && joystickValue <= deadzone_threshold) {
+    return 0;
+  }
+  return joystickValue;
+} 
+
 enum State {
   START = 1,
   LEFT_FORWARD,
@@ -48,7 +57,7 @@ enum State {
   END
 };
 State state = START;
-int drive_time_ms = 1500;
+int drive_time_ms = 500;
 int drive_speed_percentage = 55;
 
 void diamond_drive(double button_press_time_ms) {
@@ -83,7 +92,7 @@ int main() {
   // Initializing Robot Configuration. DO NOT REMOVE!
   vexcodeInit();
   double button_press_time_ms = 0;
-
+  
   while (true) {
     int leftright = Controller1.Axis4.position(percent);
     int forwardbackward = Controller1.Axis3.position(percent);
@@ -99,7 +108,9 @@ int main() {
     } else if (!Controller1.ButtonLeft.pressing()) {
       // Terminate autonomous.
       state = END;
-      mechDrive(leftright, forwardbackward, turnclockwise);
+
+      // Adjust the joystick for the deadzone
+      mechDrive(threshold(leftright), threshold(forwardbackward), threshold(turnclockwise));
     }
     // Executes autonomous if runnable.
     diamond_drive(button_press_time_ms);
