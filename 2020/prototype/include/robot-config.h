@@ -8,9 +8,12 @@ extern motor LeftFront;
 extern motor RightBack;
 extern motor LeftBack;
 extern controller Controller1;
+extern line LeftLineTracker;
+extern line MiddleLineTracker;
+extern line RightLineTracker;
 
 /**
- * Used to initialize code/tasks/devices added using tools in VEXcode Text.
+ * Used to initialize code/tasks/devices added using tools in VEXcode Pro.
  * 
  * This should be called at the start of your int main function.
  */

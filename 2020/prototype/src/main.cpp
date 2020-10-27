@@ -1,11 +1,14 @@
 // ---- START VEXCODE CONFIGURED DEVICES ----
 // Robot Configuration:
 // [Name]               [Type]        [Port(s)]
-// RightFront           motor         1
-// LeftFront            motor         19
-// RightBack            motor         3
-// LeftBack             motor         4
-// Controller1          controller
+// RightFront           motor         1               
+// LeftFront            motor         19              
+// RightBack            motor         3               
+// LeftBack             motor         4               
+// Controller1          controller                    
+// LeftLineTracker      line          A               
+// MiddleLineTracker    line          B               
+// RightLineTracker     line          C               
 // ---- END VEXCODE CONFIGURED DEVICES ----
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
@@ -20,7 +23,7 @@
 
 using namespace vex;
 
-// This is a loop fuction for the drive motors
+// This is a loop function for the drive motors
 //
 // strafeLeftRight: the percentage (-100 to 100) of speed of which the robot
 // will go- either strafing to the left or right forwardBack: the percentage
@@ -88,6 +91,19 @@ void diamond_drive(double button_press_time_ms) {
   }
 }
 
+void printSensorValues() {
+  Controller1.Screen.clearScreen();
+  Controller1.Screen.setCursor(1, 1);
+  Controller1.Screen.print("Left sensor: %.1f", LeftLineTracker.value(percent));
+  Controller1.Screen.print("Middle sensor: %.1f", MiddleLineTracker.value(percent));
+  Controller1.Screen.print("Right sensor: %.1f", RightLineTracker.value(percent));
+  Brain.Screen.setCursor(1, 1);
+  Brain.Screen.clearScreen();
+  Brain.Screen.print("Left sensor: %.1f", LeftLineTracker.value(percent));
+  Brain.Screen.print("Middle sensor: %.1f", MiddleLineTracker.value(percent));
+  Brain.Screen.print("Right sensor: %.1f", RightLineTracker.value(percent));
+}
+
 int main() {
   // Initializing Robot Configuration. DO NOT REMOVE!
   vexcodeInit();
@@ -114,5 +130,8 @@ int main() {
     }
     // Executes autonomous if runnable.
     diamond_drive(button_press_time_ms);
+  
+    // Print the line sensors trackers.
+    printSensorValues();
   }
 }
