@@ -23,13 +23,13 @@
 
 using namespace vex;
 
-// This is a loop function for the drive motors
+// This is a loop function for the drive motors.
 //
 // strafeLeftRight: the percentage (-100 to 100) of speed of which the robot
 // will go- either strafing to the left or right forwardBack: the percentage
 // (-100 to 100) of speed of which the robot will go- either forward or back
 // turnLeftRight:the percentage (-100 to 100) of speed of which the robot will
-// go-  either turning left or right
+// go-  either turning left or right.
 
 void mechDrive(int strafeLeftRight, int forwardBack, int turnLeftRight) {
 
@@ -42,8 +42,11 @@ void mechDrive(int strafeLeftRight, int forwardBack, int turnLeftRight) {
   LeftBack.spin(forward, forwardBack - strafeLeftRight + turnLeftRight,
                 percent);
 }
+
+// How far from the center the joystick must move to have an effect.
 const int deadzone_threshold = 10;
 
+// Checks if the deadzone applies to the joystick input.
 int threshold(int joystickValue) {
   if (joystickValue >= -deadzone_threshold && joystickValue <= deadzone_threshold) {
     return 0;
@@ -51,6 +54,7 @@ int threshold(int joystickValue) {
   return joystickValue;
 } 
 
+// States that are used during fake autonomous.
 enum State {
   START = 1,
   LEFT_FORWARD,
@@ -59,10 +63,16 @@ enum State {
   LEFT_BACKWARD,
   END
 };
+
+// Current state of fake autonomous state machine.
 State state = START;
+
+// Speed and length of drive during autonomous diamond.
 int drive_time_ms = 500;
 int drive_speed_percentage = 55;
 
+// Instantaneous function that drives robot in diamond pattern.
+// Fake autonomus mode to be replaced at a later date.
 void diamond_drive(double button_press_time_ms) {
   double elapsed_time_ms = Brain.timer(msec) - button_press_time_ms;
   if (state == START) {
@@ -91,6 +101,9 @@ void diamond_drive(double button_press_time_ms) {
   }
 }
 
+// Prints sensor values on controller display and brain display.
+//
+// This function is used for debugging.
 void printSensorValues() {
   Controller1.Screen.clearScreen();
   Controller1.Screen.setCursor(1, 1);
@@ -125,9 +138,10 @@ int main() {
       // Terminate autonomous.
       state = END;
 
-      // Adjust the joystick for the deadzone
+      // Adjust the joystick for the deadzone.
       mechDrive(threshold(leftright), threshold(forwardbackward), threshold(turnclockwise));
     }
+    
     // Executes autonomous if runnable.
     diamond_drive(button_press_time_ms);
   
