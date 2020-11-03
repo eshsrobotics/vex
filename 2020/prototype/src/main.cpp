@@ -23,6 +23,37 @@
 
 using namespace vex;
 
+enum LineTrackingEnvironment {
+    // Environment: Karlee's room, artificial lighting.
+    // Line color: green painter tape.
+    // Floor color: line paper (white).
+    KARLEES_ROOM_GREEN_ON_WHITE,
+
+    // TBD.
+    FIRST_COMPETITION
+};
+
+const LineTrackingEnvironment environment = KARLEES_ROOM_GREEN_ON_WHITE;
+
+bool sensorSeesLine(line& lineTracker) {
+  switch(environment) {
+    case KARLEES_ROOM_GREEN_ON_WHITE:
+      // TODO: replace with actual measured value.
+      if (lineTracker.reflectivity() < 30) {
+        return true;
+      }
+      break;
+  } 
+  return false;
+}
+
+bool onLine() {
+  if (sensorSeesLine(MiddleLineTracker) || (sensorSeesLine(LeftLineTracker) && sensorSeesLine(RightLineTracker))) {
+    return true;
+  }
+  return false;
+}
+
 // This is a loop function for the drive motors.
 //
 // strafeLeftRight: the percentage (-100 to 100) of speed of which the robot
