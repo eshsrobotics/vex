@@ -47,8 +47,33 @@ bool sensorSeesLine(line& lineTracker) {
   return false;
 }
 
+// Returns true if on a line and false if not on a line
 bool onLine() {
   if (sensorSeesLine(MiddleLineTracker) || (sensorSeesLine(LeftLineTracker) && sensorSeesLine(RightLineTracker))) {
+    return true;
+  }
+  return false;
+}
+
+// Returns true if no sensors detect a line and false if atleast one sensor detects a line
+bool notOnLine() {
+  if (!sensorSeesLine(MiddleLineTracker) && !sensorSeesLine(LeftLineTracker) && !sensorSeesLine(RightLineTracker)) {
+    return true;
+  }
+  return false;
+}
+
+// Returns true if only left sensor sees a line and false if left sensor doesn't see a line or other sensors see a line
+bool leftOfLine() {
+  if (!sensorSeesLine(MiddleLineTracker) && sensorSeesLine(LeftLineTracker) && !sensorSeesLine(RightLineTracker)) {
+    return true;
+  }
+  return false;
+}
+
+// Returns true if only right sensor sees a line and false if right sensor doesn't see a line or other sensors see a line
+bool rightOfLine() {
+  if (!sensorSeesLine(MiddleLineTracker) && !sensorSeesLine(LeftLineTracker) && sensorSeesLine(RightLineTracker)) {
     return true;
   }
   return false;
@@ -132,6 +157,22 @@ void diamond_drive(double button_press_time_ms) {
   }
 }
 
+// Cause robot to track a line if it is on a line, and to search for a line if it is not on a line
+void startLineTracking() {
+  const int turningSpeedPercent = 5;
+  const int driveSpeedPercent = 40;
+  const int lostSpeedPercent = 10;
+  if (onLine()) {
+    mechDrive(driveSpeedPercent, 0, 0);
+  } else if (leftOfLine()) {
+    mechDrive(driveSpeedPercent, 0, turningSpeedPercent);
+  } else if (rightOfLine()) {
+    mechDrive(driveSpeedPercent, 0, -turningSpeedPercent);
+  } else if (notOnLine()) {
+    mechDrive(lostSpeedPercent, 0, turningSpeedPercent);
+  }
+}
+
 // Prints sensor values on controller display and brain display.
 //
 // This function is used for debugging.
@@ -160,17 +201,22 @@ int main() {
 
     
     if (Controller1.ButtonLeft.pressing() && (state == START || state == END)) {
-      // Initialize autonomous.
+      // Initialize diamond drive autonomous.
       state = LEFT_FORWARD;
 
       button_press_time_ms = Brain.timer(msec);
 
     } else if (!Controller1.ButtonLeft.pressing()) {
-      // Terminate autonomous.
+      // Terminate diamond drive autonomous.
       state = END;
 
-      // Adjust the joystick for the deadzone.
-      mechDrive(threshold(leftright), threshold(forwardbackward), threshold(turnclockwise));
+      if (!Controller1.ButtonR1.pressing()) {
+        // Adjust the joystick for the deadzone.
+        mechDrive(threshold(leftright), threshold(forwardbackward), threshold(turnclockwise));
+      } else {
+        // Track line when ButtonR1 is held
+        startLineTracking();
+      }
     }
     
     // Executes autonomous if runnable.
@@ -179,4 +225,5 @@ int main() {
     // Print the line sensors trackers.
     printSensorValues();
   }
+
 }
