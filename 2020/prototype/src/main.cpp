@@ -28,6 +28,12 @@ enum LineTrackingEnvironment {
     // Line color: green painter tape.
     // Floor color: line paper (white).
     KARLEES_ROOM_GREEN_ON_WHITE,
+    
+    // Enviornment: Brandon's room, no lighting.
+    // Line color: White envelope.
+    // Floor color: Dark Brown Table.
+    BRANDONS_DARKENED_ROOM_DARK_VS_WHITE,
+
 
     // TBD.
     FIRST_COMPETITION
@@ -38,6 +44,12 @@ const LineTrackingEnvironment environment = KARLEES_ROOM_GREEN_ON_WHITE;
 bool sensorSeesLine(line& lineTracker) {
   switch(environment) {
     case KARLEES_ROOM_GREEN_ON_WHITE:
+      // TODO: replace with actual measured value.
+      if (lineTracker.reflectivity() < 30) {
+        return true;
+      }
+      break;
+    case BRANDONS_DARKENED_ROOM_DARK_VS_WHITE:
       // TODO: replace with actual measured value.
       if (lineTracker.reflectivity() < 30) {
         return true;
@@ -179,19 +191,19 @@ void startLineTracking() {
 void printSensorValues() {
   Controller1.Screen.clearScreen();
   Controller1.Screen.setCursor(1, 1);
-  Controller1.Screen.print("Left sensor: %d", LeftLineTracker.value(percent));
+  Controller1.Screen.print("Left sensor: %d", LeftLineTracker.reflectivity());
   Controller1.Screen.setCursor(2, 1);
-  Controller1.Screen.print("Middle sensor: %d", MiddleLineTracker.value(percent));
+  Controller1.Screen.print("Middle sensor: %d", MiddleLineTracker.reflectivity());
   Controller1.Screen.setCursor(3, 1);
-  Controller1.Screen.print("Right sensor: %d", RightLineTracker.value(percent));
+  Controller1.Screen.print("Right sensor: %d", RightLineTracker.reflectivity());
 
   Brain.Screen.setCursor(1, 1);
   Brain.Screen.clearScreen();
-  Brain.Screen.print("Left sensor: %d", LeftLineTracker.value(percent));
+  Brain.Screen.print("Left sensor: %d", LeftLineTracker.reflectivity());
   Brain.Screen.setCursor(2, 1);
-  Brain.Screen.print("Middle sensor: %d", MiddleLineTracker.value(percent));
+  Brain.Screen.print("Middle sensor: %d", MiddleLineTracker.reflectivity());
   Brain.Screen.setCursor(3, 1);
-  Brain.Screen.print("Right sensor: %d", RightLineTracker.value(percent));
+  Brain.Screen.print("Right sensor: %d", RightLineTracker.reflectivity());
 }
 
 int main() {
