@@ -50,8 +50,8 @@ bool sensorSeesLine(line& lineTracker) {
       }
       break;
     case BRANDONS_DARKENED_ROOM_DARK_VS_WHITE:
-      // TODO: replace with actual measured value.
-      if (lineTracker.reflectivity() < 30) {
+      // White envelope (line) has 95 reflectivity vs the Dark Brown Table (floor) which has 8 reflectivity
+      if (lineTracker.reflectivity() > 70) {
         return true;
       }
       break;
@@ -189,13 +189,24 @@ void startLineTracking() {
 //
 // This function is used for debugging.
 void printSensorValues() {
+
+  // Controller screen space is 3 rows by 19 columns
   Controller1.Screen.clearScreen();
   Controller1.Screen.setCursor(1, 1);
-  Controller1.Screen.print("Left sensor: %d", LeftLineTracker.reflectivity());
+  Controller1.Screen.print("Line: %d %d %d", LeftLineTracker.reflectivity(), MiddleLineTracker.reflectivity(), RightLineTracker.reflectivity());
+  char leftMiddleRight[4] = {'-', '-', '-', '\0'};
+  if (leftOfLine()) {
+      leftMiddleRight[0] = 'L';
+  } 
+  if (rightOfLine()) {
+      leftMiddleRight[2] = 'R';
+  } 
+  if (onLine()) {
+      leftMiddleRight[1] = 'M';
+  }
   Controller1.Screen.setCursor(2, 1);
-  Controller1.Screen.print("Middle sensor: %d", MiddleLineTracker.reflectivity());
-  Controller1.Screen.setCursor(3, 1);
-  Controller1.Screen.print("Right sensor: %d", RightLineTracker.reflectivity());
+  Controller1.Screen.print(leftMiddleRight);
+
 
   Brain.Screen.setCursor(1, 1);
   Brain.Screen.clearScreen();
