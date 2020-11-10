@@ -180,12 +180,17 @@ void printSensorValues() {
   Controller1.Screen.clearScreen();
   Controller1.Screen.setCursor(1, 1);
   Controller1.Screen.print("Left sensor: %.1f", LeftLineTracker.value(percent));
+  Controller1.Screen.setCursor(2, 1);
   Controller1.Screen.print("Middle sensor: %.1f", MiddleLineTracker.value(percent));
+  Controller1.Screen.setCursor(3, 1);
   Controller1.Screen.print("Right sensor: %.1f", RightLineTracker.value(percent));
+
   Brain.Screen.setCursor(1, 1);
   Brain.Screen.clearScreen();
   Brain.Screen.print("Left sensor: %.1f", LeftLineTracker.value(percent));
+  Brain.Screen.setCursor(2, 1);
   Brain.Screen.print("Middle sensor: %.1f", MiddleLineTracker.value(percent));
+  Brain.Screen.setCursor(3, 1);
   Brain.Screen.print("Right sensor: %.1f", RightLineTracker.value(percent));
 }
 
