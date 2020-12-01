@@ -23,6 +23,18 @@
 #include "vex.h"
 
 using namespace vex;
+using std::unordered_map;
+using std::array;
+using std::pair;
+using std::make_pair;
+using std::unique_ptr;
+
+enum MotorNumber {
+  RIGHT_FRONT,
+  LEFT_FRONT,
+  RIGHT_BACK,
+  LEFT_BACK
+};
 
 // This is a loop function for the drive motors.
 //
@@ -34,14 +46,18 @@ using namespace vex;
 
 void mechDrive(int strafeLeftRight, int forwardBack, int turnLeftRight) {
 
-  RightFront.spin(forward, forwardBack - strafeLeftRight - turnLeftRight,
-                  percent);
-  RightBack.spin(forward, forwardBack + strafeLeftRight - turnLeftRight,
-                 percent);
-  LeftFront.spin(forward, forwardBack + strafeLeftRight + turnLeftRight,
-                 percent);
-  LeftBack.spin(forward, forwardBack - strafeLeftRight + turnLeftRight,
-                percent);
+  array<pair<motor*, double>, 4> spinValues;
+  
+  spinValues[RIGHT_FRONT] = make_pair(&RightFront, forwardBack - strafeLeftRight - turnLeftRight);
+  spinValues[RIGHT_BACK] = make_pair(&RightBack, forwardBack + strafeLeftRight - turnLeftRight);
+  spinValues[LEFT_FRONT] = make_pair(&LeftFront, forwardBack + strafeLeftRight + turnLeftRight);
+  spinValues[LEFT_BACK] = make_pair(&LeftBack, forwardBack - strafeLeftRight + turnLeftRight);
+  
+  for (unsigned int i = 0; i < 4; i++) {
+    motor& m = *spinValues[i].first;
+    double speed = spinValues[i].second;
+    m.spin(forward, speed, percent);
+  }
 }
 
 // How far from the center the joystick must move to have an effect.
