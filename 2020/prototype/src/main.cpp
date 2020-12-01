@@ -1,14 +1,14 @@
 // ---- START VEXCODE CONFIGURED DEVICES ----
 // Robot Configuration:
 // [Name]               [Type]        [Port(s)]
-// RightFront           motor         1               
-// LeftFront            motor         19              
-// RightBack            motor         3               
-// LeftBack             motor         4               
-// Controller1          controller                    
-// LeftLineTracker      line          A               
-// MiddleLineTracker    line          B               
-// RightLineTracker     line          C               
+// RightFront           motor         1
+// LeftFront            motor         19
+// RightBack            motor         3
+// LeftBack             motor         4
+// Controller1          controller
+// LeftLineTracker      line          A
+// MiddleLineTracker    line          B
+// RightLineTracker     line          C
 // ---- END VEXCODE CONFIGURED DEVICES ----
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
@@ -19,77 +19,10 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
+#include "lineTracking.h"
 #include "vex.h"
 
 using namespace vex;
-
-enum LineTrackingEnvironment {
-    // Environment: Karlee's room, artificial lighting.
-    // Line color: green painter tape.
-    // Floor color: line paper (white).
-    KARLEES_ROOM_GREEN_ON_WHITE,
-    
-    // Enviornment: Brandon's room, no lighting.
-    // Line color: White envelope.
-    // Floor color: Dark Brown Table.
-    BRANDONS_DARKENED_ROOM_DARK_VS_WHITE,
-
-
-    // TBD.
-    FIRST_COMPETITION
-};
-
-const LineTrackingEnvironment environment = KARLEES_ROOM_GREEN_ON_WHITE;
-
-bool sensorSeesLine(line& lineTracker) {
-  switch(environment) {
-    case KARLEES_ROOM_GREEN_ON_WHITE:
-      // TODO: replace with actual measured value.
-      if (lineTracker.reflectivity() < 30) {
-        return true;
-      }
-      break;
-    case BRANDONS_DARKENED_ROOM_DARK_VS_WHITE:
-      // White envelope (line) has 95 reflectivity vs the Dark Brown Table (floor) which has 8 reflectivity
-      if (lineTracker.reflectivity() > 70) {
-        return true;
-      }
-      break;
-  } 
-  return false;
-}
-
-// Returns true if on a line and false if not on a line
-bool onLine() {
-  if (sensorSeesLine(MiddleLineTracker) || (sensorSeesLine(LeftLineTracker) && sensorSeesLine(RightLineTracker))) {
-    return true;
-  }
-  return false;
-}
-
-// Returns true if no sensors detect a line and false if atleast one sensor detects a line
-bool notOnLine() {
-  if (!sensorSeesLine(MiddleLineTracker) && !sensorSeesLine(LeftLineTracker) && !sensorSeesLine(RightLineTracker)) {
-    return true;
-  }
-  return false;
-}
-
-// Returns true if only left sensor sees a line and false if left sensor doesn't see a line or other sensors see a line
-bool leftOfLine() {
-  if (!sensorSeesLine(MiddleLineTracker) && sensorSeesLine(LeftLineTracker) && !sensorSeesLine(RightLineTracker)) {
-    return true;
-  }
-  return false;
-}
-
-// Returns true if only right sensor sees a line and false if right sensor doesn't see a line or other sensors see a line
-bool rightOfLine() {
-  if (!sensorSeesLine(MiddleLineTracker) && !sensorSeesLine(LeftLineTracker) && sensorSeesLine(RightLineTracker)) {
-    return true;
-  }
-  return false;
-}
 
 // This is a loop function for the drive motors.
 //
@@ -116,11 +49,12 @@ const int deadzone_threshold = 10;
 
 // Checks if the deadzone applies to the joystick input.
 int threshold(int joystickValue) {
-  if (joystickValue >= -deadzone_threshold && joystickValue <= deadzone_threshold) {
+  if (joystickValue >= -deadzone_threshold &&
+      joystickValue <= deadzone_threshold) {
     return 0;
   }
   return joystickValue;
-} 
+}
 
 // States that are used during fake autonomous.
 enum State {
@@ -169,7 +103,8 @@ void diamond_drive(double button_press_time_ms) {
   }
 }
 
-// Cause robot to track a line if it is on a line, and to search for a line if it is not on a line
+// Cause robot to track a line if it is on a line, and to search for a line if
+// it is not on a line
 void startLineTracking() {
   const int turningSpeedPercent = 5;
   const int driveSpeedPercent = 40;
@@ -193,20 +128,21 @@ void printSensorValues() {
   // Controller screen space is 3 rows by 19 columns
   Controller1.Screen.clearScreen();
   Controller1.Screen.setCursor(1, 1);
-  Controller1.Screen.print("Line: %d %d %d", LeftLineTracker.reflectivity(), MiddleLineTracker.reflectivity(), RightLineTracker.reflectivity());
+  Controller1.Screen.print("Line: %d %d %d", LeftLineTracker.reflectivity(),
+                           MiddleLineTracker.reflectivity(),
+                           RightLineTracker.reflectivity());
   char leftMiddleRight[4] = {'-', '-', '-', '\0'};
   if (leftOfLine()) {
-      leftMiddleRight[0] = 'L';
-  } 
+    leftMiddleRight[0] = 'L';
+  }
   if (rightOfLine()) {
-      leftMiddleRight[2] = 'R';
-  } 
+    leftMiddleRight[2] = 'R';
+  }
   if (onLine()) {
-      leftMiddleRight[1] = 'M';
+    leftMiddleRight[1] = 'M';
   }
   Controller1.Screen.setCursor(2, 1);
   Controller1.Screen.print(leftMiddleRight);
-
 
   Brain.Screen.setCursor(1, 1);
   Brain.Screen.clearScreen();
@@ -221,13 +157,12 @@ int main() {
   // Initializing Robot Configuration. DO NOT REMOVE!
   vexcodeInit();
   double button_press_time_ms = 0;
-  
+
   while (true) {
     int leftright = Controller1.Axis4.position(percent);
     int forwardbackward = Controller1.Axis3.position(percent);
     int turnclockwise = Controller1.Axis1.position(percent);
 
-    
     if (Controller1.ButtonLeft.pressing() && (state == START || state == END)) {
       // Initialize diamond drive autonomous.
       state = LEFT_FORWARD;
@@ -240,18 +175,18 @@ int main() {
 
       if (!Controller1.ButtonR1.pressing()) {
         // Adjust the joystick for the deadzone.
-        mechDrive(threshold(leftright), threshold(forwardbackward), threshold(turnclockwise));
+        mechDrive(threshold(leftright), threshold(forwardbackward),
+                  threshold(turnclockwise));
       } else {
         // Track line when ButtonR1 is held
         startLineTracking();
       }
     }
-    
+
     // Executes autonomous if runnable.
     diamond_drive(button_press_time_ms);
-  
+
     // Print the line sensors trackers.
     printSensorValues();
   }
-
 }
