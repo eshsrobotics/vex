@@ -29,6 +29,18 @@ using std::pair;
 using std::make_pair;
 using std::unique_ptr;
 
+double sgn(double x) {
+  if (x > 0) {
+    return 1;
+  } else if (x == 0) {
+    return 0;
+  } else { 
+    return -1;
+  }
+}
+
+void adjustMotorSpeeds(array<pair<motor*, double>, 4>&);
+
 enum MotorNumber {
   RIGHT_FRONT,
   LEFT_FRONT,
@@ -53,11 +65,29 @@ void mechDrive(int strafeLeftRight, int forwardBack, int turnLeftRight) {
   spinValues[LEFT_FRONT] = make_pair(&LeftFront, forwardBack + strafeLeftRight + turnLeftRight);
   spinValues[LEFT_BACK] = make_pair(&LeftBack, forwardBack - strafeLeftRight + turnLeftRight);
   
+  adjustMotorSpeeds(spinValues);
+
   for (unsigned int i = 0; i < 4; i++) {
     motor& m = *spinValues[i].first;
     double speed = spinValues[i].second;
     m.spin(forward, speed, percent);
   }
+}
+
+// Adjust speeds of motors to ensure robot turns/strafes accurately
+void adjustMotorSpeeds(array<pair<motor*, double>, 4>& spinValues) {
+  if ((sgn(spinValues[RIGHT_FRONT].second) == sgn(spinValues[LEFT_BACK].second)) && 
+      (sgn(spinValues[RIGHT_BACK].second) == sgn(spinValues[LEFT_FRONT].second))) {
+    // Robot is driving in a straight line
+  }
+}
+
+// Will reset all encoders to 0 so we can count from a clean slate
+void resetAllEncoders() {
+  RightFront.resetPosition();
+  RightBack.resetPosition();
+  LeftFront.resetPosition();
+  LeftBack.resetPosition();
 }
 
 // How far from the center the joystick must move to have an effect.
@@ -206,3 +236,5 @@ int main() {
     printSensorValues();
   }
 }
+
+
