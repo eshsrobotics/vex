@@ -74,11 +74,31 @@ void mechDrive(int strafeLeftRight, int forwardBack, int turnLeftRight) {
   }
 }
 
-// Adjust speeds of motors to ensure robot turns/strafes accurately
+array<double, 4> motorAdjustments;
+// This increment is small enough to not change the mutiple adjustments a second to a extreme speed. 
+const double MOTOR_ADJUSTMENT_INCREMENT = 0.0001;   
+
+// Adjust speeds of motors to ensure robot turns/strafes accurately.
 void adjustMotorSpeeds(array<pair<motor*, double>, 4>& spinValues) {
   if ((sgn(spinValues[RIGHT_FRONT].second) == sgn(spinValues[LEFT_BACK].second)) && 
       (sgn(spinValues[RIGHT_BACK].second) == sgn(spinValues[LEFT_FRONT].second))) {
-    // Robot is driving in a straight line
+    // Robot is driving in a straight line.
+    //
+    // Check to see if one side is lagging behind the other side.  
+    if (RightFront.rotation(rev) < LeftBack.rotation(rev)) {
+      
+      // The RightFront wheel is lagging
+      if (spinValues[RIGHT_FRONT].second >= 100) {
+        // RightFront wheel is moving at maximum velocity, slow the BackLeft wheel.
+        motorAdjustments[LEFT_BACK] -= MOTOR_ADJUSTMENT_INCREMENT;
+      } else {
+        motorAdjustments[RIGHT_FRONT] += MOTOR_ADJUSTMENT_INCREMENT;
+      }
+      
+    } else if (LeftBack.rotation(rev) < RightFront.rotation(rev)) {
+      // The LeftBack wheel is the one lagging.
+      motorAdjustments[LEFT_BACK] += MOTOR_ADJUSTMENT_INCREMENT;
+    }
   }
 }
 
