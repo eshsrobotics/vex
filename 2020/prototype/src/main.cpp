@@ -23,30 +23,27 @@
 #include "vex.h"
 
 using namespace vex;
-using std::unordered_map;
 using std::array;
-using std::pair;
 using std::make_pair;
+using std::pair;
 using std::unique_ptr;
+using std::unordered_map;
 
 double sgn(double x) {
   if (x > 0) {
     return 1;
   } else if (x == 0) {
     return 0;
-  } else { 
+  } else {
     return -1;
   }
 }
 
-void adjustMotorSpeeds(array<pair<motor*, double>, 4>&);
+// Forward declarations
+void adjustMotorSpeeds(array<pair<motor *, double>, 4> &);
+void _adjustDiagonals(int front, int back, array<pair<motor *, double>, 4> &spinValues);
 
-enum MotorNumber {
-  RIGHT_FRONT,
-  LEFT_FRONT,
-  RIGHT_BACK,
-  LEFT_BACK
-};
+enum MotorNumber { RIGHT_FRONT, LEFT_FRONT, RIGHT_BACK, LEFT_BACK };
 
 // This is a loop function for the drive motors.
 //
@@ -58,46 +55,64 @@ enum MotorNumber {
 
 void mechDrive(int strafeLeftRight, int forwardBack, int turnLeftRight) {
 
-  array<pair<motor*, double>, 4> spinValues;
-  
-  spinValues[RIGHT_FRONT] = make_pair(&RightFront, forwardBack - strafeLeftRight - turnLeftRight);
-  spinValues[RIGHT_BACK] = make_pair(&RightBack, forwardBack + strafeLeftRight - turnLeftRight);
-  spinValues[LEFT_FRONT] = make_pair(&LeftFront, forwardBack + strafeLeftRight + turnLeftRight);
-  spinValues[LEFT_BACK] = make_pair(&LeftBack, forwardBack - strafeLeftRight + turnLeftRight);
-  
+  array<pair<motor *, double>, 4> spinValues;
+
+  spinValues[RIGHT_FRONT] =
+      make_pair(&RightFront, forwardBack - strafeLeftRight - turnLeftRight);
+  spinValues[RIGHT_BACK] =
+      make_pair(&RightBack, forwardBack + strafeLeftRight - turnLeftRight);
+  spinValues[LEFT_FRONT] =
+      make_pair(&LeftFront, forwardBack + strafeLeftRight + turnLeftRight);
+  spinValues[LEFT_BACK] =
+      make_pair(&LeftBack, forwardBack - strafeLeftRight + turnLeftRight);
+
   adjustMotorSpeeds(spinValues);
 
   for (unsigned int i = 0; i < 4; i++) {
-    motor& m = *spinValues[i].first;
+    motor &m = *spinValues[i].first;
     double speed = spinValues[i].second;
     m.spin(forward, speed, percent);
   }
 }
 
 array<double, 4> motorAdjustments;
-// This increment is small enough to not change the mutiple adjustments a second to a extreme speed. 
-const double MOTOR_ADJUSTMENT_INCREMENT = 0.0001;   
+// This increment is small enough to not change the mutiple adjustments a second
+// to a extreme speed.
+const double MOTOR_ADJUSTMENT_INCREMENT = 0.0001;
 
 // Adjust speeds of motors to ensure robot turns/strafes accurately.
-void adjustMotorSpeeds(array<pair<motor*, double>, 4>& spinValues) {
-  if ((sgn(spinValues[RIGHT_FRONT].second) == sgn(spinValues[LEFT_BACK].second)) && 
+void adjustMotorSpeeds(array<pair<motor *, double>, 4> &spinValues) {
+
+  if ((sgn(spinValues[RIGHT_FRONT].second) == sgn(spinValues[LEFT_BACK].second)) &&
       (sgn(spinValues[RIGHT_BACK].second) == sgn(spinValues[LEFT_FRONT].second))) {
-    // Robot is driving in a straight line.
-    //
-    // Check to see if one side is lagging behind the other side.  
-    if (RightFront.rotation(rev) < LeftBack.rotation(rev)) {
-      
-      // The RightFront wheel is lagging
-      if (spinValues[RIGHT_FRONT].second >= 100) {
-        // RightFront wheel is moving at maximum velocity, slow the BackLeft wheel.
-        motorAdjustments[LEFT_BACK] -= MOTOR_ADJUSTMENT_INCREMENT;
-      } else {
-        motorAdjustments[RIGHT_FRONT] += MOTOR_ADJUSTMENT_INCREMENT;
-      }
-      
-    } else if (LeftBack.rotation(rev) < RightFront.rotation(rev)) {
-      // The LeftBack wheel is the one lagging.
-      motorAdjustments[LEFT_BACK] += MOTOR_ADJUSTMENT_INCREMENT;
+        _adjustDiagonals(RIGHT_FRONT, LEFT_BACK, spinValues);
+        _adjustDiagonals(RIGHT_BACK, LEFT_FRONT, spinValues);
+  }
+}
+
+void _adjustDiagonals(int front, int back, array<pair<motor *, double>, 4> &spinValues) {
+  // Robot is driving in a straight line.
+  motor& frontMotor = *spinValues[front].first;
+  motor& backMotor = *spinValues[back].first;
+  //
+  // Check to see if one side is lagging behind the other side.
+  if (frontMotor.rotation(rev) < backMotor.rotation(rev)) {
+
+    // The front wheel of the diagonal is lagging
+    if (spinValues[front].second >= 100) {
+      // Front wheel is moving at maximum velocity, slow the back wheel.
+      motorAdjustments[back] -= MOTOR_ADJUSTMENT_INCREMENT;
+    } else {
+      motorAdjustments[front] += MOTOR_ADJUSTMENT_INCREMENT;
+    }
+
+  } else if (backMotor.rotation(rev) > frontMotor.rotation(rev)) {
+    // The back wheel is the ONE LAGGING
+    if (spinValues[back].second >= 100) {
+      // Back wheel is moving at maximum velocity, slow the Front wheel.
+      motorAdjustments[front] -= MOTOR_ADJUSTMENT_INCREMENT;
+    } else {
+      motorAdjustments[back] += MOTOR_ADJUSTMENT_INCREMENT;
     }
   }
 }
@@ -256,5 +271,3 @@ int main() {
     printSensorValues();
   }
 }
-
-
