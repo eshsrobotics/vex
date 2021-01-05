@@ -80,6 +80,12 @@ array<double, 4> motorAdjustments;
 // to a extreme speed.
 const double MOTOR_ADJUSTMENT_INCREMENT = 0.0001;
 
+void rotateToAngle(bool enable, double desiredAngleDegrees) {
+  if (enable == false) {
+    return;
+  }
+}
+
 // Adjust speeds of motors to ensure robot turns/strafes accurately.
 void adjustMotorSpeeds(array<pair<motor *, double>, 4> &spinValues) {
 

@@ -16,6 +16,7 @@ controller Controller1 = controller(primary);
 line LeftLineTracker = line(Brain.ThreeWirePort.A);
 line MiddleLineTracker = line(Brain.ThreeWirePort.B);
 line RightLineTracker = line(Brain.ThreeWirePort.C);
+gyro GyroD = gyro(Brain.ThreeWirePort.D);
 
 // VEXcode generated functions
 // define variable for remote controller enable/disable
