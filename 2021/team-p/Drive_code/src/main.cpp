@@ -39,6 +39,29 @@ void pre_auton(void) {
   // Example: clearing encoders, setting servo positions, ...
 }
 
+// Autonomous and Skills Challenge Support Routines.
+
+
+bool is_robot_driving() {
+    return Drivetrain.isMoving();
+}
+
+bool is_arm_moving() {
+  return (ArmLeft.isSpinning() || ArmRight.isSpinning());
+}
+
+// Drives the robot a certain number of millimeters forward (+) or backward (-).
+// Driving operation is asynchronous.
+// The motors will continue running after the function ends.
+void drive(double distance_mm) {
+  if (distance_mm > 0) {
+    Drivetrain.driveFor(fwd, distance_mm, mm, false);
+  } else if (distance_mm < 0) {
+    Drivetrain.driveFor(reverse, distance_mm, mm, false);
+  } else {
+    Drivetrain.stop();
+  }
+}
 /*---------------------------------------------------------------------------*/
 /*                                                                           */
 /*                              Autonomous Task                              */
