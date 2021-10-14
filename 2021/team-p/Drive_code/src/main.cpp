@@ -62,6 +62,31 @@ void drive(double distance_mm) {
     Drivetrain.stop();
   }
 }
+
+// Moves the arms a certain number of degrees up (+) or down (-)
+// NEED TO FIX:
+// - The push sensors don't stop the arms as they're moving, they can only keep the arms from starting.
+void arms(double dist_degrees) {
+  if (dist_degrees > 0) {
+    ArmRight.rotateFor(forward, (dist_degrees * 15), degrees, false);
+    ArmLeft.rotateFor(forward, (dist_degrees * 15), degrees);
+  } else if (dist_degrees < 0) {
+    if (!LeftArmBumper.pressing()) {
+      ArmLeft.rotateFor(forward, (dist_degrees * 15), degrees, false);
+    } else {
+      ArmLeft.stop(hold);
+    }
+    if (!RightArmBumper.pressing()) {
+      ArmRight.rotateFor(forward, (dist_degrees * 15), degrees);
+    } else {
+      ArmRight.stop(hold);
+    }
+  }
+  else {
+  ArmLeft.stop(hold);
+  ArmRight.stop(hold);
+  }
+}
 /*---------------------------------------------------------------------------*/
 /*                                                                           */
 /*                              Autonomous Task                              */
@@ -76,6 +101,13 @@ void autonomous(void) {
   // ..........................................................................
   // Insert autonomous user code here.
   // ..........................................................................
+  Drivetrain.setDriveVelocity(50, pct);
+  Drivetrain.setTurnVelocity(50, pct);
+  // arms(-90);
+  // Drivetrain.turnFor(right, 15, degrees);
+  // Drivetrain.driveFor(forward, 410, mm);
+  // arms(-70);
+  // Drivetrain.driveFor(reverse, 250, mm);
 }
 
 /*---------------------------------------------------------------------------*/
