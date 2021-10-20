@@ -226,29 +226,30 @@ void usercontrol(void) {
     // Insert user code here. This is where you use the joystick values to
     // update your motors, etc.
     // ........................................................................
+
+    // Controls the arms of the robot when the shoulder buttons are pressed
+    // The right shoulder buttons move the arms up and down at 50% speed
+    // The left shoulder buttons move the arms at 25% speed
     if (Controller1.ButtonR1.pressing()) {
       ArmLeft.spin(forward, speed, pct);
       ArmRight.spin(forward, speed, pct);
     } else if (Controller1.ButtonR2.pressing()) {
-      if (!LeftArmBumper.pressing())
+      if (!LeftArmBumper.pressing()) {
         ArmLeft.spin(reverse, speed, pct);
-      if (!RightArmBumper.pressing())
+      }
+      if (!RightArmBumper.pressing()) {
         ArmRight.spin(reverse, speed, pct);
-    } else {
-      ArmLeft.stop(hold);
-      ArmRight.stop(hold);
-    }
-
-    // Controls the left shoulder buttons to make the arms go a slower speed
-    // (25%)
-    if (Controller1.ButtonL1.pressing()) {
+      }
+    } else if (Controller1.ButtonL1.pressing()) {
       ArmLeft.spin(forward, speedSlow, pct);
       ArmRight.spin(forward, speedSlow, pct);
     } else if (Controller1.ButtonL2.pressing()) {
-      if (!LeftArmBumper.pressing())
+      if (!LeftArmBumper.pressing()) {
         ArmLeft.spin(reverse, speedSlow, pct);
-      if (!RightArmBumper.pressing())
+      }
+      if (!RightArmBumper.pressing()) {
         ArmRight.spin(reverse, speedSlow, pct);
+      }
     } else {
       ArmLeft.stop(hold);
       ArmRight.stop(hold);
