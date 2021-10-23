@@ -95,7 +95,7 @@ void arms(double dist_degrees, double timeout_msec = 5000) {
   // These variables help the arms move to the desired rotation by
   // accelerating, instead of starting at a certain speed
   // We do not have anything in the function to help with decelerating
-  const double MAXIMUM_ARM_LIFT_PERCENT = 25;
+  const double MAXIMUM_ARM_LIFT_PERCENT = 40;
   const double ARM_LIFT_ACCELERATION = 0.1;
   double currentVelocityPercent = 0;
 
@@ -190,10 +190,11 @@ void autonomous(void) {
   Drivetrain.setDriveVelocity(100, pct);
   Drivetrain.setTurnVelocity(100, pct);
 
-  turnLeftFor(15);
-  driveForwardFor(18);
-  arms(-15);
-  driveReverseFor(-10);
+  arms(-25);
+  turnLeftFor(9);
+  driveForwardFor(19);
+  arms(-30);
+  driveReverseFor(10);
 }
 
 /*---------------------------------------------------------------------------*/
