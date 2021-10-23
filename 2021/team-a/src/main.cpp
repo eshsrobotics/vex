@@ -234,7 +234,8 @@ void usercontrol(void) {
       ArmMotorLeft.spin(reverse, 90, percent);
       ArmMotorRight.spin(reverse, 90, percent);
 
-    } else {
+    } else 
+    {
 
       ArmMotorLeft.stop(hold);
       ArmMotorRight.stop(hold);
@@ -264,7 +265,6 @@ void usercontrol(void) {
 
       pMotor.spin(reverse, 10, percent);
     }
-
       else { pMotor.stop(hold);
     }
 
