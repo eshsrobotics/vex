@@ -1,3 +1,14 @@
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Drivetrain           drivetrain    19, 1, 4, 20    
+// Controller1          controller                    
+// LiftMotor            motor         13              
+// ArmMotorRight        motor         15              
+// ArmMotorLeft         motor         12              
+// Pneumatics1          digital_out   A               
+// pMotor               motor         18              
+// ---- END VEXCODE CONFIGURED DEVICES ----
         
         /*----------------------------------------------------------------------------*/
 /*                                                                            */
@@ -16,7 +27,7 @@
 // LiftMotor            motor         13              
 // ArmMotorRight        motor         15              
 // ArmMotorLeft         motor         12              
-// Out1                 digital_out   A               
+// Pneumatics1                 digital_out   A               
 // pMotor               motor         18              
 // ---- END VEXCODE CONFIGURED DEVICES ----
 
@@ -155,7 +166,7 @@ void autonomous(void) {
     Drivetrain.driveFor(forward, 15, inches);
     MovepMotor(up);
     MoveLift(INWARD); 
-    Out1.set(true);
+    Pneumatics1.set(true);
     Drivetrain.driveFor(reverse, 12, inches);
 
 
@@ -175,7 +186,7 @@ void autonomous(void) {
     // Drivetrain.driveFor(forward, double distance, distanceUnits units)
     // Drivetrain.setTurnVelocity(80, percent);
     // Drivetrain.turnFor(forward,  units)
-    Out1.set(true);
+    Pneumatics1.set(true);
 
   }
   // ..........................................................................
@@ -247,11 +258,11 @@ void usercontrol(void) {
 
     if(Controller1.ButtonB.pressing()) {
 
-      Out1.set(true);
+      Pneumatics1.set(true);
 
     } else {
 
-      Out1.set(false);
+      Pneumatics1.set(false);
       
     }
 
