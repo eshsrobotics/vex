@@ -154,8 +154,8 @@ void MovepMotor(forkDirection dir) {
 void autonomous(void) {
     
   // This will tell us which side of the field we are starting on
-  // 1 - Means we are on the left side of the field (The side next to the mobile goal that is on the diagonal line)
-  // 2 - Means we are on the right side of the field (The side next to the mobile goal that is on the lever)
+  // 1 - Means we are on the right side of the field (The side next to the mobile goal that is on the diagonal line)
+  // 2 - Means we are on the left side of the field (The side next to the mobile goal that is on the lever)
   int sideOfField = 1;
 
   // Right Side Field autonomus code 
@@ -190,17 +190,32 @@ void autonomous(void) {
 
     // Left Side Field autonomous code
   } else if (sideOfField == 2) {
+    // Deploy mobile goal lift and arms
+    MoveLift(OUTWARD);
+    // Drive forward to mobile goal
+    Drivetrain.setDriveVelocity(100, percent);
+    Drivetrain.driveFor(forward, 12, inches);
+    // Move DR4B Up to put donuts in position
+    MoveArm(UP);
+    // Aim pneumatics arm so it is above mobile goal
+    MovepMotor(up);
+    // Pull in mobile goal for donuts
+    MoveLift(INWARD); 
+    // Release donuts
+    Pneumatics1.set(true);
+    // Ensure mobile goal isn't on line by moving backwards
+    Drivetrain.driveFor(reverse, 12, inches);
+    MoveArm(UP);
     // Drivetrain.setDriveVelocity(100, percentUnits units)
     // Drivetrain.driveFor(forward, double distance, distanceUnits units)
     // Drivetrain.setTurnVelocity(80, percent);
     // Drivetrain.turnFor(forward,  units)MoveLift(OUTWARD);
-    Drivetrain.setDriveVelocity(100, percent);
-    Drivetrain.driveFor(forward, 5, inches);
-    MoveArm(UP);
-    MovepMotor(up);
-    MoveLift(INWARD); 
-    Pneumatics1.set(true);
-
+    //Drivetrain.setDriveVelocity(100, percent);
+    //Drivetrain.driveFor(forward, 5, inches);
+    //MoveArm(UP);
+    //MovepMotor(up);
+    //MoveLift(INWARD); 
+    //Pneumatics1.set(true);
 
   }
   // ..........................................................................
