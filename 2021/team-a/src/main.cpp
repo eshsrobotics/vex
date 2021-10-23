@@ -116,7 +116,7 @@ void MovepMotor(forkDirection dir) {
 
   // when lfitMotor spin direction is forward it means lift moves outward
   const double FORK_DRIVE_TIME_MILLISECONDSDOWN = 200; // 20;
-  const double FORK_DRIVE_TIME_MILLISECONDSUP = 350;
+  const double FORK_DRIVE_TIME_MILLISECONDSUP = 150;
   const double FORK_DRIVE_POWER_PERCENT = 100;
   directionType forkDirection = fwd;
 
