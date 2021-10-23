@@ -1,4 +1,5 @@
-/*----------------------------------------------------------------------------*/
+        
+        /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /*    Module:       main.cpp                                                  */
 /*    Author:       VEX                                                       */
@@ -13,8 +14,10 @@
 // Drivetrain           drivetrain    19, 1, 4, 20    
 // Controller1          controller                    
 // LiftMotor            motor         13              
-// ArmMotor1            motor         17              
-// ArmMotor2            motor         16              
+// ArmMotorRight        motor         15              
+// ArmMotorLeft         motor         12              
+// Out1                 digital_out   A               
+// pMotor               motor         18              
 // ---- END VEXCODE CONFIGURED DEVICES ----
 
 #include "vex.h"
@@ -61,7 +64,7 @@ void MoveLift(LiftDirection dir) {
   // when lfitMotor spin direction is forward it means lift moves outward
   const double LIFT_DRIVE_TIME_MILLISECONDSDOWN = 850; // 20;
   const double LIFT_DRIVE_TIME_MILLISECONDSUP = 750;
-  const double LIFT_DRIVE_POWER_PERCENT = 50;
+  const double LIFT_DRIVE_POWER_PERCENT = 100;
   directionType spinDirection = fwd;
 
   if (dir == INWARD) {
@@ -76,26 +79,111 @@ void MoveLift(LiftDirection dir) {
   }
 }
 
-void autonomous(void) {
-  Drivetrain.setDriveVelocity(80, percent);
-  MoveLift(OUTWARD);
-  Drivetrain.driveFor(forward, 12, inches);
-  MoveLift(INWARD);
-  Drivetrain.setTurnVelocity(100, percent);
-  Drivetrain.turnFor(-70, degrees);
-  Drivetrain.driveFor(forward, 18, inches);
-  MoveLift(OUTWARD);
-  Drivetrain.driveFor(reverse, 10, inches);
-  Drivetrain.turnFor(30, degrees);
-  Drivetrain.driveFor(forward, 55, inches);
-  MoveLift(INWARD);
-  Drivetrain.driveFor(reverse, 50, inches);
+enum ArmDirection { UP, DOWN };
+// Moves the lfit backward, returns no value, bool either true or false
+void MoveArm(ArmDirection dir) {
 
+  // when lfitMotor spin direction is forward it means lift moves outward
+  const double ARM_DRIVE_TIME_MILLISECONDSDOWN = 400; // 20;
+  const double ARM_DRIVE_TIME_MILLISECONDSUP = 800;
+  const double ARM_DRIVE_POWER_PERCENT = 100;
+  directionType armDirection = fwd;
+
+  motor_group Arm = motor_group(ArmMotorLeft, ArmMotorRight, LiftMotor); 
+
+  if (dir == UP) {
+    armDirection = forward;
+
+    Arm.spinFor(armDirection, ARM_DRIVE_TIME_MILLISECONDSUP, msec,
+                      ARM_DRIVE_POWER_PERCENT, velocityUnits::pct);
+
+    Arm.stop(hold);
+
+  } else if (dir == DOWN) {
+    Arm.spinFor(armDirection, ARM_DRIVE_TIME_MILLISECONDSDOWN, msec,
+                      ARM_DRIVE_POWER_PERCENT, velocityUnits::pct);
+    
+    Arm.stop(hold);
+  } else {
+    
+    Arm.stop(hold); 
+  }
+}
+
+enum forkDirection { up, down };
+// Moves the lfit backward, returns no value, bool either true or false
+void MovepMotor(forkDirection dir) {
+
+  // when lfitMotor spin direction is forward it means lift moves outward
+  const double FORK_DRIVE_TIME_MILLISECONDSDOWN = 200; // 20;
+  const double FORK_DRIVE_TIME_MILLISECONDSUP = 350;
+  const double FORK_DRIVE_POWER_PERCENT = 100;
+  directionType forkDirection = fwd;
+
+
+  if (dir == up) {
+    forkDirection = forward;
+
+    pMotor.spinFor(forkDirection, FORK_DRIVE_TIME_MILLISECONDSUP, msec,
+                      FORK_DRIVE_POWER_PERCENT, velocityUnits::pct);
+
+
+  } else if (dir == down) {
+    pMotor.spinFor(forkDirection, FORK_DRIVE_TIME_MILLISECONDSDOWN, msec,
+                      FORK_DRIVE_POWER_PERCENT, velocityUnits::pct);
+                  
+  } else {
+    
+    pMotor.stop(hold); 
+  }
+}
+
+
+// This is the autonomous code
+void autonomous(void) {
+    
+  // This will tell us which side of the field we are starting on
+  // 1 - Means we are on the left side of the field (The side next to the mobile goal that is on the diagonal line)
+  // 2 - Means we are on the right side of the field (The side next to the mobile goal that is on the lever)
+  int sideOfField = 1;
+
+  // Right Side Field autonomus code 
+  if (sideOfField == 1) {
+    Drivetrain.setDriveVelocity(100, percent);
+    MoveLift(OUTWARD);
+    MoveArm(UP);
+    Drivetrain.driveFor(forward, 15, inches);
+    MovepMotor(up);
+    MoveLift(INWARD); 
+    Out1.set(true);
+    Drivetrain.driveFor(reverse, 12, inches);
+
+
+    //Drivetrain.setTurnVelocity(100, percent);
+    //Drivetrain.turnFor(-70, degrees);
+    //Drivetrain.driveFor(forward, 18, inches);
+    //MoveLift(OUTWARD);
+    //Drivetrain.driveFor(reverse, 10, inches);
+    //Drivetrain.turnFor(30, degrees);
+    //Drivetrain.driveFor(forward, 55, inches);
+    //MoveLift(INWARD);
+    //Drivetrain.driveFor(reverse, 50, inches);
+
+    // Left Side Field autonomous code
+  } else if (sideOfField == 2) {
+    // Drivetrain.setDriveVelocity(100, percentUnits units)
+    // Drivetrain.driveFor(forward, double distance, distanceUnits units)
+    // Drivetrain.setTurnVelocity(80, percent);
+    // Drivetrain.turnFor(forward,  units)
+    Out1.set(true);
+
+  }
   // ..........................................................................
   // Insert autonomous user code here.
   // ..........................................................................
 }
 
+// This is for the Right side of the field
 /*---------------------------------------------------------------------------*/
 /*                                                                           */
 /*                              User Control Task                            */
@@ -106,44 +194,79 @@ void autonomous(void) {
 /*  You must modify the code to add your own robot specific commands here.   */
 /*---------------------------------------------------------------------------*/
 
+// This is the main execution loop for the user control program.
+// Each time through the loop your program should update motor + servo
+// values based on feedback from the joysticks.
+
+// ........................................................................
+// Insert user code here. This is where you use the joystick values to
+// update your motors, etc.
+// ........................................................................
+
 void usercontrol(void) {
   // User control code here, inside the loop
   while (1) {
 
-    if (Controller1.ButtonL2.pressing())
+    // Moves mobile goal extruder forward or backward
+
+    if (Controller1.ButtonL2.pressing()) {
 
       LiftMotor.spin(forward, 50, percent);
 
-    else if (Controller1.ButtonR2.pressing())
+    } else if (Controller1.ButtonL1.pressing()) {
 
       LiftMotor.spin(reverse, 50, percent);
 
-    else
+    } else {
 
       LiftMotor.stop(hold);
+    }
 
-    if (Controller1.ButtonL1.pressing()) {
+    // Moves lift up and dwown to pick up donuts
 
-      ArmMotor1.spin(forward, 100, percent);
-      ArmMotor2.spin(forward, 100, percent);
+    if (Controller1.ButtonR1.pressing()) {
 
-    } else if (Controller1.ButtonL2.pressing()) {
-
-      ArmMotor1.spin(reverse, 100, percent);
-      ArmMotor2.spin(reverse, 100, percent);
-    } else 
-
-      ArmMotor1.stop(hold);
-      ArmMotor2.stop(hold);
+      ArmMotorLeft.spin(forward, 100, percent);
+      ArmMotorRight.spin(forward, 100, percent);
       
-    // This is the main execution loop for the user control program.
-    // Each time through the loop your program should update motor + servo
-    // values based on feedback from the joysticks.
+    } else if (Controller1.ButtonR2.pressing()) {
 
-    // ........................................................................
-    // Insert user code here. This is where you use the joystick values to
-    // update your motors, etc.
-    // ........................................................................
+      ArmMotorLeft.spin(reverse, 90, percent);
+      ArmMotorRight.spin(reverse, 90, percent);
+
+    } else {
+
+      ArmMotorLeft.stop(hold);
+      ArmMotorRight.stop(hold);
+    } 
+
+    vexcodeInit();
+
+    // Activate the pnuematics 
+
+    if(Controller1.ButtonB.pressing()) {
+
+      Out1.set(true);
+
+    } else {
+
+      Out1.set(false);
+      
+    }
+
+    // Move the pnuematic after the start of the match 
+
+    if(Controller1.ButtonA.pressing()) {
+
+      pMotor.spin(forward, 10, percent);
+
+    } else if (Controller1.ButtonY.pressing()) {
+
+      pMotor.spin(reverse, 10, percent);
+    }
+
+      else { pMotor.stop(hold);
+    }
 
     wait(20, msec); // Sleep the task for a short amount of time to
                     // prevent wasted resources.
