@@ -261,6 +261,7 @@ void usercontrol(void) {
 
 //
 // Main will set up the competition functions and callbacks.
+// Lol xd :9
 //
 int main() {
   // Set up callbacks for autonomous and driver control periods.
