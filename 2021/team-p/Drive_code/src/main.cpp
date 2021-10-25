@@ -11,7 +11,7 @@
 // ---- END VEXCODE CONFIGURED DEVICES ----
 
 #include "vex.h"
-#include <cmath>
+#include <cmath> // this is in vex.h already you don't need it here
 
 using namespace vex;
 using std::abs;
