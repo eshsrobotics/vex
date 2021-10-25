@@ -1,5 +1,5 @@
-        
-        /*----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------*/
 /*                                                                            */
 /*    Module:       main.cpp                                                  */
 /*    Author:       VEX                                                       */
@@ -11,15 +11,16 @@
 // ---- START VEXCODE CONFIGURED DEVICES ----
 // Robot Configuration:
 // [Name]               [Type]        [Port(s)]
-// Drivetrain           drivetrain    19, 1, 4, 20    
-// Controller1          controller                    
-// LiftMotor            motor         13              
-// ArmMotorRight        motor         15              
-// ArmMotorLeft         motor         12              
-// Out1                 digital_out   A               
-// pMotor               motor         18              
+// Drivetrain           drivetrain    19, 1, 4, 20
+// Controller1          controller
+// LiftMotor            motor         13
+// ArmMotorRight        motor         15
+// ArmMotorLeft         motor         12
+// Out1                 digital_out   A
+// pMotor               motor         18
 // ---- END VEXCODE CONFIGURED DEVICES ----
 
+#include "Displayinfo.h"
 #include "vex.h"
 
 using namespace vex;
@@ -42,7 +43,8 @@ competition Competition;
 void pre_auton(void) {
   // Initializing Robot Configuration. DO NOT REMOVE!
   vexcodeInit();
-
+  Brain.Screen.clearScreen();
+  Brain.Screen.setCursor(1, 1);
   // All activities that occur before the competition starts
   // Example: clearing encoders, setting servo positions, ...
 }
@@ -89,24 +91,24 @@ void MoveArm(ArmDirection dir) {
   const double ARM_DRIVE_POWER_PERCENT = 100;
   directionType armDirection = fwd;
 
-  motor_group Arm = motor_group(ArmMotorLeft, ArmMotorRight, LiftMotor); 
+  motor_group Arm = motor_group(ArmMotorLeft, ArmMotorRight, LiftMotor);
 
   if (dir == UP) {
     armDirection = forward;
 
     Arm.spinFor(armDirection, ARM_DRIVE_TIME_MILLISECONDSUP, msec,
-                      ARM_DRIVE_POWER_PERCENT, velocityUnits::pct);
+                ARM_DRIVE_POWER_PERCENT, velocityUnits::pct);
 
     Arm.stop(hold);
 
   } else if (dir == DOWN) {
     Arm.spinFor(armDirection, ARM_DRIVE_TIME_MILLISECONDSDOWN, msec,
-                      ARM_DRIVE_POWER_PERCENT, velocityUnits::pct);
-    
+                ARM_DRIVE_POWER_PERCENT, velocityUnits::pct);
+
     Arm.stop(hold);
   } else {
-    
-    Arm.stop(hold); 
+
+    Arm.stop(hold);
   }
 }
 
@@ -120,54 +122,51 @@ void MovepMotor(forkDirection dir) {
   const double FORK_DRIVE_POWER_PERCENT = 100;
   directionType forkDirection = fwd;
 
-
   if (dir == up) {
     forkDirection = forward;
 
     pMotor.spinFor(forkDirection, FORK_DRIVE_TIME_MILLISECONDSUP, msec,
-                      FORK_DRIVE_POWER_PERCENT, velocityUnits::pct);
-
+                   FORK_DRIVE_POWER_PERCENT, velocityUnits::pct);
 
   } else if (dir == down) {
     pMotor.spinFor(forkDirection, FORK_DRIVE_TIME_MILLISECONDSDOWN, msec,
-                      FORK_DRIVE_POWER_PERCENT, velocityUnits::pct);
-                  
+                   FORK_DRIVE_POWER_PERCENT, velocityUnits::pct);
+
   } else {
-    
-    pMotor.stop(hold); 
+
+    pMotor.stop(hold);
   }
 }
 
-
 // This is the autonomous code
 void autonomous(void) {
-    
+
   // This will tell us which side of the field we are starting on
-  // 1 - Means we are on the left side of the field (The side next to the mobile goal that is on the diagonal line)
-  // 2 - Means we are on the right side of the field (The side next to the mobile goal that is on the lever)
+  // 1 - Means we are on the left side of the field (The side next to the mobile
+  // goal that is on the diagonal line) 2 - Means we are on the right side of
+  // the field (The side next to the mobile goal that is on the lever)
   int sideOfField = 1;
 
-  // Right Side Field autonomus code 
+  // Right Side Field autonomus code
   if (sideOfField == 1) {
     Drivetrain.setDriveVelocity(100, percent);
     MoveLift(OUTWARD);
     MoveArm(UP);
     Drivetrain.driveFor(forward, 15, inches);
     MovepMotor(up);
-    MoveLift(INWARD); 
+    MoveLift(INWARD);
     Out1.set(true);
     Drivetrain.driveFor(reverse, 12, inches);
 
-
-    //Drivetrain.setTurnVelocity(100, percent);
-    //Drivetrain.turnFor(-70, degrees);
-    //Drivetrain.driveFor(forward, 18, inches);
-    //MoveLift(OUTWARD);
-    //Drivetrain.driveFor(reverse, 10, inches);
-    //Drivetrain.turnFor(30, degrees);
-    //Drivetrain.driveFor(forward, 55, inches);
-    //MoveLift(INWARD);
-    //Drivetrain.driveFor(reverse, 50, inches);
+    // Drivetrain.setTurnVelocity(100, percent);
+    // Drivetrain.turnFor(-70, degrees);
+    // Drivetrain.driveFor(forward, 18, inches);
+    // MoveLift(OUTWARD);
+    // Drivetrain.driveFor(reverse, 10, inches);
+    // Drivetrain.turnFor(30, degrees);
+    // Drivetrain.driveFor(forward, 55, inches);
+    // MoveLift(INWARD);
+    // Drivetrain.driveFor(reverse, 50, inches);
 
     // Left Side Field autonomous code
   } else if (sideOfField == 2) {
@@ -176,7 +175,6 @@ void autonomous(void) {
     // Drivetrain.setTurnVelocity(80, percent);
     // Drivetrain.turnFor(forward,  units)
     Out1.set(true);
-
   }
   // ..........................................................................
   // Insert autonomous user code here.
@@ -228,51 +226,48 @@ void usercontrol(void) {
 
       ArmMotorLeft.spin(forward, 100, percent);
       ArmMotorRight.spin(forward, 100, percent);
-      
+
     } else if (Controller1.ButtonR2.pressing()) {
 
       ArmMotorLeft.spin(reverse, 90, percent);
       ArmMotorRight.spin(reverse, 90, percent);
 
-    } else 
-    {
+    } else {
 
       ArmMotorLeft.stop(hold);
       ArmMotorRight.stop(hold);
-    } 
 
-    vexcodeInit();
+      vexcodeInit();
 
-    // Activate the pnuematics 
+      // Activate the pnuematics
 
-    if(Controller1.ButtonB.pressing()) {
+      if (Controller1.ButtonB.pressing()) {
 
-      Out1.set(true);
+        Out1.set(true);
 
-    } else {
+      } else {
 
-      Out1.set(false);
-      
+        Out1.set(false);
+      }
+
+      // Move the pnuematic after the start of the match
+
+      if (Controller1.ButtonA.pressing()) {
+
+        pMotor.spin(forward, 10, percent);
+
+      } else if (Controller1.ButtonY.pressing()) {
+
+        pMotor.spin(reverse, 10, percent);
+      } else {
+        pMotor.stop(hold);
+      }
+
+      wait(20, msec); // Sleep the task for a short amount of time to
+                      // prevent wasted resources.
     }
-
-    // Move the pnuematic after the start of the match 
-
-    if(Controller1.ButtonA.pressing()) {
-
-      pMotor.spin(forward, 10, percent);
-
-    } else if (Controller1.ButtonY.pressing()) {
-
-      pMotor.spin(reverse, 10, percent);
-    }
-      else { pMotor.stop(hold);
-    }
-
-    wait(20, msec); // Sleep the task for a short amount of time to
-                    // prevent wasted resources.
   }
 }
-
 //
 // Main will set up the competition functions and callbacks.
 //
