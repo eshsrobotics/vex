@@ -20,7 +20,8 @@
 // pMotor               motor         18
 // ---- END VEXCODE CONFIGURED DEVICES ----
 
-#include "Displayinfo.h"
+#include "Autonomous_Routines.h"
+#include "Display_Information.h"
 #include "vex.h"
 
 using namespace vex;
@@ -43,8 +44,7 @@ competition Competition;
 void pre_auton(void) {
   // Initializing Robot Configuration. DO NOT REMOVE!
   vexcodeInit();
-  Brain.Screen.clearScreen();
-  Brain.Screen.setCursor(1, 1);
+  clearAllScreens();
   // All activities that occur before the competition starts
   // Example: clearing encoders, setting servo positions, ...
 }
