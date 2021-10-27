@@ -55,43 +55,55 @@
 #include "SD_Card_Data.h"
 #include "vex.h"
 
-
 using namespace vex;
-
 
 int main() {
   // Initializing Robot Controller1figuration. DO NOT REMOVE!
   vexcodeInit();
+  /* Brain.SDcard.appendfile(const char *name, uint8_t *buffer, int32_t len);
+  Brain.SDcard.exists(const char *name);
+  Brain.SDcard.loadfile(const char *name, uint8_t *buffer, int32_t len);
+  Brain.SDcard.savefile(const char *name, uint8_t *buffer, int32_t len);
+  Brain.SDcard.isInserted();
+  Brain.SDcard.size(const char *name); */
 
   if (Brain.SDcard.isInserted()) {
-    // create a file with long filename
-    ofs.open("Run.csv", std::ofstream::out);
-    sensorHeader();
-    while (true) {
+    if (fexists("run1.csv")) {
 
-      sensorWriter();
+      Brain.Screen.printAt(10, 40, "need a new file");
+    } else {
+      // create a file with long filename
+      ofs.open("run.csv", std::ofstream::out);
 
-      vex::task::sleep(10);
+      /*   if (Brain.SDcard.isInserted()) {
+          // create a file with long filename
+          ofs.open("Run.csv", std::ofstream::out); */
+      sensorHeader();
+      while (true) {
 
-      drive();
+        sensorWriter();
 
-      if (/*Controller1.ButtonB.pressing() == 1 &&
-          Controller1.ButtonX.pressing() == 1 &&
-          Controller1.ButtonUp.pressing() == 1 &&
-          Controller1.ButtonDown.pressing() == 1 &&*/
-          Controller1.ButtonL1.pressing() == 1 &&
-          Controller1.ButtonL2.pressing() == 1 &&
-          Controller1.ButtonR2.pressing() == 1 &&
-          Controller1.ButtonR1.pressing() == 1) {
-        break;
+        vex::task::sleep(10);
+
+        drive();
+
+        if (/*Controller1.ButtonB.pressing() == 1 &&
+            Controller1.ButtonX.pressing() == 1 &&
+            Controller1.ButtonUp.pressing() == 1 &&
+            Controller1.ButtonDown.pressing() == 1 &&*/
+            Controller1.ButtonL1.pressing() == 1 &&
+            Controller1.ButtonL2.pressing() == 1 &&
+            Controller1.ButtonR2.pressing() == 1 &&
+            Controller1.ButtonR1.pressing() == 1) {
+          break;
+        }
       }
-    }
 
-    ofs.close();
-    Brain.Screen.printAt(10, 40, "done");
-    stopMotor();
+      ofs.close();
+      Brain.Screen.printAt(10, 40, "done");
+      stopMotor();
+    }
   } else {
     Brain.Screen.printAt(10, 40, "No SD Card");
   }
 }
-
