@@ -54,3 +54,4 @@ void competitionHeader2();
 void controllerHeader2();
 void MotorHeader2();
 void stopMotor();
+bool fexists(const char *filename);
