@@ -8,7 +8,7 @@ extern controller Controller1;
 extern motor LiftMotor;
 extern motor ArmMotorRight;
 extern motor ArmMotorLeft;
-extern digital_out Out1;
+extern digital_out Pneumatics1;
 extern motor pMotor;
 
 /**

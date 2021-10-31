@@ -1,3 +1,14 @@
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Drivetrain           drivetrain    19, 1, 4, 20
+// Controller1          controller
+// LiftMotor            motor         13
+// ArmMotorRight        motor         15
+// ArmMotorLeft         motor         12
+// Pneumatics1          digital_out   A
+// pMotor               motor         18
+// ---- END VEXCODE CONFIGURED DEVICES ----
 
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
@@ -16,7 +27,7 @@
 // LiftMotor            motor         13
 // ArmMotorRight        motor         15
 // ArmMotorLeft         motor         12
-// Out1                 digital_out   A
+// Pneumatics1                 digital_out   A
 // pMotor               motor         18
 // ---- END VEXCODE CONFIGURED DEVICES ----
 
@@ -87,7 +98,7 @@ void MoveArm(ArmDirection dir) {
 
   // when lfitMotor spin direction is forward it means lift moves outward
   const double ARM_DRIVE_TIME_MILLISECONDSDOWN = 400; // 20;
-  const double ARM_DRIVE_TIME_MILLISECONDSUP = 800;
+  const double ARM_DRIVE_TIME_MILLISECONDSUP = 400;
   const double ARM_DRIVE_POWER_PERCENT = 100;
   directionType armDirection = fwd;
 
@@ -142,21 +153,28 @@ void MovepMotor(forkDirection dir) {
 void autonomous(void) {
 
   // This will tell us which side of the field we are starting on
-  // 1 - Means we are on the left side of the field (The side next to the mobile
-  // goal that is on the diagonal line) 2 - Means we are on the right side of
-  // the field (The side next to the mobile goal that is on the lever)
+  // 1 - Means we are on the right side of the field (The side next to the mobile goal that is on the diagonal line)
+  // 2 - Means we are on the left side of the field (The side next to the mobile goal that is on the lever)
   int sideOfField = 1;
 
   // Right Side Field autonomus code
   if (sideOfField == 1) {
-    Drivetrain.setDriveVelocity(100, percent);
+    // Deploy mobile goal lift and arms
     MoveLift(OUTWARD);
-    MoveArm(UP);
+    // Drive forward to mobile goal
+    Drivetrain.setDriveVelocity(100, percent);
     Drivetrain.driveFor(forward, 15, inches);
+    // Move DR4B Up to put donuts in position
+    MoveArm(UP);
+    // Aim pneumatics arm so it is above mobile goal
     MovepMotor(up);
+    // Pull in mobile goal for donuts
     MoveLift(INWARD);
-    Out1.set(true);
+    // Release donuts
+    Pneumatics1.set(true);
+    // Ensure mobile goal isn't on line by moving backwards
     Drivetrain.driveFor(reverse, 12, inches);
+    MoveArm(UP);
 
     // Drivetrain.setTurnVelocity(100, percent);
     // Drivetrain.turnFor(-70, degrees);
@@ -170,11 +188,33 @@ void autonomous(void) {
 
     // Left Side Field autonomous code
   } else if (sideOfField == 2) {
+    // Deploy mobile goal lift and arms
+    MoveLift(OUTWARD);
+    // Drive forward to mobile goal
+    Drivetrain.setDriveVelocity(100, percent);
+    Drivetrain.driveFor(forward, 12, inches);
+    // Move DR4B Up to put donuts in position
+    MoveArm(UP);
+    // Aim pneumatics arm so it is above mobile goal
+    MovepMotor(up);
+    // Pull in mobile goal for donuts
+    MoveLift(INWARD);
+    // Release donuts
+    Pneumatics1.set(true);
+    // Ensure mobile goal isn't on line by moving backwards
+    Drivetrain.driveFor(reverse, 12, inches);
+    MoveArm(UP);
     // Drivetrain.setDriveVelocity(100, percentUnits units)
     // Drivetrain.driveFor(forward, double distance, distanceUnits units)
     // Drivetrain.setTurnVelocity(80, percent);
-    // Drivetrain.turnFor(forward,  units)
-    Out1.set(true);
+    // Drivetrain.turnFor(forward,  units)MoveLift(OUTWARD);
+    //Drivetrain.setDriveVelocity(100, percent);
+    //Drivetrain.driveFor(forward, 5, inches);
+    //MoveArm(UP);
+    //MovepMotor(up);
+    //MoveLift(INWARD);
+    //Pneumatics1.set(true);
+
   }
   // ..........................................................................
   // Insert autonomous user code here.
@@ -243,12 +283,13 @@ void usercontrol(void) {
 
       if (Controller1.ButtonB.pressing()) {
 
-        Out1.set(true);
+      Pneumatics1.set(true);
 
       } else {
 
-        Out1.set(false);
-      }
+      Pneumatics1.set(false);
+
+    }
 
       // Move the pnuematic after the start of the match
 

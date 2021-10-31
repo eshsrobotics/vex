@@ -19,7 +19,7 @@ controller Controller1 = controller(primary);
 motor LiftMotor = motor(PORT13, ratio36_1, false);
 motor ArmMotorRight = motor(PORT15, ratio36_1, false);
 motor ArmMotorLeft = motor(PORT12, ratio36_1, true);
-digital_out Out1 = digital_out(Brain.ThreeWirePort.A);
+digital_out Pneumatics1 = digital_out(Brain.ThreeWirePort.A);
 motor pMotor = motor(PORT18, ratio18_1, false);
 
 // VEXcode generated functions
