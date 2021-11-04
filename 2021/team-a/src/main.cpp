@@ -1,15 +1,3 @@
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// Drivetrain           drivetrain    19, 1, 4, 20
-// Controller1          controller
-// LiftMotor            motor         13
-// ArmMotorRight        motor         15
-// ArmMotorLeft         motor         12
-// Pneumatics1          digital_out   A
-// pMotor               motor         18
-// ---- END VEXCODE CONFIGURED DEVICES ----
-
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /*    Module:       main.cpp                                                  */
@@ -27,8 +15,9 @@
 // LiftMotor            motor         13
 // ArmMotorRight        motor         15
 // ArmMotorLeft         motor         12
-// Pneumatics1                 digital_out   A
+// PneumaticLeft        digital_out   A
 // pMotor               motor         18
+// PneumaticRight       digital_out   B
 // ---- END VEXCODE CONFIGURED DEVICES ----
 
 #include "Autonomous_Routines.h"
@@ -51,6 +40,13 @@ competition Competition;
 /*  function is only called once after the V5 has been powered on and        */
 /*  not every time that the robot is disabled.                               */
 /*---------------------------------------------------------------------------*/
+
+// Declare Functions
+
+// Controls the pneumatics
+
+void PneumaticControl();
+bool PneumaticState = false;
 
 void pre_auton(void) {
   // Initializing Robot Configuration. DO NOT REMOVE!
@@ -153,8 +149,10 @@ void MovepMotor(forkDirection dir) {
 void autonomous(void) {
 
   // This will tell us which side of the field we are starting on
-  // 1 - Means we are on the right side of the field (The side next to the mobile goal that is on the diagonal line)
-  // 2 - Means we are on the left side of the field (The side next to the mobile goal that is on the lever)
+  // 1 - Means we are on the left side of the field (The side next to the mobile
+  // goal that is on the diagonal line) 2 - Means we are on the right side of
+  // the field (The side next to the mobile goal that is on the lever)
+
   int sideOfField = 1;
 
   // Right Side Field autonomus code
@@ -168,11 +166,10 @@ void autonomous(void) {
     MoveArm(UP);
     // Aim pneumatics arm so it is above mobile goal
     MovepMotor(up);
-    // Pull in mobile goal for donuts
     MoveLift(INWARD);
-    // Release donuts
-    Pneumatics1.set(true);
-    // Ensure mobile goal isn't on line by moving backwards
+    // We need a group for the pneumatics
+    PneumaticLeft.set(true);
+    PneumaticRight.set(true);
     Drivetrain.driveFor(reverse, 12, inches);
     MoveArm(UP);
 
@@ -200,7 +197,6 @@ void autonomous(void) {
     // Pull in mobile goal for donuts
     MoveLift(INWARD);
     // Release donuts
-    Pneumatics1.set(true);
     // Ensure mobile goal isn't on line by moving backwards
     Drivetrain.driveFor(reverse, 12, inches);
     MoveArm(UP);
@@ -208,14 +204,14 @@ void autonomous(void) {
     // Drivetrain.driveFor(forward, double distance, distanceUnits units)
     // Drivetrain.setTurnVelocity(80, percent);
     // Drivetrain.turnFor(forward,  units)MoveLift(OUTWARD);
-    //Drivetrain.setDriveVelocity(100, percent);
-    //Drivetrain.driveFor(forward, 5, inches);
-    //MoveArm(UP);
-    //MovepMotor(up);
-    //MoveLift(INWARD);
-    //Pneumatics1.set(true);
-
+    // Drivetrain.setDriveVelocity(100, percent);
+    // Drivetrain.driveFor(forward, 5, inches);
+    // MoveArm(UP);
+    // MovepMotor(up);
+    // MoveLift(INWARD);
+    // Pneumatics1.set(true);
   }
+
   // ..........................................................................
   // Insert autonomous user code here.
   // ..........................................................................
@@ -242,6 +238,19 @@ void autonomous(void) {
 // ........................................................................
 
 void usercontrol(void) {
+
+  Brain.Screen.clearScreen();
+  Controller1.Screen.clearScreen();
+
+  Brain.Screen.setCursor(1, 1);
+  Controller1.Screen.setCursor(1, 1);
+
+  // Only attach callback functions onece outside the while loop
+
+  // Activate the pnuematics by looking at the Pneumnatic control function
+
+  Controller1.ButtonB.released(PneumaticControl);
+
   // User control code here, inside the loop
   while (1) {
 
@@ -264,51 +273,41 @@ void usercontrol(void) {
 
     if (Controller1.ButtonR1.pressing()) {
 
-      ArmMotorLeft.spin(forward, 100, percent);
-      ArmMotorRight.spin(forward, 100, percent);
+      ArmMotorLeft.spin(forward, 50, percent);
+      ArmMotorRight.spin(forward, 50, percent);
 
     } else if (Controller1.ButtonR2.pressing()) {
 
-      ArmMotorLeft.spin(reverse, 90, percent);
-      ArmMotorRight.spin(reverse, 90, percent);
+      ArmMotorLeft.spin(reverse, 50, percent);
+      ArmMotorRight.spin(reverse, 50, percent);
 
     } else {
 
       ArmMotorLeft.stop(hold);
       ArmMotorRight.stop(hold);
-
-      vexcodeInit();
-
-      // Activate the pnuematics
-
-      if (Controller1.ButtonB.pressing()) {
-
-      Pneumatics1.set(true);
-
-      } else {
-
-      Pneumatics1.set(false);
-
     }
 
-      // Move the pnuematic after the start of the match
+    vexcodeInit();
 
-      if (Controller1.ButtonA.pressing()) {
+    // Testing the pneumatics on the lift, one on each side
+    // Move the pnuematic after the start of the match
 
-        pMotor.spin(forward, 10, percent);
+    if (Controller1.ButtonA.pressing()) {
 
-      } else if (Controller1.ButtonY.pressing()) {
+      pMotor.spin(forward, 10, percent);
 
-        pMotor.spin(reverse, 10, percent);
-      } else {
-        pMotor.stop(hold);
-      }
+    } else if (Controller1.ButtonY.pressing()) {
 
-      wait(20, msec); // Sleep the task for a short amount of time to
-                      // prevent wasted resources.
+      pMotor.spin(reverse, 10, percent);
+    } else {
+      pMotor.stop(hold);
     }
+
+    wait(20, msec); // Sleep the task for a short amount of time to
+                    // prevent wasted resources.
   }
 }
+
 //
 // Main will set up the competition functions and callbacks.
 //
@@ -324,4 +323,32 @@ int main() {
   while (true) {
     wait(100, msec);
   }
+}
+
+// Functions, place all functions here
+
+// Changes the pneumatic state from ture to false
+
+void PneumaticControl() {
+
+  Brain.Screen.clearScreen();
+  Controller1.Screen.clearScreen();
+
+  if (PneumaticState == true) {
+
+    PneumaticState = false;
+
+    Brain.Screen.printAt(1, 1, "false");
+    Controller1.Screen.print("false");
+
+  } else {
+
+    PneumaticState = true;
+
+    Brain.Screen.printAt(1, 1, "true");
+    Controller1.Screen.print("true");
+  }
+
+  PneumaticLeft.set(PneumaticState);
+  PneumaticRight.set(PneumaticState);
 }

@@ -8,8 +8,9 @@ extern controller Controller1;
 extern motor LiftMotor;
 extern motor ArmMotorRight;
 extern motor ArmMotorLeft;
-extern digital_out Pneumatics1;
+extern digital_out PneumaticLeft;
 extern motor pMotor;
+extern digital_out PneumaticRight;
 
 /**
  * Used to initialize code/tasks/devices added using tools in VEXcode Pro.
