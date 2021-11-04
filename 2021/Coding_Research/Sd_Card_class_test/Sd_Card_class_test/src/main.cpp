@@ -111,8 +111,7 @@ int main() {
   Brain.Screen.setCursor(1, 1);
 
   while (true) {
-    // Capture the current time as a std::string.
-
+   
     Brain.Screen.clearScreen();
     Brain.Screen.setCursor(1, 1);
     Brain.Screen.print("Next avail. filename: %s", getNextAvailableFilename().c_str());
