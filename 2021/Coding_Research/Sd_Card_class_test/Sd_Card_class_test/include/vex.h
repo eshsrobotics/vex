@@ -21,8 +21,8 @@
 #include <iostream>
 
 #include "robot-config.h"
-vex::competition Competition;
-std::ofstream ofs;
+extern vex::competition Competition;
+extern std::ofstream ofs;
 
 #define waitUntil(condition)                                                   \
   do {                                                                         \

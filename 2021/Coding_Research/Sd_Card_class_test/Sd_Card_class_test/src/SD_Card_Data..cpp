@@ -2,8 +2,8 @@
 #include "vex.h"
 #include "robot-config.h"
 using namespace vex;
-//vex::competition Competition;
-//std::ofstream ofs;
+vex::competition Competition;
+std::ofstream ofs;
 
 void drive() {
   Motor1.setVelocity(100, vex::velocityUnits::pct);

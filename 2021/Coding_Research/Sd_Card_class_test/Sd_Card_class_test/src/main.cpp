@@ -54,8 +54,48 @@
 
 #include "SD_Card_Data.h"
 #include "vex.h"
+#include <string>
+#include <fstream>
+#include <sstream>
 
+using std::string;
+using std::fstream;
+using std::stringstream;
 using namespace vex;
+const string DEFAULT_PREFIX = "LOG";
+const string DEFAULT_SUFFIX = "log";
+
+// Keep opening PREFIX0001.txt, PREFIX0002.txt, and so on, until we find one that does not exist, then return the first filename that's free.
+//
+// This is a workaround for the fact that VEX V5 Brains don't have a timestamp facility worth a hill o' beans.
+//
+// The padding determines the number of 0s to insert.
+string getNextAvailableFilename(const string& prefix = DEFAULT_PREFIX, const string& suffix = DEFAULT_SUFFIX, size_t padding = 5) {
+  stringstream stream;
+
+  // What's the first available file number?
+  int index = 0;
+  const int limit = pow(10, padding) - 1;
+
+  for (; index < limit; ++index) {
+    stream.str("");
+    stream << prefix;
+    stream.width(padding);
+    stream.fill('0');
+    stream << index;
+    stream << "." << suffix;
+
+    fstream file(stream.str(), std::ios::in);
+    if (!file) {
+      // This index is available!
+      return stream.str();
+    }
+    // Index not available; keep going.
+  }
+
+  // Nothing is available.
+  return "";
+}
 
 int main() {
   // Initializing Robot Controller1figuration. DO NOT REMOVE!
@@ -67,43 +107,25 @@ int main() {
   Brain.SDcard.isInserted();
   Brain.SDcard.size(const char *name); */
 
-  if (Brain.SDcard.isInserted()) {
-    if (fexists("run1.csv")) {
+  Brain.Screen.clearScreen();
+  Brain.Screen.setCursor(1, 1);
 
-      Brain.Screen.printAt(10, 40, "need a new file");
-    } else {
-      // create a file with long filename
-      ofs.open("run.csv", std::ofstream::out);
+  while (true) {
+    // Capture the current time as a std::string.
 
-      /*   if (Brain.SDcard.isInserted()) {
-          // create a file with long filename
-          ofs.open("Run.csv", std::ofstream::out); */
-      sensorHeader();
-      while (true) {
+    Brain.Screen.clearScreen();
+    Brain.Screen.setCursor(1, 1);
+    Brain.Screen.print("Next avail. filename: %s", getNextAvailableFilename().c_str());
 
-        sensorWriter();
-
-        vex::task::sleep(10);
-
-        drive();
-
-        if (/*Controller1.ButtonB.pressing() == 1 &&
-            Controller1.ButtonX.pressing() == 1 &&
-            Controller1.ButtonUp.pressing() == 1 &&
-            Controller1.ButtonDown.pressing() == 1 &&*/
-            Controller1.ButtonL1.pressing() == 1 &&
-            Controller1.ButtonL2.pressing() == 1 &&
-            Controller1.ButtonR2.pressing() == 1 &&
-            Controller1.ButtonR1.pressing() == 1) {
-          break;
-        }
-      }
-
-      ofs.close();
-      Brain.Screen.printAt(10, 40, "done");
-      stopMotor();
+    {
+      fstream file(getNextAvailableFilename().c_str(), std::ios::out);
+      file << "This is some file content!\n";
     }
-  } else {
-    Brain.Screen.printAt(10, 40, "No SD Card");
+
+    Controller1.Screen.clearScreen();
+    Controller1.Screen.setCursor(1, 1);
+    Controller1.Screen.print("%s", getNextAvailableFilename().c_str());
+    wait(200, msec);
   }
+  // Control never makes it here.
 }
