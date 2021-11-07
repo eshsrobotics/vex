@@ -107,10 +107,10 @@ int main() {
   Brain.SDcard.isInserted();
   Brain.SDcard.size(const char *name); */
 
-  Brain.Screen.clearScreen();
+  clearAllScreens();
   Brain.Screen.setCursor(1, 1);
 
-  while (true) {
+  while (true) { 
    
     Brain.Screen.clearScreen();
     Brain.Screen.setCursor(1, 1);

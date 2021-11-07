@@ -20,7 +20,10 @@
 #include <iomanip>
 #include <iostream>
 
+#include "Display_Information.h"
 #include "robot-config.h"
+#include "SD_Card_Data.h"
+
 extern vex::competition Competition;
 extern std::ofstream ofs;
 
