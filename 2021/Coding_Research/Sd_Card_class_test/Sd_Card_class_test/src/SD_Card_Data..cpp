@@ -5,48 +5,40 @@ using namespace vex;
 vex::competition Competition;
 std::ofstream ofs;
 
+  /*   Drivetrain.velocity(percentUnits units);
+    Drivetrain.velocity(velocityUnits units);
+    Drivetrain.current();
+    Drivetrain.current(percentUnits units);
+    Drivetrain.efficiency();
+    Drivetrain.isDone();
+    Drivetrain.isMoving();
+    Drivetrain.power();
+    Drivetrain.temperature(percentUnits units);
+    Drivetrain.torque();
+    Drivetrain.voltage(); */
+ 
+
+
+
+
+
+
+
+
+
+
 void drive() {
   m.setVelocity(100, vex::velocityUnits::pct);
   Motor2.setVelocity(100, vex::velocityUnits::pct);
   Motor3.setVelocity(100, vex::velocityUnits::pct);
   Motor4.setVelocity(100, vex::velocityUnits::pct);
-  Motor5.setVelocity(100, vex::velocityUnits::pct);
-  Motor6.setVelocity(100, vex::velocityUnits::pct);
-  Motor7.setVelocity(100, vex::velocityUnits::pct);
-  Motor8.setVelocity(100, vex::velocityUnits::pct);
-  Motor9.setVelocity(100, vex::velocityUnits::pct);
-  m0.setVelocity(100, vex::velocityUnits::pct);
-  m1.setVelocity(100, vex::velocityUnits::pct);
-  m2.setVelocity(100, vex::velocityUnits::pct);
-  m3.setVelocity(100, vex::velocityUnits::pct);
-  m4.setVelocity(100, vex::velocityUnits::pct);
-  m5.setVelocity(100, vex::velocityUnits::pct);
-  m6.setVelocity(100, vex::velocityUnits::pct);
-  m7.setVelocity(100, vex::velocityUnits::pct);
-  m8.setVelocity(100, vex::velocityUnits::pct);
-  m9.setVelocity(100, vex::velocityUnits::pct);
-  Motor20.setVelocity(100, vex::velocityUnits::pct);
+ 
 
   m.spin(vex::directionType::fwd);
   Motor2.spin(vex::directionType::fwd);
   Motor3.spin(vex::directionType::fwd);
   Motor4.spin(vex::directionType::fwd);
-  Motor5.spin(vex::directionType::fwd);
-  Motor6.spin(vex::directionType::fwd);
-  Motor7.spin(vex::directionType::fwd);
-  Motor8.spin(vex::directionType::fwd);
-  Motor9.spin(vex::directionType::fwd);
-  m0.spin(vex::directionType::fwd);
-  m1.spin(vex::directionType::fwd);
-  m2.spin(vex::directionType::fwd);
-  m3.spin(vex::directionType::fwd);
-  m4.spin(vex::directionType::fwd);
-  m5.spin(vex::directionType::fwd);
-  m6.spin(vex::directionType::fwd);
-  m7.spin(vex::directionType::fwd);
-  m8.spin(vex::directionType::fwd);
-  m9.spin(vex::directionType::fwd);
-  Motor20.spin(vex::directionType::fwd);
+ 
 }
 
 
@@ -151,44 +143,14 @@ void mHeader() { ofs << "m,,,,,,,,,,,,,"; }
 void Motor2Header() { ofs << "Motor2,,,,,,,,,,,,,"; }
 void Motor3Header() { ofs << "Motor3,,,,,,,,,,,,,"; }
 void Motor4Header() { ofs << "Motor4,,,,,,,,,,,,,"; }
-void Motor5Header() { ofs << "Motor5,,,,,,,,,,,,,"; }
-void Motor6Header() { ofs << "Motor6,,,,,,,,,,,,,"; }
-void Motor7Header() { ofs << "Motor7,,,,,,,,,,,,,"; }
-void Motor8Header() { ofs << "Motor8,,,,,,,,,,,,,"; }
-void Motor9Header() { ofs << "Motor9,,,,,,,,,,,,,"; }
-void m0Header() { ofs << "m0,,,,,,,,,,,,,"; }
-void m1Header() { ofs << "m1,,,,,,,,,,,,,"; }
-void m2Header() { ofs << "m2,,,,,,,,,,,,,"; }
-void m3Header() { ofs << "m3,,,,,,,,,,,,,"; }
-void m4Header() { ofs << "m4,,,,,,,,,,,,,"; }
-void m5Header() { ofs << "m5,,,,,,,,,,,,,"; }
-void m6Header() { ofs << "m6,,,,,,,,,,,,,"; }
-void m7Header() { ofs << "m7,,,,,,,,,,,,,"; }
-void m8Header() { ofs << "m8,,,,,,,,,,,,,"; }
-void m9Header() { ofs << "m9,,,,,,,,,,,,,"; }
-void Motor20Header() { ofs << "Motor20,,,,,,,,,,,,,"; }
+
 
 void stopMotor() {
   m.stop();
   Motor2.stop();
   Motor3.stop();
   Motor4.stop();
-  Motor5.stop();
-  Motor6.stop();
-  Motor7.stop();
-  Motor8.stop();
-  Motor9.stop();
-  m0.stop();
-  m1.stop();
-  m2.stop();
-  m3.stop();
-  m4.stop();
-  m5.stop();
-  m6.stop();
-  m7.stop();
-  m8.stop();
-  m9.stop();
-  Motor20.stop();
+  
 }
 
 void sensorHeader() {
@@ -199,22 +161,8 @@ void sensorHeader() {
   Motor2Header();
   Motor3Header();
   Motor4Header();
-  Motor5Header();
-  Motor6Header();
-  Motor7Header();
-  Motor8Header();
-  Motor9Header();
-  m0Header();
-  m1Header();
-  m2Header();
-  m3Header();
-  m4Header();
-  m5Header();
-  m6Header();
-  m7Header();
-  m8Header();
-  m9Header();
-  Motor20Header();
+  
+  
   ofs << "\n";
   ofs << "senors,";
   BatteryHeader2();
@@ -236,22 +184,6 @@ void sensorWriter() {
   Motor2Data();
   Motor3Data();
   Motor4Data();
-  Motor5Data();
-  Motor6Data();
-  Motor7Data();
-  Motor8Data();
-  Motor9Data();
-  m0Data();
-  m1Data();
-  m2Data();
-  m3Data();
-  m4Data();
-  m5Data();
-  m6Data();
-  m7Data();
-  m8Data();
-  m9Data();
-  Motor20Data();
 
   ofs << "\n";
 }

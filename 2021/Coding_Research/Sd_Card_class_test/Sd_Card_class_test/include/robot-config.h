@@ -2,28 +2,32 @@ using namespace vex;
 
 extern brain Brain;
 
+using signature = vision::signature;
+
 // VEXcode devices
-extern motor Motor1;
+extern motor m;
 extern motor Motor2;
 extern motor Motor3;
 extern motor Motor4;
-extern motor Motor5;
-extern motor Motor6;
-extern motor Motor7;
-extern motor Motor8;
-extern motor Motor9;
-extern motor Motor10;
-extern motor Motor11;
-extern motor Motor12;
-extern motor Motor13;
-extern motor Motor14;
-extern motor Motor15;
-extern motor Motor16;
-extern motor Motor17;
-extern motor Motor18;
-extern motor Motor19;
-extern motor Motor20;
 extern controller Controller1;
+extern smartdrive Drivetrain;
+extern gps DrivetrainGPS;
+extern optical Optical6;
+extern rotation Rotation7;
+extern distance Distance8;
+extern gps GPS9;
+extern line LineTrackerA;
+extern light LightB;
+extern potV2 PotentiometerV2C;
+extern digital_out DigitalOutD;
+extern signature Vision14__SIG_1;
+extern signature Vision14__SIG_2;
+extern signature Vision14__SIG_3;
+extern signature Vision14__SIG_4;
+extern signature Vision14__SIG_5;
+extern signature Vision14__SIG_6;
+extern signature Vision14__SIG_7;
+extern vision Vision14;
 
 /**
  * Used to initialize code/tasks/devices added using tools in VEXcode Pro.
