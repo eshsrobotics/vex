@@ -1,3 +1,225 @@
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Drivetrain           drivetrain    20, 1, 19, 4    
+// Controller1          controller                    
+// LeftLiftMotor        motor         3               
+// ArmMotorRight        motor         10              
+// ArmMotorLeft         motor         16              
+// PneumaticSpatula     digital_out   B               
+// pMotor               motor         18              
+// PneumaticClaw        digital_out   A               
+// RightLiftMotor       motor         15              
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Drivetrain           drivetrain    19, 1, 4, 20    
+// Controller1          controller                    
+// LeftLiftMotor        motor         3               
+// ArmMotorRight        motor         10              
+// ArmMotorLeft         motor         16              
+// PneumaticSpatula     digital_out   B               
+// pMotor               motor         18              
+// PneumaticClaw        digital_out   A               
+// RightLiftMotor       motor         15              
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Drivetrain           drivetrain    19, 1, 4, 20    
+// Controller1          controller                    
+// LeftLiftMotor        motor         3               
+// ArmMotorRight        motor         10              
+// ArmMotorLeft         motor         16              
+// PneumaticSpatula     digital_out   C               
+// pMotor               motor         18              
+// PneumaticClaw        digital_out   A               
+// RightLiftMotor       motor         15              
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Drivetrain           drivetrain    19, 1, 4, 20    
+// Controller1          controller                    
+// LeftLiftMotor        motor         3               
+// ArmMotorRight        motor         10              
+// ArmMotorLeft         motor         16              
+// PneumaticSpatula     digital_out   C               
+// pMotor               motor         18              
+// PneumaticClaw        digital_out   B               
+// RightLiftMotor       motor         15              
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Drivetrain           drivetrain    19, 1, 4, 20    
+// Controller1          controller                    
+// LeftLiftMotor        motor         3               
+// ArmMotorRight        motor         10              
+// ArmMotorLeft         motor         16              
+// PneumaticSpatula     digital_out   C               
+// pMotor               motor         18              
+// PneumaticClaw        digital_out   B               
+// RightLiftMotor       motor         15              
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Drivetrain           drivetrain    19, 1, 4, 20    
+// Controller1          controller                    
+// LeftLiftMotor        motor         3               
+// ArmMotorRight        motor         10              
+// ArmMotorLeft         motor         16              
+// PneumaticSpatula     digital_out   A               
+// pMotor               motor         18              
+// PneumaticClaw        digital_out   B               
+// RightLiftMotor       motor         15              
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Drivetrain           drivetrain    19, 1, 4, 20    
+// Controller1          controller                    
+// LeftLiftMotor        motor         3               
+// ArmMotorRight        motor         10              
+// ArmMotorLeft         motor         16              
+// PneumaticSpatula     digital_out   A               
+// pMotor               motor         18              
+// PneumaticClaw        digital_out   B               
+// RightLiftMotor       motor         15              
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Drivetrain           drivetrain    19, 1, 4, 20    
+// Controller1          controller                    
+// LeftLiftMotor        motor         3               
+// ArmMotorRight        motor         10              
+// ArmMotorLeft         motor         16              
+// PneumaticSpatula     digital_out   A               
+// pMotor               motor         18              
+// PneumaticClaw        digital_out   B               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Drivetrain           drivetrain    19, 1, 4, 20    
+// Controller1          controller                    
+// LiftMotor            motor         3               
+// ArmMotorRight        motor         10              
+// ArmMotorLeft         motor         16              
+// PneumaticSpatula     digital_out   A               
+// pMotor               motor         18              
+// PneumaticClaw        digital_out   B               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Drivetrain           drivetrain    19, 1, 4, 20    
+// Controller1          controller                    
+// LiftMotor            motor         3               
+// ArmMotorRight        motor         15              
+// ArmMotorLeft         motor         16              
+// PneumaticSpatula     digital_out   A               
+// pMotor               motor         18              
+// PneumaticClaw        digital_out   B               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Drivetrain           drivetrain    19, 1, 4, 20    
+// Controller1          controller                    
+// LiftMotor            motor         3               
+// ArmMotorRight        motor         15              
+// ArmMotorLeft         motor         12              
+// PneumaticSpatula     digital_out   A               
+// pMotor               motor         18              
+// PneumaticClaw        digital_out   B               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Drivetrain           drivetrain    19, 1, 4, 20    
+// Controller1          controller                    
+// LiftMotor            motor         3               
+// ArmMotorRight        motor         15              
+// ArmMotorLeft         motor         12              
+// PneumaticSpatula     digital_out   A               
+// pMotor               motor         18              
+// PneumaticClaw        digital_out   B               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Drivetrain           drivetrain    19, 1, 4, 20    
+// Controller1          controller                    
+// LiftMotor            motor         16              
+// ArmMotorRight        motor         15              
+// ArmMotorLeft         motor         12              
+// PneumaticSpatula     digital_out   A               
+// pMotor               motor         18              
+// PneumaticClaw        digital_out   B               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Drivetrain           drivetrain    19, 1, 4, 20    
+// Controller1          controller                    
+// LiftMotor            motor         13              
+// ArmMotorRight        motor         15              
+// ArmMotorLeft         motor         12              
+// PneumaticSpatula     digital_out   A               
+// pMotor               motor         18              
+// PneumaticClaw        digital_out   B               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Drivetrain           drivetrain    19, 1, 4, 20    
+// Controller1          controller                    
+// LiftMotor            motor         13              
+// ArmMotorRight        motor         15              
+// ArmMotorLeft         motor         12              
+// PneumaticSpatula     digital_out   A               
+// pMotor               motor         18              
+// PneumaticRight       digital_out   B               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Drivetrain           drivetrain    19, 1, 4, 20    
+// Controller1          controller                    
+// LiftMotor            motor         13              
+// ArmMotorRight        motor         15              
+// ArmMotorLeft         motor         12              
+// PneumaticSpatula     digital_out   A               
+// pMotor               motor         18              
+// PneumaticRight       digital_out   B               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Drivetrain           drivetrain    19, 1, 4, 20    
+// Controller1          controller                    
+// LiftMotor            motor         13              
+// ArmMotorRight        motor         15              
+// ArmMotorLeft         motor         12              
+// PneumaticLeft        digital_out   A               
+// pMotor               motor         18              
+// PneumaticRight       digital_out   B               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Drivetrain           drivetrain    19, 1, 4, 20    
+// Controller1          controller                    
+// LiftMotor            motor         13              
+// ArmMotorRight        motor         15              
+// ArmMotorLeft         motor         12              
+// PneumaticLeft        digital_out   A               
+// pMotor               motor         18              
+// ---- END VEXCODE CONFIGURED DEVICES ----
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /*    Module:       main.cpp                                                  */
@@ -43,10 +265,16 @@ competition Competition;
 
 // Declare Functions
 
-// Controls the pneumatics
+// Controls the pneumatics, chnages staes from true to false or false to true, function found at the end of main.cpp
 
-void PneumaticControl();
-bool PneumaticState = false;
+void PneumaticControlClaw();
+void PneumaticControlSpatula();
+
+// The state of the claws pneumatic starts false this is changed by the function pvoid PneumaticControlClaw();
+bool PneumaticStateClaw = false;
+// The state of the spatulas pneumatic starts false this is changed by the function pvoid PneumaticControlClaw(); 
+bool PneumaticStateSpatula = false; 
+
 
 void pre_auton(void) {
   // Initializing Robot Configuration. DO NOT REMOVE!
@@ -79,12 +307,12 @@ void MoveLift(LiftDirection dir) {
   if (dir == INWARD) {
     spinDirection = reverse;
 
-    LiftMotor.spinFor(spinDirection, LIFT_DRIVE_TIME_MILLISECONDSDOWN, msec,
-                      LIFT_DRIVE_POWER_PERCENT, velocityUnits::pct);
+    //LiftMotor.spinFor(spinDirection, LIFT_DRIVE_TIME_MILLISECONDSDOWN, msec,
+                     // LIFT_DRIVE_POWER_PERCENT, velocityUnits::pct);
 
   } else if (dir == OUTWARD) {
-    LiftMotor.spinFor(spinDirection, LIFT_DRIVE_TIME_MILLISECONDSUP, msec,
-                      LIFT_DRIVE_POWER_PERCENT, velocityUnits::pct);
+    //LiftMotor.spinFor(spinDirection, LIFT_DRIVE_TIME_MILLISECONDSUP, msec,
+                     // LIFT_DRIVE_POWER_PERCENT, velocityUnits::pct);
   }
 }
 
@@ -98,26 +326,27 @@ void MoveArm(ArmDirection dir) {
   const double ARM_DRIVE_POWER_PERCENT = 100;
   directionType armDirection = fwd;
 
-  motor_group Arm = motor_group(ArmMotorLeft, ArmMotorRight, LiftMotor);
-
+  //motor_group Arm = motor_group(ArmMotorLeft, ArmMotorRight, LiftMotor);
+  
   if (dir == UP) {
     armDirection = forward;
 
-    Arm.spinFor(armDirection, ARM_DRIVE_TIME_MILLISECONDSUP, msec,
-                ARM_DRIVE_POWER_PERCENT, velocityUnits::pct);
+  //  Arm.spinFor(armDirection, ARM_DRIVE_TIME_MILLISECONDSUP, msec,
+  //              ARM_DRIVE_POWER_PERCENT, velocityUnits::pct);
 
-    Arm.stop(hold);
+  //  Arm.stop(hold);
 
   } else if (dir == DOWN) {
-    Arm.spinFor(armDirection, ARM_DRIVE_TIME_MILLISECONDSDOWN, msec,
-                ARM_DRIVE_POWER_PERCENT, velocityUnits::pct);
+  //  Arm.spinFor(armDirection, ARM_DRIVE_TIME_MILLISECONDSDOWN, msec,
+  //             ARM_DRIVE_POWER_PERCENT, velocityUnits::pct);
 
-    Arm.stop(hold);
+  //  Arm.stop(hold);
   } else {
 
-    Arm.stop(hold);
+  //  Arm.stop(hold);
   }
 }
+
 
 enum forkDirection { up, down };
 // Moves the lfit backward, returns no value, bool either true or false
@@ -168,8 +397,6 @@ void autonomous(void) {
     MovepMotor(up);
     MoveLift(INWARD);
     // We need a group for the pneumatics
-    PneumaticLeft.set(true);
-    PneumaticRight.set(true);
     Drivetrain.driveFor(reverse, 12, inches);
     MoveArm(UP);
 
@@ -248,59 +475,48 @@ void usercontrol(void) {
   // Only attach callback functions onece outside the while loop
 
   // Activate the pnuematics by looking at the Pneumnatic control function
-
-  Controller1.ButtonB.released(PneumaticControl);
+  // If controller1.buttonB is realeased the state on the claws pnumatic state changes from true to false or false to true 
+  // If controller1.buttonY is realeased the state on the spatula pnumatic state changes from true to false or false to true 
+  Controller1.ButtonB.released(PneumaticControlClaw);
+  Controller1.ButtonY.released(PneumaticControlSpatula);
 
   // User control code here, inside the loop
   while (1) {
 
-    // Moves mobile goal extruder forward or backward
+    // Moves mobile goal 90 degree arm forward or backward
 
-    if (Controller1.ButtonL2.pressing()) {
+    if (Controller1.ButtonL1.pressing()) {
 
-      LiftMotor.spin(forward, 50, percent);
+      LeftLiftMotor.spin(forward, 100, percent);
+      RightLiftMotor.spin(forward, 100, percent);
+    } else if (Controller1.ButtonL2.pressing()) {
 
-    } else if (Controller1.ButtonL1.pressing()) {
-
-      LiftMotor.spin(reverse, 50, percent);
+      LeftLiftMotor.spin(reverse, 80, percent);
+      RightLiftMotor.spin(reverse, 80, percent);
 
     } else {
 
-      LiftMotor.stop(hold);
+      LeftLiftMotor.stop(hold);
+      RightLiftMotor.stop(hold);
+
     }
 
-    // Moves lift up and dwown to pick up donuts
+    // Moves four bar arm up and down to place mobile goals on platforms
 
     if (Controller1.ButtonR1.pressing()) {
 
-      ArmMotorLeft.spin(forward, 50, percent);
-      ArmMotorRight.spin(forward, 50, percent);
+      ArmMotorLeft.spin(forward, 100, percent);
+      ArmMotorRight.spin(forward, 100, percent);
 
     } else if (Controller1.ButtonR2.pressing()) {
 
-      ArmMotorLeft.spin(reverse, 50, percent);
-      ArmMotorRight.spin(reverse, 50, percent);
+      ArmMotorLeft.spin(reverse, 80, percent);
+      ArmMotorRight.spin(reverse, 80, percent);
 
     } else {
 
       ArmMotorLeft.stop(hold);
       ArmMotorRight.stop(hold);
-    }
-
-    vexcodeInit();
-
-    // Testing the pneumatics on the lift, one on each side
-    // Move the pnuematic after the start of the match
-
-    if (Controller1.ButtonA.pressing()) {
-
-      pMotor.spin(forward, 10, percent);
-
-    } else if (Controller1.ButtonY.pressing()) {
-
-      pMotor.spin(reverse, 10, percent);
-    } else {
-      pMotor.stop(hold);
     }
 
     wait(20, msec); // Sleep the task for a short amount of time to
@@ -311,6 +527,7 @@ void usercontrol(void) {
 //
 // Main will set up the competition functions and callbacks.
 //
+
 int main() {
   // Set up callbacks for autonomous and driver control periods.
   Competition.autonomous(autonomous);
@@ -327,28 +544,53 @@ int main() {
 
 // Functions, place all functions here
 
-// Changes the pneumatic state from ture to false
+// Changes the pneumatic state of claw from true to false 
 
-void PneumaticControl() {
+void PneumaticControlClaw() {
 
   Brain.Screen.clearScreen();
   Controller1.Screen.clearScreen();
 
-  if (PneumaticState == true) {
+  if (PneumaticStateClaw == true) {
 
-    PneumaticState = false;
+    PneumaticStateClaw = false;
 
     Brain.Screen.printAt(1, 1, "false");
     Controller1.Screen.print("false");
 
   } else {
 
-    PneumaticState = true;
+    PneumaticStateClaw = true;
 
     Brain.Screen.printAt(1, 1, "true");
     Controller1.Screen.print("true");
   }
 
-  PneumaticLeft.set(PneumaticState);
-  PneumaticRight.set(PneumaticState);
+  PneumaticClaw.set(PneumaticStateClaw);
+}
+
+// Changes the pneumatic state of spatula from ture to false 
+
+
+void PneumaticControlSpatula() {
+
+  Brain.Screen.clearScreen();
+  Controller1.Screen.clearScreen();
+
+  if (PneumaticStateSpatula == true) {
+
+    PneumaticStateSpatula = false;
+
+    Brain.Screen.printAt(1, 1, "false");
+    Controller1.Screen.print("false");
+
+  } else {
+
+    PneumaticStateSpatula = true;
+
+    Brain.Screen.printAt(1, 1, "true");
+    Controller1.Screen.print("true");
+  }
+
+  PneumaticSpatula.set(PneumaticStateSpatula);
 }

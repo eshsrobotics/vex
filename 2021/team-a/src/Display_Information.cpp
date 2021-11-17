@@ -42,10 +42,17 @@ void temperatureDisplay() {
   Brain.Screen.setPenColor(black);
   Brain.Screen.newLine();
 
-  // Prints the LiftMotor temperature.
+  // Prints the LeftLiftMotor temperature.
   Brain.Screen.print("LiftMotor temperature(percent): ");
-  temperatureColour(LiftMotor.temperature(percent));
-  Brain.Screen.print((LiftMotor.temperature(percent)));
+  temperatureColour(LeftLiftMotor.temperature(percent));
+  Brain.Screen.print((LeftLiftMotor.temperature(percent)));
+  Brain.Screen.setPenColor(black);
+  Brain.Screen.newLine();
+  
+  // Prints the RightLiftMotor temperature.
+  Brain.Screen.print("LiftMotor temperature(percent): ");
+  temperatureColour(RightLiftMotor.temperature(percent));
+  Brain.Screen.print((RightLiftMotor.temperature(percent)));
   Brain.Screen.setPenColor(black);
   Brain.Screen.newLine();
 
