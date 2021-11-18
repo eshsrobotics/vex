@@ -1,3 +1,13 @@
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// Drivetrain           drivetrain    19, 12          
+// unused_right_now     motor         20              
+// Arm                  motor         13              
+// LeftArmBumper        bumper        G               
+// RightArmBumper       bumper        H               
+// ---- END VEXCODE CONFIGURED DEVICES ----
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /*    Module:       main.cpp                                                  */
@@ -6,9 +16,6 @@
 /*    Description:  Competition Template                                      */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// ---- END VEXCODE CONFIGURED DEVICES ----
 
 #include "vex.h"
 #include <cmath> 
@@ -55,9 +62,9 @@ void pre_auton(void) {
 
 // Autonomous and Skills Challenge Support Routines.
 
-bool is_robot_driving() { return Drivetrain.isMoving(); }
+/* bool is_robot_driving() { return Drivetrain.isMoving(); }
 
-bool is_arm_moving() { return (ArmLeft.isSpinning() || ArmRight.isSpinning()); }
+bool is_arm_moving() { return (Arm.isSpinning() || ArmRight.isSpinning()); }
 
 // driveFor(forward, x, inches) does not drive the exact number of inches, the
 // average amount to change is to subtract 3.90625
@@ -107,7 +114,7 @@ void arms(double dist_degrees, double timeout_msec = 5000) {
   // These variables tell us the starting position for the arms, so we
   // know when the motors should stop spinning.
   // Independent of the bump sensors.
-  const double STARTING_ROTATION_LEFT = ArmLeft.rotation(deg);
+  const double STARTING_ROTATION_LEFT = Arm.rotation(deg);
   const double STARTING_ROTATION_RIGHT = ArmRight.rotation(deg);
 
   // If the motors get stuck, we need the starting time to make an
@@ -119,7 +126,7 @@ void arms(double dist_degrees, double timeout_msec = 5000) {
   while (!done) {
     // forward means up, unless given a negative value.
     if (leftArmSpinning) {
-      ArmLeft.spin(forward, currentVelocityPercent, pct);
+      Arm.spin(forward, currentVelocityPercent, pct);
     }
     if (rightArmSpinning) {
       ArmRight.spin(forward, currentVelocityPercent, pct);
@@ -146,7 +153,7 @@ void arms(double dist_degrees, double timeout_msec = 5000) {
     }
 
     // Stops rotating the arm once rotated the desired degrees.
-    if (abs(ArmLeft.rotation(deg) - STARTING_ROTATION_LEFT) >
+    if (abs(Arm.rotation(deg) - STARTING_ROTATION_LEFT) >
         abs(dist_degrees)) {
       leftArmSpinning = false;
     }
@@ -168,9 +175,9 @@ void arms(double dist_degrees, double timeout_msec = 5000) {
   // brakeType coast just cuts power.
   // brakeType hold uses power to hold the arms in place.
   // Used brake to save power, but stop the arm.
-  ArmLeft.stop(brake);
+  Arm.stop(brake);
   ArmRight.stop(brake);
-}
+} */
 /*---------------------------------------------------------------------------*/
 /*                                                                           */
 /*                              Autonomous Task                              */
@@ -187,14 +194,14 @@ void autonomous(void) {
   // ..........................................................................
 
   // Changes the drive and turn velocity for the robot
-  Drivetrain.setDriveVelocity(100, pct);
-  Drivetrain.setTurnVelocity(100, pct);
+  // Drivetrain.setDriveVelocity(100, pct);
+  // Drivetrain.setTurnVelocity(100, pct);
 
-  arms(-25);
-  turnLeftFor(9);
-  driveForwardFor(19);
-  arms(-30);
-  driveReverseFor(10);
+  // arms(-25);
+  // turnLeftFor(9);
+  // driveForwardFor(19);
+  // arms(-30);
+  // driveReverseFor(10);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -214,19 +221,13 @@ bool moveArm(int armSpeed, vex::controller::button &upButton,
 
   if (upButton.pressing()) {
     buttonPressed = true;
-    ArmLeft.spin(forward, armSpeed, pct);
-    ArmRight.spin(forward, armSpeed, pct);
+    Arm.spin(forward, armSpeed, pct);
   } else if (downButton.pressing()) {
     buttonPressed = true;
     if (!LeftArmBumper.pressing()) {
-      ArmLeft.spin(reverse, armSpeed, pct);
+      Arm.spin(reverse, armSpeed, pct);
     } else {
-      ArmLeft.stop(hold);
-    }
-    if (!RightArmBumper.pressing()) {
-      ArmRight.spin(reverse, armSpeed, pct);
-    } else {
-      ArmRight.stop(hold);
+      Arm.stop(hold);
     }
   }
   return buttonPressed;
@@ -250,8 +251,7 @@ void usercontrol(void) {
     // The left shoulder buttons move the arms up and down at 25% speed
     if (!moveArm(speed, Controller1.ButtonR1, Controller1.ButtonR2) &&
         !moveArm(speedSlow, Controller1.ButtonL1, Controller1.ButtonL2)) {
-      ArmLeft.stop(hold);
-      ArmRight.stop(hold);
+      Arm.stop(hold);
     }
     
     wait(20, msec); // Sleep the task for a short amount of time to

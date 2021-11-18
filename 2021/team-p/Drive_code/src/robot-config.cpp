@@ -7,21 +7,13 @@ using code = vision::code;
 // A global instance of brain used for printing to the V5 Brain screen
 brain  Brain;
 
-const double pi = 3.14159265;
-// https://store.robotmesh.com/vex-robotics/wheels/vex-4inch-omni-wheels
-const double wheelDiameterMm = 101.6;
-// Measured track width and wheelbase in inches and converted to millimeters
-const double trackWidthMm = 374.65;
-const double wheelbaseMm = 292.1;
-
-
 // VEXcode device constructors
 controller Controller1 = controller(primary);
 motor LeftDriveSmart = motor(PORT19, ratio18_1, false);
 motor RightDriveSmart = motor(PORT12, ratio18_1, true);
-drivetrain Drivetrain = drivetrain(LeftDriveSmart, RightDriveSmart, (pi * wheelDiameterMm), trackWidthMm, wheelbaseMm, mm, 1);
-motor ArmLeft = motor(PORT20, ratio18_1, true);
-motor ArmRight = motor(PORT13, ratio18_1, false);
+drivetrain Drivetrain = drivetrain(LeftDriveSmart, RightDriveSmart, 319.19, 285.75, 292.09999999999997, mm, 1);
+motor unused_right_now = motor(PORT20, ratio18_1, true);
+motor Arm = motor(PORT13, ratio18_1, false);
 bumper LeftArmBumper = bumper(Brain.ThreeWirePort.G);
 bumper RightArmBumper = bumper(Brain.ThreeWirePort.H);
 
@@ -43,7 +35,7 @@ int rc_auto_loop_function_Controller1() {
       // right = Axis2
       int drivetrainLeftSideSpeed = Controller1.Axis3.position();
       int drivetrainRightSideSpeed = Controller1.Axis2.position();
-
+      
       // check if the value is inside of the deadband range
       if (drivetrainLeftSideSpeed < 5 && drivetrainLeftSideSpeed > -5) {
         // check if the left motor has already been stopped
@@ -70,7 +62,7 @@ int rc_auto_loop_function_Controller1() {
         // reset the toggle so that the deadband code knows to stop the right motor next time the input is in the deadband range
         DrivetrainRNeedsToBeStopped_Controller1 = true;
       }
-
+      
       // only tell the left drive motor to spin if the values are not in the deadband range
       if (DrivetrainLNeedsToBeStopped_Controller1) {
         LeftDriveSmart.setVelocity(drivetrainLeftSideSpeed, percent);
@@ -90,7 +82,7 @@ int rc_auto_loop_function_Controller1() {
 
 /**
  * Used to initialize code/tasks/devices added using tools in VEXcode Pro.
- *
+ * 
  * This should be called at the start of your int main function.
  */
 void vexcodeInit( void ) {

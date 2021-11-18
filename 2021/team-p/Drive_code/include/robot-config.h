@@ -5,8 +5,8 @@ extern brain Brain;
 // VEXcode devices
 extern controller Controller1;
 extern drivetrain Drivetrain;
-extern motor ArmLeft;
-extern motor ArmRight;
+extern motor unused_right_now;
+extern motor Arm;
 extern bumper LeftArmBumper;
 extern bumper RightArmBumper;
 
