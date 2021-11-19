@@ -25,21 +25,21 @@ void temperatureDisplay() {
   Brain.Screen.print("Drivetrain temperature: ");
   temperatureColour(Drivetrain.temperature(percent));
   Brain.Screen.print((Drivetrain.temperature(percent)));
-  Brain.Screen.setPenColor(black);
+  Brain.Screen.setPenColor(white);
   Brain.Screen.newLine();
 
-  // Prints the ArmLeft temperature.
-  Brain.Screen.print("ArmLeft temperature: ");
-  temperatureColour(ArmLeft.temperature(percent));
-  Brain.Screen.print((ArmLeft.temperature(percent)));
-  Brain.Screen.setPenColor(black);
+  // Prints the unused_right_now temperature.
+  Brain.Screen.print("unused_right_now temperature: ");
+  temperatureColour(unused_right_now.temperature(percent));
+  Brain.Screen.print((unused_right_now.temperature(percent)));
+  Brain.Screen.setPenColor(white);
   Brain.Screen.newLine();
 
-  // Prints the ArmRight temperature.
-  Brain.Screen.print("ArmRight temperature: ");
-  temperatureColour(ArmRight.temperature(percent));
-  Brain.Screen.print((ArmRight.temperature(percent)));
-  Brain.Screen.setPenColor(black);
+  // Prints the Arm temperature.
+  Brain.Screen.print("Arm temperature: ");
+  temperatureColour(Arm.temperature(percent));
+  Brain.Screen.print((Arm.temperature(percent)));
+  Brain.Screen.setPenColor(white);
   Brain.Screen.newLine();
 
   wait(0.2, seconds);
