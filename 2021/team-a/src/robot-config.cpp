@@ -20,7 +20,6 @@ motor LeftLiftMotor = motor(PORT3, ratio36_1, true);
 motor ArmMotorRight = motor(PORT10, ratio36_1, false);
 motor ArmMotorLeft = motor(PORT16, ratio36_1, true);
 digital_out PneumaticSpatula = digital_out(Brain.ThreeWirePort.B);
-motor pMotor = motor(PORT18, ratio18_1, false);
 digital_out PneumaticClaw = digital_out(Brain.ThreeWirePort.A);
 motor RightLiftMotor = motor(PORT15, ratio18_1, false);
 

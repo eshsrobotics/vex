@@ -1,3 +1,39 @@
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Drivetrain           drivetrain    20, 1, 4, 19    
+// Controller1          controller                    
+// LeftLiftMotor        motor         3               
+// ArmMotorRight        motor         10              
+// ArmMotorLeft         motor         16              
+// PneumaticSpatula     digital_out   B               
+// PneumaticClaw        digital_out   A               
+// RightLiftMotor       motor         15              
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Drivetrain           drivetrain    20, 1, 4, 19    
+// Controller1          controller                    
+// LeftLiftMotor        motor         3               
+// ArmMotorRight        motor         10              
+// ArmMotorLeft         motor         16              
+// PneumaticSpatula     digital_out   B               
+// PneumaticClaw        digital_out   A               
+// RightLiftMotor       motor         15              
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Drivetrain           drivetrain    20, 1, 4, 19    
+// Controller1          controller                    
+// LeftLiftMotor        motor         3               
+// ArmMotorRight        motor         10              
+// ArmMotorLeft         motor         16              
+// PneumaticSpatula     digital_out   B               
+// PneumaticClaw        digital_out   A               
+// RightLiftMotor       motor         15              
+// ---- END VEXCODE CONFIGURED DEVICES ----
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /*    Module:       main.cpp                                                  */
@@ -59,6 +95,7 @@ void pre_auton(void) {
   // Initializing Robot Configuration. DO NOT REMOVE!
   vexcodeInit();
   clearAllScreens();
+  Drivetrain.setStopping(coast); 
   // All activities that occur before the competition starts
   // Example: clearing encoders, setting servo positions, ...
 }
@@ -127,31 +164,6 @@ void MoveArm(ArmDirection dir) {
 }
 
 
-enum forkDirection { up, down };
-// Moves the lfit backward, returns no value, bool either true or false
-void MovepMotor(forkDirection dir) {
-
-  // when lfitMotor spin direction is forward it means lift moves outward
-  const double FORK_DRIVE_TIME_MILLISECONDSDOWN = 200; // 20;
-  const double FORK_DRIVE_TIME_MILLISECONDSUP = 150;
-  const double FORK_DRIVE_POWER_PERCENT = 100;
-  directionType forkDirection = fwd;
-
-  if (dir == up) {
-    forkDirection = forward;
-
-    pMotor.spinFor(forkDirection, FORK_DRIVE_TIME_MILLISECONDSUP, msec,
-                   FORK_DRIVE_POWER_PERCENT, velocityUnits::pct);
-
-  } else if (dir == down) {
-    pMotor.spinFor(forkDirection, FORK_DRIVE_TIME_MILLISECONDSDOWN, msec,
-                   FORK_DRIVE_POWER_PERCENT, velocityUnits::pct);
-
-  } else {
-
-    pMotor.stop(hold);
-  }
-}
 
 // This is the autonomous code
 void autonomous(void) {
@@ -172,8 +184,6 @@ void autonomous(void) {
     Drivetrain.driveFor(forward, 15, inches);
     // Move DR4B Up to put donuts in position
     MoveArm(UP);
-    // Aim pneumatics arm so it is above mobile goal
-    MovepMotor(up);
     MoveLift(INWARD);
     // We need a group for the pneumatics
     Drivetrain.driveFor(reverse, 12, inches);
@@ -198,8 +208,7 @@ void autonomous(void) {
     Drivetrain.driveFor(forward, 12, inches);
     // Move DR4B Up to put donuts in position
     MoveArm(UP);
-    // Aim pneumatics arm so it is above mobile goal
-    MovepMotor(up);
+
     // Pull in mobile goal for donuts
     MoveLift(INWARD);
     // Release donuts
@@ -251,27 +260,29 @@ void usercontrol(void) {
   Brain.Screen.setCursor(1, 1);
   Controller1.Screen.setCursor(1, 1);
 
+  Controller1.Screen.print(Drivetrain.velocity(percent));
+
   // Only attach callback functions onece outside the while loop
 
   // Activate the pnuematics by looking at the Pneumnatic control function
   // If controller1.buttonB is realeased the state on the claws pnumatic state changes from true to false or false to true 
   // If controller1.buttonY is realeased the state on the spatula pnumatic state changes from true to false or false to true 
-  Controller1.ButtonB.released(PneumaticControlClaw);
+  Controller1.ButtonA.released(PneumaticControlClaw);
   Controller1.ButtonY.released(PneumaticControlSpatula);
 
   // User control code here, inside the loop
   while (1) {
 
     // Moves mobile goal 90 degree arm forward or backward
-
-    if (Controller1.ButtonL1.pressing()) {
+temperatureDisplay();
+    if (Controller1.ButtonR1.pressing()) {
 
       LeftLiftMotor.spin(forward, 100, percent);
       RightLiftMotor.spin(forward, 100, percent);
-    } else if (Controller1.ButtonL2.pressing()) {
+    } else if (Controller1.ButtonR2.pressing()) {
 
-      LeftLiftMotor.spin(reverse, 80, percent);
-      RightLiftMotor.spin(reverse, 80, percent);
+      LeftLiftMotor.spin(reverse, 35, percent);
+      RightLiftMotor.spin(reverse, 35, percent);
 
     } else {
 
@@ -282,12 +293,12 @@ void usercontrol(void) {
 
     // Moves four bar arm up and down to place mobile goals on platforms
 
-    if (Controller1.ButtonR1.pressing()) {
+    if (Controller1.ButtonL1.pressing()) {
 
       ArmMotorLeft.spin(forward, 100, percent);
       ArmMotorRight.spin(forward, 100, percent);
 
-    } else if (Controller1.ButtonR2.pressing()) {
+    } else if (Controller1.ButtonL2.pressing()) {
 
       ArmMotorLeft.spin(reverse, 80, percent);
       ArmMotorRight.spin(reverse, 80, percent);

@@ -9,7 +9,6 @@ extern motor LeftLiftMotor;
 extern motor ArmMotorRight;
 extern motor ArmMotorLeft;
 extern digital_out PneumaticSpatula;
-extern motor pMotor;
 extern digital_out PneumaticClaw;
 extern motor RightLiftMotor;
 
