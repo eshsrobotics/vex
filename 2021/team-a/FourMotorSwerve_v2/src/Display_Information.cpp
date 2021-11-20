@@ -18,49 +18,6 @@ void temperatureColour(double temperatureReading) {
 }
 
 void temperatureDisplay() {
-
-  Brain.Screen.setCursor(1, 1);
-
-  drivetrainTemperatureDisplay();
-
-  // Prints the ArmMotorLeft temperature.
-  Brain.Screen.print("ArmMotorLeft temperature: ");
-  temperatureColour(ArmMotorLeft.temperature(percent));
-  Brain.Screen.print((ArmMotorLeft.temperature(percent)));
-  Brain.Screen.setPenColor(black);
-  Brain.Screen.newLine();
-
-  // Prints the ArmMotorRight temperature.
-  Brain.Screen.print("ArmMotorRight temperature: ");
-  temperatureColour(ArmMotorRight.temperature(percent));
-  Brain.Screen.print((ArmMotorRight.temperature(percent)));
-  Brain.Screen.setPenColor(black);
-  Brain.Screen.newLine();
-
-  // Prints the LeftLiftMotor temperature.
-  Brain.Screen.print("LiftMotor temperature(percent): ");
-  temperatureColour(LeftLiftMotor.temperature(percent));
-  Brain.Screen.print((LeftLiftMotor.temperature(percent)));
-  Brain.Screen.setPenColor(black);
-  Brain.Screen.newLine();
-
-  // Prints the RightLiftMotor temperature.
-  Brain.Screen.print("LiftMotor temperature(percent): ");
-  temperatureColour(RightLiftMotor.temperature(percent));
-  Brain.Screen.print((RightLiftMotor.temperature(percent)));
-  Brain.Screen.setPenColor(black);
-  Brain.Screen.newLine();
-
-  // Prints the pMotor temperature.
-  Brain.Screen.print("pMotor temperature(percent): ");
-  temperatureColour(pMotor.temperature(percent));
-  Brain.Screen.print((pMotor.temperature(percent)));
-  Brain.Screen.setPenColor(black);
-  Brain.Screen.newLine();
-  wait(0.2, seconds);
-}
-
-void drivetrainTemperatureDisplay() {
   // Prints the Drivetrain temperature
 
   /* the display on the brain should look like this:
@@ -72,53 +29,393 @@ void drivetrainTemperatureDisplay() {
 
 
   */
-
+  Brain.Screen.setPenColor(white);
   Brain.Screen.print("Drivetrain temperature: ");
 
   Brain.Screen.print("FrontLeftMotor: ");
   temperatureColour(FrontLeftMotor.temperature(fahrenheit));
   Brain.Screen.print(FrontLeftMotor.temperature(fahrenheit));
+  Brain.Screen.setPenColor(white);
 
   Brain.Screen.print("FrontRightMotor: ");
   temperatureColour(FrontRightMotor.temperature(fahrenheit));
   Brain.Screen.print(FrontRightMotor.temperature(fahrenheit));
   Brain.Screen.newLine();
 
+  Brain.Screen.setPenColor(white);
   Brain.Screen.print("RearRightMotor: ");
   temperatureColour(RearLeftMotor.temperature(fahrenheit));
   Brain.Screen.print(RearLeftMotor.temperature(fahrenheit));
+
+  Brain.Screen.setPenColor(white);
   Brain.Screen.print("RearLeftMotor: ");
   temperatureColour(RearRightMotor.temperature(fahrenheit));
   Brain.Screen.print(RearRightMotor.temperature(fahrenheit));
-
   Brain.Screen.newLine();
 
-  Brain.Screen.setPenColor(black);
+  Brain.Screen.setPenColor(white);
+  Brain.Screen.print("Drivetrain temperature: ");
   Brain.Screen.newLine();
 
+  // Prints the ArmMotorLeft temperature.
+  Brain.Screen.print("ArmMotorLeft temperature: ");
+  temperatureColour(ArmMotorLeft.temperature(percent));
+  Brain.Screen.print((ArmMotorLeft.temperature(percent)));
+  Brain.Screen.setPenColor(white);
+  Brain.Screen.newLine();
+
+  // Prints the ArmMotorRight temperature.
+  Brain.Screen.print("ArmMotorRight temperature: ");
+  temperatureColour(ArmMotorRight.temperature(percent));
+  Brain.Screen.print((ArmMotorRight.temperature(percent)));
+  Brain.Screen.setPenColor(white);
+  Brain.Screen.newLine();
+
+  // Prints the LeftLiftMotor temperature.
+  Brain.Screen.print("LiftMotor temperature(percent): ");
+  temperatureColour(LeftLiftMotor.temperature(percent));
+  Brain.Screen.print((LeftLiftMotor.temperature(percent)));
+  Brain.Screen.setPenColor(white);
+  Brain.Screen.newLine();
+
+  // Prints the RightLiftMotor temperature.
+  Brain.Screen.print("LiftMotor temperature(percent): ");
+  temperatureColour(RightLiftMotor.temperature(percent));
+  Brain.Screen.print((RightLiftMotor.temperature(percent)));
+  Brain.Screen.setPenColor(white);
+  Brain.Screen.newLine();
+}
+
+void Drivetrain_Efficiency_ControllerDisplay(){
   /* the display on the Contoller should look like this:
 
-
-             Drivetrain temperature
-              FLM 000°F FRM 000°F
-              RLM 000°F RRM 000°F
-
+           Drive Degrees
+          FLM 000 FRM 000
+          RLM 000 RRM 000
 
   */
 
-  Controller1.Screen.print("Drivetrain temperature: ");
+  Controller1.Screen.print(" Drive Degrees");
   Controller1.Screen.newLine();
 
-  Controller1.Screen.print("FrontLeftMotor: ");
+  Controller1.Screen.print("FLM: ");
+  Controller1.Screen.print(FrontLeftMotor.efficiency());
+
+  Controller1.Screen.print("FRM: ");
+  Controller1.Screen.print(FrontRightMotor.efficiency());
+  Controller1.Screen.newLine();
+
+  Controller1.Screen.print(" RLM: ");
+  Controller1.Screen.print(RearLeftMotor.efficiency());
+
+  Controller1.Screen.print(" RRM: ");
+  Controller1.Screen.print(RearRightMotor.efficiency());
+}
+
+void Drivetrain_Rotation_ControllerDisplay_Degrees() {
+  /* the display on the Contoller should look like this:
+
+           Drive Degrees
+          FLM 000 FRM 000
+          RLM 000 RRM 000
+
+  */
+
+  Controller1.Screen.print(" Drive Degrees");
+  Controller1.Screen.newLine();
+
+  Controller1.Screen.print("FLM: ");
+  Controller1.Screen.print(FrontLeftMotor.rotation(deg));
+
+  Controller1.Screen.print("FRM: ");
+  Controller1.Screen.print(FrontRightMotor.rotation(deg));
+  Controller1.Screen.newLine();
+
+  Controller1.Screen.print(" RLM: ");
+  Controller1.Screen.print(RearLeftMotor.rotation(deg));
+
+  Controller1.Screen.print(" RRM: ");
+  Controller1.Screen.print(RearRightMotor.rotation(deg));
+}
+
+void Drivetrain_Rotation_ControllerDisplay_Revolutions() {
+  /* the display on the Contoller should look like this:
+
+             Drive Rev
+          FLM 000 FRM 000
+          RLM 000 RRM 000
+
+  */
+
+  Controller1.Screen.print("   Drive Rev");
+  Controller1.Screen.newLine();
+
+  Controller1.Screen.print("FLM: ");
+  Controller1.Screen.print(FrontLeftMotor.rotation(rev));
+
+  Controller1.Screen.print("FRM: ");
+  Controller1.Screen.print(FrontRightMotor.rotation(rev));
+  Controller1.Screen.newLine();
+
+  Controller1.Screen.print(" RLM: ");
+  Controller1.Screen.print(RearLeftMotor.rotation(rev));
+
+  Controller1.Screen.print(" RRM: ");
+  Controller1.Screen.print(RearRightMotor.rotation(rev));
+}
+
+void Drivetrain_Torque_ControllerDisplay_InchPounds() {
+  /* the display on the Contoller should look like this:
+
+             Drive InLb
+          FLM 000 FRM 000
+          RLM 000 RRM 000
+
+  */
+
+  Controller1.Screen.print("  Drive InLb");
+  Controller1.Screen.newLine();
+
+  Controller1.Screen.print("FLM: ");
+  Controller1.Screen.print(FrontLeftMotor.torque(InLb));
+
+  Controller1.Screen.print("FRM: ");
+  Controller1.Screen.print(FrontRightMotor.torque(InLb));
+  Controller1.Screen.newLine();
+
+  Controller1.Screen.print(" RLM: ");
+  Controller1.Screen.print(RearLeftMotor.torque(InLb));
+
+  Controller1.Screen.print(" RRM: ");
+  Controller1.Screen.print(RearRightMotor.torque(InLb));
+}
+
+void Drivetrain_Torque_ControllerDisplay_NewtonMeters() {
+  /* the display on the Contoller should look like this:
+
+          Drive Torque Nm
+          FLM 000 FRM 000
+          RLM 000 RRM 000
+
+  */
+
+  Controller1.Screen.print("Drive Torque Nm");
+  Controller1.Screen.newLine();
+
+  Controller1.Screen.print("FLM: ");
+  Controller1.Screen.print(FrontLeftMotor.torque(Nm));
+
+  Controller1.Screen.print("FRM: ");
+  Controller1.Screen.print(FrontRightMotor.torque(Nm));
+  Controller1.Screen.newLine();
+
+  Controller1.Screen.print(" RLM: ");
+  Controller1.Screen.print(RearLeftMotor.torque(Nm));
+
+  Controller1.Screen.print(" RRM: ");
+  Controller1.Screen.print(RearRightMotor.torque(Nm));
+}
+
+void Drivetrain_Current_ControllerDisplay() {
+  /* the display on the Contoller should look like this:
+
+            Drive Current
+           FLM 000 FRM 000
+           RLM 000 RRM 000
+
+  */
+
+  Controller1.Screen.print(" Drive Current");
+  Controller1.Screen.newLine();
+
+  Controller1.Screen.print("FLM: ");
+  Controller1.Screen.print(FrontLeftMotor.current());
+
+  Controller1.Screen.print("FRM: ");
+  Controller1.Screen.print(FrontRightMotor.current());
+  Controller1.Screen.newLine();
+
+  Controller1.Screen.print(" RLM: ");
+  Controller1.Screen.print(RearLeftMotor.current());
+
+  Controller1.Screen.print(" RRM: ");
+  Controller1.Screen.print(RearRightMotor.current());
+}
+
+void Drivetrain_Power_ControllerDisplay() {
+  /* the display on the Contoller should look like this:
+
+                 Drive Watts
+               FLM 000 FRM 000
+               RLM 000 RRM 000
+
+   */
+
+  Controller1.Screen.print("  Drive Watts");
+  Controller1.Screen.newLine();
+
+  Controller1.Screen.print("FLM: ");
+  Controller1.Screen.print(FrontLeftMotor.power());
+
+  Controller1.Screen.print("FRM: ");
+  Controller1.Screen.print(FrontRightMotor.power());
+  Controller1.Screen.newLine();
+
+  Controller1.Screen.print(" RLM: ");
+  Controller1.Screen.print(RearLeftMotor.power());
+
+  Controller1.Screen.print(" RRM: ");
+  Controller1.Screen.print(RearRightMotor.power());
+}
+
+void Drivetrain_Voltage_ControllerDisplay_Volts() {
+  /* the display on the Contoller should look like this:
+
+               Drive Voltage
+              FLM 000 FRM 000
+              RLM 000 RRM 000
+
+  */
+
+  Controller1.Screen.print(" Drive Voltage ");
+  Controller1.Screen.newLine();
+
+  Controller1.Screen.print("FLM: ");
+  Controller1.Screen.print(FrontLeftMotor.voltage());
+
+  Controller1.Screen.print("FRM: ");
+  Controller1.Screen.print(FrontRightMotor.voltage());
+  Controller1.Screen.newLine();
+
+  Controller1.Screen.print(" RLM: ");
+  Controller1.Screen.print(RearLeftMotor.voltage());
+
+  Controller1.Screen.print(" RRM: ");
+  Controller1.Screen.print(RearRightMotor.voltage());
+}
+
+void Drivetrain_Temperature_ControllerDisplay_Celsius() {
+  /* the display on the Contoller should look like this:
+
+               Drive Temp °C
+              FLM 000 FRM 000
+              RLM 000 RRM 000
+
+  */
+
+  Controller1.Screen.print(" Drive Temp °C");
+  Controller1.Screen.newLine();
+
+  Controller1.Screen.print("FLM: ");
+  Controller1.Screen.print(FrontLeftMotor.temperature(celsius));
+
+  Controller1.Screen.print("FRM: ");
+  Controller1.Screen.print(FrontRightMotor.temperature(celsius));
+  Controller1.Screen.newLine();
+
+  Controller1.Screen.print(" RLM: ");
+  Controller1.Screen.print(RearLeftMotor.temperature(celsius));
+
+  Controller1.Screen.print(" RRM: ");
+  Controller1.Screen.print(RearRightMotor.temperature(celsius));
+}
+
+void Drivetrain_Temperature_ControllerDisplay_Fahrenheit() {
+  /* the display on the Contoller should look like this:
+
+               Drive Temp °F
+              FLM 000 FRM 000
+              RLM 000 RRM 000
+
+  */
+
+  Controller1.Screen.print(" Drive Temp °F");
+  Controller1.Screen.newLine();
+
+  Controller1.Screen.print("FLM: ");
   Controller1.Screen.print(FrontLeftMotor.temperature(fahrenheit));
 
-  Controller1.Screen.print("FrontRightMotor: ");
+  Controller1.Screen.print("FRM: ");
   Controller1.Screen.print(FrontRightMotor.temperature(fahrenheit));
   Controller1.Screen.newLine();
 
-  Controller1.Screen.print("RearRightMotor: ");
+  Controller1.Screen.print(" RLM: ");
   Controller1.Screen.print(RearLeftMotor.temperature(fahrenheit));
 
-  Controller1.Screen.print("RearLeftMotor: ");
+  Controller1.Screen.print(" RRM: ");
   Controller1.Screen.print(RearRightMotor.temperature(fahrenheit));
+}
+
+void Drivetrain_Temperature_ControllerDisplay_Percentage() {
+  /* the display on the Contoller should look like this:
+
+               Drive Temp %
+              FLM 000 FRM 000
+              RLM 000 RRM 000
+
+  */
+
+  Controller1.Screen.print(" Drive Temp %");
+  Controller1.Screen.newLine();
+
+  Controller1.Screen.print("FLM: ");
+  Controller1.Screen.print(FrontLeftMotor.temperature(percent));
+
+  Controller1.Screen.print("FRM: ");
+  Controller1.Screen.print(FrontRightMotor.temperature(percent));
+  Controller1.Screen.newLine();
+
+  Controller1.Screen.print(" RLM: ");
+  Controller1.Screen.print(RearLeftMotor.temperature(percent));
+
+  Controller1.Screen.print(" RRM: ");
+  Controller1.Screen.print(RearRightMotor.temperature(percent));
+}
+
+void Othermotors_Efficiency_ControllerDisplay(){
+
+}
+
+void Othermotors_Rotation_ControllerDisplay_Degrees(){
+
+}
+
+void Othermotors_Rotation_ControllerDisplay_Revolutions(){
+
+}
+
+void Othermotors_Rotation_ControllerDisplay_Rawdata(){
+
+}
+
+void Othermotors_Torque_ControllerDisplay_InchPounds(){
+
+}
+
+void Othermotors_Torque_ControllerDisplay_NewtonMeters(){
+
+}
+
+void Othermotors_Current_ControllerDisplay(){
+
+}
+
+void Othermotors_Power_ControllerDisplay(){
+
+}
+
+void Othermotors_Voltage_ControllerDisplay_Volts(){
+
+}
+
+void Othermotors_Temperature_ControllerDisplay_Celsius() {
+
+}
+
+void Othermotors_Temperature_ControllerDisplay_Fahrenheit() {
+
+}
+
+void Othermotors_Temperature_ControllerDisplay_Percentage() {
+
 }
