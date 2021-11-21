@@ -18,10 +18,13 @@
 /*----------------------------------------------------------------------------*/
 
 #include "vex.h"
+#include "Autonomous_Routines.h"
+#include <memory>
 #include <cmath> 
 
 using namespace vex;
 using std::abs;
+using std::make_shared;
 int speed = 50;
 int speedSlow = speed / 2;
 
@@ -196,8 +199,17 @@ void autonomous(void) {
   // ..........................................................................
 
   // Changes the drive and turn velocity for the robot
-  // Drivetrain.setDriveVelocity(100, pct);
-  // Drivetrain.setTurnVelocity(100, pct);
+  Drivetrain.setDriveVelocity(100, pct);
+  Drivetrain.setTurnVelocity(100, pct);
+
+  auto drive1 = make_shared<Task>(new DriveStraightTask(Drivetrain, 5));
+  auto wait = make_shared<Task>(new WaitMillisecondsTask(2000));
+  auto drive2 = make_shared<Task>(new DriveStraightTask(Drivetrain, -5));
+
+  addTask(drive1, wait);
+  addTask(wait, drive2);
+
+  execute(drive1);
 
   // arms(-25);
   // turnLeftFor(9);
