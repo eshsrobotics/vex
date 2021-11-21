@@ -9,7 +9,6 @@ extern motor LeftLiftMotor;
 extern motor ArmMotorRight;
 extern motor ArmMotorLeft;
 extern digital_out PneumaticSpatula;
-extern motor pMotor;
 extern digital_out PneumaticClaw;
 extern motor RightLiftMotor;
 extern motor FrontLeftMotor;
@@ -19,7 +18,7 @@ extern motor RearRightMotor;
 
 /**
  * Used to initialize code/tasks/devices added using tools in VEXcode Pro.
- * 
+ *
  * This should be called at the start of your int main function.
  */
-void  vexcodeInit( void );
+void vexcodeInit(void);

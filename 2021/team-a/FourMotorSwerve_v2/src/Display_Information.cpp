@@ -17,20 +17,21 @@ void temperatureColour(double temperatureReading) {
   }
 }
 
-void temperatureDisplay() {
+void temperatureBrainDisplay() {
   // Prints the Drivetrain temperature
 
   /* the display on the brain should look like this:
 
-
-                     Drivetrain temperature
+                     Drivetrain temperatures
            FrontLeftMotor 000°F FrontRightMotor 000°F
            RearLeftMotor  000°F RearRightMotor  000°F
-
-
+                       ArmMotor temperature
+             ArmMotorLeft 000°F ArmMotorRight   000°F
+                      LiftMotor temperatures
+            LeftLiftMotor 000°F RightLiftMotor  000°F
   */
   Brain.Screen.setPenColor(white);
-  Brain.Screen.print("Drivetrain temperature: ");
+  Brain.Screen.print("Drivetrain temperatures: ");
 
   Brain.Screen.print("FrontLeftMotor: ");
   temperatureColour(FrontLeftMotor.temperature(fahrenheit));
@@ -43,50 +44,49 @@ void temperatureDisplay() {
   Brain.Screen.newLine();
 
   Brain.Screen.setPenColor(white);
-  Brain.Screen.print("RearRightMotor: ");
+  Brain.Screen.print(" RearRightMotor: ");
   temperatureColour(RearLeftMotor.temperature(fahrenheit));
   Brain.Screen.print(RearLeftMotor.temperature(fahrenheit));
 
   Brain.Screen.setPenColor(white);
-  Brain.Screen.print("RearLeftMotor: ");
+  Brain.Screen.print(" RearLeftMotor: ");
   temperatureColour(RearRightMotor.temperature(fahrenheit));
   Brain.Screen.print(RearRightMotor.temperature(fahrenheit));
   Brain.Screen.newLine();
 
   Brain.Screen.setPenColor(white);
-  Brain.Screen.print("Drivetrain temperature: ");
-  Brain.Screen.newLine();
+  Brain.Screen.print("ArmMotor temperatures: ");
 
-  // Prints the ArmMotorLeft temperature.
-  Brain.Screen.print("ArmMotorLeft temperature: ");
-  temperatureColour(ArmMotorLeft.temperature(percent));
-  Brain.Screen.print((ArmMotorLeft.temperature(percent)));
+  // Prints the ArmMotor temperature.
+  Brain.Screen.print("ArmMotorLeft: ");
+  temperatureColour(ArmMotorLeft.temperature(fahrenheit));
+  Brain.Screen.print((ArmMotorLeft.temperature(fahrenheit)));
+  Brain.Screen.setPenColor(white);
+
+  Brain.Screen.print(" ArmMotorRight: ");
+  temperatureColour(ArmMotorRight.temperature(fahrenheit));
+  Brain.Screen.print((ArmMotorRight.temperature(fahrenheit)));
   Brain.Screen.setPenColor(white);
   Brain.Screen.newLine();
 
-  // Prints the ArmMotorRight temperature.
-  Brain.Screen.print("ArmMotorRight temperature: ");
-  temperatureColour(ArmMotorRight.temperature(percent));
-  Brain.Screen.print((ArmMotorRight.temperature(percent)));
-  Brain.Screen.setPenColor(white);
+  Brain.Screen.print("LiftMotor temperatures: ");
   Brain.Screen.newLine();
 
   // Prints the LeftLiftMotor temperature.
-  Brain.Screen.print("LiftMotor temperature(percent): ");
-  temperatureColour(LeftLiftMotor.temperature(percent));
-  Brain.Screen.print((LeftLiftMotor.temperature(percent)));
+  Brain.Screen.print("LeftLiftMotor: ");
+  temperatureColour(LeftLiftMotor.temperature(fahrenheit));
+  Brain.Screen.print((LeftLiftMotor.temperature(fahrenheit)));
   Brain.Screen.setPenColor(white);
-  Brain.Screen.newLine();
 
   // Prints the RightLiftMotor temperature.
-  Brain.Screen.print("LiftMotor temperature(percent): ");
-  temperatureColour(RightLiftMotor.temperature(percent));
-  Brain.Screen.print((RightLiftMotor.temperature(percent)));
+  Brain.Screen.print(" RightLiftMotor: ");
+  temperatureColour(RightLiftMotor.temperature(fahrenheit));
+  Brain.Screen.print((RightLiftMotor.temperature(fahrenheit)));
   Brain.Screen.setPenColor(white);
   Brain.Screen.newLine();
 }
 
-void Drivetrain_Efficiency_ControllerDisplay(){
+void Drivetrain_Efficiency_ControllerDisplay() {
   /* the display on the Contoller should look like this:
 
            Drive Degrees
@@ -372,50 +372,26 @@ void Drivetrain_Temperature_ControllerDisplay_Percentage() {
   Controller1.Screen.print(RearRightMotor.temperature(percent));
 }
 
-void Othermotors_Efficiency_ControllerDisplay(){
+void Othermotors_Efficiency_ControllerDisplay() {}
 
-}
+void Othermotors_Rotation_ControllerDisplay_Degrees() {}
 
-void Othermotors_Rotation_ControllerDisplay_Degrees(){
+void Othermotors_Rotation_ControllerDisplay_Revolutions() {}
 
-}
+void Othermotors_Rotation_ControllerDisplay_Rawdata() {}
 
-void Othermotors_Rotation_ControllerDisplay_Revolutions(){
+void Othermotors_Torque_ControllerDisplay_InchPounds() {}
 
-}
+void Othermotors_Torque_ControllerDisplay_NewtonMeters() {}
 
-void Othermotors_Rotation_ControllerDisplay_Rawdata(){
+void Othermotors_Current_ControllerDisplay() {}
 
-}
+void Othermotors_Power_ControllerDisplay() {}
 
-void Othermotors_Torque_ControllerDisplay_InchPounds(){
+void Othermotors_Voltage_ControllerDisplay_Volts() {}
 
-}
+void Othermotors_Temperature_ControllerDisplay_Celsius() {}
 
-void Othermotors_Torque_ControllerDisplay_NewtonMeters(){
+void Othermotors_Temperature_ControllerDisplay_Fahrenheit() {}
 
-}
-
-void Othermotors_Current_ControllerDisplay(){
-
-}
-
-void Othermotors_Power_ControllerDisplay(){
-
-}
-
-void Othermotors_Voltage_ControllerDisplay_Volts(){
-
-}
-
-void Othermotors_Temperature_ControllerDisplay_Celsius() {
-
-}
-
-void Othermotors_Temperature_ControllerDisplay_Fahrenheit() {
-
-}
-
-void Othermotors_Temperature_ControllerDisplay_Percentage() {
-
-}
+void Othermotors_Temperature_ControllerDisplay_Percentage() {}
