@@ -1,3 +1,6 @@
+#ifndef AUTONOMOUSSETUP_H_INCLUDED
+#define AUTONOMOUSSETUP_H_INCLUDED
+
 enum LiftDirection { INWARD, OUTWARD };
 
 // Moves the lfit backward, returns no value, bool either true or false
@@ -12,3 +15,5 @@ enum forkDirection { up, down };
 
 // Moves the lfit backward, returns no value, bool either true or false
 void MovepMotor(forkDirection dir);
+
+#endif

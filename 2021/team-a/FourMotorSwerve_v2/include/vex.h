@@ -18,7 +18,6 @@
 #include "AutonomousSetup.h"
 #include "AutonomousTask.h"
 #include "DisplayMenu.h"
-#include "Display_Information.h"
 #include "UserControlTask.h"
 #include "robot-config.h"
 

@@ -1,6 +1,16 @@
+#include "Display_Information.h"
 #include "vex.h"
 
 using namespace vex;
+using namespace std;
+
+void Motor_Display::Add_Motor(std::string motor_name, vex::motor *motor) {
+  _motors[motor_name] = motor;
+}
+void Motor_Display::Add_Drivetrain_Motor(std::string motor_name,
+                                         vex::motor *motor) {
+  _drivetrain_motors[motor_name] = motor;
+}
 
 void clearAllScreens() {
   Brain.Screen.clearScreen();
@@ -89,13 +99,13 @@ void temperatureBrainDisplay() {
 void Drivetrain_Efficiency_ControllerDisplay() {
   /* the display on the Contoller should look like this:
 
-           Drive Degrees
+          Drive Efficiency
           FLM 000 FRM 000
           RLM 000 RRM 000
 
   */
 
-  Controller1.Screen.print(" Drive Degrees");
+  Controller1.Screen.print("Drive Efficiency");
   Controller1.Screen.newLine();
 
   Controller1.Screen.print("FLM: ");

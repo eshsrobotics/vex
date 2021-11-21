@@ -22,7 +22,7 @@
 // ---- END VEXCODE CONFIGURED DEVICES ----
 
 #include "vex.h"
-
+#include "Display_Information.h"
 using namespace vex;
 
 // A global instance of competition

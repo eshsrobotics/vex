@@ -7,7 +7,7 @@ void Menu() {
 
   switch (displayItem) {
   case 1:
-    temperatureDisplay();
+    //temperatureDisplay();
     break;
   case 2:
 
