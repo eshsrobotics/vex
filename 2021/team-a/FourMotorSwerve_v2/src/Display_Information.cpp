@@ -23,25 +23,25 @@ std::string makeShortName(const std::string &s, int limit = 0) {
   string output = "";
   char prev = '\0';
   for (char c : s) {
-    if (prev == '\0' ||                          // Adding 1st char
-        !isalpha(prev) ||                        // First char after nonalphanumeric
-        (!isalpha(c) && c != '_' && c != ' ') || // Most special characters are pass-through
-        (!isupper(prev) && isupper(c))) {        // Handles CamelCase
+    if (prev == '\0' ||   // Adding 1st char
+        !isalpha(prev) || // First char after nonalphanumeric
+        (!isalpha(c) && c != '_' &&
+         c != ' ') || // Most special characters are pass-through
+        (!isupper(prev) && isupper(c))) { // Handles CamelCase
       output += toupper(c);
     }
     prev = c;
   }
 
-  if (limit <= 0) {                                     // "FOOBAR", 0 -> "FOOBAR"
+  if (limit <= 0) { // "FOOBAR", 0 -> "FOOBAR"
     return output;
   } else if (output.size() < limit) {
     return output + string(limit - output.size(), ' '); // "LM", 3 -> "LM "
   } else {
-    return output.substr(0, limit);                     // "CASE", 3 -> "CAS"
+    return output.substr(0, limit); // "CASE", 3 -> "CAS"
   }
 }
-} // end (unnamed namespace)
-
+} // namespace
 
 void Motor_Display::Add_Motor(std::string motor_name, vex::motor *motor) {
   _motors[motor_name] = motor;
@@ -61,7 +61,7 @@ void Motor_Display::Drivetrain_Efficiency_ControllerDisplay() {
 
   */
 
-  map<string, motor*> all_motors;
+  map<string, motor *> all_motors;
   all_motors.insert(_drivetrain_motors.begin(), _drivetrain_motors.end());
   all_motors.insert(_motors.begin(), _motors.end());
 
@@ -71,8 +71,9 @@ void Motor_Display::Drivetrain_Efficiency_ControllerDisplay() {
   // Switch which set of motors we display every few seconds.
   static unsigned int start = 0;
   static int lastDisplayTimeMilliseconds = 0;
-  const SWITCH_TIME_MILLISECONDS = 3000;
-  if (Brain.timer(msec) - lastDisplayTimeMilliseconds >= SWITCH_TIME_MILLISECONDS) {
+  const unsigned int SWITCH_TIME_MILLISECONDS = 3000;
+  if (Brain.timer(msec) - lastDisplayTimeMilliseconds >=
+      SWITCH_TIME_MILLISECONDS) {
     lastDisplayTimeMilliseconds = Brain.timer(msec);
     start += 2; // Next line.
     // Wrap around so we're displaying all the motors, four at a time, until we
@@ -83,16 +84,16 @@ void Motor_Display::Drivetrain_Efficiency_ControllerDisplay() {
   }
 
   unsigned int i = 0;
-  for (auto iter = all_motors.begin();
-       iter != all_motors.end();
-       ++iter, ++i) {
+  for (auto iter = all_motors.begin(); iter != all_motors.end(); ++iter, ++i) {
     if (i < start) {
       continue;
     }
     if (i >= start + 4) {
       break;
     }
-    Controller1.Screen.print(makeShortName(iter->first, 3) + ": ");
+    const char *abbrev = (makeShortName(iter->first, 3) + ": ").c_str();
+    
+    Controller1.Screen.print(abbrev);
     Controller1.Screen.print(iter->second->efficiency());
     if (i % 2 == 1) {
       Controller1.Screen.newLine();
