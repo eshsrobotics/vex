@@ -202,9 +202,9 @@ void autonomous(void) {
   Drivetrain.setDriveVelocity(100, pct);
   Drivetrain.setTurnVelocity(100, pct);
 
-  auto drive1 = make_shared<Task>(new DriveStraightTask(Drivetrain, 5));
-  auto wait = make_shared<Task>(new WaitMillisecondsTask(2000));
-  auto drive2 = make_shared<Task>(new DriveStraightTask(Drivetrain, -5));
+  auto drive1 = std::shared_ptr<Task>(new DriveStraightTask(Drivetrain, 5));
+  auto wait = std::shared_ptr<Task>(new WaitMillisecondsTask(2000));
+  auto drive2 = std::shared_ptr<Task>(new DriveStraightTask(Drivetrain, -5));
 
   addTask(drive1, wait);
   addTask(wait, drive2);
