@@ -11,7 +11,7 @@ extern bumper LeftArmBumper;
 extern bumper RightArmBumper;
 
 /**
- * Used to initialize code/tasks/devices added using tools in VEXcode Pro.
+ * Used to initialize code/tasks/devices added using tools in VEXcode Text.
  * 
  * This should be called at the start of your int main function.
  */

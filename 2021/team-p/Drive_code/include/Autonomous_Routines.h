@@ -4,7 +4,7 @@
 
 struct Task {
   // Generates the unique task ID
-  Task();
+  Task(const std::string& name);
 
   /*--------------------------------------------------------*/
   /*                     Member data                        */

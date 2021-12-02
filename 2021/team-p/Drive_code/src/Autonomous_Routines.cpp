@@ -1,6 +1,8 @@
 #include "vex.h"
 #include "Autonomous_Routines.h"
 #include <list>
+#include <string>
+#include <cstring> // std::snprintf()
 
 using namespace vex;
 using namespace std;
@@ -9,9 +11,15 @@ using namespace std;
 /*                    Task Methods                        */
 /*--------------------------------------------------------*/
 
-Task::Task() {
+Task::Task(const string& name) : name(name) {
   static int counter = 0;
   task_id = ++counter;
+
+  // Append the (unique) task ID to the name of the task.
+  char buffer[100];
+  snprintf(buffer, sizeof(buffer), "%d", task_id);
+  this->name += "#";
+  this->name += buffer;
 }
 
 void addTask(std::shared_ptr<Task> parentTask, std::shared_ptr<Task> childTask) {
@@ -29,24 +37,26 @@ void execute(std::shared_ptr<Task> rootTask) {
 
   while (!taskList.empty()) {
     // Check to see if any of the running tasks have finished
-    for (auto task : taskList) {
+    for (auto iter = taskList.begin(); iter != taskList.end(); ++iter) {
+      auto task = *iter;
       if (task->done()) {
         // Put the task's children into the list if they're ready
         for (auto childTask : task->children) {
           // A child task is only ready when all of its parents are completed
-          bool ready = true;
+          bool childTaskReady = true;
           for (auto parentTask : childTask->parents) {
             if (parentTask.expired()) {
               // If the parent task doesn't exist, it is completed, so the child task won't wait for it
               break;
             }
             if (!parentTask.lock()->done()) {
-              ready = false;
+              // If one of our parents is running, then we are not ready.
+              childTaskReady = false;
               break;
             }
           }
 
-          if (ready) {
+          if (childTaskReady) {
             // If all the parents are completed or destroyed, the task will start
             taskList.push_back(childTask);
             childTask->start();
@@ -54,7 +64,7 @@ void execute(std::shared_ptr<Task> rootTask) {
         }
         // Remove the original task from the list
         // This is safe if the task is a mutual parent of a task that currently isn't ready
-        taskList.remove(task);
+        iter = taskList.erase(iter);
       }
     }
 
@@ -66,7 +76,7 @@ void execute(std::shared_ptr<Task> rootTask) {
 /*            WaitMillisecondsTask Methods                */
 /*--------------------------------------------------------*/
 
-WaitMillisecondsTask::WaitMillisecondsTask(double milliseconds) : Task() {
+WaitMillisecondsTask::WaitMillisecondsTask(double milliseconds) : Task("Wait task") {
   waitPeriodMilliseconds = milliseconds;
 }
 
@@ -88,7 +98,7 @@ void WaitMillisecondsTask::start() {
 /*--------------------------------------------------------*/
 
 DriveStraightTask::DriveStraightTask(vex::drivetrain& drivetrain, double distanceInches)
-  : Task(), drivetrain(drivetrain), distanceInches(distanceInches) {}
+  : Task("Drive task"), drivetrain(drivetrain), distanceInches(distanceInches) {}
 
 bool DriveStraightTask::done() const {
   return drivetrain.isDone();
