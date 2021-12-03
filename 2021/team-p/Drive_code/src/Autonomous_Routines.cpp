@@ -16,7 +16,8 @@ Task::Task(const string& name) : name(name) {
   task_id = ++counter;
 
   // Append the (unique) task ID to the name of the task.
-  char buffer[100];
+  const size_t MAX_DIGITS = 10;
+  char buffer[MAX_DIGITS];
   snprintf(buffer, sizeof(buffer), "%d", task_id);
   this->name += "#";
   this->name += buffer;
@@ -37,39 +38,48 @@ void execute(std::shared_ptr<Task> rootTask) {
 
   while (!taskList.empty()) {
     // Check to see if any of the running tasks have finished
-    for (auto iter = taskList.begin(); iter != taskList.end(); ++iter) {
+    for (auto iter = taskList.begin(); iter != taskList.end(); /* See increment below */) {
       auto task = *iter;
       if (task->done()) {
-        // Put the task's children into the list if they're ready
+        // Put the task's children into the list if they're ready (i.e., when
+        // all its parents are completed)
         for (auto childTask : task->children) {
-          // A child task is only ready when all of its parents are completed
           bool childTaskReady = true;
           for (auto parentTask : childTask->parents) {
+            // If the parent task doesn't exist, it is completed, so the child
+            // task won't wait for it
             if (parentTask.expired()) {
-              // If the parent task doesn't exist, it is completed, so the child task won't wait for it
               break;
             }
+
+            // If one of our parents is running, then we are not ready.
             if (!parentTask.lock()->done()) {
-              // If one of our parents is running, then we are not ready.
               childTaskReady = false;
               break;
             }
-          }
+          } // end (for each parent of the current child task)
 
+          // If all the parents are completed or destroyed, the task will
+          // start
           if (childTaskReady) {
-            // If all the parents are completed or destroyed, the task will start
             taskList.push_back(childTask);
             childTask->start();
           }
-        }
+        } // end (for each child of the currently ending task)
+
         // Remove the original task from the list
-        // This is safe if the task is a mutual parent of a task that currently isn't ready
+        // This is safe if the task is a shared parent of a child task that
+        // currently isn't ready
         iter = taskList.erase(iter);
+      } else {
+        // The current task is still running.  Move to the next task in the
+        // list.
+        ++iter;
       }
-    }
+    } // end (for each active task)
 
     wait(25, msec);
-  }
+  } // end (while there are still active tasks)
 }
 
 /*--------------------------------------------------------*/
