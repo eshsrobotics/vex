@@ -8,6 +8,16 @@
 // LeftArmBumper        bumper        G               
 // RightArmBumper       bumper        H               
 // ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// Drivetrain           drivetrain    19, 12          
+// unused_right_now     motor         20              
+// Arm                  motor         13              
+// LeftArmBumper        bumper        G               
+// RightArmBumper       bumper        H               
+// ---- END VEXCODE CONFIGURED DEVICES ----
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /*    Module:       main.cpp                                                  */
@@ -201,13 +211,14 @@ void autonomous(void) {
   // Changes the drive and turn velocity for the robot
   Drivetrain.setDriveVelocity(100, pct);
   Drivetrain.setTurnVelocity(100, pct);
+  Drivetrain.setStopping(coast);
 
-  auto drive1 = std::shared_ptr<Task>(new DriveStraightTask(Drivetrain, 5));
+  auto drive1 = std::shared_ptr<Task>(new DriveStraightTask(Drivetrain, -10));
   auto wait = std::shared_ptr<Task>(new WaitMillisecondsTask(2000));
   auto drive2 = std::shared_ptr<Task>(new DriveStraightTask(Drivetrain, -5));
 
-  addTask(drive1, wait);
-  addTask(wait, drive2);
+  // addTask(drive1, wait);
+  // addTask(wait, drive2);
 
   execute(drive1);
 

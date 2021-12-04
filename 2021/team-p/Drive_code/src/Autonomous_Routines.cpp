@@ -116,8 +116,22 @@ bool DriveStraightTask::done() const {
 
 void DriveStraightTask::start() {
   if (distanceInches > 0) {
-    drivetrain.driveFor(vex::forward, distanceInches, inches);
+    // Assigns the variables for changing the input value so the output value is equal to it
+    // We got these numbers by plotting 5 points from testing and finding the line of best fit
+    const double M_VALUE = 1.20581;
+    const double B_VALUE = 1.15078;
+    // This formula creates the new value that is input into the driveFor function to get an 
+    // of the original distanceInches
+    double correctDistanceInches = (distanceInches - B_VALUE) / M_VALUE;
+    drivetrain.driveFor(vex::forward, correctDistanceInches, inches);
   } else {
-    drivetrain.driveFor(vex::reverse, -distanceInches, inches);
+    // Assigns the variables for changing the input value so the output value is equal to it
+    // We got these numbers by plotting 5 points from testing and finding the line of best fit
+    const double M_VALUE = 1.01885;
+    const double B_VALUE = -0.792244;
+    // This formula creates the new value that is input into the driveFor function to get an 
+    // of the original distanceInches
+    double correctDistanceInches = (-distanceInches - B_VALUE) / M_VALUE;
+    drivetrain.driveFor(vex::reverse, correctDistanceInches, inches);
   }
 }
