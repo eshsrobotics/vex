@@ -2,6 +2,11 @@
 #include <vector>
 #include <string>
 
+/*--------------------------------------------------------------------------*/
+/*     The struct task is how our whole autonomouis code runs, each task    */
+/* has one function that it runs for sutonomous, and each task has children */
+/*               and parents which run before and after it.                 */
+/*--------------------------------------------------------------------------*/
 struct Task {
   // Generates the unique task ID
   Task(const std::string& name);
@@ -52,7 +57,9 @@ extern void addTask(std::shared_ptr<Task> parentTask,
 
 extern void execute(std::shared_ptr<Task> rootTask);
 
-// Delays other tasks from starting
+/*-----------------------------------------------------------------------*/
+/* Delays other tasks form starting for a certain number of milliseconds */
+/*-----------------------------------------------------------------------*/
 struct WaitMillisecondsTask : public Task {
   double startTimeMilliseconds;
   double doneTimeMilliseconds;
@@ -64,17 +71,49 @@ struct WaitMillisecondsTask : public Task {
   void start();
 };
 
-
+/*--------------------------------------------------------------------------------------*/
+/* Drives the robot forward or backward a certain number of inches using the drivetrain */
+/*--------------------------------------------------------------------------------------*/
 struct DriveStraightTask : public Task {
   vex::drivetrain& drivetrain;
   double distanceInches;
 
-  // If a negative number is passed in, it will drive backwards instead of forwards
+  // If a negative number is passed in, the robot will drive backwards instead of forwards
   DriveStraightTask(vex::drivetrain& drivetrain, double distanceInches);
 
   // Returns true is the drivetrain has stopped moving
   // WARNING: Also applies if there is a turning task and a driving task executing at the same 
   // time, they will both end when one of them finishes, we can't do anything to fix that for now
+  bool done() const;
+  void start();
+};
+
+/*------------------------------------------------------------------------------------------------*/
+/* Turns the robot clockwise or counterclockwise a certain number of degrees using the drivetrain */
+/*------------------------------------------------------------------------------------------------*/
+// If the turning and driving tasks are running at the same time, one of them will overwrite the
+// other, because they are both using the same drivetrain.
+struct TurnTask : public Task {
+  vex::drivetrain& drivetrain;
+  double rotationAmountDegrees;
+
+  // If a positive number is passed in, the robot will turn clockwise (right), otherwise,
+  // the robot will turn counterclockwise (left)
+  TurnTask(vex::drivetrain& drivetrain, double rotationAmountDegrees);
+
+  bool done() const;
+  void start();
+};
+
+struct MoveMotorTask : public Task {
+  vex::motor& motor;
+  double gearRatio; // Ratio of the motor (input) to the output
+  double rotationAmountDegrees;
+
+  // If a positive number is passed in, the motor will turn clockwise (right), otherwise,
+  // the motor will turn counterclockwise (left)
+  MoveMotorTask(vex::motor& motor, double gearRatio, double rotationAmountDegrees);
+
   bool done() const;
   void start();
 };

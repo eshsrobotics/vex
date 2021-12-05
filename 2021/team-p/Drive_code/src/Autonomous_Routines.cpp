@@ -135,3 +135,41 @@ void DriveStraightTask::start() {
     drivetrain.driveFor(vex::reverse, correctDistanceInches, inches);
   }
 }
+
+TurnTask::TurnTask(vex::drivetrain& drivetrain, double rotationAmountDegrees)
+  : Task("Turn task"), drivetrain(drivetrain), rotationAmountDegrees(rotationAmountDegrees) {}
+
+bool TurnTask::done() const {
+  return drivetrain.isDone();
+}
+
+void TurnTask::start() {
+  if (rotationAmountDegrees > 0) {
+    drivetrain.turnFor(right, rotationAmountDegrees, degrees);
+  } else {
+    drivetrain.turnFor(left, -rotationAmountDegrees, degrees);
+  }
+}
+
+/*--------------------------------------------------------*/
+/*                  Mechanism Methods                     */
+/*--------------------------------------------------------*/
+
+MoveMotorTask::MoveMotorTask(vex::motor& motor, double gearRatio, double rotationAmountDegrees)
+  : Task("Move motor task"), motor(motor), rotationAmountDegrees(rotationAmountDegrees) {}
+
+bool MoveMotorTask::done() const {
+  // We assume if the motor stops moving, we have reached our target
+  // WARNING: This may return true if the motor is stalled
+  return motor.isDone();
+}
+
+void MoveMotorTask::start() {
+  if (rotationAmountDegrees > 0) {
+    // We are assuming that spinFor(fwd) always turns clockwise, and spinFor(rev)
+    // spins counterclockwise
+    motor.spinFor(fwd, rotationAmountDegrees * gearRatio, degrees);
+  } else {
+    motor.spinFor(vex::directionType::rev, -rotationAmountDegrees * gearRatio, degrees);
+  }
+}
