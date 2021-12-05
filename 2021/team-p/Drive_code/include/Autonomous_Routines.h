@@ -1,6 +1,7 @@
 #include <memory>  // shared_ptr<T>
 #include <vector>
 #include <string>
+#include <functional>
 
 /*--------------------------------------------------------------------------*/
 /*     The struct task is how our whole autonomouis code runs, each task    */
@@ -109,10 +110,20 @@ struct MoveMotorTask : public Task {
   vex::motor& motor;
   double gearRatio; // Ratio of the motor (input) to the output
   double rotationAmountDegrees;
+  std::function<bool(void)> endRotation;
 
   // If a positive number is passed in, the motor will turn clockwise (right), otherwise,
   // the motor will turn counterclockwise (left)
   MoveMotorTask(vex::motor& motor, double gearRatio, double rotationAmountDegrees);
+  
+  // This allows a motor to move until either it moves hte correct number of degrees
+  // or the predicate returns true
+  template<typename UnaryPredicate>
+  MoveMotorTask(vex::motor& motor, double gearRatio, double rotationAmountDegrees, UnaryPredicate p)
+    : Task("Move motor task"),
+      motor(motor),
+      rotationAmountDegrees(rotationAmountDegrees),
+      endRotation([&p] () { return p(); }) {}
 
   bool done() const;
   void start();

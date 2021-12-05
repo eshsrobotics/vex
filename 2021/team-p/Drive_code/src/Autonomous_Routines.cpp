@@ -156,12 +156,15 @@ void TurnTask::start() {
 /*--------------------------------------------------------*/
 
 MoveMotorTask::MoveMotorTask(vex::motor& motor, double gearRatio, double rotationAmountDegrees)
-  : Task("Move motor task"), motor(motor), rotationAmountDegrees(rotationAmountDegrees) {}
+  : Task("Move motor task"),
+    motor(motor),
+    rotationAmountDegrees(rotationAmountDegrees),
+    endRotation([] () { return false; }) {}
 
 bool MoveMotorTask::done() const {
   // We assume if the motor stops moving, we have reached our target
   // WARNING: This may return true if the motor is stalled
-  return motor.isDone();
+  return motor.isDone() || endRotation();
 }
 
 void MoveMotorTask::start() {
