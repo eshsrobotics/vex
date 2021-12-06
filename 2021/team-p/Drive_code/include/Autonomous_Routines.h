@@ -28,9 +28,6 @@ struct Task {
   // The child tasks of the current task, run when the task is finished
   std::vector<std::shared_ptr<Task>> children;
 
-  // Task parameter, the amount to do the task
-  double parameter;
-
   /*--------------------------------------------------------*/
   /*                  Virtual Methods                       */
   /*--------------------------------------------------------*/

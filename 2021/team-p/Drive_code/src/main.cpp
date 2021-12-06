@@ -203,12 +203,18 @@ void autonomous(void) {
   Drivetrain.setTurnVelocity(100, pct);
   Drivetrain.setStopping(coast);
 
-  auto drive1 = std::shared_ptr<Task>(new DriveStraightTask(Drivetrain, -10));
+  auto drive1 = std::shared_ptr<Task>(new DriveStraightTask(Drivetrain, 10));
   auto wait = std::shared_ptr<Task>(new WaitMillisecondsTask(2000));
-  auto drive2 = std::shared_ptr<Task>(new DriveStraightTask(Drivetrain, -5));
+  auto turn = std::shared_ptr<Task>(new TurnTask(Drivetrain, -30));
+  auto drive2 = std::shared_ptr<Task>(new DriveStraightTask(Drivetrain, -3));
+  const double ARM_GEAR_RATIO = 16.3333;
+  auto liftarm = std::shared_ptr<Task>(new MoveMotorTask(Arm, ARM_GEAR_RATIO, 50));
 
-  // addTask(drive1, wait);
-  // addTask(wait, drive2);
+  addTask(drive1, wait);
+  addTask(wait, turn);
+  addTask(wait, liftarm);
+  addTask(turn, drive2);
+  addTask(liftarm, drive2);
 
   execute(drive1);
 

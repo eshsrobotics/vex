@@ -49,7 +49,7 @@ void execute(std::shared_ptr<Task> rootTask) {
             // If the parent task doesn't exist, it is completed, so the child
             // task won't wait for it
             if (parentTask.expired()) {
-              break;
+              continue;
             }
 
             // If one of our parents is running, then we are not ready.
@@ -78,7 +78,7 @@ void execute(std::shared_ptr<Task> rootTask) {
       }
     } // end (for each active task)
 
-    wait(25, msec);
+    wait(15, msec);
   } // end (while there are still active tasks)
 }
 
