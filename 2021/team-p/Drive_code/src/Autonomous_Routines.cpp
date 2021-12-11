@@ -158,20 +158,24 @@ void TurnTask::start() {
 MoveMotorTask::MoveMotorTask(vex::motor& motor, double gearRatio, double rotationAmountDegrees)
   : Task("Move motor task"),
     motor(motor),
+    gearRatio(gearRatio),
     rotationAmountDegrees(rotationAmountDegrees),
+    startPositionDegrees(0),
     endRotation([] () { return false; }) {}
 
 bool MoveMotorTask::done() const {
   // We assume if the motor stops moving, we have reached our target
   // WARNING: This may return true if the motor is stalled
-  return motor.isDone() || endRotation();
+  return motor.isDone() || endRotation() ;
 }
 
 void MoveMotorTask::start() {
+  startPositionDegrees = motor.rotation(degrees);
   if (rotationAmountDegrees > 0) {
     // We are assuming that spinFor(fwd) always turns clockwise, and spinFor(rev)
     // spins counterclockwise
-    motor.spinFor(fwd, rotationAmountDegrees * gearRatio, degrees);
+    rotationAmountDegrees = rotationAmountDegrees * gearRatio;
+    motor.spinFor(vex::directionType::fwd, rotationAmountDegrees, degrees);
   } else {
     motor.spinFor(vex::directionType::rev, -rotationAmountDegrees * gearRatio, degrees);
   }

@@ -107,19 +107,22 @@ struct MoveMotorTask : public Task {
   vex::motor& motor;
   double gearRatio; // Ratio of the motor (input) to the output
   double rotationAmountDegrees;
+  double startPositionDegrees;
   std::function<bool(void)> endRotation;
 
   // If a positive number is passed in, the motor will turn clockwise (right), otherwise,
   // the motor will turn counterclockwise (left)
   MoveMotorTask(vex::motor& motor, double gearRatio, double rotationAmountDegrees);
   
-  // This allows a motor to move until either it moves hte correct number of degrees
+  // This allows a motor to move until either it moves the correct number of degrees
   // or the predicate returns true
   template<typename UnaryPredicate>
   MoveMotorTask(vex::motor& motor, double gearRatio, double rotationAmountDegrees, UnaryPredicate p)
     : Task("Move motor task"),
       motor(motor),
+      gearRatio(gearRatio),
       rotationAmountDegrees(rotationAmountDegrees),
+      startPositionDegrees(0),
       endRotation([&p] () { return p(); }) {}
 
   bool done() const;

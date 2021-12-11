@@ -205,10 +205,10 @@ void autonomous(void) {
 
   auto drive1 = std::shared_ptr<Task>(new DriveStraightTask(Drivetrain, 10));
   auto wait = std::shared_ptr<Task>(new WaitMillisecondsTask(2000));
-  auto turn = std::shared_ptr<Task>(new TurnTask(Drivetrain, -30));
+  auto turn = std::shared_ptr<Task>(new TurnTask(Drivetrain, -360));
   auto drive2 = std::shared_ptr<Task>(new DriveStraightTask(Drivetrain, -3));
   const double ARM_GEAR_RATIO = 16.3333;
-  auto liftarm = std::shared_ptr<Task>(new MoveMotorTask(Arm, ARM_GEAR_RATIO, 50));
+  auto liftarm = std::shared_ptr<Task>(new MoveMotorTask(Arm, ARM_GEAR_RATIO, 45));
 
   addTask(drive1, wait);
   addTask(wait, turn);
