@@ -123,7 +123,7 @@ void DriveStraightTask::start() {
     // This formula creates the new value that is input into the driveFor function to get an 
     // of the original distanceInches
     double correctDistanceInches = (distanceInches - B_VALUE) / M_VALUE;
-    drivetrain.driveFor(vex::forward, correctDistanceInches, inches);
+    drivetrain.driveFor(vex::forward, correctDistanceInches, inches, false);
   } else {
     // Assigns the variables for changing the input value so the output value is equal to it
     // We got these numbers by plotting 5 points from testing and finding the line of best fit
@@ -132,7 +132,7 @@ void DriveStraightTask::start() {
     // This formula creates the new value that is input into the driveFor function to get an 
     // of the original distanceInches
     double correctDistanceInches = (-distanceInches - B_VALUE) / M_VALUE;
-    drivetrain.driveFor(vex::reverse, correctDistanceInches, inches);
+    drivetrain.driveFor(vex::reverse, correctDistanceInches, inches, false);
   }
 }
 
@@ -145,9 +145,9 @@ bool TurnTask::done() const {
 
 void TurnTask::start() {
   if (rotationAmountDegrees > 0) {
-    drivetrain.turnFor(right, rotationAmountDegrees, degrees);
+    drivetrain.turnFor(right, rotationAmountDegrees, degrees, false);
   } else {
-    drivetrain.turnFor(left, -rotationAmountDegrees, degrees);
+    drivetrain.turnFor(left, -rotationAmountDegrees, degrees, false);
   }
 }
 
@@ -175,8 +175,8 @@ void MoveMotorTask::start() {
     // We are assuming that spinFor(fwd) always turns clockwise, and spinFor(rev)
     // spins counterclockwise
     rotationAmountDegrees = rotationAmountDegrees * gearRatio;
-    motor.spinFor(vex::directionType::fwd, rotationAmountDegrees, degrees);
+    motor.spinFor(vex::directionType::fwd, rotationAmountDegrees, degrees, false);
   } else {
-    motor.spinFor(vex::directionType::rev, -rotationAmountDegrees * gearRatio, degrees);
+    motor.spinFor(vex::directionType::rev, -rotationAmountDegrees * gearRatio, degrees, false);
   }
 }
