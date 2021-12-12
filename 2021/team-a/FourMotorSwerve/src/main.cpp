@@ -1,14 +1,14 @@
 // ---- START VEXCODE CONFIGURED DEVICES ----
 // Robot Configuration:
 // [Name]               [Type]        [Port(s)]
-// Drivetrain           drivetrain    11, 20, 19, 4
-// Controller1          controller
-// LeftLiftMotor        motor         3
-// ArmMotorRight        motor         10
-// ArmMotorLeft         motor         16
-// PneumaticSpatula     digital_out   B
-// PneumaticClaw        digital_out   A
-// RightLiftMotor       motor         15
+// Drivetrain           drivetrain    20, 11, 4, 19    
+// Controller1          controller                    
+// LeftLiftMotor        motor         3               
+// ArmMotorRight        motor         10              
+// ArmMotorLeft         motor         16              
+// PneumaticSpatula     digital_out   B               
+// PneumaticClaw        digital_out   A               
+// RightLiftMotor       motor         15              
 // ---- END VEXCODE CONFIGURED DEVICES ----
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
@@ -62,7 +62,7 @@ bool spatulaDeployed = false;
 const double leftLiftMotorLimitDegrees = 300;
 
 void pre_auton(void) {
-  // Initializing Robot Configuration. DO NOT REMOVE!
+  // Initializing Robot Configu0ration. DO NOT REMOVE!
   vexcodeInit();
   clearAllScreens();
   Drivetrain.setStopping(coast);
@@ -233,13 +233,17 @@ void usercontrol(void) {
 
   // Only attach callback functions onece outside the while loop
 
-  // Activate the pnuematics by looking at the Pneumnatic control function
-  // If controller1.buttonB is realeased the state on the claws pnumatic state
-  // changes from true to false or false to true If controller1.buttonY is
-  // realeased the state on the spatula pnumatic state changes from true to
-  // false or false to true
+  // Set up callback routines for the pneumatic subsystems.
+  //
+  // Button A controls the claw.  Button Y controls the spatula.
   Controller1.ButtonA.released(PneumaticControlClaw);
   Controller1.ButtonY.released(PneumaticControlSpatula);
+
+  // The folded spatula tongs in the bot's intial positions bump into the front left and front right drive motors.
+  // So, at the very beginning of teleop, deploy the spatula out to drop the tongs.
+  PneumaticSpatula.set(true);
+  spatulaDeployed = true;
+
 
   // User control code here, inside the loop
   while (1) {
@@ -249,15 +253,18 @@ void usercontrol(void) {
 
     if (Controller1.ButtonR1.pressing()) {
 
-      // The Lift moves up 90 degrees
+      // The Lift moves up (against gravity) 90 degrees
       LeftLiftMotor.spin(forward, 100, percent);
       RightLiftMotor.spin(forward, 100, percent);
 
     } else if (Controller1.ButtonR2.pressing() && !spatulaDeployed) {
 
-      // The lift moves down 90 degrees, dont do that if the spatula is deployed
-      LeftLiftMotor.spin(reverse, 35, percent);
-      RightLiftMotor.spin(reverse, 35, percent);
+      // When moving the beetle motor down, gravity helps us somewhat.
+      const double BEETLE_MOTOR_DOWN_POWER_PERCENT = 70;
+
+      // The lift moves down (toward the ground) 90 degrees, don't do that if the spatula is deployed      
+      LeftLiftMotor.spin(reverse, BEETLE_MOTOR_DOWN_POWER_PERCENT, percent);
+      RightLiftMotor.spin(reverse, BEETLE_MOTOR_DOWN_POWER_PERCENT, percent);
 
       Controller1.Screen.setCursor(1, 1);
       Controller1.Screen.print("EMC Val=%.2f", LeftLiftMotor.rotation(degrees));
@@ -357,9 +364,9 @@ void PneumaticControlSpatula() {
 
     // Prevent the spatula from going out if the lift is down 
 
-    if (!isLiftArmDown) {
+    if (!isLiftArmDown) 
+    {
       spatulaDeployed = true;
-
       Brain.Screen.printAt(1, 1, "true");
       Controller1.Screen.print("true");
     }
