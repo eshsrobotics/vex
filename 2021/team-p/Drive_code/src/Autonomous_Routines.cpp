@@ -144,9 +144,13 @@ bool TurnTask::done() const {
 }
 
 void TurnTask::start() {
+  const double M_VALUE = 0.944247;
+  const double B_VALUE = -9.59786;
   if (rotationAmountDegrees > 0) {
-    drivetrain.turnFor(right, rotationAmountDegrees, degrees, false);
+    double correctRotationDegrees = (rotationAmountDegrees - B_VALUE) / M_VALUE;
+    drivetrain.turnFor(right, correctRotationDegrees, degrees, false);
   } else {
+    double correctRotationDegrees = (-rotationAmountDegrees - B_VALUE) / M_VALUE;
     drivetrain.turnFor(left, -rotationAmountDegrees, degrees, false);
   }
 }
