@@ -2,7 +2,7 @@
 // Robot Configuration:
 // [Name]               [Type]        [Port(s)]
 // Controller1          controller                    
-// Drivetrain           drivetrain    19, 12          
+// Drivetrain           drivetrain    19, 12, A       
 // unused_right_now     motor         20              
 // Arm                  motor         13              
 // LeftArmBumper        bumper        G               
@@ -203,28 +203,35 @@ void autonomous(void) {
   Drivetrain.setTurnVelocity(100, pct);
   Drivetrain.setStopping(coast);
 
-  auto drive1 = std::shared_ptr<Task>(new DriveStraightTask(Drivetrain, 10));
-  auto wait = std::shared_ptr<Task>(new WaitMillisecondsTask(0));
-  auto turn = std::shared_ptr<Task>(new TurnTask(Drivetrain, -45));
-  auto drive2 = std::shared_ptr<Task>(new DriveStraightTask(Drivetrain, -3));
+  // Our arm gear ratio, we put it into a variable so we didn't have to type it over and over
   const double ARM_GEAR_RATIO = 16.3333;
-  auto liftarm = std::shared_ptr<Task>(new MoveMotorTask(Arm, ARM_GEAR_RATIO, 45));
 
-  // addTask(drive1, wait);
-  // addTask(wait, turn);
-  // addTask(wait, liftarm);
-  // addTask(turn, drive2);
-  // addTask(liftarm, drive2);
+  // These are the commands for autonomous. We create the order they run later in the code
+  auto wait0 = std::shared_ptr<Task>(new WaitMillisecondsTask(0));
+  auto turn1 = std::shared_ptr<Task>(new TurnTask(Drivetrain, -9));
+  auto arm1 = std::shared_ptr<Task>(new MoveMotorTask(Arm, ARM_GEAR_RATIO, -30));
+  auto drive1 = std::shared_ptr<Task>(new DriveStraightTask(Drivetrain, 11));
+  auto arm2 = std::shared_ptr<Task>(new MoveMotorTask(Arm, ARM_GEAR_RATIO, -30));
+  auto drive2 = std::shared_ptr<Task>(new DriveStraightTask(Drivetrain, -7));
+  auto arm3 = std::shared_ptr<Task>(new MoveMotorTask(Arm, ARM_GEAR_RATIO, -20));
+  auto turn2 = std::shared_ptr<Task>(new TurnTask(Drivetrain, -73));
 
-  execute(turn);
+  // This is how we create the order the commands run, the first command in the function is the parent task,
+  // the second is the child task
+  // The child task will only run once all of its parent tasks have finished
+  addTask(wait0, turn1);
+  addTask(wait0, arm1);
+  addTask(turn1, drive1);
+  addTask(arm1, drive1);
+  addTask(drive1, arm2);
+  addTask(arm2, drive2);
+  addTask(drive2, arm3);
+  addTask(drive2, turn2);
 
-  // execute(drive1);
-
-  // arms(-25);
-  // turnLeftFor(9);
-  // driveForwardFor(19);
-  // arms(-30);
-  // driveReverseFor(10);
+  // This runs the first task in our autonomous, because there are no parent tasks to tell it to run
+  // We start with a wait(0) task because we cannot execute 2 tasks at the same time, but we can have 2 children of a task,
+  // so it is the equivelant of having two tasks run immediately
+  execute(wait0);
 }
 
 /*---------------------------------------------------------------------------*/
