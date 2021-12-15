@@ -59,7 +59,7 @@ bool spatulaDeployed = false;
 // lift goes with gravity that the econder value risese in positive directon
 // Tested starting from zero where the arm is in rotations when the spatula
 // cannot deploy
-const double leftLiftMotorLimitDegrees = 300;
+const double leftLiftMotorLimitDegrees = -300;
 
 void pre_auton(void) {
   // Initializing Robot Configu0ration. DO NOT REMOVE!
@@ -236,8 +236,18 @@ void usercontrol(void) {
   // Set up callback routines for the pneumatic subsystems.
   //
   // Button A controls the claw.  Button Y controls the spatula.
-  Controller1.ButtonA.released(PneumaticControlClaw);
-  Controller1.ButtonY.released(PneumaticControlSpatula);
+  // Press Button A changes state of pneumatic spatula to true or false
+  // Press Button Y changes state of pneumatic hook to true or false
+  // The functions PneumaticControlSpaula and PneumaticControlClaw do the same
+  // function, so be careful when specifying in code
+  Controller1.ButtonA.released(PneumaticControlSpatula);
+  Controller1.ButtonY.released(PneumaticControlClaw);
+
+  // The folded spatula tongs in the bot's intial positions bump into the front
+  // left and front right drive motors. So, at the very beginning of teleop,
+  // deploy the spatula out to drop the tongs.
+  PneumaticSpatula.set(true);
+  spatulaDeployed = true;
 
   // The folded spatula tongs in the bot's intial positions bump into the front left and front right drive motors.
   // So, at the very beginning of teleop, deploy the spatula out to drop the tongs.
@@ -260,9 +270,10 @@ void usercontrol(void) {
     } else if (Controller1.ButtonR2.pressing() && !spatulaDeployed) {
 
       // When moving the beetle motor down, gravity helps us somewhat.
-      const double BEETLE_MOTOR_DOWN_POWER_PERCENT = 70;
+      const double BEETLE_MOTOR_DOWN_POWER_PERCENT = 40;
 
-      // The lift moves down (toward the ground) 90 degrees, don't do that if the spatula is deployed      
+      // The lift moves down (toward the ground) 90 degrees, don't do that if
+      // the spatula is deployed
       LeftLiftMotor.spin(reverse, BEETLE_MOTOR_DOWN_POWER_PERCENT, percent);
       RightLiftMotor.spin(reverse, BEETLE_MOTOR_DOWN_POWER_PERCENT, percent);
 
@@ -343,15 +354,12 @@ void PneumaticControlClaw() {
   PneumaticClaw.set(PneumaticStateClaw);
 }
 
-// Changes the pneumatic state of spatula from ture to false
+// Changes the pneumatic state of spatula from true to false
+
+ bool isLiftArmDown =
+      (LeftLiftMotor.rotation(degrees) <= leftLiftMotorLimitDegrees);
 
 void PneumaticControlSpatula() {
-
-  Brain.Screen.clearScreen();
-  Controller1.Screen.clearScreen();
-
-  bool isLiftArmDown =
-      (LeftLiftMotor.rotation(degrees) > leftLiftMotorLimitDegrees);
 
   if (spatulaDeployed == true) {
 
@@ -362,10 +370,9 @@ void PneumaticControlSpatula() {
 
   } else {
 
-    // Prevent the spatula from going out if the lift is down 
+    // Prevent the spatula from going out if the lift is down
 
-    if (!isLiftArmDown) 
-    {
+    if (!isLiftArmDown) {
       spatulaDeployed = true;
       Brain.Screen.printAt(1, 1, "true");
       Controller1.Screen.print("true");
