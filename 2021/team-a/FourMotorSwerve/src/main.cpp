@@ -356,8 +356,7 @@ void PneumaticControlClaw() {
 
 // Changes the pneumatic state of spatula from true to false
 
- bool isLiftArmDown =
-      (LeftLiftMotor.rotation(degrees) <= leftLiftMotorLimitDegrees);
+
 
 void PneumaticControlSpatula() {
 
@@ -367,8 +366,13 @@ void PneumaticControlSpatula() {
 
     Brain.Screen.printAt(1, 1, "false");
     Controller1.Screen.print("false");
+  
 
   } else {
+
+    // As you move lift down towards gravity encoder goes to smaller numbers: thats why it is less than or equal to 
+     bool isLiftArmDown =
+      (LeftLiftMotor.rotation(degrees) <= leftLiftMotorLimitDegrees);
 
     // Prevent the spatula from going out if the lift is down
 
@@ -376,6 +380,9 @@ void PneumaticControlSpatula() {
       spatulaDeployed = true;
       Brain.Screen.printAt(1, 1, "true");
       Controller1.Screen.print("true");
+    } else {
+      // Because the lift arm is down, do NOT deploy the spatula.
+      spatulaDeployed = false;        
     }
   }
 
