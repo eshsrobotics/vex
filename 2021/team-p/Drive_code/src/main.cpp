@@ -193,6 +193,31 @@ void arms(double dist_degrees, double timeout_msec = 5000) {
 /*  You must modify the code to add your own robot specific commands here.   */
 /*---------------------------------------------------------------------------*/
 
+// Will translate input inches to actual values that we need to feed the drive train to move the 
+// amount we want them to move.
+// Negative values will be treated as driving backwards.
+double translate(double desiredDistanceInches) {
+  if (desiredDistanceInches > 0) {
+    // Assigns the variables for changing the input value so the output value is equal to it
+    // We got these numbers by plotting 5 points from testing and finding the line of best fit
+    const double M_VALUE = 1.20581;
+    const double B_VALUE = 1.15078;
+    // This formula creates the new value that is input into the driveFor function to get an 
+    // of the original distanceInches
+    double correctDistanceInches = (desiredDistanceInches - B_VALUE) / M_VALUE;
+    return correctDistanceInches;
+  } else {
+    // Assigns the variables for changing the input value so the output value is equal to it
+    // We got these numbers by plotting 5 points from testing and finding the line of best fit
+    const double M_VALUE = 1.01885;
+    const double B_VALUE = -0.792244;
+    // This formula creates the new value that is input into the driveFor function to get an 
+    // of the original distanceInches
+    double correctDistanceInches = (-desiredDistanceInches - B_VALUE) / M_VALUE;
+    return correctDistanceInches;
+  }
+}
+
 void autonomous(void) {
   // ..........................................................................
   // Insert autonomous user code here.
@@ -210,9 +235,9 @@ void autonomous(void) {
   auto wait0 = std::shared_ptr<Task>(new WaitMillisecondsTask(0));
   auto turn1 = std::shared_ptr<Task>(new TurnTask(Drivetrain, -9));
   auto arm1 = std::shared_ptr<Task>(new MoveMotorTask(Arm, ARM_GEAR_RATIO, -30));
-  auto drive1 = std::shared_ptr<Task>(new DriveStraightTask(Drivetrain, 11));
+  auto drive1 = std::shared_ptr<Task>(new DriveStraightTask(Drivetrain, 11, translate));
   auto arm2 = std::shared_ptr<Task>(new MoveMotorTask(Arm, ARM_GEAR_RATIO, -30));
-  auto drive2 = std::shared_ptr<Task>(new DriveStraightTask(Drivetrain, -7));
+  auto drive2 = std::shared_ptr<Task>(new DriveStraightTask(Drivetrain, -7, translate));
   auto arm3 = std::shared_ptr<Task>(new MoveMotorTask(Arm, ARM_GEAR_RATIO, -20));
   auto turn2 = std::shared_ptr<Task>(new TurnTask(Drivetrain, -73));
 

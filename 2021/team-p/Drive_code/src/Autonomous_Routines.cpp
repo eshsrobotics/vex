@@ -1,8 +1,9 @@
-#include "vex.h"
 #include "Autonomous_Routines.h"
+#include "vex.h"
+#include <cstring> // std::snprintf()
 #include <list>
 #include <string>
-#include <cstring> // std::snprintf()
+
 
 using namespace vex;
 using namespace std;
@@ -11,7 +12,7 @@ using namespace std;
 /*                    Task Methods                        */
 /*--------------------------------------------------------*/
 
-Task::Task(const string& name) : name(name) {
+Task::Task(const string &name) : name(name) {
   static int counter = 0;
   task_id = ++counter;
 
@@ -23,7 +24,8 @@ Task::Task(const string& name) : name(name) {
   this->name += buffer;
 }
 
-void addTask(std::shared_ptr<Task> parentTask, std::shared_ptr<Task> childTask) {
+void addTask(std::shared_ptr<Task> parentTask,
+             std::shared_ptr<Task> childTask) {
   parentTask->children.push_back(childTask);
   childTask->parents.push_back(parentTask);
 }
@@ -38,7 +40,8 @@ void execute(std::shared_ptr<Task> rootTask) {
 
   while (!taskList.empty()) {
     // Check to see if any of the running tasks have finished
-    for (auto iter = taskList.begin(); iter != taskList.end(); /* See increment below */) {
+    for (auto iter = taskList.begin(); iter != taskList.end();
+         /* See increment below */) {
       auto task = *iter;
       if (task->done()) {
         // Put the task's children into the list if they're ready (i.e., when
@@ -86,7 +89,8 @@ void execute(std::shared_ptr<Task> rootTask) {
 /*            WaitMillisecondsTask Methods                */
 /*--------------------------------------------------------*/
 
-WaitMillisecondsTask::WaitMillisecondsTask(double milliseconds) : Task("Wait task") {
+WaitMillisecondsTask::WaitMillisecondsTask(double milliseconds)
+    : Task("Wait task") {
   waitPeriodMilliseconds = milliseconds;
 }
 
@@ -107,41 +111,28 @@ void WaitMillisecondsTask::start() {
 /*                   Driving Methods                      */
 /*--------------------------------------------------------*/
 
-DriveStraightTask::DriveStraightTask(vex::drivetrain& drivetrain, double distanceInches)
-  : Task("Drive task"), drivetrain(drivetrain), distanceInches(distanceInches) {}
+DriveStraightTask::DriveStraightTask(
+    vex::drivetrain &drivetrain, double distanceInches,
+    std::function<double(double)> translateFunction)
+    : Task("Drive task"), drivetrain(drivetrain),
+      distanceInches(distanceInches), translateFunction(translateFunction) {}
 
-bool DriveStraightTask::done() const {
-  return drivetrain.isDone();
-}
+bool DriveStraightTask::done() const { return drivetrain.isDone(); }
 
 void DriveStraightTask::start() {
+  double correctDistanceInches = translateFunction(distanceInches);
   if (distanceInches > 0) {
-    // Assigns the variables for changing the input value so the output value is equal to it
-    // We got these numbers by plotting 5 points from testing and finding the line of best fit
-    const double M_VALUE = 1.20581;
-    const double B_VALUE = 1.15078;
-    // This formula creates the new value that is input into the driveFor function to get an 
-    // of the original distanceInches
-    double correctDistanceInches = (distanceInches - B_VALUE) / M_VALUE;
     drivetrain.driveFor(vex::forward, correctDistanceInches, inches, false);
   } else {
-    // Assigns the variables for changing the input value so the output value is equal to it
-    // We got these numbers by plotting 5 points from testing and finding the line of best fit
-    const double M_VALUE = 1.01885;
-    const double B_VALUE = -0.792244;
-    // This formula creates the new value that is input into the driveFor function to get an 
-    // of the original distanceInches
-    double correctDistanceInches = (-distanceInches - B_VALUE) / M_VALUE;
     drivetrain.driveFor(vex::reverse, correctDistanceInches, inches, false);
   }
 }
 
-TurnTask::TurnTask(vex::drivetrain& drivetrain, double rotationAmountDegrees)
-  : Task("Turn task"), drivetrain(drivetrain), rotationAmountDegrees(rotationAmountDegrees) {}
+TurnTask::TurnTask(vex::drivetrain &drivetrain, double rotationAmountDegrees)
+    : Task("Turn task"), drivetrain(drivetrain),
+      rotationAmountDegrees(rotationAmountDegrees) {}
 
-bool TurnTask::done() const {
-  return drivetrain.isDone();
-}
+bool TurnTask::done() const { return drivetrain.isDone(); }
 
 void TurnTask::start() {
   const double M_VALUE = 0.944247;
@@ -150,7 +141,8 @@ void TurnTask::start() {
     double correctRotationDegrees = (rotationAmountDegrees - B_VALUE) / M_VALUE;
     drivetrain.turnFor(right, rotationAmountDegrees, degrees, false);
   } else {
-    double correctRotationDegrees = (-rotationAmountDegrees - B_VALUE) / M_VALUE;
+    double correctRotationDegrees =
+        (-rotationAmountDegrees - B_VALUE) / M_VALUE;
     drivetrain.turnFor(left, -rotationAmountDegrees, degrees, false);
   }
 }
@@ -159,28 +151,28 @@ void TurnTask::start() {
 /*                  Mechanism Methods                     */
 /*--------------------------------------------------------*/
 
-MoveMotorTask::MoveMotorTask(vex::motor& motor, double gearRatio, double rotationAmountDegrees)
-  : Task("Move motor task"),
-    motor(motor),
-    gearRatio(gearRatio),
-    rotationAmountDegrees(rotationAmountDegrees),
-    startPositionDegrees(0),
-    endRotation([] () { return false; }) {}
+MoveMotorTask::MoveMotorTask(vex::motor &motor, double gearRatio,
+                             double rotationAmountDegrees)
+    : Task("Move motor task"), motor(motor), gearRatio(gearRatio),
+      rotationAmountDegrees(rotationAmountDegrees), startPositionDegrees(0),
+      endRotation([]() { return false; }) {}
 
 bool MoveMotorTask::done() const {
   // We assume if the motor stops moving, we have reached our target
   // WARNING: This may return true if the motor is stalled
-  return motor.isDone() || endRotation() ;
+  return motor.isDone() || endRotation();
 }
 
 void MoveMotorTask::start() {
   startPositionDegrees = motor.rotation(degrees);
   if (rotationAmountDegrees > 0) {
-    // We are assuming that spinFor(fwd) always turns clockwise, and spinFor(rev)
-    // spins counterclockwise
+    // We are assuming that spinFor(fwd) always turns clockwise, and
+    // spinFor(rev) spins counterclockwise
     rotationAmountDegrees = rotationAmountDegrees * gearRatio;
-    motor.spinFor(vex::directionType::fwd, rotationAmountDegrees, degrees, false);
+    motor.spinFor(vex::directionType::fwd, rotationAmountDegrees, degrees,
+                  false);
   } else {
-    motor.spinFor(vex::directionType::rev, -rotationAmountDegrees * gearRatio, degrees, false);
+    motor.spinFor(vex::directionType::rev, -rotationAmountDegrees * gearRatio,
+                  degrees, false);
   }
 }
