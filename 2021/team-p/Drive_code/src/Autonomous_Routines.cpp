@@ -128,22 +128,21 @@ void DriveStraightTask::start() {
   }
 }
 
-TurnTask::TurnTask(vex::drivetrain &drivetrain, double rotationAmountDegrees)
+TurnTask::TurnTask(vex::drivetrain &drivetrain, 
+                   double rotationAmountDegrees,
+                   std::function<double(double)> turnCorrectionFunc)
     : Task("Turn task"), drivetrain(drivetrain),
-      rotationAmountDegrees(rotationAmountDegrees) {}
+      rotationAmountDegrees(rotationAmountDegrees),
+      turnCorrectionFunc(turnCorrectionFunc) {}
 
 bool TurnTask::done() const { return drivetrain.isDone(); }
 
 void TurnTask::start() {
-  const double M_VALUE = 0.944247;
-  const double B_VALUE = -9.59786;
+  const double correctRotationDegrees = turnCorrectionFunc(rotationAmountDegrees);
   if (rotationAmountDegrees > 0) {
-    double correctRotationDegrees = (rotationAmountDegrees - B_VALUE) / M_VALUE;
-    drivetrain.turnFor(right, rotationAmountDegrees, degrees, false);
+    drivetrain.turnFor(right, correctRotationDegrees, degrees, false);
   } else {
-    double correctRotationDegrees =
-        (-rotationAmountDegrees - B_VALUE) / M_VALUE;
-    drivetrain.turnFor(left, -rotationAmountDegrees, degrees, false);
+    drivetrain.turnFor(left, correctRotationDegrees, degrees, false);
   }
 }
 

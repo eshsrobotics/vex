@@ -107,10 +107,21 @@ struct DriveStraightTask : public Task {
 struct TurnTask : public Task {
   vex::drivetrain &drivetrain;
   double rotationAmountDegrees;
+  std::function<double(double)> turnCorrectionFunc;
 
   // If a positive number is passed in, the robot will turn clockwise (right),
   // otherwise, the robot will turn counterclockwise (left)
-  TurnTask(vex::drivetrain &drivetrain, double rotationAmountDegrees);
+  //
+  // Unfortunatly some drives don't turn the correct number of degrees when asked to do so.
+  // (Note that drive that uses a gyro WILL turn correct numbeer of degrees.)
+  // For drives that don't turn correctly, you may pass in a correction function that maps an input 
+  // to a number that will casuse a drive to turn correctly.
+  // The defualt correction function is just the identity function.
+  TurnTask(vex::drivetrain &drivetrain,
+           double rotationAmountDegrees,
+           std::function<double(double)> turnCorrectionFunc = [](double angleDegrees) {
+             return angleDegrees;
+           });
 
   bool done() const;
   void start();
