@@ -175,3 +175,44 @@ void MoveMotorTask::start() {
                   degrees, false);
   }
 }
+
+/*--------------------------------------------------------*/
+/*                 SolenoidTask Methods                   */
+/*--------------------------------------------------------*/
+const double DEFAULT_SOLENOID_WAIT_TIME_MILLISECONDS = 2000;
+bool defaultDoneFunc(double startTimeMilliseconds, double desiredElapsedMilliseconds) {
+  const double elapsedMillisecondsSinceStart = Brain.timer(msec) - startTimeMilliseconds;
+  return elapsedMillisecondsSinceStart > desiredElapsedMilliseconds;
+}
+
+// Fully initalizing Solenoid Task object 
+// when user supplies a done function
+SolenoidTask::SolenoidTask(vex::digital_out& solenoid_, std::function<bool()> doneFunc_, bool& trackingVariable_) 
+  : Task("Solenoid"), 
+    solenoid(solenoid_), 
+    doneFunc(doneFunc_), 
+    trackingVariable(trackingVariable_),
+    startTimeMilliseconds(0.0) {}
+
+// initalises when we don't have a done function 
+// (uses a default waiting function instead)
+SolenoidTask::SolenoidTask(vex::digital_out& solenoid_, bool& trackingVariable_) 
+  : Task("Solenoid"), 
+    solenoid(solenoid_), 
+    doneFunc(bind(defaultDoneFunc, startTimeMilliseconds, DEFAULT_SOLENOID_WAIT_TIME_MILLISECONDS)), 
+    trackingVariable(trackingVariable_),
+    startTimeMilliseconds(0.0) {}
+
+//toggles solenoid 
+void SolenoidTask::start() {
+  startTimeMilliseconds = Brain.timer(msec);
+  // user supplies a tracking variable
+  trackingVariable = !trackingVariable;
+  solenoid.set(trackingVariable);
+}
+
+// the only way to know if the solenoid is done moving is the doneFunc
+// takes care of pneumatic spatula and claw
+bool SolenoidTask::done() const {
+  return doneFunc();
+}

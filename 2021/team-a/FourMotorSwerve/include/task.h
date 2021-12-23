@@ -152,6 +152,9 @@ struct MoveMotorTask : public Task {
   void start();
 };
 
+/*-------------------------------------------------*/
+/* Task that toggles solenoid when task is started */
+/*-------------------------------------------------*/
 struct SolenoidTask : public Task {
   vex::digital_out& solenoid;
 
@@ -160,21 +163,15 @@ struct SolenoidTask : public Task {
   // but if we had sensors, a limit switch would be better.
   std::function<bool()> doneFunc;
 
-  // Equal to nullptr if not tracking anything, otherwise it will point to a boolean that 
-  // gets updated everytime solenoid changes state.
-  bool* trackingVariable;
+  // we will update the boolean when the solenoid changes state.
+  bool& trackingVariable;
   
-  // Used to keep track of internal state of solenoid.
-  bool solenoidSet;
-
+  // if you are using default doneFunc, this keeps track of elapsed time
   double startTimeMilliseconds;
-  bool internalDoneFunc();
 
-  SolenoidTask (vex::digital_out& solenoid,  
-                bool* trackingVariable = nullptr);
-  SolenoidTask (vex::digital_out& solenoid, 
-                std::function<bool()> doneFunc, 
-                bool* trackingVariable = nullptr);
+  SolenoidTask(vex::digital_out& solenoid, bool& trackingVariable);
+  SolenoidTask(vex::digital_out& solenoid, std::function<bool()> doneFunc, bool& trackingVariable);
+  
   bool done() const;
   void start();
 };
