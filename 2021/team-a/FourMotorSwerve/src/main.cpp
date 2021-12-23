@@ -22,6 +22,7 @@
 #include "Autonomous_Routines.h"
 #include "Display_Information.h"
 #include "vex.h"
+#include "task.h"
 
 using namespace vex;
 
