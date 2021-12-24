@@ -25,6 +25,7 @@
 #include "task.h"
 
 using namespace vex;
+using namespace std;
 
 // A global instance of competition
 competition Competition;
@@ -138,6 +139,9 @@ void MoveArm(ArmDirection dir) {
 // This is the autonomous code
 void autonomous(void) {
 
+  //create task tree to execute during autonomous
+  auto moveSpatulaOut = shared_ptr<Task>(new SolenoidTask(PneumaticSpatula, spatulaDeployed));
+
   // This will tell us which side of the field we are starting on
   // 1 - Means we are on the left side of the field (The side next to the mobile
   // goal that is on the diagonal line) 2 - Means we are on the right side of
@@ -151,7 +155,7 @@ void autonomous(void) {
     MoveLift(OUTWARD);
     // Drive forward to mobile goal
     Drivetrain.setDriveVelocity(100, percent);
-    Drivetrain.driveFor(forward, 15, inches);
+    Drivetrain.driveFor(vex::forward, 15, inches);
     // Move DR4B Up to put donuts in position
     MoveArm(UP);
     MoveLift(INWARD);
