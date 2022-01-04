@@ -121,6 +121,7 @@ void MoveLift(LiftDirection dir) {
   directionType spinDirection = fwd;
 
   if (dir == INWARD) {
+    
     spinDirection = reverse;
 
     //LiftMotor.spinFor(spinDirection, LIFT_DRIVE_TIME_MILLISECONDSDOWN, msec,

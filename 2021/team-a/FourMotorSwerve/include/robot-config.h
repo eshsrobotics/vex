@@ -11,6 +11,7 @@ extern motor ArmMotorLeft;
 extern digital_out PneumaticSpatula;
 extern digital_out PneumaticClaw;
 extern motor RightLiftMotor;
+extern limit ArmGroundLimitSwitch;
 
 /**
  * Used to initialize code/tasks/devices added using tools in VEXcode Pro.
