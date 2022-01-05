@@ -1,4 +1,4 @@
-#include <functional>
+#include <functional> // function<T>, bind
 #include <memory> // shared_ptr<T>
 #include <string>
 #include <vector>
@@ -148,6 +148,30 @@ struct MoveMotorTask : public Task {
         rotationAmountDegrees(rotationAmountDegrees), startPositionDegrees(0),
         endRotation([&p]() { return p(); }) {}
 
+  bool done() const;
+  void start();
+};
+
+/*-------------------------------------------------*/
+/* Task that toggles solenoid when task is started */
+/*-------------------------------------------------*/
+struct SolenoidTask : public Task {
+  vex::digital_out& solenoid;
+
+  // How do we know when the solenoid is done deploying?
+  // We don't! That's up to you to determine. By default we use a timing based function, 
+  // but if we had sensors, a limit switch would be better.
+  std::function<bool()> doneFunc;
+
+  // we will update the boolean when the solenoid changes state.
+  bool& trackingVariable;
+  
+  // if you are using default doneFunc, this keeps track of elapsed time
+  double startTimeMilliseconds;
+
+  SolenoidTask(vex::digital_out& solenoid, bool& trackingVariable);
+  SolenoidTask(vex::digital_out& solenoid, std::function<bool()> doneFunc, bool& trackingVariable);
+  
   bool done() const;
   void start();
 };

@@ -2,7 +2,7 @@
 // Robot Configuration:
 // [Name]               [Type]        [Port(s)]
 // Controller1          controller                    
-// Drivetrain           drivetrain    19, 12          
+// Drivetrain           drivetrain    19, 12, A       
 // unused_right_now     motor         20              
 // Arm                  motor         13              
 // LeftArmBumper        bumper        G               
@@ -18,10 +18,13 @@
 /*----------------------------------------------------------------------------*/
 
 #include "vex.h"
+#include "Autonomous_Routines.h"
+#include <memory>
 #include <cmath> 
 
 using namespace vex;
 using std::abs;
+using std::make_shared;
 int speed = 50;
 int speedSlow = speed / 2;
 
@@ -190,20 +193,70 @@ void arms(double dist_degrees, double timeout_msec = 5000) {
 /*  You must modify the code to add your own robot specific commands here.   */
 /*---------------------------------------------------------------------------*/
 
+// Will translate input inches to actual values that we need to feed the drive train to move the 
+// amount we want them to move.
+// Negative values will be treated as driving backwards.
+double translate(double desiredDistanceInches) {
+  if (desiredDistanceInches > 0) {
+    // Assigns the variables for changing the input value so the output value is equal to it
+    // We got these numbers by plotting 5 points from testing and finding the line of best fit
+    const double M_VALUE = 1.20581;
+    const double B_VALUE = 1.15078;
+    // This formula creates the new value that is input into the driveFor function to get an 
+    // of the original distanceInches
+    double correctDistanceInches = (desiredDistanceInches - B_VALUE) / M_VALUE;
+    return correctDistanceInches;
+  } else {
+    // Assigns the variables for changing the input value so the output value is equal to it
+    // We got these numbers by plotting 5 points from testing and finding the line of best fit
+    const double M_VALUE = 1.01885;
+    const double B_VALUE = -0.792244;
+    // This formula creates the new value that is input into the driveFor function to get an 
+    // of the original distanceInches
+    double correctDistanceInches = (-desiredDistanceInches - B_VALUE) / M_VALUE;
+    return correctDistanceInches;
+  }
+}
+
 void autonomous(void) {
   // ..........................................................................
   // Insert autonomous user code here.
   // ..........................................................................
 
   // Changes the drive and turn velocity for the robot
-  // Drivetrain.setDriveVelocity(100, pct);
-  // Drivetrain.setTurnVelocity(100, pct);
+  Drivetrain.setDriveVelocity(100, pct);
+  Drivetrain.setTurnVelocity(100, pct);
+  Drivetrain.setStopping(coast);
 
-  // arms(-25);
-  // turnLeftFor(9);
-  // driveForwardFor(19);
-  // arms(-30);
-  // driveReverseFor(10);
+  // Our arm gear ratio, we put it into a variable so we didn't have to type it over and over
+  const double ARM_GEAR_RATIO = 16.3333;
+
+  // These are the commands for autonomous. We create the order they run later in the code
+  auto wait0 = std::shared_ptr<Task>(new WaitMillisecondsTask(0));
+  auto turn1 = std::shared_ptr<Task>(new TurnTask(Drivetrain, -9));
+  auto arm1 = std::shared_ptr<Task>(new MoveMotorTask(Arm, ARM_GEAR_RATIO, -30));
+  auto drive1 = std::shared_ptr<Task>(new DriveStraightTask(Drivetrain, 11, translate));
+  auto arm2 = std::shared_ptr<Task>(new MoveMotorTask(Arm, ARM_GEAR_RATIO, -30));
+  auto drive2 = std::shared_ptr<Task>(new DriveStraightTask(Drivetrain, -7, translate));
+  auto arm3 = std::shared_ptr<Task>(new MoveMotorTask(Arm, ARM_GEAR_RATIO, -20));
+  auto turn2 = std::shared_ptr<Task>(new TurnTask(Drivetrain, -73));
+
+  // This is how we create the order the commands run, the first command in the function is the parent task,
+  // the second is the child task
+  // The child task will only run once all of its parent tasks have finished
+  addTask(wait0, turn1);
+  addTask(wait0, arm1);
+  addTask(turn1, drive1);
+  addTask(arm1, drive1);
+  addTask(drive1, arm2);
+  addTask(arm2, drive2);
+  addTask(drive2, arm3);
+  addTask(drive2, turn2);
+
+  // This runs the first task in our autonomous, because there are no parent tasks to tell it to run
+  // We start with a wait(0) task because we cannot execute 2 tasks at the same time, but we can have 2 children of a task,
+  // so it is the equivelant of having two tasks run immediately
+  execute(wait0);
 }
 
 /*---------------------------------------------------------------------------*/

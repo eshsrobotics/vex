@@ -11,7 +11,8 @@ brain  Brain;
 controller Controller1 = controller(primary);
 motor LeftDriveSmart = motor(PORT19, ratio18_1, false);
 motor RightDriveSmart = motor(PORT12, ratio18_1, true);
-drivetrain Drivetrain = drivetrain(LeftDriveSmart, RightDriveSmart, 319.19, 285.75, 292.09999999999997, mm, 1);
+gyro DrivetrainGyro = gyro(Brain.ThreeWirePort.A);
+smartdrive Drivetrain = smartdrive(LeftDriveSmart, RightDriveSmart, DrivetrainGyro, 319.19, 320, 292.09999999999997, mm, 1);
 motor unused_right_now = motor(PORT20, ratio18_1, true);
 motor Arm = motor(PORT13, ratio18_1, false);
 bumper LeftArmBumper = bumper(Brain.ThreeWirePort.G);
@@ -86,5 +87,20 @@ int rc_auto_loop_function_Controller1() {
  * This should be called at the start of your int main function.
  */
 void vexcodeInit( void ) {
+  Brain.Screen.print("Device initialization...");
+  Brain.Screen.setCursor(2, 1);
+  // calibrate the drivetrain Gyro
+  wait(200, msec);
+  DrivetrainGyro.calibrate();
+  Brain.Screen.print("Calibrating Gyro for Drivetrain");
+  // wait for the Gyro calibration process to finish
+  while (DrivetrainGyro.isCalibrating()) {
+    wait(25, msec);
+  }
+  // reset the screen now that the calibration is complete
+  Brain.Screen.clearScreen();
+  Brain.Screen.setCursor(1,1);
   task rc_auto_loop_task_Controller1(rc_auto_loop_function_Controller1);
+  wait(50, msec);
+  Brain.Screen.clearScreen();
 }
