@@ -45,16 +45,22 @@ void usercontrol(void) {
   // User control code here, inside the loop
   while (1) {
 
+    Brain.Screen.clearScreen();
+    Controller1.Screen.clearScreen();
+
+    Brain.Screen.setCursor(1, 1);
+    Controller1.Screen.setCursor(1, 1);
+
     // Moves mobile goal 90 degree arm forward or backward
 
-    if (Controller1.ButtonL1.pressing()) {
+    if (Controller1.ButtonR1.pressing()) {
 
       LeftLiftMotor.spin(forward, 100, percent);
       RightLiftMotor.spin(forward, 100, percent);
-    } else if (Controller1.ButtonL2.pressing()) {
+    } else if (Controller1.ButtonR2.pressing()) {
 
-      LeftLiftMotor.spin(reverse, 80, percent);
-      RightLiftMotor.spin(reverse, 80, percent);
+      LeftLiftMotor.spin(reverse, 35, percent);
+      RightLiftMotor.spin(reverse, 35, percent);
 
     } else {
 
@@ -64,12 +70,12 @@ void usercontrol(void) {
 
     // Moves four bar arm up and down to place mobile goals on platforms
 
-    if (Controller1.ButtonR1.pressing()) {
+    if (Controller1.ButtonL1.pressing()) {
 
       ArmMotorLeft.spin(forward, 100, percent);
       ArmMotorRight.spin(forward, 100, percent);
 
-    } else if (Controller1.ButtonR2.pressing()) {
+    } else if (Controller1.ButtonL2.pressing()) {
 
       ArmMotorLeft.spin(reverse, 80, percent);
       ArmMotorRight.spin(reverse, 80, percent);
@@ -81,7 +87,9 @@ void usercontrol(void) {
     }
 
     wait(20, msec); // Sleep the task for a short amount of time to
-                    // prevent wasted resources.
+    // prevent wasted resources.
+
+    drivetrainTemperatureDisplay();
   }
 }
 
