@@ -22,6 +22,7 @@ motor ArmMotorLeft = motor(PORT16, ratio36_1, true);
 digital_out PneumaticSpatula = digital_out(Brain.ThreeWirePort.B);
 digital_out PneumaticClaw = digital_out(Brain.ThreeWirePort.A);
 motor RightLiftMotor = motor(PORT15, ratio18_1, false);
+limit ArmGroundLimitSwitch = limit(Brain.ThreeWirePort.C);
 
 // VEXcode generated functions
 // define variable for remote controller enable/disable

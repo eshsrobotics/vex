@@ -1,6 +1,19 @@
 // ---- START VEXCODE CONFIGURED DEVICES ----
 // Robot Configuration:
 // [Name]               [Type]        [Port(s)]
+// Drivetrain           drivetrain    11, 20, 19, 4   
+// Controller1          controller                    
+// LeftLiftMotor        motor         3               
+// ArmMotorRight        motor         10              
+// ArmMotorLeft         motor         16              
+// PneumaticSpatula     digital_out   B               
+// PneumaticClaw        digital_out   A               
+// RightLiftMotor       motor         15              
+// ArmGroundLimitSwitch limit         C               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
 // Drivetrain           drivetrain    20, 11, 4, 19    
 // Controller1          controller                    
 // LeftLiftMotor        motor         3               
@@ -118,7 +131,7 @@ void MoveArm(ArmDirection dir) {
   // motor_group Arm = motor_group(ArmMotorLeft, ArmMotorRight, LiftMotor);
 
   if (dir == UP) {
-    armDirection = forward;
+    armDirection = vex::forward;
 
     //  Arm.spinFor(armDirection, ARM_DRIVE_TIME_MILLISECONDSUP, msec,
     //              ARM_DRIVE_POWER_PERCENT, velocityUnits::pct);
@@ -179,7 +192,7 @@ void autonomous(void) {
     MoveLift(OUTWARD);
     // Drive forward to mobile goal
     Drivetrain.setDriveVelocity(100, percent);
-    Drivetrain.driveFor(forward, 12, inches);
+    Drivetrain.driveFor(vex::forward, 12, inches);
     // Move DR4B Up to put donuts in position
     MoveArm(UP);
 
@@ -269,8 +282,8 @@ void usercontrol(void) {
     if (Controller1.ButtonR1.pressing()) {
 
       // The Lift moves up (against gravity) 90 degrees
-      LeftLiftMotor.spin(forward, 100, percent);
-      RightLiftMotor.spin(forward, 100, percent);
+      LeftLiftMotor.spin(vex::forward, 100, percent);
+      RightLiftMotor.spin(vex::forward, 100, percent);
 
     } else if (Controller1.ButtonR2.pressing() && !spatulaDeployed) {
 
@@ -295,10 +308,10 @@ void usercontrol(void) {
 
     if (Controller1.ButtonL1.pressing()) {
 
-      ArmMotorLeft.spin(forward, 100, percent);
-      ArmMotorRight.spin(forward, 100, percent);
+      ArmMotorLeft.spin(vex::forward, 100, percent);
+      ArmMotorRight.spin(vex::forward, 100, percent);
 
-    } else if (Controller1.ButtonL2.pressing()) {
+    } else if (Controller1.ButtonL2.pressing() && !ArmGroundLimitSwitch.pressing()) {
 
       ArmMotorLeft.spin(reverse, 80, percent);
       ArmMotorRight.spin(reverse, 80, percent);
