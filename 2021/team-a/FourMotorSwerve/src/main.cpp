@@ -11,18 +11,7 @@
 // RightLiftMotor       motor         15              
 // ArmGroundLimitSwitch limit         C               
 // ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// Drivetrain           drivetrain    20, 11, 4, 19    
-// Controller1          controller                    
-// LeftLiftMotor        motor         3               
-// ArmMotorRight        motor         10              
-// ArmMotorLeft         motor         16              
-// PneumaticSpatula     digital_out   B               
-// PneumaticClaw        digital_out   A               
-// RightLiftMotor       motor         15              
-// ---- END VEXCODE CONFIGURED DEVICES ----
+
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /*    Module:       main.cpp                                                  */
@@ -65,10 +54,11 @@ void PneumaticControlSpatula();
 
 // The state of the claws pneumatic starts false this is changed by the function
 // pvoid PneumaticControlClaw();
-bool PneumaticStateClaw = false;
-// The state of the spatulas pneumatic starts false this is changed by the
+bool pneumaticClawClosed = false;
+// The state of the spatulas pneumatic starts true this is changed by the
 // function pvoid PneumaticControlClaw();
-bool spatulaDeployed = false;
+// WWARNING must ensure spatula is retracted before it begins
+bool spatulaRetracted = true;
 
 // Tracks the encoder position, zero when the robot is start, assuming that the
 // lift goes with gravity that the econder value risese in positive directon
@@ -84,6 +74,12 @@ void pre_auton(void) {
   // All activities that occur before the competition starts
   // Example: clearing encoders, setting servo positions, ...
   LeftLiftMotor.setRotation(0, degrees);
+  // The folded spatula tongs in the bot's intial positions bump into the front
+  // left and front right drive motors. So, at the very beginning of teleop,
+  // deploy the spatula out to drop the tongs.
+  PneumaticSpatula.set(true);
+  spatulaRetracted = true;
+  Drivetrain.setDriveVelocity(100, percent);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -150,11 +146,46 @@ void MoveArm(ArmDirection dir) {
   }
 }
 
+// Returns true if pnuematic arm lift is lowered all the way down.
+bool isArmGroundLimitSwitchDepressed() {
+  return ArmGroundLimitSwitch.pressing();
+}
+
 // This is the autonomous code
 void autonomous(void) {
 
+  // Beetle Lift Motors gear ratio is 60:12 = 5.
+  const double BEETLE_LIFT_MOTOR_GEAR_RATIO = 5;
+  // Pneumatic Claw Lift both motor gear ratios are 84:12 = 7.
+  const double CLAW_LIFT_MOTORS_GEAR_RATIO = 7;
+
+  const double DRIVE_TURN_DEGREES_ANGLE = 90;
+ 
   //create task tree to execute during autonomous
-  auto moveSpatulaOut = shared_ptr<Task>(new SolenoidTask(PneumaticSpatula, spatulaDeployed));
+  auto toggleSpatulaTask1 = shared_ptr<Task>(new SolenoidTask(PneumaticSpatula, spatulaRetracted));
+  auto toggleSpatulaTask2 = shared_ptr<Task>(new SolenoidTask(PneumaticSpatula, spatulaRetracted));
+
+  auto toggleClawTask1 = shared_ptr<Task>(new SolenoidTask(PneumaticClaw, pneumaticClawClosed));
+  auto raiseClawLiftLEFTTask = shared_ptr<Task>(new MoveMotorTask(ArmMotorLeft, CLAW_LIFT_MOTORS_GEAR_RATIO, 45));
+  auto raiseClawLiftRIGHTTask = shared_ptr<Task>(new MoveMotorTask(ArmMotorRight, CLAW_LIFT_MOTORS_GEAR_RATIO, 45));
+
+  auto driveForwardTask = shared_ptr<Task>(new DriveStraightTask(Drivetrain, 10));
+  auto driveBackwardsTask = shared_ptr<Task>(new DriveStraightTask(Drivetrain, -10));
+  // Positive or negative changes the directurn turned
+  auto driveTurnLeftTask = shared_ptr<Task>(new TurnTask(Drivetrain, DRIVE_TURN_DEGREES_ANGLE));
+  auto driveTurnRightTask = shared_ptr<Task>(new TurnTask(Drivetrain, -DRIVE_TURN_DEGREES_ANGLE));
+
+  auto lowerBeetleArmLEFTTask = shared_ptr<Task>(new MoveMotorTask(LeftLiftMotor, BEETLE_LIFT_MOTOR_GEAR_RATIO, 45));
+  auto lowerBeetleArmRIGHTTask = shared_ptr<Task>(new MoveMotorTask(RightLiftMotor, BEETLE_LIFT_MOTOR_GEAR_RATIO, 45));
+
+  auto rootTask = shared_ptr<Task>(new WaitMillisecondsTask(0));
+  addTask(rootTask, driveForwardTask);
+  addTask(rootTask, toggleSpatulaTask1);
+  addTask(driveForwardTask, toggleSpatulaTask2);
+  addTask(toggleSpatulaTask1, toggleSpatulaTask2);
+  execute(rootTask);
+  return;
+
 
   // This will tell us which side of the field we are starting on
   // 1 - Means we are on the left side of the field (The side next to the mobile
@@ -168,7 +199,7 @@ void autonomous(void) {
     // Deploy mobile goal lift and arms
     MoveLift(OUTWARD);
     // Drive forward to mobile goal
-    Drivetrain.setDriveVelocity(100, percent);
+
     Drivetrain.driveFor(vex::forward, 15, inches);
     // Move DR4B Up to put donuts in position
     MoveArm(UP);
@@ -192,7 +223,6 @@ void autonomous(void) {
     // Deploy mobile goal lift and arms
     MoveLift(OUTWARD);
     // Drive forward to mobile goal
-    Drivetrain.setDriveVelocity(100, percent);
     Drivetrain.driveFor(vex::forward, 12, inches);
     // Move DR4B Up to put donuts in position
     MoveArm(UP);
@@ -262,18 +292,6 @@ void usercontrol(void) {
   Controller1.ButtonA.released(PneumaticControlSpatula);
   Controller1.ButtonY.released(PneumaticControlClaw);
 
-  // The folded spatula tongs in the bot's intial positions bump into the front
-  // left and front right drive motors. So, at the very beginning of teleop,
-  // deploy the spatula out to drop the tongs.
-  PneumaticSpatula.set(true);
-  spatulaDeployed = true;
-
-  // The folded spatula tongs in the bot's intial positions bump into the front left and front right drive motors.
-  // So, at the very beginning of teleop, deploy the spatula out to drop the tongs.
-  PneumaticSpatula.set(true);
-  spatulaDeployed = true;
-
-
   // User control code here, inside the loop
   while (1) {
 
@@ -286,7 +304,11 @@ void usercontrol(void) {
       LeftLiftMotor.spin(vex::forward, 100, percent);
       RightLiftMotor.spin(vex::forward, 100, percent);
 
-    } else if (Controller1.ButtonR2.pressing() && !spatulaDeployed) {
+      // Mecanically switched the tubing meaning true on the pneumantics now makes the 
+      // spatula inside the robot, to ease confusion switchted name to spautulaRetracted
+      // So if spatulaRetracted is true the spatula is in the robot 
+
+    } else if (Controller1.ButtonR2.pressing() &&  spatulaRetracted) {
 
       // When moving the beetle motor down, gravity helps us somewhat.
       const double BEETLE_MOTOR_DOWN_POWER_PERCENT = 40;
@@ -355,22 +377,22 @@ void PneumaticControlClaw() {
   Brain.Screen.clearScreen();
   Controller1.Screen.clearScreen();
 
-  if (PneumaticStateClaw == true) {
+  if (pneumaticClawClosed == true) {
 
-    PneumaticStateClaw = false;
+    pneumaticClawClosed = false;
 
     Brain.Screen.printAt(1, 1, "false");
     Controller1.Screen.print("false");
 
   } else {
 
-    PneumaticStateClaw = true;
+    pneumaticClawClosed = true;
 
     Brain.Screen.printAt(1, 1, "true");
     Controller1.Screen.print("true");
   }
 
-  PneumaticClaw.set(PneumaticStateClaw);
+  PneumaticClaw.set(pneumaticClawClosed);
 }
 
 // Changes the pneumatic state of spatula from true to false
@@ -379,9 +401,9 @@ void PneumaticControlClaw() {
 
 void PneumaticControlSpatula() {
 
-  if (spatulaDeployed == true) {
+  if (spatulaRetracted == true) {
 
-    spatulaDeployed = false;
+    spatulaRetracted = false;
 
     Brain.Screen.printAt(1, 1, "false");
     Controller1.Screen.print("false");
@@ -396,14 +418,14 @@ void PneumaticControlSpatula() {
     // Prevent the spatula from going out if the lift is down
 
     if (!isLiftArmDown) {
-      spatulaDeployed = true;
+      spatulaRetracted = true;
       Brain.Screen.printAt(1, 1, "true");
       Controller1.Screen.print("true");
     } else {
       // Because the lift arm is down, do NOT deploy the spatula.
-      spatulaDeployed = false;        
+      spatulaRetracted = false;        
     }
   }
 
-  PneumaticSpatula.set(spatulaDeployed);
+  PneumaticSpatula.set(spatulaRetracted);
 }
