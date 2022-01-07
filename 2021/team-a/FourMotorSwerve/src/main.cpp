@@ -158,31 +158,71 @@ void autonomous(void) {
   const double BEETLE_LIFT_MOTOR_GEAR_RATIO = 5;
   // Pneumatic Claw Lift both motor gear ratios are 84:12 = 7.
   const double CLAW_LIFT_MOTORS_GEAR_RATIO = 7;
+  
 
-  const double DRIVE_TURN_DEGREES_ANGLE = 90;
- 
-  //create task tree to execute during autonomous
+  // SMART POINTERS that allow for easy access when creating parents and children of tree.
+  // Pneumatic spatula lift tasks
   auto toggleSpatulaTask1 = shared_ptr<Task>(new SolenoidTask(PneumaticSpatula, spatulaRetracted));
   auto toggleSpatulaTask2 = shared_ptr<Task>(new SolenoidTask(PneumaticSpatula, spatulaRetracted));
-
+  // Pneumatic Claw and Reverse FourBar Lift motor tasks
   auto toggleClawTask1 = shared_ptr<Task>(new SolenoidTask(PneumaticClaw, pneumaticClawClosed));
+  auto toggleClawTask2 = shared_ptr<Task>(new SolenoidTask(PneumaticClaw, pneumaticClawClosed));
   auto raiseClawLiftLEFTTask = shared_ptr<Task>(new MoveMotorTask(ArmMotorLeft, CLAW_LIFT_MOTORS_GEAR_RATIO, 45));
   auto raiseClawLiftRIGHTTask = shared_ptr<Task>(new MoveMotorTask(ArmMotorRight, CLAW_LIFT_MOTORS_GEAR_RATIO, 45));
-
+  auto lowerClawLiftLEFTTask = shared_ptr<Task>(new MoveMotorTask(ArmMotorLeft, CLAW_LIFT_MOTORS_GEAR_RATIO, -45));
+  auto lowerClawLiftRIGHTTask = shared_ptr<Task>(new MoveMotorTask(ArmMotorRight, CLAW_LIFT_MOTORS_GEAR_RATIO, -45));
+  // Drive tasks
   auto driveForwardTask = shared_ptr<Task>(new DriveStraightTask(Drivetrain, 10));
   auto driveBackwardsTask = shared_ptr<Task>(new DriveStraightTask(Drivetrain, -10));
-  // Positive or negative changes the directurn turned
-  auto driveTurnLeftTask = shared_ptr<Task>(new TurnTask(Drivetrain, DRIVE_TURN_DEGREES_ANGLE));
-  auto driveTurnRightTask = shared_ptr<Task>(new TurnTask(Drivetrain, -DRIVE_TURN_DEGREES_ANGLE));
-
+  // Drivetrain turn tasks
+  // Last argument is number of degrees turned, + or - changes direction
+  auto driveTurnLeftTask = shared_ptr<Task>(new TurnTask(Drivetrain, 90));
+  auto driveTurnRightTask = shared_ptr<Task>(new TurnTask(Drivetrain, -90));
+  // Beetle Lift motor tasks
+  // left and right are for the left and right motors on the lift
+  // WHICH DEGREES NEED TO BE NEGATIVE??? COMING UP OR GOING DOWN??????
   auto lowerBeetleArmLEFTTask = shared_ptr<Task>(new MoveMotorTask(LeftLiftMotor, BEETLE_LIFT_MOTOR_GEAR_RATIO, 45));
   auto lowerBeetleArmRIGHTTask = shared_ptr<Task>(new MoveMotorTask(RightLiftMotor, BEETLE_LIFT_MOTOR_GEAR_RATIO, 45));
+  auto raiseBeetleArmLEFTTask = shared_ptr<Task>(new MoveMotorTask(LeftLiftMotor, BEETLE_LIFT_MOTOR_GEAR_RATIO, 45));
+  auto raiseBeetleArmRIGHTTask = shared_ptr<Task>(new MoveMotorTask(RightLiftMotor, BEETLE_LIFT_MOTOR_GEAR_RATIO, 45));
 
+  // TEST TASK TREE SEQUENCE
+  // format is addtask(parentTask, childTask);
+  // Starts with wait 0 milliseconds task as the rootTask
   auto rootTask = shared_ptr<Task>(new WaitMillisecondsTask(0));
+  // driveForwardTask and toggleSpatulaTask1 (out) are children of wait task
   addTask(rootTask, driveForwardTask);
   addTask(rootTask, toggleSpatulaTask1);
+  // toggleSpatulaTask2 (in) is child of driveForwardTask and toggleSpatulaTask1
   addTask(driveForwardTask, toggleSpatulaTask2);
   addTask(toggleSpatulaTask1, toggleSpatulaTask2);
+  //driveTurnLeftTask, lowerBeetleArmLEFTTask, and lowerBeetleArmRIGHTTask are children of toggleSpatulaTaask2
+  addTask(toggleSpatulaTask2, driveTurnLeftTask);
+  addTask(toggleSpatulaTask2, lowerBeetleArmLEFTTask);
+  addTask(toggleSpatulaTask2, lowerBeetleArmRIGHTTask);
+  // raiseBeetleArmLEFTTask is a child of lowerBeetleArmLEFTTask
+  addTask(lowerBeetleArmLEFTTask, raiseBeetleArmLEFTTask);
+  // raiseBeetleArmRIGHTTask is a child of lowerBeetleArmRIGHTTask
+  addTask(lowerBeetleArmRIGHTTask, raiseBeetleArmRIGHTTask);
+  // driveBackwardsTask is a child of raising the left and right beetle motors, and turning 90 degrees.
+  addTask(raiseBeetleArmLEFTTask, driveBackwardsTask);
+  addTask(raiseBeetleArmRIGHTTask, driveBackwardsTask);
+  addTask(driveTurnLeftTask, driveBackwardsTask);
+  // raiseClawLiftLEFTTask and raiseClawLiftRIGHTTask are children of driveBackwardsTask
+  addTask(driveBackwardsTask, raiseClawLiftLEFTTask);
+  addTask(driveBackwardsTask, raiseClawLiftRIGHTTask);
+  // toggleClawTask1 is a child of raiseClawLiftLEFTTask and raiseClawLiftRIGHTTask
+  addTask(raiseClawLiftLEFTTask, toggleClawTask1);
+  addTask(raiseClawLiftRIGHTTask, toggleClawTask1);
+  // Wait Wait200MillTestTask is a child of toggleClawTask1
+  auto Wait200MillTestTask = shared_ptr<Task>(new WaitMillisecondsTask(200));
+  addTask(toggleClawTask1, Wait200MillTestTask);
+  // toggleClawTask2, lowerClawLiftLEFTTask, and lowerClawLiftRIGHTTask are children of Wait200MillTestTask
+  addTask(Wait200MillTestTask, toggleClawTask2);
+  addTask(Wait200MillTestTask, lowerClawLiftLEFTTask);
+  addTask(Wait200MillTestTask, lowerClawLiftRIGHTTask);
+  // driveForwardTask is the child of the toggleClawTask2
+  addTask(toggleClawTask2, driveForwardTask);
   execute(rootTask);
   return;
 
