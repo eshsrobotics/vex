@@ -2,6 +2,36 @@
 // Robot Configuration:
 // [Name]               [Type]        [Port(s)]
 // Controller1          controller                    
+// Drivetrain           drivetrain    10, 1, A        
+// unused_right_now     motor         6               
+// Arm                  motor         20              
+// LeftArmBumper        bumper        G               
+// RightArmBumper       bumper        H               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// Drivetrain           drivetrain    19, 12, A       
+// unused_right_now     motor         6               
+// Arm                  motor         20              
+// LeftArmBumper        bumper        G               
+// RightArmBumper       bumper        H               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// Drivetrain           drivetrain    19, 12, A       
+// unused_right_now     motor         6               
+// Arm                  motor         13              
+// LeftArmBumper        bumper        G               
+// RightArmBumper       bumper        H               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
 // Drivetrain           drivetrain    19, 12, A       
 // unused_right_now     motor         20              
 // Arm                  motor         13              

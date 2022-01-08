@@ -9,12 +9,12 @@ brain  Brain;
 
 // VEXcode device constructors
 controller Controller1 = controller(primary);
-motor LeftDriveSmart = motor(PORT19, ratio18_1, false);
-motor RightDriveSmart = motor(PORT12, ratio18_1, true);
+motor LeftDriveSmart = motor(PORT10, ratio18_1, false);
+motor RightDriveSmart = motor(PORT1, ratio18_1, true);
 gyro DrivetrainGyro = gyro(Brain.ThreeWirePort.A);
 smartdrive Drivetrain = smartdrive(LeftDriveSmart, RightDriveSmart, DrivetrainGyro, 319.19, 320, 292.09999999999997, mm, 1);
-motor unused_right_now = motor(PORT20, ratio18_1, true);
-motor Arm = motor(PORT13, ratio18_1, false);
+motor unused_right_now = motor(PORT6, ratio18_1, true);
+motor Arm = motor(PORT20, ratio18_1, false);
 bumper LeftArmBumper = bumper(Brain.ThreeWirePort.G);
 bumper RightArmBumper = bumper(Brain.ThreeWirePort.H);
 
