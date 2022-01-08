@@ -180,8 +180,15 @@ void MoveMotorTask::start() {
 /*                 SolenoidTask Methods                   */
 /*--------------------------------------------------------*/
 const double DEFAULT_SOLENOID_WAIT_TIME_MILLISECONDS = 2000;
-bool defaultDoneFunc(double startTimeMilliseconds, double desiredElapsedMilliseconds) {
-  const double elapsedMillisecondsSinceStart = Brain.timer(msec) - startTimeMilliseconds;
+bool defaultDoneFunc(double& startTimeMilliseconds, double desiredElapsedMilliseconds) {
+const double elapsedMillisecondsSinceStart = Brain.timer(msec) - startTimeMilliseconds;
+Controller1.Screen.print("start = %.2fn", startTimeMilliseconds);
+  return elapsedMillisecondsSinceStart > desiredElapsedMilliseconds;
+}
+
+bool newDoneFunc(const SolenoidTask &task, double desiredElapsedMilliseconds) {
+  const double elapsedMillisecondsSinceStart = Brain.timer(msec) - task.startTimeMilliseconds;
+  Controller1.Screen.print("start = %.2fn", task.startTimeMilliseconds);
   return elapsedMillisecondsSinceStart > desiredElapsedMilliseconds;
 }
 
@@ -199,12 +206,13 @@ SolenoidTask::SolenoidTask(vex::digital_out& solenoid_, std::function<bool()> do
 SolenoidTask::SolenoidTask(vex::digital_out& solenoid_, bool& trackingVariable_) 
   : Task("Solenoid"), 
     solenoid(solenoid_), 
-    doneFunc(bind(defaultDoneFunc, startTimeMilliseconds, DEFAULT_SOLENOID_WAIT_TIME_MILLISECONDS)), 
+    doneFunc(bind(defaultDoneFunc, ref(startTimeMilliseconds), DEFAULT_SOLENOID_WAIT_TIME_MILLISECONDS)), 
     trackingVariable(trackingVariable_),
     startTimeMilliseconds(0.0) {}
 
 //toggles solenoid 
 void SolenoidTask::start() {
+  //wait(2.0, sec);
   startTimeMilliseconds = Brain.timer(msec);
   // user supplies a tracking variable
   trackingVariable = !trackingVariable;

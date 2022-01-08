@@ -54,7 +54,9 @@ void PneumaticControlSpatula();
 
 // The state of the claws pneumatic starts false this is changed by the function
 // pvoid PneumaticControlClaw();
-bool pneumaticClawClosed = false;
+
+// Default to a closed state in both teleop and auton 
+bool pneumaticClawOpen = false;
 // The state of the spatulas pneumatic starts true this is changed by the
 // function pvoid PneumaticControlClaw();
 // WWARNING must ensure spatula is retracted before it begins
@@ -79,6 +81,9 @@ void pre_auton(void) {
   // deploy the spatula out to drop the tongs.
   PneumaticSpatula.set(true);
   spatulaRetracted = true;
+  // Pneumatic Claw in closed state intialliy in both tele and auton 
+  PneumaticClaw.set(false); 
+  pneumaticClawOpen = false;
   Drivetrain.setDriveVelocity(100, percent);
 }
 
@@ -162,11 +167,11 @@ void autonomous(void) {
 
   // SMART POINTERS that allow for easy access when creating parents and children of tree.
   // Pneumatic spatula lift tasks
-  auto toggleSpatulaTask1 = shared_ptr<Task>(new SolenoidTask(PneumaticSpatula, spatulaRetracted));
+  auto toggleSpatulaTask1 = shared_ptr<Task>(new  SolenoidTask(PneumaticSpatula, spatulaRetracted));
   auto toggleSpatulaTask2 = shared_ptr<Task>(new SolenoidTask(PneumaticSpatula, spatulaRetracted));
   // Pneumatic Claw and Reverse FourBar Lift motor tasks
-  auto toggleClawTask1 = shared_ptr<Task>(new SolenoidTask(PneumaticClaw, pneumaticClawClosed));
-  auto toggleClawTask2 = shared_ptr<Task>(new SolenoidTask(PneumaticClaw, pneumaticClawClosed));
+  auto toggleClawTask1 = shared_ptr<Task>(new SolenoidTask(PneumaticClaw, pneumaticClawOpen));
+  auto toggleClawTask2 = shared_ptr<Task>(new SolenoidTask(PneumaticClaw, pneumaticClawOpen));
   auto raiseClawLiftLEFTTask = shared_ptr<Task>(new MoveMotorTask(ArmMotorLeft, CLAW_LIFT_MOTORS_GEAR_RATIO, 60));
   auto raiseClawLiftRIGHTTask = shared_ptr<Task>(new MoveMotorTask(ArmMotorRight, CLAW_LIFT_MOTORS_GEAR_RATIO, 60));
   auto lowerClawLiftLEFTTask = shared_ptr<Task>(new MoveMotorTask(ArmMotorLeft, CLAW_LIFT_MOTORS_GEAR_RATIO, -60));
@@ -202,7 +207,11 @@ void autonomous(void) {
   addTask(toggleSpatulaTask1, toggleSpatulaTask2);
 
   
-  execute(rootTask);
+  // execute(rootTask);
+
+  toggleClawTask1->children.clear();
+  addTask(toggleClawTask1, toggleClawTask2);
+  execute(toggleClawTask1);
   return;
 
 
@@ -396,22 +405,22 @@ void PneumaticControlClaw() {
   Brain.Screen.clearScreen();
   Controller1.Screen.clearScreen();
 
-  if (pneumaticClawClosed == true) {
+  if (pneumaticClawOpen == true) {
 
-    pneumaticClawClosed = false;
+    pneumaticClawOpen = false;
 
     Brain.Screen.printAt(1, 1, "false");
     Controller1.Screen.print("false");
 
   } else {
 
-    pneumaticClawClosed = true;
+    pneumaticClawOpen = true;
 
     Brain.Screen.printAt(1, 1, "true");
     Controller1.Screen.print("true");
   }
 
-  PneumaticClaw.set(pneumaticClawClosed);
+  PneumaticClaw.set(pneumaticClawOpen);
 }
 
 // Changes the pneumatic state of spatula from true to false
