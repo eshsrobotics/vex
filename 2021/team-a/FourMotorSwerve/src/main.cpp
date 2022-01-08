@@ -172,8 +172,8 @@ void autonomous(void) {
   auto lowerClawLiftLEFTTask = shared_ptr<Task>(new MoveMotorTask(ArmMotorLeft, CLAW_LIFT_MOTORS_GEAR_RATIO, -60));
   auto lowerClawLiftRIGHTTask = shared_ptr<Task>(new MoveMotorTask(ArmMotorRight, CLAW_LIFT_MOTORS_GEAR_RATIO, -60));
   // Drive tasks
-  auto driveForwardTask = shared_ptr<Task>(new DriveStraightTask(Drivetrain, 10));
-  auto driveBackwardsTask = shared_ptr<Task>(new DriveStraightTask(Drivetrain,  10));
+  auto driveForwardTask = shared_ptr<Task>(new DriveStraightTask(Drivetrain, 4));
+  auto driveBackwardsTask = shared_ptr<Task>(new DriveStraightTask(Drivetrain, -4));
   
   // Drivetrain turn tasks
   // Last argument is number of degrees turned, + or - changes direction
@@ -197,13 +197,11 @@ void autonomous(void) {
   addTask(rootTask, raiseClawLiftRIGHTTask);
 
   // toggles claw (child of dirveBac)
-  addTask(driveBackwardsTask, toggleClawTask1);
-  addTask(raiseClawLiftLEFTTask, toggleClawTask1); 
-  addTask(raiseClawLiftRIGHTTask, toggleClawTask1);
+  addTask(raiseClawLiftLEFTTask, toggleSpatulaTask1); 
 
-  addTask(toggleClawTask1, toggleClawTask2);
+  addTask(toggleSpatulaTask1, toggleSpatulaTask2);
+
   
-
   execute(rootTask);
   return;
 

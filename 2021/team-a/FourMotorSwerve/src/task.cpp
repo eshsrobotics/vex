@@ -124,7 +124,7 @@ void DriveStraightTask::start() {
   if (distanceInches > 0) {
     drivetrain.driveFor(vex::forward, correctDistanceInches, inches, false);
   } else {
-    drivetrain.driveFor(vex::reverse, correctDistanceInches, inches, false);
+    drivetrain.driveFor(vex::reverse, fabs(correctDistanceInches), inches, false);
   }
 }
 
