@@ -156,6 +156,32 @@ bool isArmGroundLimitSwitchDepressed() {
   return ArmGroundLimitSwitch.pressing();
 }
 
+double translate(double desiredDistanceInches) {
+  if (desiredDistanceInches > 0) {
+    // Assigns the variables for changing the input value so the output value is equal to it
+    // We got these numbers by plotting 5 points from testing and finding the line of best fit
+    const double M_VALUE = 1.03;
+    const double B_VALUE = 0.702;
+    // This formula creates the new value that is input into the driveFor function to get an 
+    // of the original distanceInches
+    double correctDistanceInches = (desiredDistanceInches - B_VALUE) / M_VALUE;
+    return correctDistanceInches;
+  } else {
+    // Assigns the variables for changing the input value so the output value is equal to it
+    // We got these numbers by plotting 5 points from testing and finding the line of best fit
+    const double M_VALUE = 1.03;
+    const double B_VALUE = 0.702;
+    // This formula creates the new value that is input into the driveFor function to get an 
+    // of the original distanceInches
+    double correctDistanceInches = (-desiredDistanceInches - B_VALUE) / M_VALUE;
+    return correctDistanceInches;
+  }
+}
+
+
+
+
+
 // This is the autonomous code
 void autonomous(void) {
 
@@ -177,8 +203,8 @@ void autonomous(void) {
   auto lowerClawLiftLEFTTask = shared_ptr<Task>(new MoveMotorTask(ArmMotorLeft, CLAW_LIFT_MOTORS_GEAR_RATIO, -60));
   auto lowerClawLiftRIGHTTask = shared_ptr<Task>(new MoveMotorTask(ArmMotorRight, CLAW_LIFT_MOTORS_GEAR_RATIO, -60));
   // Drive tasks
-  auto driveForwardTask = shared_ptr<Task>(new DriveStraightTask(Drivetrain, 4));
-  auto driveBackwardsTask = shared_ptr<Task>(new DriveStraightTask(Drivetrain, -4));
+  auto driveForwardTask = shared_ptr<Task>(new DriveStraightTask(Drivetrain, 10, translate));
+  auto driveBackwardsTask = shared_ptr<Task>(new DriveStraightTask(Drivetrain, -20, translate));
   
   // Drivetrain turn tasks
   // Last argument is number of degrees turned, + or - changes direction
@@ -202,17 +228,14 @@ void autonomous(void) {
   addTask(rootTask, raiseClawLiftRIGHTTask);
 
   // toggles claw (child of dirveBac)
-  addTask(raiseClawLiftLEFTTask, toggleSpatulaTask1); 
-
-  addTask(toggleSpatulaTask1, toggleSpatulaTask2);
-
-  
-  // execute(rootTask);
-
-  toggleClawTask1->children.clear();
+  addTask(raiseClawLiftLEFTTask, toggleClawTask1); 
   addTask(toggleClawTask1, toggleClawTask2);
-  execute(toggleClawTask1);
-  return;
+
+  execute(rootTask);
+
+  // driveBackwardsTask->children.clear();
+  // execute(driveBackwardsTask);
+  // return;
 
 
   // This will tell us which side of the field we are starting on
