@@ -157,25 +157,21 @@ bool isArmGroundLimitSwitchDepressed() {
 }
 
 double translate(double desiredDistanceInches) {
-  if (desiredDistanceInches > 0) {
-    // Assigns the variables for changing the input value so the output value is equal to it
-    // We got these numbers by plotting 5 points from testing and finding the line of best fit
-    const double M_VALUE = 1.03;
-    const double B_VALUE = 0.702;
-    // This formula creates the new value that is input into the driveFor function to get an 
-    // of the original distanceInches
-    double correctDistanceInches = (desiredDistanceInches - B_VALUE) / M_VALUE;
-    return correctDistanceInches;
-  } else {
-    // Assigns the variables for changing the input value so the output value is equal to it
-    // We got these numbers by plotting 5 points from testing and finding the line of best fit
-    const double M_VALUE = 1.03;
-    const double B_VALUE = 0.702;
-    // This formula creates the new value that is input into the driveFor function to get an 
-    // of the original distanceInches
-    double correctDistanceInches = (-desiredDistanceInches - B_VALUE) / M_VALUE;
-    return correctDistanceInches;
-  }
+  // Assigns the variables for changing the input value so the output value is equal to it
+  // We got these numbers by plotting 5 points from testing and finding the line of best fit
+  const double M_VALUE = 1.03;
+  const double B_VALUE = 0.702;
+  // This formula creates the new value that is input into the driveFor function to get an 
+  // of the original distanceInches
+  double correctDistanceInches = (desiredDistanceInches - B_VALUE) / M_VALUE;
+  return correctDistanceInches;
+}
+
+double rotationCorrection(double desiredRotationDegrees) {
+  const double M_VALUE = 1.73;
+  const double B_VALUE = 0.5;
+  double correctRotationDegrees = (desiredRotationDegrees - B_VALUE) / M_VALUE;
+  return correctRotationDegrees;
 }
 
 
@@ -208,8 +204,8 @@ void autonomous(void) {
   
   // Drivetrain turn tasks
   // Last argument is number of degrees turned, + or - changes direction
-  auto driveTurnLeftTask = shared_ptr<Task>(new TurnTask(Drivetrain, 90));
-  auto driveTurnRightTask = shared_ptr<Task>(new TurnTask(Drivetrain, -90));
+  auto driveTurnLeftTask = shared_ptr<Task>(new TurnTask(Drivetrain, -90, rotationCorrection));
+  auto driveTurnRightTask = shared_ptr<Task>(new TurnTask(Drivetrain, 90, rotationCorrection));
   // Beetle Lift motor tasks
   // left and right are for the left and right motors on the lift
   // WHICH DEGREES NEED TO BE NEGATIVE??? COMING UP OR GOING DOWN??????
@@ -223,13 +219,14 @@ void autonomous(void) {
   // Starts with wait 0 milliseconds task as the rootTask
   auto rootTask = shared_ptr<Task>(new WaitMillisecondsTask(0));
   // dirves backwards 10in, raises pneumatic claw lift (children of rootTask)
-  addTask(rootTask, driveBackwardsTask);
-  addTask(rootTask, raiseClawLiftLEFTTask);
-  addTask(rootTask, raiseClawLiftRIGHTTask);
+  //ddTask(rootTask, driveBackwardsTask);
+  //addTask(rootTask, raiseClawLiftLEFTTask);
+  //addTask(rootTask, raiseClawLiftRIGHTTask);
+  addTask(rootTask, driveTurnLeftTask);
 
   // toggles claw (child of dirveBac)
-  addTask(raiseClawLiftLEFTTask, toggleClawTask1); 
-  addTask(toggleClawTask1, toggleClawTask2);
+  //addTask(raiseClawLiftLEFTTask, toggleClawTask1); 
+  //addTask(toggleClawTask1, toggleClawTask2);
 
   execute(rootTask);
 
@@ -243,21 +240,21 @@ void autonomous(void) {
   // goal that is on the diagonal line) 2 - Means we are on the right side of
   // the field (The side next to the mobile goal that is on the lever)
 
-  int sideOfField = 1;
+  //int sideOfField = 1;
 
   // Right Side Field autonomus code
-  if (sideOfField == 1) {
+  //if (sideOfField == 1) {
     // Deploy mobile goal lift and arms
-    MoveLift(OUTWARD);
+  //  MoveLift(OUTWARD);
     // Drive forward to mobile goal
 
-    Drivetrain.driveFor(vex::forward, 15, inches);
+  //  Drivetrain.driveFor(vex::forward, 15, inches);
     // Move DR4B Up to put donuts in position
-    MoveArm(UP);
-    MoveLift(INWARD);
+  //  MoveArm(UP);
+  //  MoveLift(INWARD);
     // We need a group for the pneumatics
-    Drivetrain.driveFor(reverse, 12, inches);
-    MoveArm(UP);
+  //  Drivetrain.driveFor(reverse, 12, inches);
+   // MoveArm(UP);
 
     // Drivetrain.setTurnVelocity(100, percent);
     // Drivetrain.turnFor(-70, degrees);
@@ -270,20 +267,20 @@ void autonomous(void) {
     // Drivetrain.driveFor(reverse, 50, inches);
 
     // Left Side Field autonomous code
-  } else if (sideOfField == 2) {
+  //} else if (sideOfField == 2) {
     // Deploy mobile goal lift and arms
-    MoveLift(OUTWARD);
+   // MoveLift(OUTWARD);
     // Drive forward to mobile goal
-    Drivetrain.driveFor(vex::forward, 12, inches);
+   // Drivetrain.driveFor(vex::forward, 12, inches);
     // Move DR4B Up to put donuts in position
-    MoveArm(UP);
+   // MoveArm(UP);
 
     // Pull in mobile goal for donuts
-    MoveLift(INWARD);
+  //  MoveLift(INWARD);
     // Release donuts
     // Ensure mobile goal isn't on line by moving backwards
-    Drivetrain.driveFor(reverse, 12, inches);
-    MoveArm(UP);
+   // Drivetrain.driveFor(reverse, 12, inches);
+   // MoveArm(UP);
     // Drivetrain.setDriveVelocity(100, percentUnits units)
     // Drivetrain.driveFor(forward, double distance, distanceUnits units)
     // Drivetrain.setTurnVelocity(80, percent);
@@ -299,7 +296,6 @@ void autonomous(void) {
   // ..........................................................................
   // Insert autonomous user code here.
   // ..........................................................................
-}
 
 // This is for the Right side of the field
 /*---------------------------------------------------------------------------*/

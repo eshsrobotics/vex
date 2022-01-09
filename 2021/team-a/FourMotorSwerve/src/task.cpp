@@ -142,7 +142,7 @@ void TurnTask::start() {
   if (rotationAmountDegrees > 0) {
     drivetrain.turnFor(right, correctRotationDegrees, degrees, false);
   } else {
-    drivetrain.turnFor(left, correctRotationDegrees, degrees, false);
+    drivetrain.turnFor(left, fabs(correctRotationDegrees), degrees, false);
   }
 }
 
