@@ -54,7 +54,9 @@ void PneumaticControlSpatula();
 
 // The state of the claws pneumatic starts false this is changed by the function
 // pvoid PneumaticControlClaw();
-bool pneumaticClawClosed = false;
+
+// Default to a closed state in both teleop and auton 
+bool pneumaticClawOpen = false;
 // The state of the spatulas pneumatic starts true this is changed by the
 // function pvoid PneumaticControlClaw();
 // WWARNING must ensure spatula is retracted before it begins
@@ -79,6 +81,9 @@ void pre_auton(void) {
   // deploy the spatula out to drop the tongs.
   PneumaticSpatula.set(true);
   spatulaRetracted = true;
+  // Pneumatic Claw in closed state intialliy in both tele and auton 
+  PneumaticClaw.set(false); 
+  pneumaticClawOpen = false;
   Drivetrain.setDriveVelocity(100, percent);
 }
 
@@ -151,6 +156,28 @@ bool isArmGroundLimitSwitchDepressed() {
   return ArmGroundLimitSwitch.pressing();
 }
 
+double translate(double desiredDistanceInches) {
+  // Assigns the variables for changing the input value so the output value is equal to it
+  // We got these numbers by plotting 5 points from testing and finding the line of best fit
+  const double M_VALUE = 1.03;
+  const double B_VALUE = 0.702;
+  // This formula creates the new value that is input into the driveFor function to get an 
+  // of the original distanceInches
+  double correctDistanceInches = (desiredDistanceInches - B_VALUE) / M_VALUE;
+  return correctDistanceInches;
+}
+
+double rotationCorrection(double desiredRotationDegrees) {
+  const double M_VALUE = 1.73;
+  const double B_VALUE = 0.5;
+  double correctRotationDegrees = (desiredRotationDegrees - B_VALUE) / M_VALUE;
+  return correctRotationDegrees;
+}
+
+
+
+
+
 // This is the autonomous code
 void autonomous(void) {
 
@@ -162,23 +189,23 @@ void autonomous(void) {
 
   // SMART POINTERS that allow for easy access when creating parents and children of tree.
   // Pneumatic spatula lift tasks
-  auto toggleSpatulaTask1 = shared_ptr<Task>(new SolenoidTask(PneumaticSpatula, spatulaRetracted));
+  auto toggleSpatulaTask1 = shared_ptr<Task>(new  SolenoidTask(PneumaticSpatula, spatulaRetracted));
   auto toggleSpatulaTask2 = shared_ptr<Task>(new SolenoidTask(PneumaticSpatula, spatulaRetracted));
   // Pneumatic Claw and Reverse FourBar Lift motor tasks
-  auto toggleClawTask1 = shared_ptr<Task>(new SolenoidTask(PneumaticClaw, pneumaticClawClosed));
-  auto toggleClawTask2 = shared_ptr<Task>(new SolenoidTask(PneumaticClaw, pneumaticClawClosed));
+  auto toggleClawTask1 = shared_ptr<Task>(new SolenoidTask(PneumaticClaw, pneumaticClawOpen));
+  auto toggleClawTask2 = shared_ptr<Task>(new SolenoidTask(PneumaticClaw, pneumaticClawOpen));
   auto raiseClawLiftLEFTTask = shared_ptr<Task>(new MoveMotorTask(ArmMotorLeft, CLAW_LIFT_MOTORS_GEAR_RATIO, 60));
   auto raiseClawLiftRIGHTTask = shared_ptr<Task>(new MoveMotorTask(ArmMotorRight, CLAW_LIFT_MOTORS_GEAR_RATIO, 60));
   auto lowerClawLiftLEFTTask = shared_ptr<Task>(new MoveMotorTask(ArmMotorLeft, CLAW_LIFT_MOTORS_GEAR_RATIO, -60));
   auto lowerClawLiftRIGHTTask = shared_ptr<Task>(new MoveMotorTask(ArmMotorRight, CLAW_LIFT_MOTORS_GEAR_RATIO, -60));
   // Drive tasks
-  auto driveForwardTask = shared_ptr<Task>(new DriveStraightTask(Drivetrain, 10));
-  auto driveBackwardsTask = shared_ptr<Task>(new DriveStraightTask(Drivetrain,  10));
+  auto driveForwardTask = shared_ptr<Task>(new DriveStraightTask(Drivetrain, 10, translate));
+  auto driveBackwardsTask = shared_ptr<Task>(new DriveStraightTask(Drivetrain, -20, translate));
   
   // Drivetrain turn tasks
   // Last argument is number of degrees turned, + or - changes direction
-  auto driveTurnLeftTask = shared_ptr<Task>(new TurnTask(Drivetrain, 90));
-  auto driveTurnRightTask = shared_ptr<Task>(new TurnTask(Drivetrain, -90));
+  auto driveTurnLeftTask = shared_ptr<Task>(new TurnTask(Drivetrain, -90, rotationCorrection));
+  auto driveTurnRightTask = shared_ptr<Task>(new TurnTask(Drivetrain, 90, rotationCorrection));
   // Beetle Lift motor tasks
   // left and right are for the left and right motors on the lift
   // WHICH DEGREES NEED TO BE NEGATIVE??? COMING UP OR GOING DOWN??????
@@ -192,20 +219,20 @@ void autonomous(void) {
   // Starts with wait 0 milliseconds task as the rootTask
   auto rootTask = shared_ptr<Task>(new WaitMillisecondsTask(0));
   // dirves backwards 10in, raises pneumatic claw lift (children of rootTask)
-  addTask(rootTask, driveBackwardsTask);
-  addTask(rootTask, raiseClawLiftLEFTTask);
-  addTask(rootTask, raiseClawLiftRIGHTTask);
+  //ddTask(rootTask, driveBackwardsTask);
+  //addTask(rootTask, raiseClawLiftLEFTTask);
+  //addTask(rootTask, raiseClawLiftRIGHTTask);
+  addTask(rootTask, driveTurnLeftTask);
 
   // toggles claw (child of dirveBac)
-  addTask(driveBackwardsTask, toggleClawTask1);
-  addTask(raiseClawLiftLEFTTask, toggleClawTask1); 
-  addTask(raiseClawLiftRIGHTTask, toggleClawTask1);
-
-  addTask(toggleClawTask1, toggleClawTask2);
-  
+  //addTask(raiseClawLiftLEFTTask, toggleClawTask1); 
+  //addTask(toggleClawTask1, toggleClawTask2);
 
   execute(rootTask);
-  return;
+
+  // driveBackwardsTask->children.clear();
+  // execute(driveBackwardsTask);
+  // return;
 
 
   // This will tell us which side of the field we are starting on
@@ -213,21 +240,21 @@ void autonomous(void) {
   // goal that is on the diagonal line) 2 - Means we are on the right side of
   // the field (The side next to the mobile goal that is on the lever)
 
-  int sideOfField = 1;
+  //int sideOfField = 1;
 
   // Right Side Field autonomus code
-  if (sideOfField == 1) {
+  //if (sideOfField == 1) {
     // Deploy mobile goal lift and arms
-    MoveLift(OUTWARD);
+  //  MoveLift(OUTWARD);
     // Drive forward to mobile goal
 
-    Drivetrain.driveFor(vex::forward, 15, inches);
+  //  Drivetrain.driveFor(vex::forward, 15, inches);
     // Move DR4B Up to put donuts in position
-    MoveArm(UP);
-    MoveLift(INWARD);
+  //  MoveArm(UP);
+  //  MoveLift(INWARD);
     // We need a group for the pneumatics
-    Drivetrain.driveFor(reverse, 12, inches);
-    MoveArm(UP);
+  //  Drivetrain.driveFor(reverse, 12, inches);
+   // MoveArm(UP);
 
     // Drivetrain.setTurnVelocity(100, percent);
     // Drivetrain.turnFor(-70, degrees);
@@ -240,20 +267,20 @@ void autonomous(void) {
     // Drivetrain.driveFor(reverse, 50, inches);
 
     // Left Side Field autonomous code
-  } else if (sideOfField == 2) {
+  //} else if (sideOfField == 2) {
     // Deploy mobile goal lift and arms
-    MoveLift(OUTWARD);
+   // MoveLift(OUTWARD);
     // Drive forward to mobile goal
-    Drivetrain.driveFor(vex::forward, 12, inches);
+   // Drivetrain.driveFor(vex::forward, 12, inches);
     // Move DR4B Up to put donuts in position
-    MoveArm(UP);
+   // MoveArm(UP);
 
     // Pull in mobile goal for donuts
-    MoveLift(INWARD);
+  //  MoveLift(INWARD);
     // Release donuts
     // Ensure mobile goal isn't on line by moving backwards
-    Drivetrain.driveFor(reverse, 12, inches);
-    MoveArm(UP);
+   // Drivetrain.driveFor(reverse, 12, inches);
+   // MoveArm(UP);
     // Drivetrain.setDriveVelocity(100, percentUnits units)
     // Drivetrain.driveFor(forward, double distance, distanceUnits units)
     // Drivetrain.setTurnVelocity(80, percent);
@@ -269,7 +296,6 @@ void autonomous(void) {
   // ..........................................................................
   // Insert autonomous user code here.
   // ..........................................................................
-}
 
 // This is for the Right side of the field
 /*---------------------------------------------------------------------------*/
@@ -398,22 +424,22 @@ void PneumaticControlClaw() {
   Brain.Screen.clearScreen();
   Controller1.Screen.clearScreen();
 
-  if (pneumaticClawClosed == true) {
+  if (pneumaticClawOpen == true) {
 
-    pneumaticClawClosed = false;
+    pneumaticClawOpen = false;
 
     Brain.Screen.printAt(1, 1, "false");
     Controller1.Screen.print("false");
 
   } else {
 
-    pneumaticClawClosed = true;
+    pneumaticClawOpen = true;
 
     Brain.Screen.printAt(1, 1, "true");
     Controller1.Screen.print("true");
   }
 
-  PneumaticClaw.set(pneumaticClawClosed);
+  PneumaticClaw.set(pneumaticClawOpen);
 }
 
 // Changes the pneumatic state of spatula from true to false
