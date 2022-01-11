@@ -8,36 +8,6 @@
 // LeftArmBumper        bumper        G               
 // RightArmBumper       bumper        H               
 // ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// Controller1          controller                    
-// Drivetrain           drivetrain    19, 12, A       
-// unused_right_now     motor         6               
-// Arm                  motor         20              
-// LeftArmBumper        bumper        G               
-// RightArmBumper       bumper        H               
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// Controller1          controller                    
-// Drivetrain           drivetrain    19, 12, A       
-// unused_right_now     motor         6               
-// Arm                  motor         13              
-// LeftArmBumper        bumper        G               
-// RightArmBumper       bumper        H               
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// Controller1          controller                    
-// Drivetrain           drivetrain    19, 12, A       
-// unused_right_now     motor         20              
-// Arm                  motor         13              
-// LeftArmBumper        bumper        G               
-// RightArmBumper       bumper        H               
-// ---- END VEXCODE CONFIGURED DEVICES ----
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /*    Module:       main.cpp                                                  */
@@ -264,8 +234,8 @@ void autonomous(void) {
   // These are the commands for autonomous. We create the order they run later in the code
   auto wait0 = std::shared_ptr<Task>(new WaitMillisecondsTask(0));
   auto turn1 = std::shared_ptr<Task>(new TurnTask(Drivetrain, -9));
-  auto arm1 = std::shared_ptr<Task>(new MoveMotorTask(Arm, ARM_GEAR_RATIO, -30));
-  auto drive1 = std::shared_ptr<Task>(new DriveStraightTask(Drivetrain, 11, translate));
+  auto arm1 = std::shared_ptr<Task>(new MoveMotorTask(Arm, ARM_GEAR_RATIO, -20));
+  auto drive1 = std::shared_ptr<Task>(new DriveStraightTask(Drivetrain, 15, translate));
   auto arm2 = std::shared_ptr<Task>(new MoveMotorTask(Arm, ARM_GEAR_RATIO, -30));
   auto drive2 = std::shared_ptr<Task>(new DriveStraightTask(Drivetrain, -7, translate));
   auto arm3 = std::shared_ptr<Task>(new MoveMotorTask(Arm, ARM_GEAR_RATIO, -20));

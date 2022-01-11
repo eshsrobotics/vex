@@ -138,11 +138,10 @@ TurnTask::TurnTask(vex::drivetrain &drivetrain,
 bool TurnTask::done() const { return drivetrain.isDone(); }
 
 void TurnTask::start() {
-  const double correctRotationDegrees = turnCorrectionFunc(rotationAmountDegrees);
   if (rotationAmountDegrees > 0) {
-    drivetrain.turnFor(right, correctRotationDegrees, degrees, false);
+    drivetrain.turnFor(right, rotationAmountDegrees, degrees, false);
   } else {
-    drivetrain.turnFor(left, correctRotationDegrees, degrees, false);
+    drivetrain.turnFor(left, -rotationAmountDegrees, degrees, false);
   }
 }
 
