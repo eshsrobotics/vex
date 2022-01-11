@@ -186,55 +186,74 @@ void autonomous(void) {
   // Pneumatic Claw Lift both motor gear ratios are 84:12 = 7.
   const double CLAW_LIFT_MOTORS_GEAR_RATIO = 7;
   
-
   // SMART POINTERS that allow for easy access when creating parents and children of tree.
   // Pneumatic spatula lift tasks
   auto toggleSpatulaTask1 = shared_ptr<Task>(new  SolenoidTask(PneumaticSpatula, spatulaRetracted));
   auto toggleSpatulaTask2 = shared_ptr<Task>(new SolenoidTask(PneumaticSpatula, spatulaRetracted));
-  // Pneumatic Claw and Reverse FourBar Lift motor tasks
+ 
+  // Pneumatic Claw tasks
   auto toggleClawTask1 = shared_ptr<Task>(new SolenoidTask(PneumaticClaw, pneumaticClawOpen));
   auto toggleClawTask2 = shared_ptr<Task>(new SolenoidTask(PneumaticClaw, pneumaticClawOpen));
+  
+  // Reverse FourBar Lift tasks
   auto raiseClawLiftLEFTTask = shared_ptr<Task>(new MoveMotorTask(ArmMotorLeft, CLAW_LIFT_MOTORS_GEAR_RATIO, 60));
   auto raiseClawLiftRIGHTTask = shared_ptr<Task>(new MoveMotorTask(ArmMotorRight, CLAW_LIFT_MOTORS_GEAR_RATIO, 60));
   auto lowerClawLiftLEFTTask = shared_ptr<Task>(new MoveMotorTask(ArmMotorLeft, CLAW_LIFT_MOTORS_GEAR_RATIO, -60));
   auto lowerClawLiftRIGHTTask = shared_ptr<Task>(new MoveMotorTask(ArmMotorRight, CLAW_LIFT_MOTORS_GEAR_RATIO, -60));
+  
   // Drive tasks
   auto driveForwardTask = shared_ptr<Task>(new DriveStraightTask(Drivetrain, 10, translate));
   auto driveBackwardsTask = shared_ptr<Task>(new DriveStraightTask(Drivetrain, -20, translate));
   
   // Drivetrain turn tasks
-  // Last argument is number of degrees turned, + or - changes direction
+  // Second argument is number of degrees turned, + or - changes direction
   auto driveTurnLeftTask = shared_ptr<Task>(new TurnTask(Drivetrain, -90, rotationCorrection));
   auto driveTurnRightTask = shared_ptr<Task>(new TurnTask(Drivetrain, 90, rotationCorrection));
+  
   // Beetle Lift motor tasks
   // left and right are for the left and right motors on the lift
-  // WHICH DEGREES NEED TO BE NEGATIVE??? COMING UP OR GOING DOWN??????
   auto lowerBeetleArmLEFTTask = shared_ptr<Task>(new MoveMotorTask(LeftLiftMotor, BEETLE_LIFT_MOTOR_GEAR_RATIO, -45));
   auto lowerBeetleArmRIGHTTask = shared_ptr<Task>(new MoveMotorTask(RightLiftMotor, BEETLE_LIFT_MOTOR_GEAR_RATIO, -45));
   auto raiseBeetleArmLEFTTask = shared_ptr<Task>(new MoveMotorTask(LeftLiftMotor, BEETLE_LIFT_MOTOR_GEAR_RATIO, 45));
   auto raiseBeetleArmRIGHTTask = shared_ptr<Task>(new MoveMotorTask(RightLiftMotor, BEETLE_LIFT_MOTOR_GEAR_RATIO, 45));
 
-  // TEST TASK TREE SEQUENCE
+
+  // AUTONOMOUS (left side GOAL ON PLATFORM)
   // format is addtask(parentTask, childTask);
   // Starts with wait 0 milliseconds task as the rootTask
   auto rootTask = shared_ptr<Task>(new WaitMillisecondsTask(0));
-  // dirves backwards 10in, raises pneumatic claw lift (children of rootTask)
-  //ddTask(rootTask, driveBackwardsTask);
-  //addTask(rootTask, raiseClawLiftLEFTTask);
-  //addTask(rootTask, raiseClawLiftRIGHTTask);
-  addTask(rootTask, driveTurnLeftTask);
-
-  // toggles claw (child of dirveBac)
-  //addTask(raiseClawLiftLEFTTask, toggleClawTask1); 
-  //addTask(toggleClawTask1, toggleClawTask2);
+  // drives backwards 10in, raises pneumatic claw lift (children of rootTask)
+  addTask(rootTask, driveBackwardsTask);
+  addTask(rootTask, raiseClawLiftLEFTTask);
+  addTask(rootTask, raiseClawLiftRIGHTTask);
+  // toggles claw closed (child of raiseClawLiftLEFTTask)
+  addTask(raiseClawLiftLEFTTask, toggleClawTask1); 
+  // toggles claw open (child of toggleClawTask1)
+  addTask(toggleClawTask1, toggleClawTask2);
+  // Lowers claw lift and dirves forwards (children of toggleClawTask2)
+  addTask(toggleClawTask2, lowerClawLiftLEFTTask);
+  addTask(toggleClawTask2, lowerClawLiftRIGHTTask);
+  addTask(toggleClawTask2, driveForwardTask);
+  // turns right (child of drive forward task)
+  addTask(driveForwardTask, driveTurnRightTask);
+  // Drives forwards and toggles spatula out (children of turn right task)
+  addTask(driveTurnRightTask, driveForwardTask);
+  addTask(driveTurnRightTask, toggleSpatulaTask1);
+  // Toggles spatula in (picking up mobile goal) (child of toggle spatula 1 task)
+  addTask(toggleSpatulaTask1, toggleSpatulaTask2);
+  // Drives backwards (Child of toggle spatula 2 task)
+  addTask(toggleSpatulaTask2, driveBackwardsTask);
+  // Turns right (child of drive backwards task)
+  addTask(driveBackwardsTask, driveTurnRightTask);
+  // drives forwards (child of turn right task)
+  addTask(driveTurnRightTask, driveForwardTask);
+  //toggles spatula out (child of drive forwards task)
+  addTask(driveForwardTask, toggleSpatulaTask1);
 
   execute(rootTask);
 
-  // driveBackwardsTask->children.clear();
-  // execute(driveBackwardsTask);
-  // return;
 
-
+  // AUTON FOR DAMIEN COMP 
   // This will tell us which side of the field we are starting on
   // 1 - Means we are on the left side of the field (The side next to the mobile
   // goal that is on the diagonal line) 2 - Means we are on the right side of
