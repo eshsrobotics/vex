@@ -202,13 +202,16 @@ void autonomous(void) {
   auto lowerClawLiftRIGHTTask = shared_ptr<Task>(new MoveMotorTask(ArmMotorRight, CLAW_LIFT_MOTORS_GEAR_RATIO, -60));
   
   // Drive tasks
-  auto driveForwardTask = shared_ptr<Task>(new DriveStraightTask(Drivetrain, 10, translate));
+  auto driveForwardTask = shared_ptr<Task>(new DriveStraightTask(Drivetrain, 12, translate));
+  auto driveForwardtoMobileGoalTask = shared_ptr<Task>(new DriveStraightTask(Drivetrain, 35, translate));
   auto driveBackwardsTask = shared_ptr<Task>(new DriveStraightTask(Drivetrain, -20, translate));
+  auto drivetoAllianceSideTask = shared_ptr<Task>(new DriveStraightTask(Drivetrain, -30, translate));
   
   // Drivetrain turn tasks
   // Second argument is number of degrees turned, + or - changes direction
   auto driveTurnLeftTask = shared_ptr<Task>(new TurnTask(Drivetrain, -90, rotationCorrection));
   auto driveTurnRightTask = shared_ptr<Task>(new TurnTask(Drivetrain, 90, rotationCorrection));
+  auto driveTrunRightTask2 = shared_ptr<Task>(new TurnTask(Drivetrain, 90, rotationCorrection));
   
   // Beetle Lift motor tasks
   // left and right are for the left and right motors on the lift
@@ -237,18 +240,19 @@ void autonomous(void) {
   // turns right (child of drive forward task)
   addTask(driveForwardTask, driveTurnRightTask);
   // Drives forwards and toggles spatula out (children of turn right task)
-  addTask(driveTurnRightTask, driveForwardTask);
   addTask(driveTurnRightTask, toggleSpatulaTask1);
+  addTask(driveTurnRightTask, driveForwardtoMobileGoalTask);
+  //addTask(driveForwardtoMobileGoalTask, toggleSpatulaTask1);
   // Toggles spatula in (picking up mobile goal) (child of toggle spatula 1 task)
   addTask(toggleSpatulaTask1, toggleSpatulaTask2);
   // Drives backwards (Child of toggle spatula 2 task)
-  addTask(toggleSpatulaTask2, driveBackwardsTask);
+  addTask(toggleSpatulaTask2, drivetoAllianceSideTask);
   // Turns right (child of drive backwards task)
-  addTask(driveBackwardsTask, driveTurnRightTask);
+  addTask(drivetoAllianceSideTask, driveTrunRightTask2);
   // drives forwards (child of turn right task)
-  addTask(driveTurnRightTask, driveForwardTask);
+  //addTask(driveTurnRightTask, driveForwardtoMobileGoalTask);
   //toggles spatula out (child of drive forwards task)
-  addTask(driveForwardTask, toggleSpatulaTask1);
+  //addTask(driveForwardtoMobileGoalTask, toggleSpatulaTask1);
 
   execute(rootTask);
 
