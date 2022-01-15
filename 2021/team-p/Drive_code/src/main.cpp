@@ -246,7 +246,8 @@ void autonomous(void) {
   // The child task will only run once all of its parent tasks have finished
   addTask(wait0, turn1);
   addTask(wait0, arm1);
-  addTask(turn1, drive1);
+  // addTask(turn1, drive1); // We are not doing this because for some reason, the turn task doesnt register as
+                             // having finished, so the drive task won't run
   addTask(arm1, drive1);
   addTask(drive1, arm2);
   addTask(arm2, drive2);
