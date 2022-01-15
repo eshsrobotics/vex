@@ -145,6 +145,16 @@ void TurnTask::start() {
   }
 }
 
+GyroTurnTask::GyroTurnTask(vex::smartdrive &drive, double rotationAmountDegrees) : Task("Gyro turn task"), vroomvroom(drive), rotationAmountDegrees(rotationAmountDegrees) {}
+bool GyroTurnTask::done() const { return vroomvroom.isTurning() == false; }
+void GyroTurnTask::start() {
+   if (rotationAmountDegrees > 0) {
+    vroomvroom.turnFor(right, rotationAmountDegrees, degrees, false);
+  } else {
+    vroomvroom.turnFor(left, -rotationAmountDegrees, degrees, false);
+  } 
+}
+
 /*--------------------------------------------------------*/
 /*                  Mechanism Methods                     */
 /*--------------------------------------------------------*/

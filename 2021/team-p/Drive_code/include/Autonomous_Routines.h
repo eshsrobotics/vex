@@ -127,6 +127,21 @@ struct TurnTask : public Task {
   void start();
 };
 
+/*------------------------------------------------------------------------------------------------*/
+/* Turns the robot using a gyro instead of a linear encoder using vex::smartdrive. */
+/*------------------------------------------------------------------------------------------------*/
+struct GyroTurnTask : public Task {
+  vex::smartdrive &vroomvroom;
+  double rotationAmountDegrees;
+
+  // Initializes this object with the amount of rotation it has to do and the smartdrive which will perform the rotation. 
+  // This uses the same conventions as the TurnTask constructor so positive values will turn right and negative values will turn left.
+  GyroTurnTask(vex::smartdrive &drive, double rotationAmountDegrees);
+
+  bool done() const;
+  void start();
+};
+
 struct MoveMotorTask : public Task {
   vex::motor &motor;
   double gearRatio; // Ratio of the motor (input) to the output

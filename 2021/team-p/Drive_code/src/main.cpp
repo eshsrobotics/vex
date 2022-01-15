@@ -233,13 +233,13 @@ void autonomous(void) {
 
   // These are the commands for autonomous. We create the order they run later in the code
   auto wait0 = std::shared_ptr<Task>(new WaitMillisecondsTask(0));
-  auto turn1 = std::shared_ptr<Task>(new TurnTask(Drivetrain, -9));
+  auto turn1 = std::shared_ptr<Task>(new GyroTurnTask(Drivetrain, -9));
   auto arm1 = std::shared_ptr<Task>(new MoveMotorTask(Arm, ARM_GEAR_RATIO, -20));
   auto drive1 = std::shared_ptr<Task>(new DriveStraightTask(Drivetrain, 15, translate));
   auto arm2 = std::shared_ptr<Task>(new MoveMotorTask(Arm, ARM_GEAR_RATIO, -30));
   auto drive2 = std::shared_ptr<Task>(new DriveStraightTask(Drivetrain, -7, translate));
   auto arm3 = std::shared_ptr<Task>(new MoveMotorTask(Arm, ARM_GEAR_RATIO, -20));
-  auto turn2 = std::shared_ptr<Task>(new TurnTask(Drivetrain, -73));
+  auto turn2 = std::shared_ptr<Task>(new GyroTurnTask(Drivetrain, -73));
 
   // This is how we create the order the commands run, the first command in the function is the parent task,
   // the second is the child task
