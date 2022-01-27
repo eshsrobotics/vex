@@ -258,6 +258,8 @@ void autonomous(void) {
   // We start with a wait(0) task because we cannot execute 2 tasks at the same time, but we can have 2 children of a task,
   // so it is the equivelant of having two tasks run immediately
   execute(wait0);
+  // auto root_task = get_auton(RAMP_DOWN_NO_WIN_PT);
+  // execute(root_task);
 }
 
 /*---------------------------------------------------------------------------*/

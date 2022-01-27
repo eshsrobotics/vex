@@ -184,3 +184,9 @@ void MoveMotorTask::start() {
                   degrees, false);
   }
 }
+
+std::shared_ptr<Task> get_auton(AUTON_TYPE type) {
+  auto wait0 = shared_ptr<Task>(new WaitMillisecondsTask(0));
+
+  return wait0;
+}
