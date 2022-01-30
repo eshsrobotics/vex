@@ -209,13 +209,15 @@ void autonomous(void) {
   auto driveBackwardsTask = shared_ptr<Task>(new DriveStraightTask(Drivetrain, -17, translate));
   auto drivetoAllianceSideTask = shared_ptr<Task>(new DriveStraightTask(Drivetrain, -20, translate));
   auto driveBackwardSetMobileGoal = shared_ptr<Task>(new DriveStraightTask(Drivetrain, -10, translate));
+  auto driveForwardtoBigMogoTask = shared_ptr<Task>(new DriveStraightTask(Drivetrain, -40, translate));
 
   // Drivetrain turn tasks
   // Second argument is number of degrees turned, + or - changes direction
   auto driveTurnLeftTask = shared_ptr<Task>(new TurnTask(Drivetrain, -90, rotationCorrection));
   auto driveTurnRightTask = shared_ptr<Task>(new TurnTask(Drivetrain, 95, rotationCorrection));
-  auto driveTrunRightTask2 = shared_ptr<Task>(new TurnTask(Drivetrain, 90, rotationCorrection));
-  
+  auto driveTurnRightTask2 = shared_ptr<Task>(new TurnTask(Drivetrain, 90, rotationCorrection));
+  auto driveTurnRightTask3 = shared_ptr<Task>(new TurnTask(Drivetrain, 35, rotationCorrection));
+
   // Beetle Lift motor tasks
   // left and right are for the left and right motors on the lift
   auto lowerBeetleArmLEFTTask = shared_ptr<Task>(new MoveMotorTask(LeftLiftMotor, BEETLE_LIFT_MOTOR_GEAR_RATIO, -45));
@@ -228,7 +230,7 @@ void autonomous(void) {
   // format is addtask(parentTask, childTask);
   // Starts with wait 0 milliseconds task as the rootTask
   auto rootTask = shared_ptr<Task>(new WaitMillisecondsTask(0));
-  auto MogoWait = shared_ptr<Task>(new WaitMillisecondsTask(1000));
+  auto MogoWait = shared_ptr<Task>(new WaitMillisecondsTask(2500));
   auto spatulaToggleFix = shared_ptr<Task>(new WaitMillisecondsTask(200));
   // drives backwards 10in, raises pneumatic claw lift (children of rootTask)
   addTask(rootTask, driveBackwardsTask);
@@ -250,17 +252,18 @@ void autonomous(void) {
   //addTask(driveForwardtoMobileGoalTask, toggleSpatulaTask1);
   // Toggles spatula in (picking up mobile goal) (child of toggle spatula 1 task)
   addTask(driveForwardtoMobileGoalTask, toggleSpatulaTask2);
+  addTask(driveForwardtoMobileGoalTask, MogoWait);
   //addTask(toggleClawTask2, MogoWait);
   // Drives backwards (Child of toggle spatula 2 task)
   addTask(toggleSpatulaTask2, drivetoAllianceSideTask);
   // Turns right (child of drive backwards task)
-  addTask(drivetoAllianceSideTask, driveTrunRightTask2);
+  addTask(drivetoAllianceSideTask, driveTurnRightTask2);
   // drives forwards (child of turn right task)
   //addTask(driveTurnRightTask, driveForwardtoMobileGoalTask);
   //toggles spatula out (child of drive forwards task)
   //addTask(driveForwardtoMobileGoalTask, toggleSpatulaTask1);
   //addTask(drivetoAllianceSideTask, toggleSpatulaTask3);
-  addTask(driveTrunRightTask2, toggleSpatulaTask3);
+  addTask(driveTurnRightTask2, toggleSpatulaTask3);
   addTask(toggleSpatulaTask3, driveBackwardSetMobileGoal);
   addTask(driveBackwardSetMobileGoal, toggleSpatulaTask4);
 
