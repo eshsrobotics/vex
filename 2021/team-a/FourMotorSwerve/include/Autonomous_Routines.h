@@ -1,0 +1,12 @@
+#include "task.h"
+
+// Allows users to easily switch between autonomous task trees.
+enum AutonomousTypes {
+  RAMP_DOWN, 
+  RAMP_UP,
+  PROGRAMMING_SKILLS,
+};
+
+// Allows user to slelect autonomous routine between task trees. 
+std::shared_ptr<Task> selectAutonomousRoutine(AutonomousTypes autonomousType, bool& spatulaRetracted, bool& pneumaticClawOpen);
+

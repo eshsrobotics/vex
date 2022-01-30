@@ -1,4 +1,124 @@
 #include "vex.h"
+#include "Autonomous_Routines.h"
 
 using namespace vex;
+using namespace std;
 
+double translate(double desiredDistanceInches) {
+  // Assigns the variables for changing the input value so the output value is equal to it
+  // We got these numbers by plotting 5 points from testing and finding the line of best fit
+  const double M_VALUE = 1.03;
+  const double B_VALUE = 0.702;
+  // This formula creates the new value that is input into the driveFor function to get an 
+  // of the original distanceInches
+  double correctDistanceInches = (desiredDistanceInches - B_VALUE) / M_VALUE;
+  return correctDistanceInches;
+}
+
+double rotationCorrection(double desiredRotationDegrees) {
+  const double M_VALUE = 1.73;
+  const double B_VALUE = 0.5;
+  double correctRotationDegrees = (desiredRotationDegrees - B_VALUE) / M_VALUE;
+  return correctRotationDegrees;
+}
+
+std::shared_ptr<Task> selectAutonomousRoutine(AutonomousTypes autonomousType, bool& spatulaRetracted, bool& pneumaticClawOpen) { 
+  const double BEETLE_LIFT_MOTOR_GEAR_RATIO = 5;
+  // Pneumatic Claw Lift both motor gear ratios are 84:12 = 7.
+  const double CLAW_LIFT_MOTORS_GEAR_RATIO = 7;
+  
+  // SMART POINTERS that allow for easy access when creating parents and children of tree.
+  // Pneumatic spatula lift tasks
+  auto toggleSpatulaTask1 = shared_ptr<Task>(new  SolenoidTask(PneumaticSpatula, spatulaRetracted));
+  auto toggleSpatulaTask2 = shared_ptr<Task>(new SolenoidTask(PneumaticSpatula, spatulaRetracted));
+  auto toggleSpatulaTask3 = shared_ptr<Task>(new SolenoidTask(PneumaticSpatula, spatulaRetracted));
+  auto toggleSpatulaTask4 = shared_ptr<Task>(new SolenoidTask(PneumaticSpatula, spatulaRetracted));
+
+  // Pneumatic Claw tasks
+  auto toggleClawTask1 = shared_ptr<Task>(new SolenoidTask(PneumaticClaw, pneumaticClawOpen));
+  auto toggleClawTask2 = shared_ptr<Task>(new SolenoidTask(PneumaticClaw, pneumaticClawOpen));
+  
+  // Reverse FourBar Lift tasks
+  auto raiseClawLiftLEFTTask = shared_ptr<Task>(new MoveMotorTask(ArmMotorLeft, CLAW_LIFT_MOTORS_GEAR_RATIO, 50));
+  auto raiseClawLiftRIGHTTask = shared_ptr<Task>(new MoveMotorTask(ArmMotorRight, CLAW_LIFT_MOTORS_GEAR_RATIO, 50));
+  auto lowerClawLiftLEFTTask = shared_ptr<Task>(new MoveMotorTask(ArmMotorLeft, CLAW_LIFT_MOTORS_GEAR_RATIO, -50));
+  auto lowerClawLiftRIGHTTask = shared_ptr<Task>(new MoveMotorTask(ArmMotorRight, CLAW_LIFT_MOTORS_GEAR_RATIO, -50));
+  
+  // Drive tasks
+  auto driveForwardTask = shared_ptr<Task>(new DriveStraightTask(Drivetrain, 9, translate));
+  auto driveForwardtoMobileGoalTask = shared_ptr<Task>(new DriveStraightTask(Drivetrain, 42, translate));
+  auto driveBackwardsTask = shared_ptr<Task>(new DriveStraightTask(Drivetrain, -17, translate));
+  auto drivetoAllianceSideTask = shared_ptr<Task>(new DriveStraightTask(Drivetrain, -20, translate));
+  auto driveBackwardSetMobileGoal = shared_ptr<Task>(new DriveStraightTask(Drivetrain, -10, translate));
+  auto driveForwardtoBigMogoTask = shared_ptr<Task>(new DriveStraightTask(Drivetrain, -40, translate));
+
+  // Drivetrain turn tasks
+  // Second argument is number of degrees turned, + or - changes direction
+  auto driveTurnLeftTask = shared_ptr<Task>(new TurnTask(Drivetrain, -90, rotationCorrection));
+  auto driveTurnRightTask = shared_ptr<Task>(new TurnTask(Drivetrain, 95, rotationCorrection));
+  auto driveTurnRightTask2 = shared_ptr<Task>(new TurnTask(Drivetrain, 90, rotationCorrection));
+  auto driveTurnRightTask3 = shared_ptr<Task>(new TurnTask(Drivetrain, 35, rotationCorrection));
+
+  // Beetle Lift motor tasks
+  // left and right are for the left and right motors on the lift
+  auto lowerBeetleArmLEFTTask = shared_ptr<Task>(new MoveMotorTask(LeftLiftMotor, BEETLE_LIFT_MOTOR_GEAR_RATIO, -45));
+  auto lowerBeetleArmRIGHTTask = shared_ptr<Task>(new MoveMotorTask(RightLiftMotor, BEETLE_LIFT_MOTOR_GEAR_RATIO, -45));
+  auto raiseBeetleArmLEFTTask = shared_ptr<Task>(new MoveMotorTask(LeftLiftMotor, BEETLE_LIFT_MOTOR_GEAR_RATIO, 45));
+  auto raiseBeetleArmRIGHTTask = shared_ptr<Task>(new MoveMotorTask(RightLiftMotor, BEETLE_LIFT_MOTOR_GEAR_RATIO, 45));
+
+
+  // AUTONOMOUS (left side GOAL ON PLATFORM)
+  // format is addtask(parentTask, childTask);
+  // Starts with wait 0 milliseconds task as the rootTask
+  auto rootTask = shared_ptr<Task>(new WaitMillisecondsTask(0));
+  auto MogoWait = shared_ptr<Task>(new WaitMillisecondsTask(2500));
+  auto spatulaToggleFix = shared_ptr<Task>(new WaitMillisecondsTask(200));
+
+
+  switch (autonomousType) {
+    case RAMP_DOWN:
+      // drives backwards 10in, raises pneumatic claw lift (children of rootTask)
+      addTask(rootTask, driveBackwardsTask);
+      addTask(rootTask, raiseClawLiftLEFTTask);
+      addTask(rootTask, raiseClawLiftRIGHTTask);
+      // toggles claw closed (child of raiseClawLiftLEFTTask)
+      addTask(raiseClawLiftRIGHTTask, toggleClawTask1); 
+      // toggles claw open (child of toggleClawTask1)
+      addTask(toggleClawTask1, toggleClawTask2);
+      // Lowers claw lift and dirves forwards (children of toggleClawTask2)
+      addTask(toggleClawTask2, lowerClawLiftLEFTTask);
+      addTask(toggleClawTask2, lowerClawLiftRIGHTTask);
+      addTask(toggleClawTask2, driveForwardTask);
+      // turns right (child of drive forward task)
+      addTask(driveForwardTask, driveTurnRightTask);
+      // Drives forwards and toggles spatula out (children of turn right task)
+      addTask(driveTurnRightTask, toggleSpatulaTask1);
+      addTask(driveTurnRightTask, driveForwardtoMobileGoalTask);
+      //addTask(driveForwardtoMobileGoalTask, toggleSpatulaTask1);
+      // Toggles spatula in (picking up mobile goal) (child of toggle spatula 1 task)
+      addTask(driveForwardtoMobileGoalTask, toggleSpatulaTask2);
+      addTask(driveForwardtoMobileGoalTask, MogoWait);
+      //addTask(toggleClawTask2, MogoWait);
+      // Drives backwards (Child of toggle spatula 2 task)
+      addTask(toggleSpatulaTask2, drivetoAllianceSideTask);
+      // Turns right (child of drive backwards task)
+      addTask(drivetoAllianceSideTask, driveTurnRightTask2);
+      // drives forwards (child of turn right task)
+      //addTask(driveTurnRightTask, driveForwardtoMobileGoalTask);
+      //toggles spatula out (child of drive forwards task)
+      //addTask(driveForwardtoMobileGoalTask, toggleSpatulaTask1);
+      //addTask(drivetoAllianceSideTask, toggleSpatulaTask3);
+      addTask(driveTurnRightTask2, toggleSpatulaTask3);
+      addTask(toggleSpatulaTask3, driveBackwardSetMobileGoal);
+      addTask(driveBackwardSetMobileGoal, toggleSpatulaTask4);
+
+      break;
+    case RAMP_UP:
+    
+      break;
+    default:
+      break;
+    
+  }
+  return rootTask;
+}
