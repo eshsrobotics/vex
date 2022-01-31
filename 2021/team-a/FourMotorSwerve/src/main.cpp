@@ -160,7 +160,7 @@ bool isArmGroundLimitSwitchDepressed() {
 // This is the autonomous code
 void autonomous(void) {
 
-  auto rootTask = selectAutonomousRoutine(RAMP_DOWN, spatulaRetracted, pneumaticClawOpen);
+  auto rootTask = selectAutonomousRoutine(RAMP_UP, spatulaRetracted, pneumaticClawOpen);
   execute(rootTask);
 
 
