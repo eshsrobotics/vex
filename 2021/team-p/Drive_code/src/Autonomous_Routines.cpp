@@ -219,21 +219,33 @@ std::shared_ptr<Task> get_auton(AUTON_TYPE type) {
   // Our arm gear ratio, we put it into a variable so we didn't have to type it over and over
   const double ARM_GEAR_RATIO = 16.3333;
 
-  const double INITIAL_DISTANCE_FROM_RAMP = 20.0; // TODO: Find Actual Distance From Ramp
-  const double DONUT_DROP_ANGLE = -75.0;
+  const double DEGREES_TO_RAMP_GOAL = -15; // TO-DO: Find the actual value
+  const double DONUT_DROP_ANGLE = -50; // TO-DO: Find the actual value
+  const double INITIAL_DISTANCE_FROM_RAMP = 20.0;
   
   auto wait0 = std::shared_ptr<Task>(new WaitMillisecondsTask(0));
-  auto drive1 = std::shared_ptr<Task>(new DriveStraightTask(Drivetrain, INITIAL_DISTANCE_FROM_RAMP, translate));
-  auto arm1 = std::shared_ptr<Task>(new MoveMotorTask(Arm, ARM_GEAR_RATIO, DONUT_DROP_ANGLE));
-  auto drive2 = std::shared_ptr<Task>(new DriveStraightTask(Drivetrain, -INITIAL_DISTANCE_FROM_RAMP, translate));
+  auto turnToRampGoal = std::shared_ptr<Task>(new GyroTurnTask(Drivetrain, DEGREES_TO_RAMP_GOAL));
+  auto armDownDropAngle = std::shared_ptr<Task>(new MoveMotorTask(Arm, ARM_GEAR_RATIO, DONUT_DROP_ANGLE));
+  auto driveToRamp = std::shared_ptr<Task>(new DriveStraightTask(Drivetrain, INITIAL_DISTANCE_FROM_RAMP, translate));
+  auto driveFromRamp = std::shared_ptr<Task>(new DriveStraightTask(Drivetrain, -INITIAL_DISTANCE_FROM_RAMP + 7.5, translate)); // TO-DO: Find the value that works with the other functions
+  auto turnToNeutralGoal1 = std::shared_ptr<Task>(new GyroTurnTask(Drivetrain, -60)); // TO-DO: Find the actual value
+  auto armToGround = std::shared_ptr<Task>(new MoveMotorTask(Arm, ARM_GEAR_RATIO, -20));
+  auto driveToNeutralGoal1 = std::shared_ptr<Task>(new DriveStraightTask(Drivetrain, 25)); // TO-DO: Find the actual value
+
 
   // The root task always needs to be wait0
 
   switch(type) {
     case RAMP_DOWN_WIN_PT:
-      addTask(wait0, drive1);
-      addTask(wait0, arm1);
-      addTask(arm1, drive2); // This should deposit the donut in the goal before it goes backwards
+      addTask(wait0, turnToRampGoal);
+      addTask(turnToRampGoal, driveToRamp);
+      addTask(turnToRampGoal, armDownDropAngle);
+      addTask(armDownDropAngle, driveFromRamp);
+      addTask(driveToRamp, driveFromRamp);
+      addTask(driveFromRamp, turnToNeutralGoal1);
+      addTask(driveFromRamp, armToGround);
+      addTask(turnToNeutralGoal1, driveToNeutralGoal1);
+      addTask(armToGround, driveToNeutralGoal1);
       break;
 
   }
