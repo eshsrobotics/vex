@@ -60,10 +60,11 @@ std::shared_ptr<Task> selectAutonomousRoutine(AutonomousTypes autonomousType, bo
   auto drivetoAllianceSideTask = shared_ptr<Task>(new DriveStraightTask(Drivetrain, -23, translate));
   auto driveBackwardSetMobileGoal = shared_ptr<Task>(new DriveStraightTask(Drivetrain, -5, translate));
   auto driveForwardtoBigMogoTask = shared_ptr<Task>(new DriveStraightTask(Drivetrain, 65, translate));
-  auto driveBackwardsTask2 = shared_ptr<Task>(new DriveStraightTask(Drivetrain, -16, translate));
-  auto driveForwardTask2 = shared_ptr<Task>(new DriveStraightTask(Drivetrain, 6, translate));
+  auto driveBackwardsTask2 = shared_ptr<Task>(new DriveStraightTask(Drivetrain, -11.5, translate));
+  auto driveForwardTask2 = shared_ptr<Task>(new DriveStraightTask(Drivetrain, 4, translate));
   auto driveForwardtoMobileGoalTask2 = shared_ptr<Task>(new DriveStraightTask(Drivetrain, 42, translate));
-   auto drivetoAllianceSideTask2 = shared_ptr<Task>(new DriveStraightTask(Drivetrain, -23, translate));
+  auto drivetoAllianceSideTask2 = shared_ptr<Task>(new DriveStraightTask(Drivetrain, -23, translate));
+  auto driveBackwardsTask3 = shared_ptr<Task>(new DriveStraightTask(Drivetrain, -8, translate));
 
   // Drivetrain turn tasks
   // Second argument is number of degrees turned, + or - changes direction
@@ -72,7 +73,7 @@ std::shared_ptr<Task> selectAutonomousRoutine(AutonomousTypes autonomousType, bo
   auto driveTurnRightTask2 = shared_ptr<Task>(new TurnTask(Drivetrain, 110, rotationCorrection));
   auto driveTurnRightTask3 = shared_ptr<Task>(new TurnTask(Drivetrain, -65, rotationCorrection));
   auto driveTurnLeftTask2 = shared_ptr<Task>(new TurnTask(Drivetrain, -10, rotationCorrection));
-  auto driveTurnRightTask4 = shared_ptr<Task>(new TurnTask(Drivetrain, 135, rotationCorrection));
+  auto driveTurnRightTask4 = shared_ptr<Task>(new TurnTask(Drivetrain, 130, rotationCorrection));
   auto driveTurnRightTask5 = shared_ptr<Task>(new TurnTask(Drivetrain, -110, rotationCorrection));
   
   // Beetle Lift motor tasks
@@ -142,7 +143,8 @@ std::shared_ptr<Task> selectAutonomousRoutine(AutonomousTypes autonomousType, bo
       addTask(toggleClawTask3, toggleClawTask4);
       addTask(toggleClawTask4, lowerClawLiftLEFTTask2);
       addTask(toggleClawTask4, lowerClawLiftRIGHTTask2);
-      addTask(toggleClawTask4, driveForwardTask2);
+      addTask(toggleClawTask4, driveBackwardsTask3);
+      addTask(driveBackwardsTask3, driveForwardTask2);
       addTask(driveForwardTask2, driveTurnRightTask4);
       addTask(driveTurnRightTask4, toggleSpatulaTask6);
       addTask(driveTurnRightTask4, driveForwardtoMobileGoalTask2);
