@@ -60,8 +60,8 @@ std::shared_ptr<Task> selectAutonomousRoutine(AutonomousTypes autonomousType, bo
   auto drivetoAllianceSideTask = shared_ptr<Task>(new DriveStraightTask(Drivetrain, -23, translate));
   auto driveBackwardSetMobileGoal = shared_ptr<Task>(new DriveStraightTask(Drivetrain, -5, translate));
   auto driveForwardtoBigMogoTask = shared_ptr<Task>(new DriveStraightTask(Drivetrain, 65, translate));
-  auto driveBackwardsTask2 = shared_ptr<Task>(new DriveStraightTask(Drivetrain, -17, translate));
-  auto driveForwardTask2 = shared_ptr<Task>(new DriveStraightTask(Drivetrain, 7, translate));
+  auto driveBackwardsTask2 = shared_ptr<Task>(new DriveStraightTask(Drivetrain, -16, translate));
+  auto driveForwardTask2 = shared_ptr<Task>(new DriveStraightTask(Drivetrain, 6, translate));
   auto driveForwardtoMobileGoalTask2 = shared_ptr<Task>(new DriveStraightTask(Drivetrain, 42, translate));
    auto drivetoAllianceSideTask2 = shared_ptr<Task>(new DriveStraightTask(Drivetrain, -23, translate));
 
