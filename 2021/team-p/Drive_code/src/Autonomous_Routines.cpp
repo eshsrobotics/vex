@@ -145,6 +145,16 @@ void TurnTask::start() {
   }
 }
 
+GyroTurnTask::GyroTurnTask(vex::smartdrive &drive, double rotationAmountDegrees) : Task("Gyro turn task"), vroomvroom(drive), rotationAmountDegrees(rotationAmountDegrees) {}
+bool GyroTurnTask::done() const { return vroomvroom.isTurning() == false; }
+void GyroTurnTask::start() {
+   if (rotationAmountDegrees > 0) {
+    vroomvroom.turnFor(right, rotationAmountDegrees, degrees, false);
+  } else {
+    vroomvroom.turnFor(left, -rotationAmountDegrees, degrees, false);
+  } 
+}
+
 /*--------------------------------------------------------*/
 /*                  Mechanism Methods                     */
 /*--------------------------------------------------------*/
@@ -173,4 +183,95 @@ void MoveMotorTask::start() {
     motor.spinFor(vex::directionType::rev, -rotationAmountDegrees * gearRatio,
                   degrees, false);
   }
+}
+
+/*--------------------------------------------------------*/
+/*                  Task Tree Definitions                 */
+/*--------------------------------------------------------*/
+
+// Will translate input inches to actual values that we need to feed the drive train to move the 
+// amount we want them to move.
+// Negative values will be treated as driving backwards.
+double translate(double desiredDistanceInches) {
+  if (desiredDistanceInches > 0) {
+    // Assigns the variables for changing the input value so the output value is equal to it
+    // We got these numbers by plotting 5 points from testing and finding the line of best fit
+    const double M_VALUE = 1.20581;
+    const double B_VALUE = 1.15078;
+    // This formula creates the new value that is input into the driveFor function to get an 
+    // of the original distanceInches
+    double correctDistanceInches = (desiredDistanceInches - B_VALUE) / M_VALUE;
+    return correctDistanceInches;
+  } else {
+    // Assigns the variables for changing the input value so the output value is equal to it
+    // We got these numbers by plotting 5 points from testing and finding the line of best fit
+    const double M_VALUE = 1.01885;
+    const double B_VALUE = -0.792244;
+    // This formula creates the new value that is input into the driveFor function to get an 
+    // of the original distanceInches
+    double correctDistanceInches = (-desiredDistanceInches - B_VALUE) / M_VALUE;
+    return correctDistanceInches;
+  }
+}
+
+std::shared_ptr<Task> get_auton(AUTON_TYPE type) {
+
+  // Our arm gear ratio, we put it into a variable so we didn't have to type it over and over
+  const double ARM_GEAR_RATIO = 16.3333;
+
+  const double DEGREES_TO_RAMP_GOAL = -14; // TO-DO: Find the actual value
+  const double DONUT_DROP_ANGLE = -55; // TO-DO: Find the actual value
+  const double INITIAL_DISTANCE_FROM_RAMP = 17.5;
+  
+  auto wait0 = std::shared_ptr<Task>(new WaitMillisecondsTask(0));
+  auto turnToRampGoal = std::shared_ptr<Task>(new GyroTurnTask(Drivetrain, DEGREES_TO_RAMP_GOAL));
+  auto armDownDropAngle = std::shared_ptr<Task>(new MoveMotorTask(Arm, ARM_GEAR_RATIO, DONUT_DROP_ANGLE));
+  auto driveToRamp = std::shared_ptr<Task>(new DriveStraightTask(Drivetrain, INITIAL_DISTANCE_FROM_RAMP, translate));
+  auto driveFromRamp = std::shared_ptr<Task>(new DriveStraightTask(Drivetrain, -INITIAL_DISTANCE_FROM_RAMP + 5, translate)); // TO-DO: Find the value that works with the other functions
+  auto turnToNeutralGoal1 = std::shared_ptr<Task>(new GyroTurnTask(Drivetrain, -61)); // TO-DO: Find the actual value
+  auto armToGround = std::shared_ptr<Task>(new MoveMotorTask(Arm, ARM_GEAR_RATIO, -15));
+  auto driveToNeutralGoal1 = std::shared_ptr<Task>(new DriveStraightTask(Drivetrain, 25)); // TO-DO: Find the actual value
+  auto pickUpNeutral1 = std::shared_ptr<Task>(new MoveMotorTask(Arm, ARM_GEAR_RATIO, 15)); // TO-DO: Find the actual value
+  auto neutralToTeamArea1 = std::shared_ptr<Task>(new DriveStraightTask(Drivetrain, -20)); // TO-DO: Find the actual value
+  auto turnToTeamArea1 = std::shared_ptr<Task>(new GyroTurnTask(Drivetrain, 135)); // TO-DO: Find the actual value
+  auto dropNeutralGoal1 = std::shared_ptr<Task>(new MoveMotorTask(Arm, ARM_GEAR_RATIO, -15)); // TO-DO: Find the actual value
+  auto driveFromNeutral1 = std::shared_ptr<Task>(new DriveStraightTask(Drivetrain, -7.5)); // TO-DO: Find the actual value
+  auto turnToNeutralGoal2 = std::shared_ptr<Task>(new GyroTurnTask(Drivetrain, -90)); // TO-DO: Find the actual value
+  auto driveToNeutralGoal2 = std::shared_ptr<Task>(new DriveStraightTask(Drivetrain, 22.5)); // TO-DO: Find the actual value
+  auto pickUpNeutral2 = std::shared_ptr<Task>(new MoveMotorTask(Arm, ARM_GEAR_RATIO, 15)); // TO-DO: Find the actual value
+  auto neutralToTeamArea2 = std::shared_ptr<Task>(new DriveStraightTask(Drivetrain, -15)); // TO-DO: Find the actual value
+  auto turnToTeamArea2 = std::shared_ptr<Task>(new GyroTurnTask(Drivetrain, 75)); // TO-DO: Find the actual value
+  auto dropNeutralGoal2 = std::shared_ptr<Task>(new MoveMotorTask(Arm, ARM_GEAR_RATIO, -15)); // TO-DO: Find the actual value
+  auto driveFromNeutral2 = std::shared_ptr<Task>(new DriveStraightTask(Drivetrain, -5)); // TO-DO: Find the actual value
+  auto turnToNeutralGoal3 = std::shared_ptr<Task>(new GyroTurnTask(Drivetrain, -60)); // TO-DO: Find the actual value
+  auto driveToNeutralGoal3 = std::shared_ptr<Task>(new DriveStraightTask(Drivetrain, 30)); // TO-DO: Find the actual value
+  auto pickUpNeutral3 = std::shared_ptr<Task>(new MoveMotorTask(Arm, ARM_GEAR_RATIO, 15)); // TO-DO: Find the actual value
+  auto turnToTeamArea3 = std::shared_ptr<Task>(new GyroTurnTask(Drivetrain, 90)); // TO-DO: Find the actual value
+  auto neutralToTeamArea3 = std::shared_ptr<Task>(new DriveStraightTask(Drivetrain, 15)); // TO-DO: Find the actual value
+  auto dropNeutralGoal3 = std::shared_ptr<Task>(new MoveMotorTask(Arm, ARM_GEAR_RATIO, -15)); // TO-DO: Find the actual value
+
+  // The root task always needs to be wait0
+
+  switch(type) {
+    case RAMP_DOWN_WIN_PT:
+      addTask(wait0, turnToRampGoal);
+      addTask(turnToRampGoal, driveToRamp);
+      addTask(turnToRampGoal, armDownDropAngle);
+      addTask(armDownDropAngle, driveFromRamp);
+      addTask(driveToRamp, driveFromRamp);
+      addTask(driveFromRamp, turnToNeutralGoal1);
+      addTask(driveFromRamp, armToGround);
+      addTask(turnToNeutralGoal1, driveToNeutralGoal1);
+      addTask(armToGround, driveToNeutralGoal1);
+      addTask(driveToNeutralGoal1, pickUpNeutral1);
+      addTask(pickUpNeutral1, neutralToTeamArea1);
+      addTask(neutralToTeamArea1, turnToTeamArea1);
+      addTask(turnToTeamArea1, dropNeutralGoal1);
+      addTask(dropNeutralGoal1, driveFromNeutral1);
+      addTask(driveFromNeutral1, turnToNeutralGoal2);
+      break;
+
+  }
+
+  return wait0;
 }

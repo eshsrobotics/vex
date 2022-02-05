@@ -157,113 +157,11 @@ bool isArmGroundLimitSwitchDepressed() {
   return ArmGroundLimitSwitch.pressing();
 }
 
-double translate(double desiredDistanceInches) {
-  // Assigns the variables for changing the input value so the output value is equal to it
-  // We got these numbers by plotting 5 points from testing and finding the line of best fit
-  const double M_VALUE = 1.03;
-  const double B_VALUE = 0.702;
-  // This formula creates the new value that is input into the driveFor function to get an 
-  // of the original distanceInches
-  double correctDistanceInches = (desiredDistanceInches - B_VALUE) / M_VALUE;
-  return correctDistanceInches;
-}
-
-double rotationCorrection(double desiredRotationDegrees) {
-  const double M_VALUE = 1.73;
-  const double B_VALUE = 0.5;
-  double correctRotationDegrees = (desiredRotationDegrees - B_VALUE) / M_VALUE;
-  return correctRotationDegrees;
-}
-
-
-
-
 
 // This is the autonomous code
 void autonomous(void) {
-
-  // Beetle Lift Motors gear ratio is 60:12 = 5.
-  const double BEETLE_LIFT_MOTOR_GEAR_RATIO = 5;
-  // Pneumatic Claw Lift both motor gear ratios are 84:12 = 7.
-  const double CLAW_LIFT_MOTORS_GEAR_RATIO = 7;
   
-  // SMART POINTERS that allow for easy access when creating parents and children of tree.
-  // Pneumatic spatula lift tasks
-  auto toggleSpatulaTask1 = shared_ptr<Task>(new  SolenoidTask(PneumaticSpatula, spatulaRetracted));
-  auto toggleSpatulaTask2 = shared_ptr<Task>(new SolenoidTask(PneumaticSpatula, spatulaRetracted));
-  auto toggleSpatulaTask3 = shared_ptr<Task>(new SolenoidTask(PneumaticSpatula, spatulaRetracted));
- 
-  // Pneumatic Claw tasks
-  auto toggleClawTask1 = shared_ptr<Task>(new SolenoidTask(PneumaticClaw, pneumaticClawOpen));
-  auto toggleClawTask2 = shared_ptr<Task>(new SolenoidTask(PneumaticClaw, pneumaticClawOpen));
-  
-  // Reverse FourBar Lift tasks
-  auto raiseClawLiftLEFTTask = shared_ptr<Task>(new MoveMotorTask(ArmMotorLeft, CLAW_LIFT_MOTORS_GEAR_RATIO, 50));
-  auto raiseClawLiftRIGHTTask = shared_ptr<Task>(new MoveMotorTask(ArmMotorRight, CLAW_LIFT_MOTORS_GEAR_RATIO, 50));
-  auto lowerClawLiftLEFTTask = shared_ptr<Task>(new MoveMotorTask(ArmMotorLeft, CLAW_LIFT_MOTORS_GEAR_RATIO, -20));
-  auto lowerClawLiftRIGHTTask = shared_ptr<Task>(new MoveMotorTask(ArmMotorRight, CLAW_LIFT_MOTORS_GEAR_RATIO, -20));
-  
-  // Drive tasks
-  auto driveForwardTaskDROPEDDONUT = shared_ptr<Task>(new DriveStraightTask(Drivetrain, 8, translate));
-  auto driveForwardTaskTOWARDSMGS = shared_ptr<Task>(new DriveStraightTask(Drivetrain, 42, translate));
-  auto driveForwardTaskDROP = shared_ptr<Task>(new DriveStraightTask(Drivetrain, 10, translate));
-  auto driveForwardTaskTOWARDSMGM = shared_ptr<Task>(new DriveStraightTask(Drivetrain, 10, translate));
-  
-  auto driveBackwardsTaskSTART = shared_ptr<Task>(new DriveStraightTask(Drivetrain, -16, translate));
-  auto driveBackwardsTaskRETURN = shared_ptr<Task>(new DriveStraightTask(Drivetrain, -20, translate));
-  auto driveBackwardsTaskDROP = shared_ptr<Task>(new DriveStraightTask(Drivetrain, -20, translate));
-  
-  // Drivetrain turn tasks
-  // Second argument is number of degrees turned, + or - changes direction
-  auto driveTurnRightTaskAIMMG = shared_ptr<Task>(new TurnTask(Drivetrain, 80, rotationCorrection));
-  auto driveTurnRightTaskBACK = shared_ptr<Task>(new TurnTask(Drivetrain, 90, rotationCorrection));
-  auto driveTurnLeftTask = shared_ptr<Task>(new TurnTask(Drivetrain, -90, rotationCorrection));
-  
-  // Beetle Lift motor tasks
-  // left and right are for the left and right motors on the lift
-  auto lowerBeetleArmLEFTTask = shared_ptr<Task>(new MoveMotorTask(LeftLiftMotor, BEETLE_LIFT_MOTOR_GEAR_RATIO, -45));
-  auto lowerBeetleArmRIGHTTask = shared_ptr<Task>(new MoveMotorTask(RightLiftMotor, BEETLE_LIFT_MOTOR_GEAR_RATIO, -45));
-  auto raiseBeetleArmLEFTTask = shared_ptr<Task>(new MoveMotorTask(LeftLiftMotor, BEETLE_LIFT_MOTOR_GEAR_RATIO, 45));
-  auto raiseBeetleArmRIGHTTask = shared_ptr<Task>(new MoveMotorTask(RightLiftMotor, BEETLE_LIFT_MOTOR_GEAR_RATIO, 45));
-
-
-  // AUTONOMOUS (left side GOAL ON PLATFORM)
-  // format is addTask(parentTask, childTask);
-  // Starts with wait 0 milliseconds task as the rootTask
-
-  auto rootTask = shared_ptr<Task>(new WaitMillisecondsTask(0));
-  
-  addTask(rootTask, driveBackwardsTaskSTART);
-  addTask(rootTask, raiseClawLiftLEFTTask);
-  addTask(rootTask, raiseClawLiftRIGHTTask);
-  
-  addTask(raiseClawLiftRIGHTTask, toggleClawTask1); 
-  auto TOGGLE_TIME_FIX = shared_ptr<Task>(new WaitMillisecondsTask(500));
-  addTask(raiseClawLiftLEFTTask, TOGGLE_TIME_FIX); 
-
-  // Lowers claw lift and dirves forwards (children of toggleClawTask2)
-  addTask(TOGGLE_TIME_FIX, lowerClawLiftLEFTTask);
-  addTask(TOGGLE_TIME_FIX, lowerClawLiftRIGHTTask);
-  addTask(TOGGLE_TIME_FIX, driveForwardTaskDROPEDDONUT );
-  // turns right (child of drive forward task)
-  addTask(driveForwardTaskDROPEDDONUT, driveTurnRightTaskAIMMG);
-  // Drives forwards and toggles spatula out (children of turn right task)
-  addTask(driveTurnRightTaskAIMMG, toggleSpatulaTask1);
-  addTask(toggleSpatulaTask1, driveForwardTaskTOWARDSMGS);
-  // Toggles spatula in (picking up mobile goal) (child of toggle spatula 1 task)
-  addTask(driveForwardTaskTOWARDSMGS, toggleSpatulaTask2);
-  // Drives backwards (Child of toggle spatula 2 task)
-  addTask(toggleSpatulaTask2, driveBackwardsTaskRETURN);
-  // Turns right (child of drive backwards task)
-  addTask(driveBackwardsTaskRETURN, driveTurnLeftTask);
-  // drives forwards (child of turn right task)
-  addTask(driveTurnLeftTask, driveForwardTaskDROP );
-  //toggles spatula out (child of drive forwards task)
-  addTask(driveForwardTaskDROP , toggleSpatulaTask3);
-
-  addTask(toggleSpatulaTask3, driveBackwardsTaskDROP);
-  addTask(driveBackwardsTaskDROP , driveTurnRightTaskBACK);
-  addTask(driveTurnRightTaskBACK, driveForwardTaskTOWARDSMGM );
+  auto rootTask = selectAutonomousRoutine(RAMP_UP, spatulaRetracted, pneumaticClawOpen);
   execute(rootTask);
 
 

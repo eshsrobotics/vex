@@ -179,7 +179,7 @@ void MoveMotorTask::start() {
 /*--------------------------------------------------------*/
 /*                 SolenoidTask Methods                   */
 /*--------------------------------------------------------*/
-const double DEFAULT_SOLENOID_WAIT_TIME_MILLISECONDS = 2000;
+const double DEFAULT_SOLENOID_WAIT_TIME_MILLISECONDS = 20;
 bool defaultDoneFunc(double& startTimeMilliseconds, double desiredElapsedMilliseconds) {
 const double elapsedMillisecondsSinceStart = Brain.timer(msec) - startTimeMilliseconds;
 Controller1.Screen.print("start = %.2fn", startTimeMilliseconds);

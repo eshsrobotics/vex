@@ -1,3 +1,6 @@
+#ifndef TASK_H_INCLUDED 
+#define TASK_H_INCLUDED
+
 #include <functional> // function<T>, bind
 #include <memory> // shared_ptr<T>
 #include <string>
@@ -175,3 +178,5 @@ struct SolenoidTask : public Task {
   bool done() const;
   void start();
 };
+
+#endif

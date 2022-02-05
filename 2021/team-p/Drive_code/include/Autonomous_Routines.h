@@ -127,6 +127,21 @@ struct TurnTask : public Task {
   void start();
 };
 
+/*------------------------------------------------------------------------------------------------*/
+/* Turns the robot using a gyro instead of a linear encoder using vex::smartdrive. */
+/*------------------------------------------------------------------------------------------------*/
+struct GyroTurnTask : public Task {
+  vex::smartdrive &vroomvroom;
+  double rotationAmountDegrees;
+
+  // Initializes this object with the amount of rotation it has to do and the smartdrive which will perform the rotation. 
+  // This uses the same conventions as the TurnTask constructor so positive values will turn right and negative values will turn left.
+  GyroTurnTask(vex::smartdrive &drive, double rotationAmountDegrees);
+
+  bool done() const;
+  void start();
+};
+
 struct MoveMotorTask : public Task {
   vex::motor &motor;
   double gearRatio; // Ratio of the motor (input) to the output
@@ -151,3 +166,36 @@ struct MoveMotorTask : public Task {
   bool done() const;
   void start();
 };
+
+// These are the different types of autonomous trajectories we will support.
+enum AUTON_TYPE {
+
+  // This is the autonomous routine for when the robot starts at the 
+  // side of the ramp that is down, and when we also want the win point.
+  RAMP_DOWN_WIN_PT,
+
+  // This is the autonomous rotine for when the robot starts at the side
+  // of the ramp that is up, and when we also want the win point.
+  RAMP_UP_WIN_PT,
+
+  // This is the autonomous routine for when the robot starts at the side
+  // of the ramp that is down, and when we don't want the win point.
+  RAMP_DOWN_NO_WIN_PT,
+
+  // This is the autonomous routine for when the robot starts at the side of
+  // the ramp that is up, and when we don't want the win point.
+  RAMP_UP_NO_WIN_PT,
+
+  // This is the autonomous routine for the programming skills part of the competition.
+  PROGRAMMING_SKILLS
+};
+
+// Returns the autonomous task tree that the caller requested.
+//
+// There are different types of autonomous that our robot can do!  It all
+// depends on whether or not we wish to score the win point for autonomous
+// and which side of the ramp we start on.
+//
+// A lot of these trees reuse common elements, so it makes sense to
+// generate all fo them here.
+std::shared_ptr<Task> get_auton(AUTON_TYPE type);
