@@ -77,7 +77,7 @@ std::shared_ptr<Task> selectAutonomousRoutine(AutonomousTypes autonomousType, bo
   auto driveTurnRightTask2 = shared_ptr<Task>(new TurnTask(Drivetrain, 110, rotationCorrection));
   auto driveTurnRightTask3 = shared_ptr<Task>(new TurnTask(Drivetrain, -65, rotationCorrection));
   auto driveTurnLeftTask2 = shared_ptr<Task>(new TurnTask(Drivetrain, -10, rotationCorrection));
-  auto driveTurnRightTask4 = shared_ptr<Task>(new TurnTask(Drivetrain, 125, rotationCorrection));
+  auto driveTurnRightTask4 = shared_ptr<Task>(new TurnTask(Drivetrain, 145, rotationCorrection));
   auto driveTurnRightTask5 = shared_ptr<Task>(new TurnTask(Drivetrain, 90, rotationCorrection));
   
   // Beetle Lift motor tasks

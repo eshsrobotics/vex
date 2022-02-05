@@ -85,6 +85,7 @@ void pre_auton(void) {
   PneumaticClaw.set(false); 
   pneumaticClawOpen = false;
   Drivetrain.setDriveVelocity(100, percent);
+  Drivetrain.setTurnVelocity(100, percent);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -159,7 +160,7 @@ bool isArmGroundLimitSwitchDepressed() {
 
 // This is the autonomous code
 void autonomous(void) {
-
+  
   auto rootTask = selectAutonomousRoutine(RAMP_UP, spatulaRetracted, pneumaticClawOpen);
   execute(rootTask);
 
