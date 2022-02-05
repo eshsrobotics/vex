@@ -38,7 +38,10 @@ std::shared_ptr<Task> selectAutonomousRoutine(AutonomousTypes autonomousType, bo
   auto toggleSpatulaTask7 = shared_ptr<Task>(new  SolenoidTask(PneumaticSpatula, spatulaRetracted));
   auto toggleSpatulaTask8 = shared_ptr<Task>(new  SolenoidTask(PneumaticSpatula, spatulaRetracted));
   auto toggleSpatulaTask9 = shared_ptr<Task>(new  SolenoidTask(PneumaticSpatula, spatulaRetracted));
-
+  auto toggleSpatulaTaskNoAuton = shared_ptr<Task>(new  SolenoidTask(PneumaticSpatula, spatulaRetracted));
+  auto toggleSpatulaTaskNoAuton2 = shared_ptr<Task>(new  SolenoidTask(PneumaticSpatula, spatulaRetracted));
+  auto toggleSpatulaTaskNoAuton3 = shared_ptr<Task>(new  SolenoidTask(PneumaticSpatula, spatulaRetracted));
+auto toggleSpatulaTaskNoAuton4 = shared_ptr<Task>(new  SolenoidTask(PneumaticSpatula, spatulaRetracted));
 
   // Pneumatic Claw tasks
   auto toggleClawTask1 = shared_ptr<Task>(new SolenoidTask(PneumaticClaw, pneumaticClawOpen));
@@ -82,11 +85,15 @@ std::shared_ptr<Task> selectAutonomousRoutine(AutonomousTypes autonomousType, bo
   auto driveBackwardsTask3 = shared_ptr<Task>(new DriveStraightTask(Drivetrain, -8, translate));
   auto driveBackwardSetMobileGoal2 = shared_ptr<Task>(new DriveStraightTask(Drivetrain, -10, translate));
   auto driveBackwardsTask2Short = shared_ptr<Task>(new DriveStraightTask(Drivetrain, -11.2, translate));
-  auto driveBackwardsTask3Short = shared_ptr<Task>(new DriveStraightTask(Drivetrain, -8, translate));
+  auto driveBackwardsTask3Short = shared_ptr<Task>(new DriveStraightTask(Drivetrain, -15, translate));
   auto driveForwardTask2Short = shared_ptr<Task>(new DriveStraightTask(Drivetrain, 4, translate));
-  auto driveBackwardsTaskShort = shared_ptr<Task>(new DriveStraightTask(Drivetrain, -15, translate));
+  auto driveBackwardsTaskShort = shared_ptr<Task>(new DriveStraightTask(Drivetrain, -12, translate));
   auto driveForwardTaskShort = shared_ptr<Task>(new DriveStraightTask(Drivetrain, 9, translate));
-  
+  auto driveForwardsTaskNoAutonLong = shared_ptr<Task>(new DriveStraightTask(Drivetrain, 67, translate));
+  auto driveForwardsTaskNoAutonLong2 = shared_ptr<Task>(new DriveStraightTask(Drivetrain, 65, translate));
+  auto driveBackTaskNoAutonShort = shared_ptr<Task>(new DriveStraightTask(Drivetrain, -55, translate));
+  auto driveBackTaskNoAutonShort2 = shared_ptr<Task>(new DriveStraightTask(Drivetrain, -5, translate));
+  auto driveBackTaskNoAutonLong3 = shared_ptr<Task>(new DriveStraightTask(Drivetrain, 15, translate));
 
   // Drivetrain turn tasks
   // Second argument is number of degrees turned, + or - changes direction
@@ -99,6 +106,9 @@ std::shared_ptr<Task> selectAutonomousRoutine(AutonomousTypes autonomousType, bo
   auto driveTurnRightTask4 = shared_ptr<Task>(new TurnTask(Drivetrain, 145, rotationCorrection));
   auto driveTurnRightTask5 = shared_ptr<Task>(new TurnTask(Drivetrain, 90, rotationCorrection));
   auto driveTurnRightTask4Short = shared_ptr<Task>(new TurnTask(Drivetrain, 145, rotationCorrection));
+
+  auto driveTurnRightTaskNoAuton = shared_ptr<Task>(new TurnTask(Drivetrain, 110, rotationCorrection));
+  auto driveTurnLeftTaskNoAuton = shared_ptr<Task>(new TurnTask(Drivetrain, -110, rotationCorrection));
   
   // Beetle Lift motor tasks
   // left and right are for the left and right mop_make_shared_tagtors on the lift
@@ -114,15 +124,17 @@ std::shared_ptr<Task> selectAutonomousRoutine(AutonomousTypes autonomousType, bo
   
   
 
-
   // AUTONOMOUS (left side GOAL ON PLATFORM)
   // format is addtask(parentTask, childTask);
   // Starts with wait 0 milliseconds task as the rootTask
   auto rootTask = shared_ptr<Task>(new WaitMillisecondsTask(0));
   auto MogoWait = shared_ptr<Task>(new WaitMillisecondsTask(2500));
   auto MogoWait2 = shared_ptr<Task>(new WaitMillisecondsTask(3000));
+  auto MogoWait2Short = shared_ptr<Task>(new WaitMillisecondsTask(3000));
+  auto MogoWaitNOAuton = shared_ptr<Task>(new WaitMillisecondsTask(1000));
   auto spatulaToggleFix = shared_ptr<Task>(new WaitMillisecondsTask(200));
-
+  auto driveBackWaitTask = shared_ptr<Task>(new WaitMillisecondsTask(2000));
+    auto WaitToPickUp = shared_ptr<Task>(new WaitMillisecondsTask(1000));
 
   switch (autonomousType) {
     case RAMP_DOWN:
@@ -199,10 +211,14 @@ std::shared_ptr<Task> selectAutonomousRoutine(AutonomousTypes autonomousType, bo
       addTask(toggleClawTask3Short, toggleClawTask4Short);
       addTask(toggleClawTask3Short, lowerBeetleArmLEFTTask2Short);
       addTask(toggleClawTask3Short, lowerBeetleArmRIGHTTask2Short);
+      
       addTask(toggleClawTask4Short, lowerClawLiftLEFTTask2Short);
       addTask(toggleClawTask4Short, lowerClawLiftRIGHTTask2Short);
-      addTask(toggleClawTask4Short, driveBackwardsTask3Short);
-      addTask(driveBackwardsTask3Short, driveForwardTask2Short);
+      addTask(lowerClawLiftRIGHTTask2Short, driveBackWaitTask);
+      addTask(driveBackWaitTask, driveBackwardsTask3Short);
+      // addTask(driveBackwardsTask3Short, MogoWait2Short); 
+      // addTask(driveBackwardsTask3Short, driveForwardTask2Short);
+      
       //addTask(driveForwardTask2Short, driveTurnRightTask4Short);
    
       case RAMP_DOWN_SHORT:
@@ -218,11 +234,35 @@ std::shared_ptr<Task> selectAutonomousRoutine(AutonomousTypes autonomousType, bo
       addTask(toggleClawTask2Short, lowerClawLiftRIGHTTaskShort);
       addTask(toggleClawTask2Short, driveForwardTaskShort);
       
-   
+      break;
    
     default:
       break;
-    
+
+      case NO_WINPOINT:
+        //New Autonomous that does not score the win point (so many teams didn't have their auton)
+        // Drive forward while toggle spatula 
+        // Toggle (to pick up center goal)
+        // Drive back
+        // turn right a lot 
+        // toggle (to set down)
+        // drive back (to release mobile goal)
+        // turn left (to face side goal)
+        // Drive forward and lowere beetle lift 
+
+        addTask(rootTask, driveForwardsTaskNoAutonLong);
+        addTask(rootTask, toggleSpatulaTaskNoAuton);
+        addTask(driveForwardsTaskNoAutonLong, toggleSpatulaTaskNoAuton2);
+        addTask(toggleSpatulaTaskNoAuton2, MogoWaitNOAuton);
+        addTask(MogoWaitNOAuton, driveBackTaskNoAutonShort);
+        //addTask(driveBackTaskNoAutonShort, toggleSpatulaTaskNoAuton2);
+        //addTask(driveBackTaskNoAutonShort, MogoWaitNOAuton);
+        //addTask(toggleSpatulaTaskNoAuton2, driveBackTaskNoAutonShort2);
+        //addTask(driveBackTaskNoAutonShort2, driveForwardsTaskNoAutonLong2);
+        //addTask(driveBackTaskNoAutonShort2, toggleSpatulaTaskNoAuton3);
+        //addTask(toggleSpatulaTaskNoAuton3, driveBackTaskNoAutonLong3);
+
+        break;
   }
   return rootTask;
 }

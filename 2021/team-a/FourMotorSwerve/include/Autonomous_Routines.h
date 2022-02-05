@@ -7,6 +7,7 @@ enum AutonomousTypes {
   PROGRAMMING_SKILLS,
   RAMP_UP_SHORT,
   RAMP_DOWN_SHORT,
+  NO_WINPOINT,
 };
 
 // Allows user to slelect autonomous routine between task trees. 
