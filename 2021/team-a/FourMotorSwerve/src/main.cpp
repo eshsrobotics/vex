@@ -231,15 +231,15 @@ void autonomous(void) {
   // format is addTask(parentTask, childTask);
   // Starts with wait 0 milliseconds task as the rootTask
 
-  //auto rootTask = shared_ptr<Task>(new WaitMillisecondsTask(0));
+  auto rootTask = shared_ptr<Task>(new WaitMillisecondsTask(0));
   
-  //addTask(rootTask, driveBackwardsTaskSTART);
-  //addTask(rootTask, raiseClawLiftLEFTTask);
-  //addTask(rootTask, raiseClawLiftRIGHTTask);
+  addTask(rootTask, driveBackwardsTaskSTART);
+  addTask(rootTask, raiseClawLiftLEFTTask);
+  addTask(rootTask, raiseClawLiftRIGHTTask);
   
-  //addTask(raiseClawLiftRIGHTTask, toggleClawTask1); 
+  addTask(raiseClawLiftRIGHTTask, toggleClawTask1); 
   auto TOGGLE_TIME_FIX = shared_ptr<Task>(new WaitMillisecondsTask(500));
-  //addTask(raiseClawLiftLEFTTask, TOGGLE_TIME_FIX); 
+  addTask(raiseClawLiftLEFTTask, TOGGLE_TIME_FIX); 
 
   // Lowers claw lift and dirves forwards (children of toggleClawTask2)
   addTask(TOGGLE_TIME_FIX, lowerClawLiftLEFTTask);
@@ -249,22 +249,22 @@ void autonomous(void) {
   addTask(driveForwardTaskDROPEDDONUT, driveTurnRightTaskAIMMG);
   // Drives forwards and toggles spatula out (children of turn right task)
   addTask(driveTurnRightTaskAIMMG, toggleSpatulaTask1);
-  //addTask(toggleSpatulaTask1, driveForwardTaskTOWARDSMGS);
+  addTask(toggleSpatulaTask1, driveForwardTaskTOWARDSMGS);
   // Toggles spatula in (picking up mobile goal) (child of toggle spatula 1 task)
-  //addTask(driveForwardTaskTOWARDSMGS, toggleSpatulaTask2);
+  addTask(driveForwardTaskTOWARDSMGS, toggleSpatulaTask2);
   // Drives backwards (Child of toggle spatula 2 task)
-  //addTask(toggleSpatulaTask2, driveBackwardsTaskRETURN);
+  addTask(toggleSpatulaTask2, driveBackwardsTaskRETURN);
   // Turns right (child of drive backwards task)
-  //addTask(driveBackwardsTaskRETURN, driveTurnLeftTask);
+  addTask(driveBackwardsTaskRETURN, driveTurnLeftTask);
   // drives forwards (child of turn right task)
-  //addTask(driveTurnLeftTask, driveForwardTaskDROP );
+  addTask(driveTurnLeftTask, driveForwardTaskDROP );
   //toggles spatula out (child of drive forwards task)
-  //addTask(driveForwardTaskDROP , toggleSpatulaTask3);
+  addTask(driveForwardTaskDROP , toggleSpatulaTask3);
 
-  //addTask(toggleSpatulaTask3, driveBackwardsTaskDROP);
-  //addTask(driveBackwardsTaskDROP , driveTurnRightTaskBACK);
-  //addTask(driveTurnRightTaskBACK, driveForwardTaskTOWARDSMGM );
-  execute(TOGGLE_TIME_FIX);
+  addTask(toggleSpatulaTask3, driveBackwardsTaskDROP);
+  addTask(driveBackwardsTaskDROP , driveTurnRightTaskBACK);
+  addTask(driveTurnRightTaskBACK, driveForwardTaskTOWARDSMGM );
+  execute(rootTask);
 
 
   // AUTON FOR DAMIEN COMP 
