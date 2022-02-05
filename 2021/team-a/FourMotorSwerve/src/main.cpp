@@ -161,7 +161,7 @@ bool isArmGroundLimitSwitchDepressed() {
 // This is the autonomous code
 void autonomous(void) {
   
-  auto rootTask = selectAutonomousRoutine(RAMP_UP, spatulaRetracted, pneumaticClawOpen);
+  auto rootTask = selectAutonomousRoutine(RAMP_DOWN, spatulaRetracted, pneumaticClawOpen);
   execute(rootTask);
 
 
@@ -393,7 +393,7 @@ void PneumaticControlSpatula() {
      bool isLiftArmDown =
       (LeftLiftMotor.rotation(degrees) <= leftLiftMotorLimitDegrees);
 
-    // Prevent the spatula from going out if the lift is down
+    // P revent the spatula from going out if the lift is down
 
     if (!isLiftArmDown) {
       spatulaRetracted = true;

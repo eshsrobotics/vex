@@ -45,6 +45,8 @@ std::shared_ptr<Task> selectAutonomousRoutine(AutonomousTypes autonomousType, bo
   auto toggleClawTask2 = shared_ptr<Task>(new SolenoidTask(PneumaticClaw, pneumaticClawOpen));
   auto toggleClawTask3 = shared_ptr<Task>(new SolenoidTask(PneumaticClaw, pneumaticClawOpen));
   auto toggleClawTask4 = shared_ptr<Task>(new SolenoidTask(PneumaticClaw, pneumaticClawOpen));
+  auto toggleClawTask3Short = shared_ptr<Task>(new SolenoidTask(PneumaticClaw, pneumaticClawOpen));
+  auto toggleClawTask4Short = shared_ptr<Task>(new SolenoidTask(PneumaticClaw, pneumaticClawOpen));
   
   // Reverse FourBar Lift tasks
   auto raiseClawLiftLEFTTask = shared_ptr<Task>(new MoveMotorTask(ArmMotorLeft, CLAW_LIFT_MOTORS_GEAR_RATIO, 50));
@@ -55,6 +57,10 @@ std::shared_ptr<Task> selectAutonomousRoutine(AutonomousTypes autonomousType, bo
   auto raiseClawLiftRIGHTTask2 = shared_ptr<Task>(new MoveMotorTask(ArmMotorRight, CLAW_LIFT_MOTORS_GEAR_RATIO, 55));
   auto lowerClawLiftLEFTTask2 = shared_ptr<Task>(new MoveMotorTask(ArmMotorLeft, CLAW_LIFT_MOTORS_GEAR_RATIO, -55));
   auto lowerClawLiftRIGHTTask2 = shared_ptr<Task>(new MoveMotorTask(ArmMotorRight, CLAW_LIFT_MOTORS_GEAR_RATIO, -55));
+  auto raiseClawLiftLEFTTask2Short = shared_ptr<Task>(new MoveMotorTask(ArmMotorLeft, CLAW_LIFT_MOTORS_GEAR_RATIO, 55));
+  auto raiseClawLiftRIGHTTask2Short = shared_ptr<Task>(new MoveMotorTask(ArmMotorRight, CLAW_LIFT_MOTORS_GEAR_RATIO, 55));
+  auto lowerClawLiftLEFTTask2Short = shared_ptr<Task>(new MoveMotorTask(ArmMotorLeft, CLAW_LIFT_MOTORS_GEAR_RATIO, -55));
+  auto lowerClawLiftRIGHTTask2Short = shared_ptr<Task>(new MoveMotorTask(ArmMotorRight, CLAW_LIFT_MOTORS_GEAR_RATIO, -55));
   
   // Drive tasks
   auto driveForwardTask = shared_ptr<Task>(new DriveStraightTask(Drivetrain, 9, translate));
@@ -69,6 +75,9 @@ std::shared_ptr<Task> selectAutonomousRoutine(AutonomousTypes autonomousType, bo
   auto drivetoAllianceSideTask2 = shared_ptr<Task>(new DriveStraightTask(Drivetrain, -25, translate));
   auto driveBackwardsTask3 = shared_ptr<Task>(new DriveStraightTask(Drivetrain, -8, translate));
   auto driveBackwardSetMobileGoal2 = shared_ptr<Task>(new DriveStraightTask(Drivetrain, -10, translate));
+  auto driveBackwardsTask2Short = shared_ptr<Task>(new DriveStraightTask(Drivetrain, -11.2, translate));
+  auto driveBackwardsTask3Short = shared_ptr<Task>(new DriveStraightTask(Drivetrain, -8, translate));
+  auto driveForwardTask2Short = shared_ptr<Task>(new DriveStraightTask(Drivetrain, 4, translate));
   
   // Drivetrain turn tasks
   // Second argument is number of degrees turned, + or - changes direction
@@ -77,8 +86,10 @@ std::shared_ptr<Task> selectAutonomousRoutine(AutonomousTypes autonomousType, bo
   auto driveTurnRightTask2 = shared_ptr<Task>(new TurnTask(Drivetrain, 110, rotationCorrection));
   auto driveTurnRightTask3 = shared_ptr<Task>(new TurnTask(Drivetrain, -65, rotationCorrection));
   auto driveTurnLeftTask2 = shared_ptr<Task>(new TurnTask(Drivetrain, -10, rotationCorrection));
+  // Must correct angle of driveTurnRightTask4 for autonomous to pick up the Mogo
   auto driveTurnRightTask4 = shared_ptr<Task>(new TurnTask(Drivetrain, 145, rotationCorrection));
   auto driveTurnRightTask5 = shared_ptr<Task>(new TurnTask(Drivetrain, 90, rotationCorrection));
+  auto driveTurnRightTask4Short = shared_ptr<Task>(new TurnTask(Drivetrain, 145, rotationCorrection));
   
   // Beetle Lift motor tasks
   // left and right are for the left and right mop_make_shared_tagtors on the lift
@@ -88,6 +99,8 @@ std::shared_ptr<Task> selectAutonomousRoutine(AutonomousTypes autonomousType, bo
   auto raiseBeetleArmRIGHTTask = shared_ptr<Task>(new MoveMotorTask(RightLiftMotor, BEETLE_LIFT_MOTOR_GEAR_RATIO, 45));
   auto lowerBeetleArmLEFTTask2 = shared_ptr<Task>(new MoveMotorTask(LeftLiftMotor, BEETLE_LIFT_MOTOR_GEAR_RATIO, -10));
   auto lowerBeetleArmRIGHTTask2 = shared_ptr<Task>(new MoveMotorTask(RightLiftMotor, BEETLE_LIFT_MOTOR_GEAR_RATIO, -10));
+  auto lowerBeetleArmLEFTTask2Short = shared_ptr<Task>(new MoveMotorTask(LeftLiftMotor, BEETLE_LIFT_MOTOR_GEAR_RATIO, -10));
+  auto lowerBeetleArmRIGHTTask2Short = shared_ptr<Task>(new MoveMotorTask(RightLiftMotor, BEETLE_LIFT_MOTOR_GEAR_RATIO, -10));
   
   
   
@@ -157,6 +170,7 @@ std::shared_ptr<Task> selectAutonomousRoutine(AutonomousTypes autonomousType, bo
       addTask(toggleClawTask4, driveBackwardsTask3);
       addTask(driveBackwardsTask3, driveForwardTask2);
       addTask(driveForwardTask2, driveTurnRightTask4);
+      // Check angle of driveTurnRightTask4 to correct angle to pick up neutral mobile goal.
       addTask(driveTurnRightTask4, toggleSpatulaTask6);
       addTask(driveTurnRightTask4, driveForwardtoMobileGoalTask2);
       addTask(driveForwardtoMobileGoalTask2, toggleSpatulaTask7);
@@ -168,6 +182,19 @@ std::shared_ptr<Task> selectAutonomousRoutine(AutonomousTypes autonomousType, bo
       addTask(driveBackwardSetMobileGoal2, toggleSpatulaTask9);
       
       break;
+      case RAMP_UP_SHORT:
+      addTask(rootTask, driveBackwardsTask2Short);
+      addTask(rootTask, raiseClawLiftLEFTTask2Short);
+      addTask(rootTask, raiseClawLiftRIGHTTask2Short);
+      addTask(raiseClawLiftRIGHTTask2Short, toggleClawTask3Short);
+      addTask(toggleClawTask3Short, toggleClawTask4Short);
+      addTask(toggleClawTask3Short, lowerBeetleArmLEFTTask2Short);
+      addTask(toggleClawTask3Short, lowerBeetleArmRIGHTTask2Short);
+      addTask(toggleClawTask4Short, lowerClawLiftLEFTTask2Short);
+      addTask(toggleClawTask4Short, lowerClawLiftRIGHTTask2Short);
+      addTask(toggleClawTask4Short, driveBackwardsTask3Short);
+      addTask(driveBackwardsTask3Short, driveForwardTask2Short);
+      addTask(driveForwardTask2Short, driveTurnRightTask4Short);
     default:
       break;
     
