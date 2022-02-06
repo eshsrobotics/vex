@@ -4,6 +4,15 @@
 using namespace vex;
 using namespace std;
 
+std::string autonNames[] = {
+  "RAMP_DOWN", 
+  "RAMP_UP",
+  "PROGRAMMING_SKILLS",
+  "RAMP_UP_SHORT",
+  "RAMP_DOWN_SHORT",
+  "NO_WINPOINT_MIDD",
+};
+
 double translate(double desiredDistanceInches) {
   // Assigns the variables for changing the input value so the output value is equal to it
   // We got these numbers by plotting 5 points from testing and finding the line of best fit
@@ -78,7 +87,7 @@ auto toggleSpatulaTaskNoAuton4 = shared_ptr<Task>(new  SolenoidTask(PneumaticSpa
   auto drivetoAllianceSideTask = shared_ptr<Task>(new DriveStraightTask(Drivetrain, -23, translate));
   auto driveBackwardSetMobileGoal = shared_ptr<Task>(new DriveStraightTask(Drivetrain, -5, translate));
   auto driveForwardtoBigMogoTask = shared_ptr<Task>(new DriveStraightTask(Drivetrain, 65, translate));
-  auto driveBackwardsTask2 = shared_ptr<Task>(new DriveStraightTask(Drivetrain, -11.2, translate));
+  auto driveBackwardsTask2 = shared_ptr<Task>(new DriveStraightTask(Drivetrain, -12, translate));
   auto driveForwardTask2 = shared_ptr<Task>(new DriveStraightTask(Drivetrain, 4, translate));
   auto driveForwardtoMobileGoalTask2 = shared_ptr<Task>(new DriveStraightTask(Drivetrain, 44, translate));
   auto drivetoAllianceSideTask2 = shared_ptr<Task>(new DriveStraightTask(Drivetrain, -25, translate));
@@ -103,7 +112,7 @@ auto toggleSpatulaTaskNoAuton4 = shared_ptr<Task>(new  SolenoidTask(PneumaticSpa
   auto driveTurnRightTask3 = shared_ptr<Task>(new TurnTask(Drivetrain, -65, rotationCorrection));
   auto driveTurnLeftTask2 = shared_ptr<Task>(new TurnTask(Drivetrain, -10, rotationCorrection));
   // Must correct angle of driveTurnRightTask4 for autonomous to pick up the Mogo
-  auto driveTurnRightTask4 = shared_ptr<Task>(new TurnTask(Drivetrain, 145, rotationCorrection));
+  auto driveTurnRightTask4 = shared_ptr<Task>(new TurnTask(Drivetrain, 140, rotationCorrection));
   auto driveTurnRightTask5 = shared_ptr<Task>(new TurnTask(Drivetrain, 90, rotationCorrection));
   auto driveTurnRightTask4Short = shared_ptr<Task>(new TurnTask(Drivetrain, 145, rotationCorrection));
 
@@ -137,6 +146,7 @@ auto toggleSpatulaTaskNoAuton4 = shared_ptr<Task>(new  SolenoidTask(PneumaticSpa
     auto WaitToPickUp = shared_ptr<Task>(new WaitMillisecondsTask(1000));
 
   switch (autonomousType) {
+    //LEFT SIDE
     case RAMP_DOWN:
       // drives backwards 10in, raises pneumatic claw lift (children of rootTask)
       addTask(rootTask, driveBackwardsTask);
@@ -239,7 +249,7 @@ auto toggleSpatulaTaskNoAuton4 = shared_ptr<Task>(new  SolenoidTask(PneumaticSpa
     default:
       break;
 
-      case NO_WINPOINT:
+      case NO_WINPOINT_MIDD:
         //New Autonomous that does not score the win point (so many teams didn't have their auton)
         // Drive forward while toggle spatula 
         // Toggle (to pick up center goal)
@@ -255,13 +265,6 @@ auto toggleSpatulaTaskNoAuton4 = shared_ptr<Task>(new  SolenoidTask(PneumaticSpa
         addTask(driveForwardsTaskNoAutonLong, toggleSpatulaTaskNoAuton2);
         addTask(toggleSpatulaTaskNoAuton2, MogoWaitNOAuton);
         addTask(MogoWaitNOAuton, driveBackTaskNoAutonShort);
-        //addTask(driveBackTaskNoAutonShort, toggleSpatulaTaskNoAuton2);
-        //addTask(driveBackTaskNoAutonShort, MogoWaitNOAuton);
-        //addTask(toggleSpatulaTaskNoAuton2, driveBackTaskNoAutonShort2);
-        //addTask(driveBackTaskNoAutonShort2, driveForwardsTaskNoAutonLong2);
-        //addTask(driveBackTaskNoAutonShort2, toggleSpatulaTaskNoAuton3);
-        //addTask(toggleSpatulaTaskNoAuton3, driveBackTaskNoAutonLong3);
-
         break;
   }
   return rootTask;

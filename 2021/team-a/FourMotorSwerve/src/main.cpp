@@ -1,6 +1,19 @@
 // ---- START VEXCODE CONFIGURED DEVICES ----
 // Robot Configuration:
 // [Name]               [Type]        [Port(s)]
+// Drivetrain           drivetrain    17, 20, 4, 19   
+// Controller1          controller                    
+// LeftLiftMotor        motor         3               
+// ArmMotorRight        motor         10              
+// ArmMotorLeft         motor         16              
+// PneumaticSpatula     digital_out   B               
+// PneumaticClaw        digital_out   A               
+// RightLiftMotor       motor         15              
+// ArmGroundLimitSwitch limit         C               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
 // Drivetrain           drivetrain    11, 20, 19, 4   
 // Controller1          controller                    
 // LeftLiftMotor        motor         3               
@@ -31,6 +44,9 @@ using namespace std;
 
 // A global instance of competition
 competition Competition;
+
+//auton type printed on screen
+const AutonomousTypes autonType = NO_WINPOINT_MIDD;
 
 // define your global instances of motors and other devices here
 
@@ -159,10 +175,10 @@ bool isArmGroundLimitSwitchDepressed() {
 
 
 // This is the autonomous code
-void autonomous(void) {
-  
-  auto rootTask = selectAutonomousRoutine(NO_WINPOINT, spatulaRetracted, pneumaticClawOpen);
+void autonomous(void) {                
+  auto rootTask = selectAutonomousRoutine(autonType, spatulaRetracted, pneumaticClawOpen);
   execute(rootTask);
+
 
 
   // AUTON FOR DAMIEN COMP 
@@ -253,6 +269,10 @@ void usercontrol(void) {
   Brain.Screen.clearScreen();
   Controller1.Screen.clearScreen();
 
+  // printing the current autonomous selection.
+  Controller1.Screen.setCursor(2, 1);
+  Controller1.Screen.print("Auton: %s", autonNames[autonType].c_str());
+ 
   Brain.Screen.setCursor(1, 1);
   Controller1.Screen.setCursor(1, 1);
 

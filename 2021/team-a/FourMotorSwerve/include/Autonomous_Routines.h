@@ -7,8 +7,10 @@ enum AutonomousTypes {
   PROGRAMMING_SKILLS,
   RAMP_UP_SHORT,
   RAMP_DOWN_SHORT,
-  NO_WINPOINT,
+  NO_WINPOINT_MIDD,
 };
+
+extern std::string autonNames[];
 
 // Allows user to slelect autonomous routine between task trees. 
 std::shared_ptr<Task> selectAutonomousRoutine(AutonomousTypes autonomousType, bool& spatulaRetracted, bool& pneumaticClawOpen);
