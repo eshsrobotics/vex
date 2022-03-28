@@ -13,13 +13,14 @@ motor PunchMotor = motor(PORT5, ratio18_1, true);
 motor29 IntakeMotor = motor29(Brain.ThreeWirePort.D, false);
 motor29 LeftMotor = motor29(Brain.ThreeWirePort.H, true);
 motor29 RightMotor = motor29(Brain.ThreeWirePort.A, false);
+motor29 TransferMotor = motor29(Brain.ThreeWirePort.C, false);
 
 // VEXcode generated functions
-// define variable for remote controller enable/disable
-bool RemoteControlCodeEnabled = true;
+
+
 
 /**
- * Used to initialize code/tasks/devices added using tools in VEXcode Pro.
+ * Used to initialize code/tasks/devices added using tools in VEXcode Text.
  * 
  * This should be called at the start of your int main function.
  */

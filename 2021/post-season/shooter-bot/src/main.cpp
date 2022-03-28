@@ -1,3 +1,13 @@
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller
+// PunchMotor           motor         5
+// IntakeMotor          motor29       D
+// LeftMotor            motor29       H
+// RightMotor           motor29       A
+// TransferMotor        motor29       C
+// ---- END VEXCODE CONFIGURED DEVICES ----
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /*    Module:       main.cpp                                                  */
@@ -10,11 +20,11 @@
 // ---- START VEXCODE CONFIGURED DEVICES ----
 // Robot Configuration:
 // [Name]               [Type]        [Port(s)]
-// Controller1          controller                    
-// PunchMotor           motor         5               
-// IntakeMotor          motor29       D               
-// LeftMotor            motor29       H               
-// RightMotor           motor29       A               
+// Controller1          controller
+// PunchMotor           motor         5
+// IntakeMotor          motor29       D
+// LeftMotor            motor29       H
+// RightMotor           motor29       A
 // ---- END VEXCODE CONFIGURED DEVICES ----
 
 #include "vex.h"
@@ -25,6 +35,7 @@ using namespace vex;
 competition Competition;
 
 // define your global instances of motors and other devices here
+bool intakeActive = false;
 
 /*---------------------------------------------------------------------------*/
 /*                          Pre-Autonomous Functions                         */
@@ -70,7 +81,19 @@ void autonomous(void) {
 /*  You must modify the code to add your own robot specific commands here.   */
 /*---------------------------------------------------------------------------*/
 
+void toggleIntakeMotor() { 
+  if (intakeActive == false)
+    {
+      IntakeMotor.spin(forward);
+      intakeActive = true; 
+    } else {
+      IntakeMotor.stop();
+      intakeActive = false;
+    }
+} 
+
 void usercontrol(void) {
+
   // User control code here, inside the loop
   while (1) {
     // This is the main execution loop for the user control program.
@@ -81,7 +104,7 @@ void usercontrol(void) {
     // Insert user code here. This is where you use the joystick values to
     // update your motors, etc.
     // ........................................................................
-    
+
     int rightJoystickValue = Controller1.Axis2.position();
     int leftJoystickValue = Controller1.Axis3.position();
 
@@ -111,17 +134,34 @@ void usercontrol(void) {
       LeftMotor.stop();
     }
 
-    // If the right shoulder button is pressed, the punch motor will spin, otherwise, it will stop
+    // If the right shoulder button is pressed, the punch motor will spin,
+    // otherwise, it will stop
     if (Controller1.ButtonR1.pressing()) {
       PunchMotor.spin(forward);
     } else {
       PunchMotor.stop();
     }
+    // If the top left shoulder button is pressed then released the intake motor will spin,
+    // but if the left shoulder button is pressed then released again the intake 
+    // motor will stop spining
 
-    wait(20, msec); // Sleep the task for a short amount of time to
-                    // prevent wasted resources.
+    
+    Controller1.ButtonL1.pressed(toggleIntakeMotor);
+
+    // If the bottom left shoulder button is pressed the transfer motor will spin 
+    // and will be stop spining when released 
+    if (Controller1.ButtonL2.pressing()) {
+      TransferMotor.spin(forward);
+    } else {
+      TransferMotor.stop();
+    }
+
   }
+
+  wait(20, msec); // Sleep the task for a short amount of time to
+                  // prevent wasted resources.
 }
+
 
 //
 // Main will set up the competition functions and callbacks.
