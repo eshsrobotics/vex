@@ -155,42 +155,46 @@ void autonomous(void) {
 
 void togglePuncher() { 
   if (punchActive == false) {
-      PunchMotor.spin(forward);
-      wait(1000, msec);
-      punchActive = true; 
-    } else if (punchActive == true) {
-      PunchMotor.stop();
-      wait(1000, msec);
-      punchActive = false;
-    }
+    PunchMotor.spin(forward);
+    punchActive = true; 
+  } else {
+    PunchMotor.stop();
+    punchActive = false;
+  }
+  return;
 } 
 
 void toggleIntakeMotor() { 
   if (intakeActive == false) {
-      IntakeMotor.spin(forward);
-      wait(1000, msec);
-      intakeActive = true; 
-    } else if (intakeActive == true) {
-      IntakeMotor.stop();
-      wait(1000, msec);
-      intakeActive = false;
-    }
+    IntakeMotor.spin(forward);
+    intakeActive = true; 
+  } else {
+    IntakeMotor.stop();
+    intakeActive = false;
+  }
+  return;
 } 
 
 void toggleTransferMotor() { 
   if (transferActive == false) {
-      TransferMotor.spin(forward);
-      wait(1000, msec);
-      transferActive = true; 
-    } else if (transferActive == true) {
-      TransferMotor.stop();
-      wait(1000, msec);
-      transferActive = false;
-    }
+    TransferMotor.spin(forward);
+    transferActive = true; 
+  } else {
+    TransferMotor.stop();
+    transferActive = false;
+  }
+  return;
 } 
 
 void usercontrol(void) {
 
+  // If the front right shoulder button is pressed, the puncher motor will toggle
+  // If the front left shoulder button is pressed, the intake motor will toggle
+  // If the back left shoulder button is pressed, the transfer motor will toggle
+  Controller1.ButtonR1.pressed(togglePuncher);
+  Controller1.ButtonL1.pressed(toggleIntakeMotor);
+  Controller1.ButtonL2.pressed(toggleTransferMotor);
+  
   // User control code here, inside the loop
   while (1) {
     // This is the main execution loop for the user control program.
@@ -224,13 +228,6 @@ void usercontrol(void) {
     } else {
       LeftMotor.stop();
     }
-
-    // If the front right shoulder button is pressed, the puncher motor will toggle
-    // If the front left shoulder button is pressed, the intake motor will toggle
-    // If the back left shoulder button is pressed, the transfer motor will toggle
-    Controller1.ButtonR1.pressed(togglePuncher);
-    Controller1.ButtonL1.pressed(toggleIntakeMotor);
-    Controller1.ButtonL2.pressed(toggleTransferMotor);
 
     // While the 'A' button is pressed, the punch motor will spin,
     // when it isn't pressed, it will stop
