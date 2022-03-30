@@ -1,6 +1,76 @@
 // ---- START VEXCODE CONFIGURED DEVICES ----
 // Robot Configuration:
 // [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// PunchMotor           motor         12              
+// IntakeMotor          motor29       G               
+// LeftMotor            motor29       H               
+// RightMotor           motor29       A               
+// TransferMotor        motor29       F               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// PunchMotor           motor         12              
+// IntakeMotor          motor29       C               
+// LeftMotor            motor29       H               
+// RightMotor           motor29       A               
+// TransferMotor        motor29       F               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// PunchMotor           motor         12              
+// IntakeMotor          motor29       B               
+// LeftMotor            motor29       H               
+// RightMotor           motor29       A               
+// TransferMotor        motor29       F               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// PunchMotor           motor         12              
+// IntakeMotor          motor29       G               
+// LeftMotor            motor29       H               
+// RightMotor           motor29       A               
+// TransferMotor        motor29       F               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// PunchMotor           motor         12              
+// IntakeMotor          motor29       G               
+// LeftMotor            motor29       H               
+// RightMotor           motor29       A               
+// TransferMotor        motor29       C               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// PunchMotor           motor         12              
+// IntakeMotor          motor29       D               
+// LeftMotor            motor29       H               
+// RightMotor           motor29       A               
+// TransferMotor        motor29       C               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// PunchMotor           motor         12              
+// IntakeMotor          motor29       D               
+// LeftMotor            motor29       H               
+// RightMotor           motor29       A               
+// TransferMotor        motor29       C               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
 // Controller1          controller
 // PunchMotor           motor         5
 // IntakeMotor          motor29       D
@@ -36,6 +106,8 @@ competition Competition;
 
 // define your global instances of motors and other devices here
 bool intakeActive = false;
+bool punchActive = false;
+bool transferActive = false;
 
 /*---------------------------------------------------------------------------*/
 /*                          Pre-Autonomous Functions                         */
@@ -81,14 +153,39 @@ void autonomous(void) {
 /*  You must modify the code to add your own robot specific commands here.   */
 /*---------------------------------------------------------------------------*/
 
+void togglePuncher() { 
+  if (punchActive == false) {
+      PunchMotor.spin(forward);
+      wait(1000, msec);
+      punchActive = true; 
+    } else if (punchActive == true) {
+      PunchMotor.stop();
+      wait(1000, msec);
+      punchActive = false;
+    }
+} 
+
 void toggleIntakeMotor() { 
-  if (intakeActive == false)
-    {
+  if (intakeActive == false) {
       IntakeMotor.spin(forward);
+      wait(1000, msec);
       intakeActive = true; 
-    } else {
+    } else if (intakeActive == true) {
       IntakeMotor.stop();
+      wait(1000, msec);
       intakeActive = false;
+    }
+} 
+
+void toggleTransferMotor() { 
+  if (transferActive == false) {
+      TransferMotor.spin(forward);
+      wait(1000, msec);
+      transferActive = true; 
+    } else if (transferActive == true) {
+      TransferMotor.stop();
+      wait(1000, msec);
+      transferActive = false;
     }
 } 
 
@@ -107,12 +204,6 @@ void usercontrol(void) {
 
     int rightJoystickValue = Controller1.Axis2.position();
     int leftJoystickValue = Controller1.Axis3.position();
-
-    Controller1.Screen.clearScreen();
-    Controller1.Screen.setCursor(0, 0);
-    Controller1.Screen.print("Right: %d", rightJoystickValue);
-    Controller1.Screen.newLine();
-    Controller1.Screen.print("Left: %d", leftJoystickValue);
 
     // If the joysticks are not in the deadband range, the drive code will run
     if (rightJoystickValue > 5) {
@@ -134,23 +225,32 @@ void usercontrol(void) {
       LeftMotor.stop();
     }
 
-    // If the right shoulder button is pressed, the punch motor will spin,
-    // otherwise, it will stop
-    if (Controller1.ButtonR1.pressing()) {
+    // If the front right shoulder button is pressed, the puncher motor will toggle
+    // If the front left shoulder button is pressed, the intake motor will toggle
+    // If the back left shoulder button is pressed, the transfer motor will toggle
+    Controller1.ButtonR1.pressed(togglePuncher);
+    Controller1.ButtonL1.pressed(toggleIntakeMotor);
+    Controller1.ButtonL2.pressed(toggleTransferMotor);
+
+    // While the 'A' button is pressed, the punch motor will spin,
+    // when it isn't pressed, it will stop
+    if (Controller1.ButtonA.pressing()) {
       PunchMotor.spin(forward);
     } else {
       PunchMotor.stop();
     }
-    // If the top left shoulder button is pressed then released the intake motor will spin,
-    // but if the left shoulder button is pressed then released again the intake 
-    // motor will stop spining
 
-    
-    Controller1.ButtonL1.pressed(toggleIntakeMotor);
+    // While the 'X' button is pressed, the intake motor will spin,
+    // when it isn't pressed, it will stop
+    if (Controller1.ButtonX.pressing()) {
+      IntakeMotor.spin(forward);
+    } else {
+      IntakeMotor.stop();
+    }
 
-    // If the bottom left shoulder button is pressed the transfer motor will spin 
-    // and will be stop spining when released 
-    if (Controller1.ButtonL2.pressing()) {
+    // While the 'B' button is pressed, the conveyor (transfer) motor will spin,
+    // when it isn't pressed, it will stop
+    if (Controller1.ButtonB.pressing()) {
       TransferMotor.spin(forward);
     } else {
       TransferMotor.stop();
