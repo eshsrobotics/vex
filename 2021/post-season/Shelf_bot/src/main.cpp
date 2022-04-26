@@ -1,3 +1,19 @@
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// leftMotor            motor29       A               
+// rightMotor           motor29       B               
+// middleMotor          motor29       C               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// leftMotor            motor29       A               
+// rightMotor           motor29       B               
+// middleMotor          motor29       C               
+// ---- END VEXCODE CONFIGURED DEVICES ----
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /*    Module:       main.cpp                                                  */
@@ -76,10 +92,14 @@ void usercontrol(void) {
     // Each time through the loop your program should update motor + servo
     // values based on feedback from the joysticks.
 
-    int rightXPercent = Controller1.Axis4.position(percent);
-    int leftXPercent = Controller1.Axis1.position(percent);
-    int leftYPercent = Controller1.Axis2.position(percent);
+    // Sets three variables to the values of the joyticks we are using to drive
+    int rightXPercent = Controller1.Axis1.position(percent);
+    int leftXPercent = Controller1.Axis4.position(percent);
+    int leftYPercent = Controller1.Axis3.position(percent);
 
+    // If the right joystick has been moved to the left or right, the robot will turn in place
+    // If the left joystick has been moved forward or back, the robot will drive forward or back
+    // Otherwise, the left and right motors will stop
     if (rightXPercent > 5) {
       leftMotor.setVelocity(rightXPercent, percent);
       rightMotor.setVelocity(rightXPercent, percent);
@@ -90,22 +110,7 @@ void usercontrol(void) {
       rightMotor.setVelocity(-rightXPercent, percent);
       leftMotor.spin(reverse);
       rightMotor.spin(forward);
-    } else {
-      leftMotor.stop();
-      rightMotor.stop();
-    }
-
-    if (leftXPercent > 5) {
-      middleMotor.setVelocity(leftXPercent, percent);
-      middleMotor.spin(forward);
-    } else if (leftXPercent < -5) {
-      middleMotor.setVelocity(-leftXPercent, percent);
-      middleMotor.spin(reverse);
-    } else {
-      middleMotor.stop();
-    }
-
-    if (leftYPercent > 5) {
+    } else if (leftYPercent > 5) {
       leftMotor.setVelocity(leftYPercent, percent);
       rightMotor.setVelocity(leftYPercent, percent);
       leftMotor.spin(forward);
@@ -118,6 +123,18 @@ void usercontrol(void) {
     } else {
       leftMotor.stop();
       rightMotor.stop();
+    }
+
+    // If the left joystick has been moved left or right, the robot will strafe left or right
+    // Otherwise, the middle motor will stop
+    if (leftXPercent > 5) {
+      middleMotor.setVelocity(leftXPercent, percent);
+      middleMotor.spin(forward);
+    } else if (leftXPercent < -5) {
+      middleMotor.setVelocity(-leftXPercent, percent);
+      middleMotor.spin(reverse);
+    } else {
+      middleMotor.stop();
     }
 
     // ........................................................................

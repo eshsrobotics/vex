@@ -10,8 +10,8 @@ brain  Brain;
 // VEXcode device constructors
 controller Controller1 = controller(primary);
 motor29 leftMotor = motor29(Brain.ThreeWirePort.A, false);
-motor29 rightMotor = motor29(Brain.ThreeWirePort.B, false);
-motor29 middleMotor = motor29(Brain.ThreeWirePort.C, false);
+motor29 rightMotor = motor29(Brain.ThreeWirePort.B, true);
+motor29 middleMotor = motor29(Brain.ThreeWirePort.C, true);
 
 // VEXcode generated functions
 
