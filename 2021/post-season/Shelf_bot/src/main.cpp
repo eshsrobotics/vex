@@ -2,6 +2,383 @@
 // Robot Configuration:
 // [Name]               [Type]        [Port(s)]
 // Controller1          controller                    
+// armRightInside       motor29       A               
+// middleMotor          motor29       B               
+// conveyorMotor        motor29       C               
+// armLeftInside        motor29       D               
+// armLeftOutside       motor29       E               
+// leftMotor            motor29       F               
+// rightMotor           motor29       G               
+// armRightOutside      motor29       H               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// armRightInside       motor29       A               
+// middleMotor          motor29       B               
+// conveyorMotor        motor29       C               
+// armLeftInside        motor29       D               
+// armLeftOutside       motor29       E               
+// leftMotor            motor29       F               
+// rightMotor           motor29       G               
+// armRightOutside      motor29       H               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// armRightInside       motor29       A               
+// middleMotor          motor29       B               
+// conveyorMotor        motor29       C               
+// armLeftInside        motor29       D               
+// armLeftOutside       motor29       E               
+// leftMotor            motor29       F               
+// rightMotor           motor29       G               
+// armRightOutside      motor29       H               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// armRightInside       motor29       A               
+// middleMotor          motor29       B               
+// conveyorMotor        motor29       C               
+// armLeftInside        motor29       D               
+// armLeftOutside       motor29       E               
+// leftMotor            motor29       F               
+// rightMotor           motor29       G               
+// armRightOutside      motor29       H               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// armRightInside       motor29       A               
+// middleMotor          motor29       B               
+// conveyorMotor        motor29       C               
+// armLeftInside        motor29       D               
+// armLeftOutside       motor29       E               
+// leftMotor            motor29       F               
+// rightMotor           motor29       G               
+// armRightOutside      motor29       H               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// armRightInside       motor29       A               
+// middleMotor          motor29       B               
+// conveyorMotor        motor29       C               
+// armLeftInside        motor29       D               
+// armLeftOutside       motor29       E               
+// leftMotor            motor29       F               
+// rightMotor           motor29       G               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// armRightInside       motor29       A               
+// middleMotor          motor29       B               
+// conveyorMotor        motor29       C               
+// armLeftInside        motor29       D               
+// armLeftOutside       motor29       E               
+// leftMotor            motor29       F               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// armRightInside       motor29       A               
+// middleMotor          motor29       B               
+// conveyorMotor        motor29       C               
+// armLeftInside        motor29       D               
+// armLeftOutside       motor29       E               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// armRightInside       motor29       A               
+// middleMotor          motor29       B               
+// conveyorMotor        motor29       C               
+// armLeftInside        motor29       D               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// armRightInside       motor29       A               
+// middleMotor          motor29       B               
+// conveyorMotor        motor29       C               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// armRightInside       motor29       A               
+// middleMotor          motor29       B               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// armRightInside       motor29       A               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// leftMotor            motor29       A               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// leftMotor            motor29       A               
+// rightMotor           motor29       B               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// leftMotor            motor29       A               
+// rightMotor           motor29       B               
+// middleMotor          motor29       C               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// leftMotor            motor29       A               
+// rightMotor           motor29       B               
+// middleMotor          motor29       C               
+// armLeftInside        motor29       D               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// leftMotor            motor29       A               
+// rightMotor           motor29       B               
+// middleMotor          motor29       C               
+// armLeftInside        motor29       D               
+// armLeftOutside       motor29       E               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// leftMotor            motor29       A               
+// rightMotor           motor29       B               
+// middleMotor          motor29       C               
+// armLeftInside        motor29       D               
+// armLeftOutside       motor29       E               
+// armRightInside       motor29       F               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// leftMotor            motor29       A               
+// rightMotor           motor29       B               
+// middleMotor          motor29       C               
+// armLeftInside        motor29       D               
+// armLeftOutside       motor29       E               
+// armRightInside       motor29       F               
+// armRightOutside      motor29       G               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// leftMotor            motor29       A               
+// rightMotor           motor29       B               
+// middleMotor          motor29       C               
+// armLeftInside        motor29       D               
+// armLeftOutside       motor29       E               
+// armRightInside       motor29       F               
+// armRightOutside      motor29       G               
+// conveyorMotor        motor29       H               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// leftMotor            motor29       A               
+// rightMotor           motor29       B               
+// middleMotor          motor29       C               
+// armLeftInside        motor29       D               
+// armLeftOutside       motor29       E               
+// armRightInside       motor29       F               
+// armRightOutside      motor29       G               
+// conveyorMotor        motor29       H               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// leftMotor            motor29       A               
+// rightMotor           motor29       B               
+// middleMotor          motor29       C               
+// armLeftInside        motor29       D               
+// armLeftOutside       motor29       E               
+// armRightInside       motor29       F               
+// armRightOutside      motor29       G               
+// conveyorMotor        motor29       H               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// leftMotor            motor29       A               
+// rightMotor           motor29       B               
+// middleMotor          motor29       C               
+// armLeftInside        motor29       D               
+// armLeftOutside       motor29       E               
+// armRightInside       motor29       F               
+// armRightOutside      motor29       G               
+// conveyorMotor        motor29       H               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// leftMotor            motor29       A               
+// rightMotor           motor29       B               
+// middleMotor          motor29       C               
+// armLeftInside        motor29       D               
+// armLeftOutside       motor29       E               
+// armRightInside       motor29       F               
+// armRightOutside      motor29       G               
+// conveyorMotor        motor29       H               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// leftMotor            motor29       A               
+// rightMotor           motor29       B               
+// middleMotor          motor29       C               
+// armLeftInside        motor29       D               
+// armLeftOutside       motor29       E               
+// armRightInside       motor29       F               
+// armRightOutside      motor29       G               
+// conveyorMotor        motor29       H               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// leftMotor            motor29       A               
+// rightMotor           motor29       B               
+// middleMotor          motor29       C               
+// armLeftInside        motor29       D               
+// armLeftOutside       motor29       E               
+// armRightInside       motor29       F               
+// armRightOutside      motor29       G               
+// conveyorMotor        motor29       H               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// leftMotor            motor29       A               
+// rightMotor           motor29       B               
+// middleMotor          motor29       C               
+// armLeftInside        motor29       D               
+// armLeftOutside       motor29       E               
+// armRightInside       motor29       F               
+// armRightOutside      motor29       G               
+// conveyorMotor        motor29       H               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// leftMotor            motor29       A               
+// rightMotor           motor29       B               
+// middleMotor          motor29       C               
+// armLeftInside        motor29       D               
+// armLeftOutside       motor29       E               
+// armRightInside       motor29       F               
+// armRightOutside      motor29       G               
+// conveyorMotor        motor29       H               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// leftMotor            motor29       A               
+// rightMotor           motor29       B               
+// middleMotor          motor29       C               
+// armLeftInside        motor29       D               
+// armLeftOutside       motor29       E               
+// armRightInside       motor29       F               
+// armRightOutside      motor29       G               
+// conveyorMotor        motor29       H               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// leftMotor            motor29       A               
+// rightMotor           motor29       B               
+// middleMotor          motor29       C               
+// armLeftInside        motor29       D               
+// armLeftOutside       motor29       E               
+// armRightInside       motor29       F               
+// armRightOutside      motor29       G               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// leftMotor            motor29       A               
+// rightMotor           motor29       B               
+// middleMotor          motor29       C               
+// armLeftInside        motor29       D               
+// armLeftOutside       motor29       E               
+// armRightInside       motor29       F               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// leftMotor            motor29       A               
+// rightMotor           motor29       B               
+// middleMotor          motor29       C               
+// armLeftInside        motor29       D               
+// armLeftOutside       motor29       E               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// leftMotor            motor29       A               
+// rightMotor           motor29       B               
+// middleMotor          motor29       C               
+// armLeftInside        motor29       D               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// leftMotor            motor29       A               
+// rightMotor           motor29       B               
+// middleMotor          motor29       C               
+// Motor393D            motor29       D               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
 // leftMotor            motor29       A               
 // rightMotor           motor29       B               
 // middleMotor          motor29       C               
@@ -96,6 +473,11 @@ void usercontrol(void) {
     int rightXPercent = Controller1.Axis1.position(percent);
     int leftXPercent = Controller1.Axis4.position(percent);
     int leftYPercent = Controller1.Axis3.position(percent);
+    
+    armLeftInside.setVelocity(29, pct);
+    armLeftOutside.setVelocity(29, pct);
+    armRightInside.setVelocity(55, pct);
+    armRightOutside.setVelocity(55, pct);
 
     // If the right joystick has been moved to the left or right, the robot will turn in place
     // If the left joystick has been moved forward or back, the robot will drive forward or back
@@ -135,6 +517,23 @@ void usercontrol(void) {
       middleMotor.spin(reverse);
     } else {
       middleMotor.stop();
+    }
+
+    if (Controller1.ButtonR1.pressing()) {
+      armLeftInside.spin(forward);
+      armLeftOutside.spin(forward);
+      armRightInside.spin(forward);
+      armRightOutside.spin(forward);
+    } else if (Controller1.ButtonR2.pressing()) {
+      armLeftInside.spin(reverse);
+      armLeftOutside.spin(reverse);
+      armRightInside.spin(reverse);
+      armRightOutside.spin(reverse);
+    } else {
+      armLeftInside.stop();
+      armLeftOutside.stop();
+      armRightInside.stop();
+      armRightOutside.stop();
     }
 
     // ........................................................................
