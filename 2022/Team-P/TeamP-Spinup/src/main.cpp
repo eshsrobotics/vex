@@ -1,3 +1,38 @@
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// TopIntake            motor         1               
+// LowerIntake          motor         10              
+// Controller1          controller                    
+// LeftDriveMotor       motor         4               
+// RightDriveMotor      motor         3               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// TopIntake            motor         1               
+// LowerIntake          motor         10              
+// Controller1          controller                    
+// LeftDriveMotor       motor         4               
+// RightDriveMotor      motor         3               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// TopIntake            motor         1               
+// LowerIntake          motor         10              
+// Controller1          controller                    
+// LeftDriveMotor       motor         2               
+// RightDriveMotor      motor         3               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// TopIntake            motor         1               
+// LowerIntake          motor         10              
+// Controller1          controller                    
+// LeftDriveMotor       motor         2               
+// ---- END VEXCODE CONFIGURED DEVICES ----
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /*    Module:       main.cpp                                                  */
@@ -92,6 +127,27 @@ void usercontrol(void) {
       LowerIntake.stop();
     }
 
+    // Make robot be able to move on the ground
+    LeftDriveMotor.setVelocity(Controller1.Axis3.position(), percent);
+    RightDriveMotor.setVelocity(Controller1.Axis2.position(), percent);
+
+    // A deadzone is a term usually applied to robots in which there would be no movement given a threshold closest to zero
+    const double deadzone = 1;
+    if (Controller1.Axis3.position() < deadzone && Controller1.Axis3.position() > -deadzone) {
+      // deadzone for left axis
+      LeftDriveMotor.stop();
+    } else {
+      LeftDriveMotor.spin(fwd);
+    }
+
+    if (Controller1.Axis2.position() < deadzone && Controller1.Axis2.position() > -deadzone) {
+      // deadzone for right axis
+      RightDriveMotor.stop();
+    } else {
+      RightDriveMotor.spin(fwd);
+    }
+
+    
     // ........................................................................
     // Insert user code here. This is where you use the joystick values to
     // update your motors, etc.
