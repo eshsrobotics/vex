@@ -8,9 +8,19 @@
 /*----------------------------------------------------------------------------*/
 
 // ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// front_left           motor         1               
+// front_right          motor         2               
+// back_left            motor         3               
+// back_right           motor         4               
+// launcher_left        motor         5               
+// launcher_right       motor         6               
+// Controller1          controller                    
 // ---- END VEXCODE CONFIGURED DEVICES ----
 
 #include "vex.h"
+
 
 using namespace vex;
 
@@ -70,6 +80,50 @@ void usercontrol(void) {
     // Each time through the loop your program should update motor + servo
     // values based on feedback from the joysticks.
 
+
+    double left_axis = Controller1.Axis3.position(pct);
+    double right_axis = Controller1.Axis2.position(pct);
+    bool launcher_on = false;
+    const int press_miliseconds_timeout = 50;
+    double time_last_pressed_miliseconds = 0; 
+
+
+    //toogling the shooter logic:
+
+    if (Controller1.ButtonX.pressing() && 
+        Brain.timer(msec) - time_last_pressed_miliseconds >= press_miliseconds_timeout) {
+
+      time_last_pressed_miliseconds = Brain.timer(msec);
+      launcher_on = !launcher_on;
+      
+    }
+    
+    //for handling the tank drive:
+
+    const int threshold = 10;
+
+    if (fabs(left_axis) < threshold) {
+        left_axis = 0;
+        front_left.stop();
+        back_left.stop();
+    }
+    else {
+      front_left.setVelocity(left_axis, pct); 
+      back_left.setVelocity(left_axis, pct); 
+    }
+    if (fabs(right_axis) < threshold) {
+        right_axis = 0;
+        front_right.stop();
+        back_right.stop();
+    }
+    else {
+      front_right.setVelocity(right_axis, pct); 
+      back_right.setVelocity(right_axis, pct); 
+    }
+
+    
+    
+    
     // ........................................................................
     // Insert user code here. This is where you use the joystick values to
     // update your motors, etc.
