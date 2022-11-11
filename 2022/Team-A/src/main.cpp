@@ -199,6 +199,25 @@ void autonomous(void) {
 /*  You must modify the code to add your own robot specific commands here.   */
 /*---------------------------------------------------------------------------*/
 
+bool disk_is_in = false;
+//code for sensor to check if the disk is in the intake
+void check_the_disk_presence(bool check)
+{
+  check = /*readings from sensor*/
+}
+
+//stopping the intake as soon as disk is in the intake
+if(disk_is_in)
+{
+  intake.stop();
+  launcher_left.spin(forward);
+  launcher_right.spin(forward);
+
+  while(/*code to wait for the button Y to be pressed*/)
+
+  intake.spin(forward);
+}
+
 void toggleShooter() {
   const int DELAY_MILLISECONDS = 100;
   static int lastMillisecondsPressed = Brain.timer(msec);
@@ -269,6 +288,24 @@ void usercontrol(void) {
       roller.stop();
     }
     
+    
+
+    check_the_disk_presence(disk_is_in);
+//stopping the intake as soon as disk is in the intake
+if(disk_is_in)
+{
+  intake.stop();
+  launcher_left.spin(forward);
+  launcher_right.spin(forward);
+
+  while(/*code to wait for the button Y to be pressed*/)
+  {
+    /*check if the button is is still not pressed*/
+  }
+
+  intake.spin(forward);
+  wait(3,sec);
+}
     // ........................................................................
     // Insert user code here. This is where you use the joystick values to
     // update your motors, etc.
