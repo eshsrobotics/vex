@@ -1,3 +1,126 @@
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// launcher_left        motor         11              
+// launcher_right       motor         13              
+// Controller1          controller                    
+// Drivetrain           drivetrain    3, 7, 10, 9     
+// intake               motor         20              
+// roller               motor         19              
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// launcher_left        motor         11              
+// launcher_right       motor         13              
+// Controller1          controller                    
+// Drivetrain           drivetrain    3, 7, 10, 9     
+// intake               motor         20              
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// launcher_left        motor         11              
+// launcher_right       motor         13              
+// Controller1          controller                    
+// Drivetrain           drivetrain    3, 7, 10, 9     
+// intake               motor         20              
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// launcher_left        motor         11              
+// launcher_right       motor         13              
+// Controller1          controller                    
+// Drivetrain           drivetrain    3, 7, 10, 9     
+// intake               motor         20              
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// launcher_left        motor         11              
+// launcher_right       motor         13              
+// Controller1          controller                    
+// Drivetrain           drivetrain    3, 7, 10, 9     
+// intake               motor         20              
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// launcher_left        motor         11              
+// launcher_right       motor         13              
+// Controller1          controller                    
+// Drivetrain           drivetrain    3, 7, 10, 9     
+// intake               motor         20              
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// launcher_left        motor         11              
+// launcher_right       motor         13              
+// Controller1          controller                    
+// Drivetrain           drivetrain    3, 6, 10, 9     
+// intake               motor         20              
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// launcher_left        motor         11              
+// launcher_right       motor         13              
+// Controller1          controller                    
+// Drivetrain           drivetrain    3, 6, 10, 9     
+// intake               motor         1               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// launcher_left        motor         11              
+// launcher_right       motor         13              
+// Controller1          controller                    
+// Drivetrain           drivetrain    3, 6, 10, 9     
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// launcher_left        motor         11              
+// launcher_right       motor         13              
+// Controller1          controller                    
+// Drivetrain           drivetrain    3, 6, 10, 9     
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// launcher_left        motor         11              
+// launcher_right       motor         13              
+// Controller1          controller                    
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// back_right           motor         9               
+// launcher_left        motor         11              
+// launcher_right       motor         13              
+// Controller1          controller                    
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// back_left            motor         3               
+// back_right           motor         9               
+// launcher_left        motor         11              
+// launcher_right       motor         13              
+// Controller1          controller                    
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// front_right          motor         10              
+// back_left            motor         3               
+// back_right           motor         9               
+// launcher_left        motor         11              
+// launcher_right       motor         13              
+// Controller1          controller                    
+// ---- END VEXCODE CONFIGURED DEVICES ----
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /*    Module:       main.cpp                                                  */
@@ -28,6 +151,9 @@ using namespace vex;
 competition Competition;
 
 // define your global instances of motors and other devices here
+bool intakeActive = false;
+bool shooterActive = false;
+directionType intakeDirection = forward;
 
 /*---------------------------------------------------------------------------*/
 /*                          Pre-Autonomous Functions                         */
@@ -73,81 +199,75 @@ void autonomous(void) {
 /*  You must modify the code to add your own robot specific commands here.   */
 /*---------------------------------------------------------------------------*/
 
+void toggleShooter() {
+  const int DELAY_MILLISECONDS = 100;
+  static int lastMillisecondsPressed = Brain.timer(msec);
+  if (Brain.timer(msec) - lastMillisecondsPressed >= DELAY_MILLISECONDS) {
+    if (shooterActive) {
+      launcher_left.spin(forward);
+      launcher_right.spin(forward);
+      Controller1.Screen.setCursor(3, 0);
+      Controller1.Screen.print("Shooter spinning                   ");
+    } else {
+      launcher_left.stop();
+      launcher_right.stop();
+      Controller1.Screen.setCursor(3, 0);
+      Controller1.Screen.print("Shooter stopped                   ");
+    }
+    shooterActive = !shooterActive;
+  }
+  lastMillisecondsPressed = Brain.timer(msec);
+}
+
+void toggleIntake() {
+  if (intakeActive) {
+    intake.spin(intakeDirection);
+    Controller1.Screen.setCursor(2, 0);
+    if (intakeDirection == forward) {
+      Controller1.Screen.print("Intake forwards                   ");
+    } else {
+      Controller1.Screen.print("Intake backwards                   ");
+    }
+  } else {
+    intake.stop();
+    Controller1.Screen.setCursor(2, 0);
+    Controller1.Screen.print("Intake stopped                   ");
+  }
+  intakeActive = !intakeActive;
+}
+
+void toggleIntakeDirection() {
+  if (intakeDirection == forward) {
+    intakeDirection = reverse;
+    Controller1.Screen.setCursor(1, 0);
+    Controller1.Screen.print("Intake direction reverse                   ");
+  } else {
+    intakeDirection = forward;
+    Controller1.Screen.setCursor(1, 0);
+    Controller1.Screen.print("Intake direction forward                   ");
+  }
+}
+
 void usercontrol(void) {
   // User control code here, inside the loop
   while (1) {
     // This is the main execution loop for the user control program.
     // Each time through the loop your program should update motor + servo
     // values based on feedback from the joysticks.
-
+    Controller1.ButtonA.pressed(toggleShooter);
+    Controller1.ButtonR1.pressed(toggleIntake);
+    Controller1.ButtonLeft.pressed(toggleIntakeDirection);
 
     int launcher_velocity = 100;
     launcher_left.setVelocity(launcher_velocity, pct);
     launcher_right.setVelocity(launcher_velocity, pct);
-
-    double left_axis = Controller1.Axis3.position(pct);
-    double right_axis = Controller1.Axis2.position(pct);
-    bool launcher_on = false;
-    const double launcherButtonTimeoutMilliseconds = 1000.0;
-    double time_last_pressed_miliseconds = 0; 
-
-
-    // If X the button is pressed, toggle the shooter motors on or off
-    // and then wait for a certain number of milliseconds for cooldown
-    // before allowing the toggle again.
-
-    if (Controller1.ButtonX.pressing()) {      
-      const double elapsedMilliseconds = Brain.timer(msec) - time_last_pressed_miliseconds;
-      if (elapsedMilliseconds >= launcherButtonTimeoutMilliseconds) {        
-        time_last_pressed_miliseconds = Brain.timer(msec);
-        launcher_on = !launcher_on;      
-      }
-    }
-
-    if (launcher_on) {
-      launcher_left.spin(forward);
-      launcher_right.spin(forward);
-    } else {
-      launcher_left.stop();
-      launcher_right.stop();
-    }
-
-    if (launcher_on) {
-      launcher_left.spin(forward);
-      launcher_right.spin(forward);
-    } else {
-      launcher_left.stop();
-      launcher_right.stop();
-    }
+    intake.setVelocity(100, pct);
     
-    //for handling the tank drive:
-
-    const int threshold = 10;
-
-    if (fabs(left_axis) < threshold) {
-      left_axis = 0;
-      front_left.stop();
-      back_left.stop();
+    if (Controller1.ButtonB.pressing()) {
+      roller.spin(forward);
     } else {
-      front_left.setVelocity(left_axis, pct); 
-      back_left.setVelocity(left_axis, pct); 
-      front_left.spin(forward);
-      back_left.spin(forward);
+      roller.stop();
     }
-
-    if (fabs(right_axis) < threshold) {
-      right_axis = 0;
-      front_right.stop();
-      back_right.stop();
-    } else {
-      front_right.setVelocity(right_axis, pct); 
-      back_right.setVelocity(right_axis, pct); 
-      front_right.spin(forward);
-      back_right.spin(forward);
-    }
-
-    
-    
     
     // ........................................................................
     // Insert user code here. This is where you use the joystick values to
