@@ -9,6 +9,7 @@ extern controller Controller1;
 extern drivetrain Drivetrain;
 extern motor intake;
 extern motor roller;
+extern distance distanceSensor;
 
 /**
  * Used to initialize code/tasks/devices added using tools in VEXcode Pro.

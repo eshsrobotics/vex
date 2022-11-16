@@ -7,6 +7,50 @@
 // Drivetrain           drivetrain    3, 7, 10, 9     
 // intake               motor         20              
 // roller               motor         19              
+// distanceSensor       distance      16              
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// launcher_left        motor         11              
+// launcher_right       motor         13              
+// Controller1          controller                    
+// Drivetrain           drivetrain    3, 7, 10, 9     
+// intake               motor         20              
+// roller               motor         19              
+// Distance16           distance      16              
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// launcher_left        motor         11              
+// launcher_right       motor         13              
+// Controller1          controller                    
+// Drivetrain           drivetrain    3, 7, 10, 9     
+// intake               motor         20              
+// roller               motor         19              
+// Distance16           distance      16              
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// launcher_left        motor         11              
+// launcher_right       motor         13              
+// Controller1          controller                    
+// Drivetrain           drivetrain    3, 7, 10, 9     
+// intake               motor         20              
+// roller               motor         19              
+// Distance2            distance      2               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// launcher_left        motor         11              
+// launcher_right       motor         13              
+// Controller1          controller                    
+// Drivetrain           drivetrain    3, 7, 10, 9     
+// intake               motor         20              
+// roller               motor         19              
 // ---- END VEXCODE CONFIGURED DEVICES ----
 // ---- START VEXCODE CONFIGURED DEVICES ----
 // Robot Configuration:
@@ -151,9 +195,6 @@ using namespace vex;
 competition Competition;
 
 // define your global instances of motors and other devices here
-bool intakeActive = false;
-bool shooterActive = false;
-directionType intakeDirection = forward;
 
 /*---------------------------------------------------------------------------*/
 /*                          Pre-Autonomous Functions                         */
@@ -199,74 +240,51 @@ void autonomous(void) {
 /*  You must modify the code to add your own robot specific commands here.   */
 /*---------------------------------------------------------------------------*/
 
-void toggleShooter() {
-  const int DELAY_MILLISECONDS = 100;
-  static int lastMillisecondsPressed = Brain.timer(msec);
-  if (Brain.timer(msec) - lastMillisecondsPressed >= DELAY_MILLISECONDS) {
-    if (shooterActive) {
-      launcher_left.spin(forward);
-      launcher_right.spin(forward);
-      Controller1.Screen.setCursor(3, 0);
-      Controller1.Screen.print("Shooter spinning                   ");
-    } else {
-      launcher_left.stop();
-      launcher_right.stop();
-      Controller1.Screen.setCursor(3, 0);
-      Controller1.Screen.print("Shooter stopped                   ");
-    }
-    shooterActive = !shooterActive;
-  }
-  lastMillisecondsPressed = Brain.timer(msec);
-}
-
-void toggleIntake() {
-  if (intakeActive) {
-    intake.spin(intakeDirection);
-    Controller1.Screen.setCursor(2, 0);
-    if (intakeDirection == forward) {
-      Controller1.Screen.print("Intake forwards                   ");
-    } else {
-      Controller1.Screen.print("Intake backwards                   ");
-    }
-  } else {
-    intake.stop();
-    Controller1.Screen.setCursor(2, 0);
-    Controller1.Screen.print("Intake stopped                   ");
-  }
-  intakeActive = !intakeActive;
-}
-
-void toggleIntakeDirection() {
-  if (intakeDirection == forward) {
-    intakeDirection = reverse;
-    Controller1.Screen.setCursor(1, 0);
-    Controller1.Screen.print("Intake direction reverse                   ");
-  } else {
-    intakeDirection = forward;
-    Controller1.Screen.setCursor(1, 0);
-    Controller1.Screen.print("Intake direction forward                   ");
-  }
-}
-
 void usercontrol(void) {
   // User control code here, inside the loop
   while (1) {
     // This is the main execution loop for the user control program.
     // Each time through the loop your program should update motor + servo
     // values based on feedback from the joysticks.
-    Controller1.ButtonA.pressed(toggleShooter);
-    Controller1.ButtonR1.pressed(toggleIntake);
-    Controller1.ButtonLeft.pressed(toggleIntakeDirection);
 
+    // Initializes the launcher velocity variable and sets the launcher motors to that amount
+    // Initializes the intake velocity variable and sets the intake motor to that amount
     int launcher_velocity = 100;
+    int intake_velocity = 100;
     launcher_left.setVelocity(launcher_velocity, pct);
     launcher_right.setVelocity(launcher_velocity, pct);
-    intake.setVelocity(100, pct);
+    intake.setVelocity(intake_velocity, pct);
     
-    if (Controller1.ButtonB.pressing()) {
+    // While X is held down, the roller will spin, while it is released, the roller will stop
+    if (Controller1.ButtonX.pressing()) {
       roller.spin(forward);
     } else {
       roller.stop();
+    }
+
+    // If the distance sensor detects an object within 35 mm (3.5 cm), the shooter will
+    // automatically turn on and when A is pressed on the controller, the intake will turn on,
+    // pushing the disc into the shooter and launching it
+    //
+    // If the sensor does not detect an object, the intake is automatically on and when A is
+    // pressed, the shooter turns on
+    if(distanceSensor.objectDistance(mm) < 35) {
+      launcher_left.spin(forward);
+      launcher_right.spin(forward);
+      if(Controller1.ButtonA.pressing()) {
+        intake.spin(forward);
+      } else {
+        intake.stop();
+      }
+    } else {
+      if (Controller1.ButtonA.pressing()) {
+        launcher_left.spin(forward);
+        launcher_right.spin(forward);
+      } else {
+        launcher_left.stop();
+        launcher_right.stop();
+      }
+      intake.spin(forward);
     }
     
     // ........................................................................
