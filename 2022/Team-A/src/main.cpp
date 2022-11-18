@@ -5,6 +5,28 @@
 // launcher_right       motor         13              
 // Controller1          controller                    
 // Drivetrain           drivetrain    3, 7, 10, 9     
+// intake               motor         19              
+// roller               motor         18              
+// distanceSensor       distance      16              
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// launcher_left        motor         11              
+// launcher_right       motor         13              
+// Controller1          controller                    
+// Drivetrain           drivetrain    3, 7, 10, 9     
+// intake               motor         20              
+// roller               motor         18              
+// distanceSensor       distance      16              
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// launcher_left        motor         11              
+// launcher_right       motor         13              
+// Controller1          controller                    
+// Drivetrain           drivetrain    3, 7, 10, 9     
 // intake               motor         20              
 // roller               motor         19              
 // distanceSensor       distance      16              
@@ -249,14 +271,14 @@ void usercontrol(void) {
 
     // Initializes the launcher velocity variable and sets the launcher motors to that amount
     // Initializes the intake velocity variable and sets the intake motor to that amount
-    int launcher_velocity = 100;
-    int intake_velocity = 100;
+    int launcher_velocity = 60;
+    int intake_velocity = 35;
     launcher_left.setVelocity(launcher_velocity, pct);
     launcher_right.setVelocity(launcher_velocity, pct);
     intake.setVelocity(intake_velocity, pct);
     
     // While X is held down, the roller will spin, while it is released, the roller will stop
-    if (Controller1.ButtonX.pressing()) {
+    if (Controller1.ButtonB.pressing()) {
       roller.spin(forward);
     } else {
       roller.stop();
@@ -268,9 +290,13 @@ void usercontrol(void) {
     //
     // If the sensor does not detect an object, the intake is automatically on and when A is
     // pressed, the shooter turns on
-    if(distanceSensor.objectDistance(mm) < 35) {
+    if(distanceSensor.objectDistance(mm) < 55) {
       launcher_left.spin(forward);
       launcher_right.spin(forward);
+      Controller1.Screen.setCursor(1, 1);
+      Controller1.Screen.print("Left - %.2f     ", launcher_left.velocity(pct));
+      Controller1.Screen.setCursor(2, 1);
+      Controller1.Screen.print("Right - %.2f     ", launcher_right.velocity(pct));
       if(Controller1.ButtonA.pressing()) {
         intake.spin(forward);
       } else {
@@ -280,9 +306,17 @@ void usercontrol(void) {
       if (Controller1.ButtonA.pressing()) {
         launcher_left.spin(forward);
         launcher_right.spin(forward);
+        Controller1.Screen.setCursor(1, 1);
+        Controller1.Screen.print("Left - %.2f     ", launcher_left.velocity(pct));
+        Controller1.Screen.setCursor(2, 1);
+        Controller1.Screen.print("Right - %.2f     ", launcher_right.velocity(pct));
       } else {
         launcher_left.stop();
         launcher_right.stop();
+        Controller1.Screen.setCursor(1, 1);
+        Controller1.Screen.print("Left - %.2f     ", launcher_left.velocity(pct));
+        Controller1.Screen.setCursor(2, 1);
+        Controller1.Screen.print("Right - %.2f     ", launcher_right.velocity(pct));
       }
       intake.spin(forward);
     }

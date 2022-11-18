@@ -18,8 +18,8 @@ motor rightMotorA = motor(PORT10, ratio18_1, true);
 motor rightMotorB = motor(PORT9, ratio18_1, true);
 motor_group RightDriveSmart = motor_group(rightMotorA, rightMotorB);
 drivetrain Drivetrain = drivetrain(LeftDriveSmart, RightDriveSmart, 319.19, 374.65, 327.025, mm, 1);
-motor intake = motor(PORT20, ratio18_1, true);
-motor roller = motor(PORT19, ratio18_1, false);
+motor intake = motor(PORT19, ratio18_1, true);
+motor roller = motor(PORT18, ratio18_1, false);
 distance distanceSensor = distance(PORT16);
 
 // VEXcode generated functions
