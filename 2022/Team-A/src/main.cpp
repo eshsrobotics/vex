@@ -1,185 +1,7 @@
 // ---- START VEXCODE CONFIGURED DEVICES ----
 // Robot Configuration:
 // [Name]               [Type]        [Port(s)]
-// launcher_left        motor         11              
-// launcher_right       motor         13              
-// Controller1          controller                    
-// Drivetrain           drivetrain    3, 7, 10, 9     
-// intake               motor         19              
-// roller               motor         18              
-// distanceSensor       distance      16              
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// launcher_left        motor         11              
-// launcher_right       motor         13              
-// Controller1          controller                    
-// Drivetrain           drivetrain    3, 7, 10, 9     
-// intake               motor         20              
-// roller               motor         18              
-// distanceSensor       distance      16              
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// launcher_left        motor         11              
-// launcher_right       motor         13              
-// Controller1          controller                    
-// Drivetrain           drivetrain    3, 7, 10, 9     
-// intake               motor         20              
-// roller               motor         19              
-// distanceSensor       distance      16              
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// launcher_left        motor         11              
-// launcher_right       motor         13              
-// Controller1          controller                    
-// Drivetrain           drivetrain    3, 7, 10, 9     
-// intake               motor         20              
-// roller               motor         19              
-// Distance16           distance      16              
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// launcher_left        motor         11              
-// launcher_right       motor         13              
-// Controller1          controller                    
-// Drivetrain           drivetrain    3, 7, 10, 9     
-// intake               motor         20              
-// roller               motor         19              
-// Distance16           distance      16              
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// launcher_left        motor         11              
-// launcher_right       motor         13              
-// Controller1          controller                    
-// Drivetrain           drivetrain    3, 7, 10, 9     
-// intake               motor         20              
-// roller               motor         19              
-// Distance2            distance      2               
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// launcher_left        motor         11              
-// launcher_right       motor         13              
-// Controller1          controller                    
-// Drivetrain           drivetrain    3, 7, 10, 9     
-// intake               motor         20              
-// roller               motor         19              
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// launcher_left        motor         11              
-// launcher_right       motor         13              
-// Controller1          controller                    
-// Drivetrain           drivetrain    3, 7, 10, 9     
-// intake               motor         20              
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// launcher_left        motor         11              
-// launcher_right       motor         13              
-// Controller1          controller                    
-// Drivetrain           drivetrain    3, 7, 10, 9     
-// intake               motor         20              
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// launcher_left        motor         11              
-// launcher_right       motor         13              
-// Controller1          controller                    
-// Drivetrain           drivetrain    3, 7, 10, 9     
-// intake               motor         20              
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// launcher_left        motor         11              
-// launcher_right       motor         13              
-// Controller1          controller                    
-// Drivetrain           drivetrain    3, 7, 10, 9     
-// intake               motor         20              
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// launcher_left        motor         11              
-// launcher_right       motor         13              
-// Controller1          controller                    
-// Drivetrain           drivetrain    3, 7, 10, 9     
-// intake               motor         20              
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// launcher_left        motor         11              
-// launcher_right       motor         13              
-// Controller1          controller                    
-// Drivetrain           drivetrain    3, 6, 10, 9     
-// intake               motor         20              
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// launcher_left        motor         11              
-// launcher_right       motor         13              
-// Controller1          controller                    
-// Drivetrain           drivetrain    3, 6, 10, 9     
-// intake               motor         1               
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// launcher_left        motor         11              
-// launcher_right       motor         13              
-// Controller1          controller                    
-// Drivetrain           drivetrain    3, 6, 10, 9     
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// launcher_left        motor         11              
-// launcher_right       motor         13              
-// Controller1          controller                    
-// Drivetrain           drivetrain    3, 6, 10, 9     
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// launcher_left        motor         11              
-// launcher_right       motor         13              
-// Controller1          controller                    
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// back_right           motor         9               
-// launcher_left        motor         11              
-// launcher_right       motor         13              
-// Controller1          controller                    
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// back_left            motor         3               
-// back_right           motor         9               
-// launcher_left        motor         11              
-// launcher_right       motor         13              
-// Controller1          controller                    
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
+// front_left           motor         7               
 // front_right          motor         10              
 // back_left            motor         3               
 // back_right           motor         9               
@@ -196,17 +18,6 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// front_left           motor         7               
-// front_right          motor         10              
-// back_left            motor         3               
-// back_right           motor         9               
-// launcher_left        motor         11              
-// launcher_right       motor         13              
-// Controller1          controller                    
-// ---- END VEXCODE CONFIGURED DEVICES ----
 
 #include "vex.h"
 
@@ -215,6 +26,9 @@ using namespace vex;
 
 // A global instance of competition
 competition Competition;
+
+void winpoint_autonomous();
+
 
 // define your global instances of motors and other devices here
 
@@ -247,10 +61,45 @@ void pre_auton(void) {
 /*---------------------------------------------------------------------------*/
 
 void autonomous(void) {
-  // ..........................................................................
-  // Insert autonomous user code here.
-  // ..........................................................................
+  winpoint_autonomous();
 }
+
+void winpoint_autonomous() {
+  const int DRIVE_FORWARD_MS = 200;
+  const int ROLLER_SPIN_MS = 150;
+
+  
+  // Autonomous does not start at zero, when the autonomous routine starts, the match
+  // may start minutes later. 
+  int start_time_ms = Brain.timer(msec);
+
+
+  // Start driving forward.
+  Drivetrain.setDriveVelocity(100, percent);
+  Drivetrain.drive(fwd);
+
+  roller.setVelocity(50, percent);
+
+  while(true) {
+    int elapsed_time_ms = Brain.timer(msec) - start_time_ms;
+    
+    if (elapsed_time_ms > DRIVE_FORWARD_MS) {
+      Drivetrain.stop();
+
+      roller.spin(fwd);
+    } else if (elapsed_time_ms > DRIVE_FORWARD_MS + ROLLER_SPIN_MS) {
+      roller.stop();
+      break;
+    }
+
+
+
+
+    wait(20, msec); // Sleep the task for a short amount of time to
+                    // prevent wasted resources.
+  }
+}
+
 
 /*---------------------------------------------------------------------------*/
 /*                                                                           */
