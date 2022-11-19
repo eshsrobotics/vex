@@ -65,8 +65,9 @@ void autonomous(void) {
 }
 
 void winpoint_autonomous() {
-  const int DRIVE_FORWARD_MS = 200;
-  const int ROLLER_SPIN_MS = 150;
+  // Set times for how long the flywheel and intake spin
+  const int READY_FLYWHEEL = 5000;
+  const int MOVE_INTAKE = 10000;
 
   
   // Autonomous does not start at zero, when the autonomous routine starts, the match
@@ -74,26 +75,27 @@ void winpoint_autonomous() {
   int start_time_ms = Brain.timer(msec);
 
 
-  // Start driving forward.
-  Drivetrain.setDriveVelocity(100, percent);
-  Drivetrain.drive(fwd);
+  // Set velocities and start spinning the flywheel.
+  launcher_left.setVelocity(-100, pct);
+  launcher_right.setVelocity(-100, pct);
+  launcher_left.spin(forward);
+  launcher_right.spin(forward);
 
-  roller.setVelocity(50, percent);
+  intake.setVelocity(35, percent);
 
   while(true) {
     int elapsed_time_ms = Brain.timer(msec) - start_time_ms;
     
-    if (elapsed_time_ms > DRIVE_FORWARD_MS) {
-      Drivetrain.stop();
-
-      roller.spin(fwd);
-    } else if (elapsed_time_ms > DRIVE_FORWARD_MS + ROLLER_SPIN_MS) {
-      roller.stop();
+    // If the flywheel is ready, start the intake
+    // After the intake is done moving, stop everything and quit out of the while loop
+    if (elapsed_time_ms > READY_FLYWHEEL) {
+      intake.spin(forward);
+    } else if (elapsed_time_ms > MOVE_INTAKE + READY_FLYWHEEL) {
+      intake.stop();
+      launcher_left.stop();
+      launcher_right.stop();
       break;
     }
-
-
-
 
     wait(20, msec); // Sleep the task for a short amount of time to
                     // prevent wasted resources.
@@ -148,6 +150,8 @@ void usercontrol(void) {
       Controller1.Screen.print("Right - %.2f     ", launcher_right.velocity(pct));
       if(Controller1.ButtonA.pressing()) {
         intake.spin(forward);
+      } else if (Controller1.ButtonR1.pressing()) {
+        intake.spin(reverse);
       } else {
         intake.stop();
       }
@@ -167,7 +171,11 @@ void usercontrol(void) {
         Controller1.Screen.setCursor(2, 1);
         Controller1.Screen.print("Right - %.2f     ", launcher_right.velocity(pct));
       }
-      intake.spin(forward);
+      if (Controller1.ButtonR1.pressing()) {
+        intake.spin(reverse);
+      } else {
+        intake.spin(forward);
+      }
     }
     
     // ........................................................................
