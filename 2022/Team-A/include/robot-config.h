@@ -6,10 +6,11 @@ extern brain Brain;
 extern motor launcher_left;
 extern motor launcher_right;
 extern controller Controller1;
-extern drivetrain Drivetrain;
 extern motor intake;
 extern motor roller;
 extern distance distanceSensor;
+extern motor_group leftDrive;
+extern motor_group rightDrive;
 
 /**
  * Used to initialize code/tasks/devices added using tools in VEXcode Pro.

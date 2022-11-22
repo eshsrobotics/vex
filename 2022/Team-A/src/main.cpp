@@ -128,6 +128,26 @@ void usercontrol(void) {
     launcher_right.setVelocity(launcher_velocity, pct);
     intake.setVelocity(intake_velocity, pct);
     
+    // Make robot be able to move on the ground
+    leftDrive.setVelocity(Controller1.Axis3.position(), percent);
+    rightDrive.setVelocity(Controller1.Axis2.position(), percent);
+
+    // A deadzone is a term usually applied to robots in which there would be no movement given a threshold closest to zero
+    const double deadzone = 5;
+    if (Controller1.Axis3.position() < deadzone && Controller1.Axis3.position() > -deadzone) {
+      // deadzone for left axis
+      leftDrive.stop();
+    } else {
+      leftDrive.spin(fwd);
+    }
+
+    if (Controller1.Axis2.position() < deadzone && Controller1.Axis2.position() > -deadzone) {
+      // deadzone for right axis
+      rightDrive.stop();
+    } else {
+      rightDrive.spin(fwd);
+    }
+
     // While X is held down, the roller will spin, while it is released, the roller will stop
     if (Controller1.ButtonB.pressing()) {
       roller.spin(forward);
