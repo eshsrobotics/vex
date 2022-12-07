@@ -1,3 +1,31 @@
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// Intakemotors         motor_group   1, 10           
+// Drivetrain           drivetrain    4, 5, 3, 2      
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// Intakemotors         motor_group   1, 10           
+// Drivetrain           drivetrain    4, 5, 3, 2      
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// Intakemotors         motor_group   1, 10           
+// Drivetrain           drivetrain    4, 5, 3, 2      
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// Intakemotors         motor_group   1, 10           
+// Drivetrain           drivetrain    4, 5, 3, 2      
+// ---- END VEXCODE CONFIGURED DEVICES ----
 
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
@@ -53,11 +81,10 @@ void pre_auton(void) {
 /*  You must modify the code to add your own robot specific commands here.   */
 /*---------------------------------------------------------------------------*/
 
-void autonomous(void) {
+void autonomous(void) {}
   // ..........................................................................
   // Insert autonomous user code here.
-  // ..........................................................................
-}
+  // ..........................................................................}
 
 /*---------------------------------------------------------------------------*/
 /*                                                                           */
