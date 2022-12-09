@@ -19,14 +19,6 @@
 // Intakemotors         motor_group   1, 10           
 // Drivetrain           drivetrain    4, 5, 3, 2      
 // ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// Controller1          controller                    
-// Intakemotors         motor_group   1, 10           
-// Drivetrain           drivetrain    4, 5, 3, 2      
-// ---- END VEXCODE CONFIGURED DEVICES ----
-
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /*    Module:       main.cpp                                                  */
@@ -39,14 +31,25 @@
 // ---- START VEXCODE CONFIGURED DEVICES ----
 // Robot Configuration:
 // [Name]               [Type]        [Port(s)]
-// Controller1          controller                    
-// Intakemotors         motor_group   1, 10           
-// Drivetrain           drivetrain    4, 5, 3, 2      
+// Controller1          controller
+// Intakemotors         motor_group   1, 10
+// Drivetrain           drivetrain    4, 5, 3, 2
 // ---- END VEXCODE CONFIGURED DEVICES ----
 
 #include "vex.h"
 
 using namespace vex;
+
+motor front_left(4);
+motor back_left(5);
+motor_group left_motor_group(front_left, back_left);
+
+motor front_right(3);
+motor back_right(2);
+motor_group right_motor_group(front_right, back_right);
+
+// Forward declarations.
+void auton_implementation();
 
 // A global instance of competition
 competition Competition;
@@ -81,10 +84,62 @@ void pre_auton(void) {
 /*  You must modify the code to add your own robot specific commands here.   */
 /*---------------------------------------------------------------------------*/
 
-void autonomous(void) {}
+void autonomous(void) {
   // ..........................................................................
   // Insert autonomous user code here.
-  // ..........................................................................}
+  // ..........................................................................
+  auton_implementation();
+}
+
+// Time-based autonomous routine for the 2022 Team P 'Bot.  Backs
+// off into a roller, rolls it, and then causes general mischief to
+// score points.
+//
+// This autonomous is designed to work with a robot that has started just in
+// front of the "hard roller" (the roller that does not have a line of tape
+// right next to it) in hopes of conflicting less w/ other alliance partners'
+// autonomous routines.
+void auton_implementation() {
+
+  // The amount of time that we will reverse the chassis in order to make
+  // contact with the roller behind us.
+  const double REVERSE_DRIVE_MS = 150.0;
+
+  // The roll time ms needs to spin for a certain amount of time
+  // in order to attain our team's desired color.
+  //
+  // The roller should turn counter-clockwise in order to get the color of your
+  // team.
+  const double ROLL_TIME_MS = 500;
+
+  // This const was set in place in order to tell us what speed the autonous
+  // should be at
+  const double DRIVE_VELOCITY_PCT = 20;
+
+  const double ROLLER_VELOCITY_PCT = 50;
+
+  const double START_TIME_MS = Brain.timer(msec);
+
+  while (true) {
+
+    double elapsedTimeMs = Brain.timer(msec) - START_TIME_MS;
+
+    if (elapsedTimeMs < START_TIME_MS + REVERSE_DRIVE_MS) {
+      // Step 1: Reverse the drive.
+      // Drivetrain.drive(reverse, DRIVE_VELOCITY_PCT, velocityUnits::pct);
+      right_motor_group.spin(reverse, DRIVE_VELOCITY_PCT, velocityUnits::pct);
+    } else if (elapsedTimeMs >= START_TIME_MS + REVERSE_DRIVE_MS &&
+               elapsedTimeMs < START_TIME_MS + REVERSE_DRIVE_MS + ROLL_TIME_MS) {
+      // Step 2: Activiate the roller.
+      Intakemotors.spin(directionType::rev, ROLLER_VELOCITY_PCT, velocityUnits::pct);
+    } else {
+      // Step 3: Stop the roller.
+      Intakemotors.stop();
+      // Drivetrain.stop();
+      right_motor_group.stop();
+    }
+  }
+}
 
 /*---------------------------------------------------------------------------*/
 /*                                                                           */
@@ -120,23 +175,25 @@ void usercontrol(void) {
     // LeftDriveMotor.setVelocity(Controller1.Axis3.position(), percent);
     // RightDriveMotor.setVelocity(Controller1.Axis2.position(), percent);
 
-    // A deadzone is a term usually applied to robots in which there would be no movement given a threshold closest to zero
+    // A deadzone is a term usually applied to robots in which there would be no
+    // movement given a threshold closest to zero
     /*const double deadzone = 1;
-    if (Controller1.Axis3.position() < deadzone && Controller1.Axis3.position() > -deadzone) {
+    if (Controller1.Axis3.position() < deadzone && Controller1.Axis3.position()
+    > -deadzone) {
       // deadzone for left axis
       LeftDriveMotor.stop();
     } else {
       LeftDriveMotor.spin(fwd);
     }
 
-    if (Controller1.Axis2.position() < deadzone && Controller1.Axis2.position() > -deadzone) {
+    if (Controller1.Axis2.position() < deadzone && Controller1.Axis2.position()
+    > -deadzone) {
       // deadzone for right axis
       RightDriveMotor.stop();
     } else {
       RightDriveMotor.spin(fwd);
     }*/
 
-    
     // ........................................................................
     // Insert user code here. This is where you use the joystick values to
     // update your motors, etc.
