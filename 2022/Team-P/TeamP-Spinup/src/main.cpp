@@ -19,6 +19,13 @@
 // Intakemotors         motor_group   1, 10           
 // Drivetrain           drivetrain    4, 5, 3, 2      
 // ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// Intakemotors         motor_group   1, 10           
+// Drivetrain           drivetrain    4, 5, 3, 2      
+// ---- END VEXCODE CONFIGURED DEVICES ----
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /*    Module:       main.cpp                                                  */
@@ -101,8 +108,10 @@ void autonomous(void) {
 // autonomous routines.
 void auton_implementation() {
 
-  // The amount of time that we will reverse the chassis in order to make
-  // contact with the roller behind us.
+  // The amount of time to reverse the chassis without also activating the
+  // roller.  The goal is for us to make contact with the blue/red roller
+  // behind us, then activate the roller motor _while driving backward_ in
+  // order to guarantee that it rolls.
   const double REVERSE_DRIVE_MS = 150.0;
 
   // The roll time ms needs to spin for a certain amount of time
@@ -124,19 +133,19 @@ void auton_implementation() {
 
     double elapsedTimeMs = Brain.timer(msec) - START_TIME_MS;
 
-    if (elapsedTimeMs < START_TIME_MS + REVERSE_DRIVE_MS) {
+    if (elapsedTimeMs < REVERSE_DRIVE_MS) {
       // Step 1: Reverse the drive.
       // Drivetrain.drive(reverse, DRIVE_VELOCITY_PCT, velocityUnits::pct);
-      right_motor_group.spin(reverse, DRIVE_VELOCITY_PCT, velocityUnits::pct);
-    } else if (elapsedTimeMs >= START_TIME_MS + REVERSE_DRIVE_MS &&
-               elapsedTimeMs < START_TIME_MS + REVERSE_DRIVE_MS + ROLL_TIME_MS) {
+      left_motor_group.spin(reverse, DRIVE_VELOCITY_PCT, velocityUnits::pct);
+    } else if (elapsedTimeMs >= REVERSE_DRIVE_MS &&
+               elapsedTimeMs < REVERSE_DRIVE_MS + ROLL_TIME_MS) {
       // Step 2: Activiate the roller.
       Intakemotors.spin(directionType::rev, ROLLER_VELOCITY_PCT, velocityUnits::pct);
     } else {
       // Step 3: Stop the roller.
       Intakemotors.stop();
       // Drivetrain.stop();
-      right_motor_group.stop();
+      left_motor_group.stop();
     }
   }
 }
