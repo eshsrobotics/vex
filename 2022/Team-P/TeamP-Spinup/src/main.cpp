@@ -26,6 +26,13 @@
 // Intakemotors         motor_group   1, 10           
 // Drivetrain           drivetrain    4, 5, 3, 2      
 // ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// Intakemotors         motor_group   1, 10           
+// Drivetrain           drivetrain    4, 5, 3, 2      
+// ---- END VEXCODE CONFIGURED DEVICES ----
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /*    Module:       main.cpp                                                  */
@@ -62,6 +69,42 @@ void auton_implementation();
 competition Competition;
 
 // define your global instances of motors and other devices here
+
+// This fuction take 3 inputs which are the degrees of freedom (foward back and 
+// left right, and turning) and converts then into 4 outputs (The  motor speeds).
+// 
+// Arguments: 
+// - strafeLeftRight: Sideways strafing value from -100 to 100.
+//                    Negative numbers strafe left.
+// - fowardBack:      Moving foward and backwards value from -100 to 100.
+//                    Negative numbers move backwards.
+// - turnLeftRight:   Turning counterclockwise and clockwise value from -100 to 100.
+//                    Negative numbers turn counterclockwise. 
+
+void mechDrive(int strafeLeftRight, int forwardBack, int turnLeftRight) {
+
+  double front_right_speed = forwardBack - strafeLeftRight - turnLeftRight;
+  double back_right_speed = forwardBack + strafeLeftRight - turnLeftRight;
+  double front_left_speed = forwardBack + strafeLeftRight + turnLeftRight;
+  double back_left_speed = forwardBack - strafeLeftRight + turnLeftRight;
+
+  // Clamp values between -100 to 100 and spins the motor.
+  auto clamp = [] (int value, motor& m) {
+    if (value < -100) {
+      value = -100;
+    } else if (value > 100) {
+      value = 100;
+    } else if (value == 0) {
+      m.stop();
+      return;
+    }
+    m.spin(fwd, value, pct);
+  };
+  clamp(front_right_speed, front_right);
+  clamp(front_left_speed, front_left);
+  clamp(back_left_speed, back_left);
+  clamp(back_right_speed, back_right);
+}
 
 /*---------------------------------------------------------------------------*/
 /*                          Pre-Autonomous Functions                         */
