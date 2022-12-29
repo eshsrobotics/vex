@@ -1,38 +1,3 @@
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// Controller1          controller                    
-// Intakemotors         motor_group   1, 10           
-// Drivetrain           drivetrain    4, 5, 3, 2      
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// Controller1          controller                    
-// Intakemotors         motor_group   1, 10           
-// Drivetrain           drivetrain    4, 5, 3, 2      
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// Controller1          controller                    
-// Intakemotors         motor_group   1, 10           
-// Drivetrain           drivetrain    4, 5, 3, 2      
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// Controller1          controller                    
-// Intakemotors         motor_group   1, 10           
-// Drivetrain           drivetrain    4, 5, 3, 2      
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// Controller1          controller                    
-// Intakemotors         motor_group   1, 10           
-// Drivetrain           drivetrain    4, 5, 3, 2      
-// ---- END VEXCODE CONFIGURED DEVICES ----
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /*    Module:       main.cpp                                                  */
@@ -209,47 +174,11 @@ void usercontrol(void) {
 
   // User control code here, inside the loop
   while (1) {
-    // This is the main execution loop for the user control program.
-    // Each time through the loop your program should update motor + servo
-    // values based on feedback from the joysticks.
+    int leftRight = Controller1.Axis4.value();
+    int fowardBack = Controller1.Axis3.value();
+    int turnValue = Controller1.Axis1.value();
 
-    // This code controls the intake, If you press the up button it will move
-    // the discs up and if you press the down button it moves the discs down
-    /* if (Controller1.ButtonL1.pressing()) {
-      Intakemotors.spin(forward);
-    } else if (Controller1.ButtonR1.pressing()) {
-      Intakemotors.spin(reverse);
-    } else {
-      Intakemotors.stop();
-    }
- */
-    // Make robot be able to move on the ground
-    // LeftDriveMotor.setVelocity(Controller1.Axis3.position(), percent);
-    // RightDriveMotor.setVelocity(Controller1.Axis2.position(), percent);
-
-    // A deadzone is a term usually applied to robots in which there would be no
-    // movement given a threshold closest to zero
-    /*const double deadzone = 1;
-    if (Controller1.Axis3.position() < deadzone && Controller1.Axis3.position()
-    > -deadzone) {
-      // deadzone for left axis
-      LeftDriveMotor.stop();
-    } else {
-      LeftDriveMotor.spin(fwd);
-    }
-
-    if (Controller1.Axis2.position() < deadzone && Controller1.Axis2.position()
-    > -deadzone) {
-      // deadzone for right axis
-      RightDriveMotor.stop();
-    } else {
-      RightDriveMotor.spin(fwd);
-    }*/
-
-    // ........................................................................
-    // Insert user code here. This is where you use the joystick values to
-    // update your motors, etc.
-    // ........................................................................
+    mechDrive(leftRight, fowardBack, turnValue);
 
     wait(20, msec); // Sleep the task for a short amount of time to
                     // prevent wasted resources.
