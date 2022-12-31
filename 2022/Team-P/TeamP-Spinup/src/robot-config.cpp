@@ -19,12 +19,16 @@ motor rightMotorA = motor(PORT3, ratio18_1, true);
 motor rightMotorB = motor(PORT2, ratio18_1, true);
 motor_group RightDriveSmart = motor_group(rightMotorA, rightMotorB);
 drivetrain Drivetrain = drivetrain(LeftDriveSmart, RightDriveSmart, 319.19, 304.79999999999995, 203.2, mm, 1);
+motor FlywheelMotorA = motor(PORT8, ratio18_1, false);
+motor FlywheelMotorB = motor(PORT9, ratio18_1, false);
+motor_group Flywheel = motor_group(FlywheelMotorA, FlywheelMotorB);
 
 // VEXcode generated functions
 // define variable for remote controller enable/disable
 bool RemoteControlCodeEnabled = true;
 // define variables used for controlling motors based on controller inputs
 bool Controller1LeftShoulderControlMotorsStopped = true;
+bool Controller1XBButtonsControlMotorsStopped = true;
 
 // define a task that will handle monitoring inputs from Controller1
 int rc_auto_loop_function_Controller1() {
@@ -43,6 +47,18 @@ int rc_auto_loop_function_Controller1() {
         Intakemotors.stop();
         // set the toggle so that we don't constantly tell the motor to stop when the buttons are released
         Controller1LeftShoulderControlMotorsStopped = true;
+      }
+      // check the ButtonX/ButtonB status to control Flywheel
+      if (Controller1.ButtonX.pressing()) {
+        Flywheel.spin(forward);
+        Controller1XBButtonsControlMotorsStopped = false;
+      } else if (Controller1.ButtonB.pressing()) {
+        Flywheel.spin(reverse);
+        Controller1XBButtonsControlMotorsStopped = false;
+      } else if (!Controller1XBButtonsControlMotorsStopped) {
+        Flywheel.stop();
+        // set the toggle so that we don't constantly tell the motor to stop when the buttons are released
+        Controller1XBButtonsControlMotorsStopped = true;
       }
     }
     // wait before repeating the process
