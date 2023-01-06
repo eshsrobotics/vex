@@ -1,51 +1,3 @@
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// Controller1          controller                    
-// Intakemotors         motor_group   1, 10           
-// Drivetrain           drivetrain    4, 5, 3, 2      
-// Flywheel             motor_group   8, 9            
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// Controller1          controller                    
-// Intakemotors         motor_group   1, 10           
-// Drivetrain           drivetrain    4, 5, 3, 2      
-// Flywheel             motor_group   8, 9            
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// Controller1          controller                    
-// Intakemotors         motor_group   1, 10           
-// Drivetrain           drivetrain    4, 5, 3, 2      
-// Flywheel             motor_group   8, 9            
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// Controller1          controller                    
-// Intakemotors         motor_group   1, 10           
-// Drivetrain           drivetrain    4, 5, 3, 2      
-// Flywheel             motor_group   8, 9            
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// Controller1          controller                    
-// Intakemotors         motor_group   1, 10           
-// Drivetrain           drivetrain    4, 5, 3, 2      
-// Flywheel             motor_group   8, 9            
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// Controller1          controller                    
-// Intakemotors         motor_group   1, 10           
-// Drivetrain           drivetrain    4, 5, 3, 2      
-// MotorGroup8          motor_group   8, 9            
-// ---- END VEXCODE CONFIGURED DEVICES ----
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /*    Module:       main.cpp                                                  */
@@ -58,21 +10,32 @@
 // ---- START VEXCODE CONFIGURED DEVICES ----
 // Robot Configuration:
 // [Name]               [Type]        [Port(s)]
-// Controller1          controller
-// Intakemotors         motor_group   1, 10
-// Drivetrain           drivetrain    4, 5, 3, 2
+// Controller1          controller                    
+// Intakemotors         motor_group   1, 10           
+// Drivetrain           drivetrain    4, 5, 6, 3      
+// Flywheel             motor_group   8, 9            
 // ---- END VEXCODE CONFIGURED DEVICES ----
 
 #include "vex.h"
 
 using namespace vex;
 
-motor front_left(4);
-motor back_left(5);
+// The code was not working and we figured out that all the ports on our brain shifted by one.
+// For example when we tried to spin the motor in port 4 it would spin port 5.
+// We added the -1s so it would activate the correct ports.
+// We do not know why this is happening.
+
+const int FRONT_LEFT_PORT = 4 - 1;  // we want port 4 to spin
+const int FRONT_RIGHT_PORT = 3 - 1; // we want port 3 to spin
+const int BACK_RIGHT_PORT = 6 - 1;  // we want port 6 to spin
+const int BACK_LEFT_PORT = 5 - 1;   // we want port 5 to spin
+
+motor front_left(FRONT_LEFT_PORT);  
+motor back_left(BACK_LEFT_PORT);
 motor_group left_motor_group(front_left, back_left);
 
-motor front_right(3);
-motor back_right(2);
+motor front_right(FRONT_RIGHT_PORT);
+motor back_right(BACK_RIGHT_PORT);
 motor_group right_motor_group(front_right, back_right);
 
 // Forward declarations.
@@ -99,7 +62,7 @@ void mechDrive(int strafeLeftRight, int forwardBack, int turnLeftRight) {
   double front_right_speed = forwardBack - strafeLeftRight - turnLeftRight;
   double back_right_speed = forwardBack + strafeLeftRight - turnLeftRight;
   double front_left_speed = forwardBack + strafeLeftRight + turnLeftRight;
-  double back_left_speed = forwardBack - strafeLeftRight + turnLeftRight;
+  double back_left_speed = forwardBack - strafeLeftRight + turnLeftRight;  
 
   // Clamp values between -100 to 100 and spins the motor.
   auto clamp = [] (int value, motor& m) {
@@ -113,10 +76,14 @@ void mechDrive(int strafeLeftRight, int forwardBack, int turnLeftRight) {
     }
     m.spin(fwd, value, pct);
   };
-  clamp(front_right_speed, front_right);
-  clamp(front_left_speed, front_left);
-  clamp(back_left_speed, back_left);
-  clamp(back_right_speed, back_right);
+   clamp(front_right_speed, front_right);
+   clamp(front_left_speed, front_left);
+   clamp(back_left_speed, back_left); 
+   clamp(back_right_speed, back_right);
+  //front_right.spin(fwd, 50, pct); // This is spinning the front LEFT?!
+  //front_left.spin(fwd, 50, pct); // This is spinning the back LEFT?!
+  //back_left.spin(fwd, 50, pct); // This is spinning the back RIGHT?!
+  //back_right.spin(fwd, 50, pct); // This does NOTHING?!
 }
 
 
@@ -176,7 +143,7 @@ void auton_implementation() {
   //
   // The roller should turn counter-clockwise in order to get the color of your
   // team.
-  const double ROLL_TIME_MS = 500;
+  const double ROLL_TIME_MS = 300;
 
   // This const was set in place in order to tell us what speed the autonous
   // should be at
