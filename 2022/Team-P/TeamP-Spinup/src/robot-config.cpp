@@ -28,7 +28,6 @@ motor_group Flywheel = motor_group(FlywheelMotorA, FlywheelMotorB);
 bool RemoteControlCodeEnabled = true;
 // define variables used for controlling motors based on controller inputs
 bool Controller1LeftShoulderControlMotorsStopped = true;
-bool Controller1XBButtonsControlMotorsStopped = true;
 
 // define a task that will handle monitoring inputs from Controller1
 int rc_auto_loop_function_Controller1() {
@@ -47,18 +46,6 @@ int rc_auto_loop_function_Controller1() {
         Intakemotors.stop();
         // set the toggle so that we don't constantly tell the motor to stop when the buttons are released
         Controller1LeftShoulderControlMotorsStopped = true;
-      }
-      // check the ButtonX/ButtonB status to control Flywheel
-      if (Controller1.ButtonX.pressing()) {
-        Flywheel.spin(forward);
-        Controller1XBButtonsControlMotorsStopped = false;
-      } else if (Controller1.ButtonB.pressing()) {
-        Flywheel.spin(reverse);
-        Controller1XBButtonsControlMotorsStopped = false;
-      } else if (!Controller1XBButtonsControlMotorsStopped) {
-        Flywheel.stop();
-        // set the toggle so that we don't constantly tell the motor to stop when the buttons are released
-        Controller1XBButtonsControlMotorsStopped = true;
       }
     }
     // wait before repeating the process

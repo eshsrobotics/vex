@@ -1,3 +1,11 @@
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// Intakemotors         motor_group   1, 10           
+// Drivetrain           drivetrain    4, 5, 6, 3      
+// Flywheel             motor_group   8, 9            
+// ---- END VEXCODE CONFIGURED DEVICES ----
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /*    Module:       main.cpp                                                  */
@@ -29,6 +37,7 @@ const int FRONT_LEFT_PORT = 4 - 1;  // we want port 4 to spin
 const int FRONT_RIGHT_PORT = 3 - 1; // we want port 3 to spin
 const int BACK_RIGHT_PORT = 6 - 1;  // we want port 6 to spin
 const int BACK_LEFT_PORT = 5 - 1;   // we want port 5 to spin
+const int FLYWHEEL_MAX_SPEED = 100;
 
 motor front_left(FRONT_LEFT_PORT);  
 motor back_left(BACK_LEFT_PORT);
@@ -85,7 +94,6 @@ void mechDrive(int strafeLeftRight, int forwardBack, int turnLeftRight) {
   //back_left.spin(fwd, 50, pct); // This is spinning the back RIGHT?!
   //back_right.spin(fwd, 50, pct); // This does NOTHING?!
 }
-
 
 /*---------------------------------------------------------------------------*/
 /*                          Pre-Autonomous Functions                         */
@@ -188,13 +196,30 @@ void usercontrol(void) {
 
   Intakemotors.setVelocity(100, percent);
 
+  bool flywheelEnabled = false;
+  const double flywheelToggleCooldownSeconds = 0.5;
+  double lastFlywheelButtonPressTimeSeconds = 0;
+
   // User control code here, inside the loop
   while (1) {
     int leftRight = Controller1.Axis4.value();
     int fowardBack = Controller1.Axis3.value();
     int turnValue = Controller1.Axis1.value();
+    const double currentTimeSeconds = Brain.timer(sec);
+    bool cooldownExceeded = currentTimeSeconds - lastFlywheelButtonPressTimeSeconds > flywheelToggleCooldownSeconds;
 
     mechDrive(leftRight, fowardBack, turnValue);
+
+    if (Controller1.ButtonX.pressing() && cooldownExceeded) {
+      flywheelEnabled = !flywheelEnabled;
+      lastFlywheelButtonPressTimeSeconds = currentTimeSeconds;
+    }
+
+    if (flywheelEnabled == true) {
+      Flywheel.spin(fwd, FLYWHEEL_MAX_SPEED, pct);   
+    } else {
+      Flywheel.stop(brakeType::coast);
+    }
 
     wait(20, msec); // Sleep the task for a short amount of time to
                     // prevent wasted resources.
