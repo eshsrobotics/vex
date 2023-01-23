@@ -95,28 +95,32 @@ void usercontrol(void) {
     int leftYPercent = Controller1.Axis3.position(percent);
 
     conveyorMotor.setVelocity(100, pct);
+    armLeftInside.setVelocity(50, pct);
+    armLeftOutside.setVelocity(50, pct);
+    armRightInside.setVelocity(50, pct);
+    armRightOutside.setVelocity(50, pct);
 
     // If the right joystick has been moved to the left or right, the robot will turn in place
     // If the left joystick has been moved forward or back, the robot will drive forward or back
     // Otherwise, the left and right motors will stop
     if (rightXPercent > 5) {
-      leftMotor.setVelocity(rightXPercent, percent);
-      rightMotor.setVelocity(rightXPercent, percent);
+      leftMotor.setVelocity(rightXPercent / 2, percent);
+      rightMotor.setVelocity(rightXPercent / 2, percent);
       leftMotor.spin(forward);
       rightMotor.spin(reverse);
     } else if (rightXPercent < -5) {
-      leftMotor.setVelocity(-rightXPercent, percent);
-      rightMotor.setVelocity(-rightXPercent, percent);
+      leftMotor.setVelocity(-rightXPercent / 2, percent);
+      rightMotor.setVelocity(-rightXPercent / 2, percent);
       leftMotor.spin(reverse);
       rightMotor.spin(forward);
     } else if (leftYPercent > 5) {
-      leftMotor.setVelocity(leftYPercent, percent);
-      rightMotor.setVelocity(leftYPercent, percent);
+      leftMotor.setVelocity(leftYPercent / 2, percent);
+      rightMotor.setVelocity(leftYPercent / 2, percent);
       leftMotor.spin(forward);
       rightMotor.spin(forward);
     } else if (leftYPercent < -5) {
-      leftMotor.setVelocity(-leftYPercent, percent);
-      rightMotor.setVelocity(-leftYPercent, percent);
+      leftMotor.setVelocity(-leftYPercent / 2, percent);
+      rightMotor.setVelocity(-leftYPercent / 2, percent);
       leftMotor.spin(reverse);
       rightMotor.spin(reverse);
     } else {
@@ -127,29 +131,21 @@ void usercontrol(void) {
     // If the left joystick has been moved left or right, the robot will strafe left or right
     // Otherwise, the middle motor will stop
     if (leftXPercent > 5) {
-      middleMotor.setVelocity(leftXPercent, percent);
+      middleMotor.setVelocity(leftXPercent / 2, percent);
       middleMotor.spin(forward);
     } else if (leftXPercent < -5) {
-      middleMotor.setVelocity(-leftXPercent, percent);
+      middleMotor.setVelocity(-leftXPercent / 2, percent);
       middleMotor.spin(reverse);
     } else {
       middleMotor.stop();
     }
 
     if (Controller1.ButtonR1.pressing()) {
-      armLeftInside.setVelocity(35, pct);
-      armLeftOutside.setVelocity(35, pct);
-      armRightInside.setVelocity(55, pct);
-      armRightOutside.setVelocity(55, pct);
       armLeftInside.spin(forward);
       armLeftOutside.spin(forward);
       armRightInside.spin(forward);
       armRightOutside.spin(forward);
     } else if (Controller1.ButtonR2.pressing()) {
-      armLeftInside.setVelocity(35, pct);
-      armLeftOutside.setVelocity(35, pct);
-      armRightInside.setVelocity(65, pct);
-      armRightOutside.setVelocity(65, pct);
       armLeftInside.spin(reverse);
       armLeftOutside.spin(reverse);
       armRightInside.spin(reverse);
