@@ -1,12 +1,3 @@
-/*----------------------------------------------------------------------------*/
-/*                                                                            */
-/*    Module:       main.cpp                                                  */
-/*    Author:       VEX                                                       */
-/*    Created:      Thu Sep 26 2019                                           */
-/*    Description:  Competition Template                                      */
-/*                                                                            */
-/*----------------------------------------------------------------------------*/
-
 // ---- START VEXCODE CONFIGURED DEVICES ----
 // Robot Configuration:
 // [Name]               [Type]        [Port(s)]
@@ -18,6 +9,15 @@
 // launcher_right       motor         13              
 // Controller1          controller                    
 // ---- END VEXCODE CONFIGURED DEVICES ----
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/*    Module:       main.cpp                                                  */
+/*    Author:       VEX                                                       */
+/*    Created:      Thu Sep 26 2019                                           */
+/*    Description:  Competition Template                                      */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+
 
 #include "vex.h"
 
@@ -26,6 +26,9 @@ using namespace vex;
 
 // A global instance of competition
 competition Competition;
+
+void winpoint_autonomous();
+
 
 // define your global instances of motors and other devices here
 
@@ -58,10 +61,47 @@ void pre_auton(void) {
 /*---------------------------------------------------------------------------*/
 
 void autonomous(void) {
-  // ..........................................................................
-  // Insert autonomous user code here.
-  // ..........................................................................
+  winpoint_autonomous();
 }
+
+void winpoint_autonomous() {
+  // Set times for how long the flywheel and intake spin
+  const int READY_FLYWHEEL = 5000;
+  const int MOVE_INTAKE = 10000;
+
+  
+  // Autonomous does not start at zero, when the autonomous routine starts, the match
+  // may start minutes later. 
+  int start_time_ms = Brain.timer(msec);
+
+
+  // Set velocities and start spinning the flywheel.
+  launcher_left.setVelocity(-100, pct);
+  launcher_right.setVelocity(-100, pct);
+  launcher_left.spin(forward);
+  launcher_right.spin(forward);
+
+  intake.setVelocity(35, percent);
+
+  while(true) {
+    int elapsed_time_ms = Brain.timer(msec) - start_time_ms;
+    
+    // If the flywheel is ready, start the intake
+    // After the intake is done moving, stop everything and quit out of the while loop
+    if (elapsed_time_ms > READY_FLYWHEEL) {
+      intake.spin(forward);
+    } else if (elapsed_time_ms > MOVE_INTAKE + READY_FLYWHEEL) {
+      intake.stop();
+      launcher_left.stop();
+      launcher_right.stop();
+      break;
+    }
+
+    wait(20, msec); // Sleep the task for a short amount of time to
+                    // prevent wasted resources.
+  }
+}
+
 
 /*---------------------------------------------------------------------------*/
 /*                                                                           */
@@ -80,74 +120,63 @@ void usercontrol(void) {
     // Each time through the loop your program should update motor + servo
     // values based on feedback from the joysticks.
 
-
-    int launcher_velocity = 100;
+    // Initializes the launcher velocity variable and sets the launcher motors to that amount
+    // Initializes the intake velocity variable and sets the intake motor to that amount
+    int launcher_velocity = 60;
+    int intake_velocity = 35;
     launcher_left.setVelocity(launcher_velocity, pct);
     launcher_right.setVelocity(launcher_velocity, pct);
+    intake.setVelocity(intake_velocity, pct);
+    
+    // While X is held down, the roller will spin, while it is released, the roller will stop
+    if (Controller1.ButtonB.pressing()) {
+      roller.spin(forward);
+    } else {
+      roller.stop();
+    }
 
-    double left_axis = Controller1.Axis3.position(pct);
-    double right_axis = Controller1.Axis2.position(pct);
-    bool launcher_on = false;
-    const double launcherButtonTimeoutMilliseconds = 1000.0;
-    double time_last_pressed_miliseconds = 0; 
-
-
-    // If X the button is pressed, toggle the shooter motors on or off
-    // and then wait for a certain number of milliseconds for cooldown
-    // before allowing the toggle again.
-
-    if (Controller1.ButtonX.pressing()) {      
-      const double elapsedMilliseconds = Brain.timer(msec) - time_last_pressed_miliseconds;
-      if (elapsedMilliseconds >= launcherButtonTimeoutMilliseconds) {        
-        time_last_pressed_miliseconds = Brain.timer(msec);
-        launcher_on = !launcher_on;      
+    // If the distance sensor detects an object within 35 mm (3.5 cm), the shooter will
+    // automatically turn on and when A is pressed on the controller, the intake will turn on,
+    // pushing the disc into the shooter and launching it
+    //
+    // If the sensor does not detect an object, the intake is automatically on and when A is
+    // pressed, the shooter turns on
+    if(distanceSensor.objectDistance(mm) < 55) {
+      launcher_left.spin(forward);
+      launcher_right.spin(forward);
+      Controller1.Screen.setCursor(1, 1);
+      Controller1.Screen.print("Left - %.2f     ", launcher_left.velocity(pct));
+      Controller1.Screen.setCursor(2, 1);
+      Controller1.Screen.print("Right - %.2f     ", launcher_right.velocity(pct));
+      if(Controller1.ButtonA.pressing()) {
+        intake.spin(forward);
+      } else if (Controller1.ButtonR1.pressing()) {
+        intake.spin(reverse);
+      } else {
+        intake.stop();
+      }
+    } else {
+      if (Controller1.ButtonA.pressing()) {
+        launcher_left.spin(forward);
+        launcher_right.spin(forward);
+        Controller1.Screen.setCursor(1, 1);
+        Controller1.Screen.print("Left - %.2f     ", launcher_left.velocity(pct));
+        Controller1.Screen.setCursor(2, 1);
+        Controller1.Screen.print("Right - %.2f     ", launcher_right.velocity(pct));
+      } else {
+        launcher_left.stop();
+        launcher_right.stop();
+        Controller1.Screen.setCursor(1, 1);
+        Controller1.Screen.print("Left - %.2f     ", launcher_left.velocity(pct));
+        Controller1.Screen.setCursor(2, 1);
+        Controller1.Screen.print("Right - %.2f     ", launcher_right.velocity(pct));
+      }
+      if (Controller1.ButtonR1.pressing()) {
+        intake.spin(reverse);
+      } else {
+        intake.spin(forward);
       }
     }
-
-    if (launcher_on) {
-      launcher_left.spin(forward);
-      launcher_right.spin(forward);
-    } else {
-      launcher_left.stop();
-      launcher_right.stop();
-    }
-
-    if (launcher_on) {
-      launcher_left.spin(forward);
-      launcher_right.spin(forward);
-    } else {
-      launcher_left.stop();
-      launcher_right.stop();
-    }
-    
-    //for handling the tank drive:
-
-    const int threshold = 10;
-
-    if (fabs(left_axis) < threshold) {
-      left_axis = 0;
-      front_left.stop();
-      back_left.stop();
-    } else {
-      front_left.setVelocity(left_axis, pct); 
-      back_left.setVelocity(left_axis, pct); 
-      front_left.spin(forward);
-      back_left.spin(forward);
-    }
-
-    if (fabs(right_axis) < threshold) {
-      right_axis = 0;
-      front_right.stop();
-      back_right.stop();
-    } else {
-      front_right.setVelocity(right_axis, pct); 
-      back_right.setVelocity(right_axis, pct); 
-      front_right.spin(forward);
-      back_right.spin(forward);
-    }
-
-    
-    
     
     // ........................................................................
     // Insert user code here. This is where you use the joystick values to
