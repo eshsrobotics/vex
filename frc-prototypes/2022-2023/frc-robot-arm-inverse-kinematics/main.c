@@ -18,22 +18,16 @@ float D[MAX_PID_CONTROLLERS];
 float integrals[MAX_PID_CONTROLLERS];
 float errors[MAX_PID_CONTROLLERS];
 
+const float PI = 3.14159265;
+const float DEGREES_TO_RADIANS = PI / 180.0;
+const float RADIANS_TO_DEGREES = 180.0 / PI;
+
 /**
  * Returns min if x < min, max if x > max, or x otherwise.
  */
 float clamp(float x, float min, float max) {
   return (x < min ? min : x > max ? max : x);
 }
-
-const float PI = 3.14159265;
-const float DEGREES_TO_RADIANS = PI / 180.0;
-const float RADIANS_TO_DEGREES = 180.0 / PI;
-
-/**
- * The amount of time that passes, in seconds, between consecutive invocations
- * of the calculate() function.
- */
-const float deltaTimeSeconds = 0.02;
 
 /**
  * If the setpoint changes drastically, we can end up with a condition called
@@ -81,12 +75,13 @@ void setPID(int n, float kP, float kI, float kD) {
  * output depends entirely on the constants that you passed into setPID()
  * earlier.
  *
- * @param n	      The index of the controller whose parameters you will be
- *		      setting.  Values outside of the closed interval [0,
- *		      MAX_PID_CONTROLLERS - 1] will be ignored.
+ * @param n	      The index of the controller to use.  Values outside of
+ *		      the closed interval [0, MAX_PID_CONTROLLERS - 1] will be
+ *		      ignored.
  * @param measurement The current measurement for the sensor that you are
- *		      using for PID.  This could be a gyro or potentiometer
- *		      angle, a distance measurement, and so on.
+ *		      using for PID control.  This could be a gyro or
+ *		      potentiometer angle, a distance measurement, a flywheel
+ *		      angular velocity, and so on.
  * @param setpoint    Where you want the measurement to be before we stop
  *		      applying power.
  * @return            Returns the power that your system should be applying
@@ -99,8 +94,9 @@ float calculate(int n, float measurement, float setpoint) {
 
   float error = setpoint - measurement;
   float integral = integrals[n] + error;
-  if (error < -maxError || error > maxError) {
-    // Avoid integral windup.
+  if (abs(error) > maxError) {
+    // Avoid integral windup: let the P term get closer before we apply an I
+    // term.
     integral = 0;
   }
   float previousError = errors[n];
@@ -112,8 +108,6 @@ float calculate(int n, float measurement, float setpoint) {
 
   return outputPower;
 }
-
-enum jointIndices { shoulder, elbow, wrist };
 
 const int SHOULDER_ENCODER_MEASURE_AT_HORIZONTAL = 26;
 const int SHOULDER_ENCODER_MEASURE_AT_VERTICAL = 0;
@@ -132,8 +126,9 @@ float shoulderPower = 0,
       elbowPower = 0,
       wristPower = 0;
 
-// NOTE: All values here are assumed to be 0 degrees at vertical.  Aim the arm straight up before
-// starting the program.
+// NOTE: All values here are assumed to be 0 degrees at vertical (except for
+// yInches, the vertical extent).  Aim the arm straight up before starting the
+// program.
 float shoulderDegrees = 0,
       elbowDegrees = 0,
       wristDegrees = 0,
@@ -142,6 +137,8 @@ float shoulderDegrees = 0,
 
 // How much the buttons move the X and Y values for the arm.
 const float armIncrementInches = 1.0;
+
+enum jointIndices { shoulder, elbow, wrist };
 
 task main()
 {
@@ -214,4 +211,5 @@ task main()
 	  // Update angle measures.
 	  shoulderDegrees = SensorValue[ShoulderEncoderA] * degreesPerEncoderClick;
 	  elbowDegrees = SensorValue[ElbowEncoderA] * degreesPerEncoderClick;
+	  wristDegrees = SensorValue[WristEncoderA] * degreesPerEncoderClick;
 }
