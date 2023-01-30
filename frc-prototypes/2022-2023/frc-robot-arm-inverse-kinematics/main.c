@@ -182,6 +182,10 @@ task main()
 			// You've stretched too far or squeezed the elbow too tight; ignore!
 			newX = xInches;
 			newY = yInches;
+		} else {
+			// Commit the changes to memory.
+			xInches = newX;
+			yInches = newY;
 		}
 
 		// Calculate trig constants (all values are in radians.)
