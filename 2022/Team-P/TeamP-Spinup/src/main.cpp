@@ -5,6 +5,24 @@
 // Intakemotors         motor_group   1, 10           
 // Drivetrain           drivetrain    4, 5, 6, 3      
 // Flywheel             motor_group   8, 9            
+// roller               motor         7               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// Intakemotors         motor_group   1, 10           
+// Drivetrain           drivetrain    4, 5, 6, 3      
+// Flywheel             motor_group   8, 9            
+// Roller               motor         7               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// Intakemotors         motor_group   1, 10           
+// Drivetrain           drivetrain    4, 5, 6, 3      
+// Flywheel             motor_group   8, 9            
 // ---- END VEXCODE CONFIGURED DEVICES ----
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
@@ -39,6 +57,7 @@ const int BACK_RIGHT_PORT = 6 - 1;  // we want port 6 to spin
 const int BACK_LEFT_PORT = 5 - 1;   // we want port 5 to spin
 const int FLYWHEEL_MAX_SPEED = 100;
 const int INTAKE_MAX_SPEED = 100;
+const int ROLLER_MAX_SPEED = 100;
 
 motor front_left(FRONT_LEFT_PORT);  
 motor back_left(BACK_LEFT_PORT);
@@ -205,6 +224,10 @@ void usercontrol(void) {
   const double intakeToggleCooldownSeconds = 0.5;
   double lastIntakeButtonPressTimeSeconds = 0;
 
+  bool rollerEnabled = false;
+  const double rollerToggleCooldwonSeconds = 0.5;
+  double lastRollerButtonPressTimeSeconds = 0;
+
   // User control code here, inside the loop
   while (1) {
     int leftRight = Controller1.Axis4.value();
@@ -213,6 +236,7 @@ void usercontrol(void) {
     const double currentTimeSeconds = Brain.timer(sec);
     bool flywheelCooldownExceeded = currentTimeSeconds - lastFlywheelButtonPressTimeSeconds > flywheelToggleCooldownSeconds;
     bool intakeCooldownExceeded = currentTimeSeconds - lastIntakeButtonPressTimeSeconds > intakeToggleCooldownSeconds;
+    bool rollerCooldownExeeded = currentTimeSeconds - lastRollerButtonPressTimeSeconds > rollerToggleCooldwonSeconds;
     mechDrive(leftRight, fowardBack, turnValue);
 
     if (Controller1.ButtonX.pressing() && flywheelCooldownExceeded) {
@@ -237,6 +261,17 @@ void usercontrol(void) {
       Intakemotors.stop(brakeType::coast);
     }
 
+    if (Controller1.ButtonR2.pressing() && rollerCooldownExeeded) {
+      rollerEnabled = !rollerEnabled;
+      lastRollerButtonPressTimeSeconds = currentTimeSeconds;
+    }
+
+    if(rollerEnabled == true) {
+    roller.spin(fwd, ROLLER_MAX_SPEED, pct);
+    }else {
+      roller.stop();
+    }
+    
     wait(20, msec); // Sleep the task for a short amount of time to
                     // prevent wasted resources.
   }

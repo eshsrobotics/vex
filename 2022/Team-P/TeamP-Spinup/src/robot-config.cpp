@@ -22,6 +22,7 @@ drivetrain Drivetrain = drivetrain(LeftDriveSmart, RightDriveSmart, 319.19, 304.
 motor FlywheelMotorA = motor(PORT8, ratio18_1, false);
 motor FlywheelMotorB = motor(PORT9, ratio18_1, true);
 motor_group Flywheel = motor_group(FlywheelMotorA, FlywheelMotorB);
+motor roller = motor(PORT7, ratio18_1, false);
 
 // VEXcode generated functions
 // define variable for remote controller enable/disable
