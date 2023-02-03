@@ -19,7 +19,6 @@ float integrals[MAX_PID_CONTROLLERS];
 float errors[MAX_PID_CONTROLLERS];
 
 const float PI = 3.14159265;
-const float DEGREES_TO_RADIANS = PI / 180.0;
 const float RADIANS_TO_DEGREES = 180.0 / PI;
 
 /**
@@ -75,17 +74,17 @@ void setPID(int n, float kP, float kI, float kD) {
  * output depends entirely on the constants that you passed into setPID()
  * earlier.
  *
- * @param n	      The index of the controller to use.  Values outside of
- *		      the closed interval [0, MAX_PID_CONTROLLERS - 1] will be
- *		      ignored.
+ * @param n   The index of the controller to use.  Values outside of
+ *            the closed interval [0, MAX_PID_CONTROLLERS - 1] will be
+ *            ignored.
  * @param measurement The current measurement for the sensor that you are
- *		      using for PID control.  This could be a gyro or
- *		      potentiometer angle, a distance measurement, a flywheel
- *		      angular velocity, and so on.
+ *            using for PID control.  This could be a gyro or
+ *            potentiometer angle, a distance measurement, a flywheel
+ *            angular velocity, and so on.
  * @param setpoint    Where you want the measurement to be before we stop
- *		      applying power.
+ *            applying power.
  * @return            Returns the power that your system should be applying
- *		      next.  This is usually a motor speed.
+ *            next.  This is usually a motor speed.
  */
 float calculate(int n, float measurement, float setpoint) {
   if (n < 0 || n >= MAX_PID_CONTROLLERS) {
@@ -109,16 +108,25 @@ float calculate(int n, float measurement, float setpoint) {
   return outputPower;
 }
 
-const int SHOULDER_ENCODER_MEASURE_AT_HORIZONTAL = 26;
-const int SHOULDER_ENCODER_MEASURE_AT_VERTICAL = 0;
+enum jointIndices { shoulder, elbow, wrist };
+
+const int SHOULDER_ENCODER_CLICKS_AT_HORIZONTAL = -54; // Confirmed
+const int SHOULDER_ENCODER_CLICKS_AT_VERTICAL = -8;   // Confirmed
+const int ELBOW_ENCODER_CLICKS_AT_HORIZONTAL = -11;    // Confirmed
+const int ELBOW_ENCODER_CLICKS_AT_VERTICAL = -96;      // Confirmed
+const int WRIST_ENCODER_CLICKS_AT_HORIZONTAL = 0;      // Confirmed
+const int WRIST_ENCODER_CLICKS_AT_VERTICAL = 78;       // Confirmed
 
 // This is a rough approximation, but it should be the same for every
 // quadrature encoder connected to an output shaft.
-const float degreesPerEncoderClick = 90.0 / (SHOULDER_ENCODER_MEASURE_AT_HORIZONTAL - SHOULDER_ENCODER_MEASURE_AT_VERTICAL);
+const float shoulderDegreesPerEncoderClick = abs(90.0 / (SHOULDER_ENCODER_CLICKS_AT_HORIZONTAL - SHOULDER_ENCODER_CLICKS_AT_VERTICAL));
+const float elbowDegreesPerEncoderClick = abs(90.0 / (ELBOW_ENCODER_CLICKS_AT_HORIZONTAL - ELBOW_ENCODER_CLICKS_AT_VERTICAL));
+const float wristDegreesPerEncoderClick = abs(90.0 / (WRIST_ENCODER_CLICKS_AT_HORIZONTAL - WRIST_ENCODER_CLICKS_AT_VERTICAL));
 
-// TODO: Measure these values.  They must be measured from axle to axle.
-const float forearmLengthInches = 14.0;
-const float upperArmLengthInches = 10.0;
+// Limb measurements for the arm (L1 and L2 in the kinematics equation.)
+// These must be accurately measured, or the X and Y calculations will be off.
+const float forearmLengthInches = 5.0;  // Confirmed
+const float upperArmLengthInches = 6.0; // Confirmed
 
 // The debugger can't show local variables, but it can show the value of global ones.  So any variable here
 // is significant for debugging.
@@ -129,91 +137,148 @@ float shoulderPower = 0,
 // NOTE: All values here are assumed to be 0 degrees at vertical (except for
 // yInches, the vertical extent).  Aim the arm straight up before starting the
 // program.
-float shoulderDegrees = 0,
-      elbowDegrees = 0,
-      wristDegrees = 0,
+float initialShoulderDegrees = 0, shoulderAngle = 0,
+      initialElbowDegrees = 0, elbowAngle = 0,
+      initialWristDegrees = 0, wristAngle = 0,
       xInches = 0,
       yInches = forearmLengthInches + upperArmLengthInches;
 
+/**
+ * Returns the relative angle of the given joint, in degrees.  You choose what "relative" means.
+ *
+ * This function relies on accurate values for the `*_CLICKS_AT_HORIZONTAL` and
+ * `*_CLICKS_AT_VERTICAL` constants.  VEX encoders can gather dust over the
+ * years which affects their results differently; you must take the measurements!
+ *
+ * @param jointIndex One of shoulder, elbow, or wrist.
+ * @param reset      If true, we will record the initial angle for this joint
+ *                   and return 0; if false, we will return the current angle
+ *                   for this joint.
+ * @return           Returns 0 if reset==true, and a (hopefully accurate)
+ *                   angle relative to the last reset otherwise.
+ *
+ */
+float getDegrees(int jointIndex, bool reset) {
+	// Obtain angle measures from the quadrature encoders.
+  float shoulderDegrees = SensorValue[ShoulderEncoderA] * shoulderDegreesPerEncoderClick;
+  float elbowDegrees = SensorValue[ElbowEncoderA] * elbowDegreesPerEncoderClick;
+  float wristDegrees = SensorValue[WristEncoderA] * wristDegreesPerEncoderClick;
+
+	switch(jointIndex) {
+		case shoulder:
+		  if (reset) {
+		  	initialShoulderDegrees = shoulderDegrees;
+		  	return 0;
+		  } else {
+		    return shoulderDegrees - initialShoulderDegrees;
+		  }
+		  break;
+		case elbow:
+		  if (reset) {
+		  	initialElbowDegrees = elbowDegrees;
+		  	return 0;
+		  } else {
+		  	return elbowDegrees - initialElbowDegrees;
+		  }
+		  break;
+	  case wrist:
+	    if (reset) {
+	    	initialWristDegrees = wristDegrees;
+	    	return 0;
+	    } else {
+	      return wristDegrees - initialWristDegrees;
+	    }
+	}
+
+	// Control shouldn't make it here.
+	return 0;
+}
+
+float h=0;
 // How much the buttons move the X and Y values for the arm.
 const float armIncrementInches = 1.0;
 
-enum jointIndices { shoulder, elbow, wrist };
-
 task main()
 {
-	// TODO: Determine these constants.
-	// Start with the wrist; it's the lightest and problems with it will do the
-	// least harm.
-	setPID(shoulder, 0, 0, 0);
-	setPID(elbow,    0, 0, 0);
-	setPID(wrist,    0, 0, 0);
+    // Reset all joint angles.
+    getDegrees(shoulder, true);
+    getDegrees(elbow, true);
+    getDegrees(wrist, true);
 
-	// Version 2 of the robot arm: all movements are controlled using
-	// PID.  We determine two values: X, which is the desired extent
-	// outward, and Y, which is the desired vertical extent, and rotate
-	// the shoulder and arm motors to reach (x, y).  The wrist, meanwhile,
-	// is forced to constantly point at a horizontal angle.
-	//
-	// The up and down buttons control Y, and the left and right buttons
-	// control X.
-	while (1) {
-		float newX = xInches, newY = yInches;
+    // TODO: Determine these constants.
+    // Start with the wrist; it's the lightest and problems with it will do the
+    // least harm.
+    setPID(shoulder, 0.000, 0.000, 0.000);
+    setPID(elbow,    0.000, 0.000, 0.000);
+    setPID(wrist,    0.000, 0.000, 0.000);
 
-		if (SensorValue[DownButton]) {
-			newY = yInches - armIncrementInches;
-		}
+    // Version 2 of the robot arm: all movements are controlled using
+    // PID.  We determine two values: X, which is the desired extent
+    // outward, and Y, which is the desired vertical extent, and rotate
+    // the shoulder and arm motors to reach (x, y).  The wrist, meanwhile,
+    // is forced to constantly point at a horizontal angle.
+    //
+    // The up and down buttons control Y, and the left and right buttons
+    // control X.
+    while (1) {
+        float newX = xInches, newY = yInches;
 
-		if (SensorValue[UpButton]) {
-			newY = yInches + armIncrementInches;
-		}
+        if (SensorValue[DownButton]) {
+            newY = yInches - armIncrementInches;
+        }
 
-		if (SensorValue[LeftButton]) {
-			newX = xInches - armIncrementInches;
-		}
+        if (SensorValue[UpButton]) {
+            newY = yInches + armIncrementInches;
+        }
 
-		if (SensorValue[RightButton]) {
-			newX = xInches + armIncrementInches;
-		}
+        if (SensorValue[LeftButton]) {
+            newX = xInches - armIncrementInches;
+        }
 
-		float h = sqrt(newX * newX + newY * newY);
-		if (h < fabs(forearmLengthInches - upperArmLengthInches) ||
-		    h > forearmLengthInches + upperArmLengthInches) {
-			// You've stretched too far or squeezed the elbow too tight; ignore!
-			newX = xInches;
-			newY = yInches;
-		} else {
-			// Commit the changes to memory.
-			xInches = newX;
-			yInches = newY;
-		}
+        if (SensorValue[RightButton]) {
+            newX = xInches + armIncrementInches;
+        }
 
-		// Calculate trig constants (all values are in radians.)
-		float gamma = acos((h * h - forearmLengthInches * forearmLengthInches - upperArmLengthInches * upperArmLengthInches) /
-				   (-2 * forearmLengthInches * upperArmLengthInches));
-		float alpha = asin(forearmLengthInches * sin(gamma) / h);
-		float beta = PI - alpha - gamma;
-		float theta = asin(newY / h);
-		float phi = asin(newX / h);
+        h = sqrt(newX * newX + newY * newY);
+        if (h < fabs(forearmLengthInches - upperArmLengthInches) ||
+            h > forearmLengthInches + upperArmLengthInches) {
+            // You've stretched too far or squeezed the elbow too tight; ignore!
+            newX = xInches;
+            newY = yInches;
+            h = sqrt(newX * newX + newY * newY);
+        } else {
+            // Commit the changes to memory.
+            xInches = newX;
+            yInches = newY;
+        }
 
-		// 0 degrees for the shoulder and elbow must be vertical.
-		float shoulderAngle = (alpha + theta) * RADIANS_TO_DEGREES - 90;
-		float elbowAngle = 180 - gamma * RADIANS_TO_DEGREES;
+        // Calculate trig constants (all values are in radians.)
+        float gamma = acos((h * h - forearmLengthInches * forearmLengthInches - upperArmLengthInches * upperArmLengthInches) /
+                   (-2 * forearmLengthInches * upperArmLengthInches));
+        float alpha = asin(forearmLengthInches * sin(gamma) / h);
+        float beta = PI - alpha - gamma;
+        float theta = asin(newY / h);
+        float phi = asin(newX / h);
 
-		// The wrist must always face forward.
-		float wristAngle = (beta + phi) * RADIANS_TO_DEGREES + 90;
+        // 0 degrees for the shoulder and elbow must be vertical.
+        float newShoulderAngle = (alpha + theta) * RADIANS_TO_DEGREES - 90;
+        float newElbowAngle = 180 - gamma * RADIANS_TO_DEGREES;
 
-		// Move according to the velocity.
-		shoulderPower = calculate(shoulder, SensorValue[ShoulderEncoderA], shoulderAngle);
-		elbowPower = calculate(elbow, SensorValue[ElbowEncoderA], elbowAngle);
-		wristPower = calculate(wrist, SensorValue[WristEncoderA], wristAngle);
-		motor[ShoulderMotor] = shoulderPower;
-		motor[ElbowMotor] = elbowPower;
-		motor[WristMotor] = wristPower;
-	  }
+        // The wrist must always face forward.
+        float newWristAngle = (beta + phi) * RADIANS_TO_DEGREES + 90;
 
-	  // Update angle measures.
-	  shoulderDegrees = SensorValue[ShoulderEncoderA] * degreesPerEncoderClick;
-	  elbowDegrees = SensorValue[ElbowEncoderA] * degreesPerEncoderClick;
-	  wristDegrees = SensorValue[WristEncoderA] * degreesPerEncoderClick;
+        // Obtain relative arm angles.
+        shoulderAngle = getDegrees(shoulder, false);
+        elbowAngle = getDegrees(elbow, false);
+        wristAngle = getDegrees(wrist, false);
+
+        // Move according to the velocity.
+        shoulderPower = calculate(shoulder, shoulderAngle, newShoulderAngle);
+        elbowPower = calculate(elbow, elbowAngle, newElbowAngle);
+        wristPower = calculate(wrist, wristAngle, newWristAngle);
+
+        motor[ShoulderMotor] = shoulderPower;
+        motor[ElbowMotor] = elbowPower;
+        motor[WristMotor] = wristPower;
+      }
 }
