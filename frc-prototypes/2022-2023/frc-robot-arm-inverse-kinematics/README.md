@@ -5,7 +5,7 @@
 This simple C program controls a robot arm with three degrees of freedom.
 Angles for the joints are calculated dynamically using _inverse kinematics_:
 
-![Diagram with mathematical derivations for shoulder, elbow, and arm angles](FRC Charged Up Inverse Kinematics.png)
+![Diagram](./FRC%20Charged%20Up%20Inverse%20Kinematics.png)
 
 Given fixed limb lengths `L₁` and `L₂`, a desired outward extent `X`, and a
 desired vertical extent `Y`, we can create a right triangle with legs of
