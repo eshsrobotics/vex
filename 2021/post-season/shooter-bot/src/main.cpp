@@ -229,25 +229,25 @@ void usercontrol(void) {
       LeftMotor.stop();
     }
 
-    // While the 'A' button is pressed, the punch motor will spin,
+    // While the 'A' or 'left' button is pressed, the punch motor will spin,
     // when it isn't pressed, it will stop
-    if (Controller1.ButtonA.pressing()) {
+    if (Controller1.ButtonA.pressing() || Controller1.ButtonLeft.pressing()) {
       PunchMotor.spin(forward);
     } else {
       PunchMotor.stop();
     }
 
-    // While the 'X' button is pressed, the intake motor will spin,
+    // While the 'X' or 'up' button is pressed, the intake motor will spin,
     // when it isn't pressed, it will stop
-    if (Controller1.ButtonX.pressing()) {
+    if (Controller1.ButtonX.pressing() || Controller1.ButtonUp.pressing()) {
       IntakeMotor.spin(forward);
     } else {
       IntakeMotor.stop();
     }
 
-    // While the 'B' button is pressed, the conveyor (transfer) motor will spin,
+    // While the 'B' or 'down' button is pressed, the conveyor (transfer) motor will spin,
     // when it isn't pressed, it will stop
-    if (Controller1.ButtonB.pressing()) {
+    if (Controller1.ButtonB.pressing() || Controller1.ButtonDown.pressing()) {
       TransferMotor.spin(forward);
     } else {
       TransferMotor.stop();

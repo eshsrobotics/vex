@@ -1,16 +1,3 @@
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// Controller1          controller                    
-// armRightInside       motor29       A               
-// middleMotor          motor29       B               
-// conveyorMotor        motor29       C               
-// armLeftInside        motor29       D               
-// armLeftOutside       motor29       E               
-// leftMotor            motor29       F               
-// rightMotor           motor29       G               
-// armRightOutside      motor29       H               
-// ---- END VEXCODE CONFIGURED DEVICES ----
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /*    Module:       main.cpp                                                  */
@@ -23,10 +10,13 @@
 // ---- START VEXCODE CONFIGURED DEVICES ----
 // Robot Configuration:
 // [Name]               [Type]        [Port(s)]
+// LeftBack             motor         8               
+// LeftMiddle           motor         9               
+// LeftFront            motor         10              
+// RightBack            motor         3               
+// RightMiddle          motor         2               
+// RightFront           motor         1               
 // Controller1          controller                    
-// leftMotor            motor29       A               
-// rightMotor           motor29       B               
-// middleMotor          motor29       C               
 // ---- END VEXCODE CONFIGURED DEVICES ----
 
 #include "vex.h"
@@ -89,87 +79,55 @@ void usercontrol(void) {
     // Each time through the loop your program should update motor + servo
     // values based on feedback from the joysticks.
 
-    // Sets three variables to the values of the joyticks we are using to drive
-    int rightXPercent = Controller1.Axis1.position(percent);
-    int leftXPercent = Controller1.Axis4.position(percent);
-    int leftYPercent = Controller1.Axis3.position(percent);
-
-    conveyorMotor.setVelocity(100, pct);
-    armLeftInside.setVelocity(50, pct);
-    armLeftOutside.setVelocity(50, pct);
-    armRightInside.setVelocity(50, pct);
-    armRightOutside.setVelocity(50, pct);
-
-    // If the right joystick has been moved to the left or right, the robot will turn in place
-    // If the left joystick has been moved forward or back, the robot will drive forward or back
-    // Otherwise, the left and right motors will stop
-    if (rightXPercent > 5) {
-      leftMotor.setVelocity(rightXPercent / 2, percent);
-      rightMotor.setVelocity(rightXPercent / 2, percent);
-      leftMotor.spin(forward);
-      rightMotor.spin(reverse);
-    } else if (rightXPercent < -5) {
-      leftMotor.setVelocity(-rightXPercent / 2, percent);
-      rightMotor.setVelocity(-rightXPercent / 2, percent);
-      leftMotor.spin(reverse);
-      rightMotor.spin(forward);
-    } else if (leftYPercent > 5) {
-      leftMotor.setVelocity(leftYPercent / 2, percent);
-      rightMotor.setVelocity(leftYPercent / 2, percent);
-      leftMotor.spin(forward);
-      rightMotor.spin(forward);
-    } else if (leftYPercent < -5) {
-      leftMotor.setVelocity(-leftYPercent / 2, percent);
-      rightMotor.setVelocity(-leftYPercent / 2, percent);
-      leftMotor.spin(reverse);
-      rightMotor.spin(reverse);
-    } else {
-      leftMotor.stop();
-      rightMotor.stop();
-    }
-
-    // If the left joystick has been moved left or right, the robot will strafe left or right
-    // Otherwise, the middle motor will stop
-    if (leftXPercent > 5) {
-      middleMotor.setVelocity(leftXPercent / 2, percent);
-      middleMotor.spin(forward);
-    } else if (leftXPercent < -5) {
-      middleMotor.setVelocity(-leftXPercent / 2, percent);
-      middleMotor.spin(reverse);
-    } else {
-      middleMotor.stop();
-    }
-
-    if (Controller1.ButtonR1.pressing()) {
-      armLeftInside.spin(forward);
-      armLeftOutside.spin(forward);
-      armRightInside.spin(forward);
-      armRightOutside.spin(forward);
-    } else if (Controller1.ButtonR2.pressing()) {
-      armLeftInside.spin(reverse);
-      armLeftOutside.spin(reverse);
-      armRightInside.spin(reverse);
-      armRightOutside.spin(reverse);
-    } else {
-      armLeftInside.stop();
-      armLeftOutside.stop();
-      armRightInside.stop();
-      armRightOutside.stop();
-    }
-
-    if (Controller1.ButtonL1.pressing()) {
-      conveyorMotor.spin(forward);
-    } else if (Controller1.ButtonL2.pressing()) {
-      conveyorMotor.spin(reverse);
-    } else {
-      conveyorMotor.stop();
-    }
-
     // ........................................................................
     // Insert user code here. This is where you use the joystick values to
     // update your motors, etc.
     // ........................................................................
 
+    int leftJoystick = Controller1.Axis3.position(percent);
+    int rightJoystick = Controller1.Axis2.position(percent);
+
+    if (leftJoystick == 0) {
+      LeftBack.stop();
+      LeftMiddle.stop();
+      LeftFront.stop();
+    } else {
+      LeftBack.setVelocity(leftJoystick/2, percent);
+      LeftMiddle.setVelocity(leftJoystick/2, percent);
+      LeftFront.setVelocity(leftJoystick/2, percent);
+      LeftBack.spin(forward);
+      LeftMiddle.spin(forward);
+      LeftFront.spin(forward);
+    }
+
+    if (rightJoystick == 0) {
+      RightBack.stop();
+      RightMiddle.stop();
+      RightFront.stop();
+    } 
+    else {
+      RightBack.setVelocity(rightJoystick/2, percent);
+      RightMiddle.setVelocity(rightJoystick/2, percent);
+      RightFront.setVelocity(rightJoystick/2, percent);
+      RightBack.spin(forward);
+      RightMiddle.spin(forward);
+      RightFront.spin(forward);
+    }
+
+    if ((rightJoystick > 0 && leftJoystick > 0) || (rightJoystick < 0 && leftJoystick < 0)) {
+      LeftBack.setVelocity(leftJoystick, percent);
+      LeftMiddle.setVelocity(leftJoystick, percent);
+      LeftFront.setVelocity(leftJoystick, percent);
+      LeftBack.spin(forward);
+      LeftMiddle.spin(forward);
+      LeftFront.spin(forward);
+      RightBack.setVelocity(rightJoystick, percent);
+      RightMiddle.setVelocity(rightJoystick, percent);
+      RightFront.setVelocity(rightJoystick, percent);
+      RightBack.spin(forward);
+      RightMiddle.spin(forward);
+      RightFront.spin(forward);
+    }
     wait(20, msec); // Sleep the task for a short amount of time to
                     // prevent wasted resources.
   }
