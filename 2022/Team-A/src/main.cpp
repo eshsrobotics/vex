@@ -1,6 +1,72 @@
 // ---- START VEXCODE CONFIGURED DEVICES ----
 // Robot Configuration:
 // [Name]               [Type]        [Port(s)]
+// launcher_left        motor         11              
+// launcher_right       motor         13              
+// Controller1          controller                    
+// Drivetrain           drivetrain    10, 9, 4, 7     
+// intake               motor         19              
+// roller               motor         18              
+// distanceSensor       distance      16              
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// launcher_left        motor         11              
+// launcher_right       motor         13              
+// Controller1          controller                    
+// Drivetrain           drivetrain    10, 9, 4, 7     
+// intake               motor         19              
+// roller               motor         18              
+// distanceSensor       distance      16              
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// launcher_left        motor         11              
+// launcher_right       motor         13              
+// Controller1          controller                    
+// Drivetrain           drivetrain    4, 7, 10, 9     
+// intake               motor         19              
+// roller               motor         18              
+// distanceSensor       distance      16              
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// launcher_left        motor         11              
+// launcher_right       motor         13              
+// Controller1          controller                    
+// Drivetrain           drivetrain    4, 7, 10, 9     
+// intake               motor         19              
+// roller               motor         18              
+// distanceSensor       distance      16              
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// launcher_left        motor         11              
+// launcher_right       motor         13              
+// Controller1          controller                    
+// Drivetrain           drivetrain    5, 7, 10, 9     
+// intake               motor         19              
+// roller               motor         18              
+// distanceSensor       distance      16              
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// launcher_left        motor         11              
+// launcher_right       motor         13              
+// Controller1          controller                    
+// Drivetrain           drivetrain    3, 7, 10, 9     
+// intake               motor         19              
+// roller               motor         18              
+// distanceSensor       distance      16              
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
 // front_left           motor         7               
 // front_right          motor         10              
 // back_left            motor         3               
@@ -122,7 +188,7 @@ void usercontrol(void) {
 
     // Initializes the launcher velocity variable and sets the launcher motors to that amount
     // Initializes the intake velocity variable and sets the intake motor to that amount
-    int launcher_velocity = 60;
+    int launcher_velocity = -100;
     int intake_velocity = 35;
     launcher_left.setVelocity(launcher_velocity, pct);
     launcher_right.setVelocity(launcher_velocity, pct);
