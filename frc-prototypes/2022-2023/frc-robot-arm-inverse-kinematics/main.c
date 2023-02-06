@@ -130,8 +130,8 @@ struct jointAngles {
 
 const int SHOULDER_ENCODER_CLICKS_AT_HORIZONTAL = 80; // Confirmed (with shaft bug fixed)
 const int SHOULDER_ENCODER_CLICKS_AT_VERTICAL = -6;   // Confirmed (with shaft bug fixed)
-const int ELBOW_ENCODER_CLICKS_AT_HORIZONTAL = -11;   // Confirmed
-const int ELBOW_ENCODER_CLICKS_AT_VERTICAL = -96;     // Confirmed
+const int ELBOW_ENCODER_CLICKS_AT_HORIZONTAL = 94;    // Confirmed
+const int ELBOW_ENCODER_CLICKS_AT_VERTICAL = 8;       // Confirmed
 const int WRIST_ENCODER_CLICKS_AT_HORIZONTAL = 0;     // Confirmed
 const int WRIST_ENCODER_CLICKS_AT_VERTICAL = 78;      // Confirmed
 
@@ -344,9 +344,9 @@ task main() {
     // Start with the wrist; it's the lightest and problems with it will do the
     // least harm.
     setPID(shoulder, 8.000, 0.000, 13.500);
+    setPID(elbow, 2.300, 0.000, 7.000);
     // setPID(elbow,    1.500, 0.000, 1.600);  // The elbow needs more oomph than the wrist
     // setPID(wrist,    1.200, 0.000, 1.250); // Not bad!
-    setPID(elbow, 0.000, 0.000, 0.000);
     setPID(wrist, 0.000, 0.000, 0.000);
 
     // Version 2 of the robot arm: all movements are controlled using PID.  We
@@ -360,7 +360,7 @@ task main() {
     while (1) {
         jointAngles result;
         // robotArmMode(SensorValue[UpButton], SensorValue[DownButton], SensorValue[LeftButton], SensorValue[RightButton], &result);
-        pidDebuggingMode(shoulder, SensorValue[UpButton], SensorValue[DownButton], &result);
+        pidDebuggingMode(elbow, SensorValue[UpButton], SensorValue[DownButton], &result);
 
         // Obtain relative arm angles.
         shoulderAngle = getDegrees(shoulder, false);
@@ -372,9 +372,11 @@ task main() {
         elbowPower = calculate(elbow, elbowAngle, result.elbowAngle);
         wristPower = calculate(wrist, wristAngle, result.wristAngle);
 
-        motor[ShoulderMotor] = abs(shoulderPower) < MIN_MOTOR_POWER ? 0 : shoulderPower;
-        motor[ElbowMotor] = abs(elbowPower) < MIN_MOTOR_POWER ? 0 : elbowPower;
-        motor[WristMotor] = abs(wristPower) < MIN_MOTOR_POWER ? 0 : wristPower;
+
+
+        motor[ShoulderMotor] = abs(shoulderPower) < MIN_MOTOR_POWER ? 0 : clamp(shoulderPower, -100, 100);
+        motor[ElbowMotor] = abs(elbowPower) < MIN_MOTOR_POWER ? 0 : clamp(elbowPower, -100, 100);
+        motor[WristMotor] = abs(wristPower) < MIN_MOTOR_POWER ? 0 : clamp(wristPower, -100, 100);
 
         // Let's be reasonable about those X and Y increment speeds.
         sleep(20);
