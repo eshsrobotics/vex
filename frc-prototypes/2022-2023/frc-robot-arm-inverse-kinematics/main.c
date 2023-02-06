@@ -133,7 +133,7 @@ const int SHOULDER_ENCODER_CLICKS_AT_VERTICAL = -6;   // Confirmed (with shaft b
 const int ELBOW_ENCODER_CLICKS_AT_HORIZONTAL = 94;    // Confirmed
 const int ELBOW_ENCODER_CLICKS_AT_VERTICAL = 8;       // Confirmed
 const int WRIST_ENCODER_CLICKS_AT_HORIZONTAL = 0;     // Confirmed
-const int WRIST_ENCODER_CLICKS_AT_VERTICAL = 78;      // Confirmed
+const int WRIST_ENCODER_CLICKS_AT_VERTICAL = -80;     // Confirmed
 
 // If the power that the calculate() function tells us to use is lower than
 // this, don't bother moving.  I do hate hearing the high-pitched whine that
@@ -347,7 +347,7 @@ task main() {
     setPID(elbow, 2.300, 0.000, 7.000);
     // setPID(elbow,    1.500, 0.000, 1.600);  // The elbow needs more oomph than the wrist
     // setPID(wrist,    1.200, 0.000, 1.250); // Not bad!
-    setPID(wrist, 0.000, 0.000, 0.000);
+    setPID(wrist, 2.000, 0.000, 4.600);
 
     // Version 2 of the robot arm: all movements are controlled using PID.  We
     // determine two values: X, which is the desired extent outward, and Y,
@@ -359,8 +359,8 @@ task main() {
     // control X.
     while (1) {
         jointAngles result;
-        // robotArmMode(SensorValue[UpButton], SensorValue[DownButton], SensorValue[LeftButton], SensorValue[RightButton], &result);
-        pidDebuggingMode(elbow, SensorValue[UpButton], SensorValue[DownButton], &result);
+        robotArmMode(SensorValue[UpButton], SensorValue[DownButton], SensorValue[LeftButton], SensorValue[RightButton], &result);
+        // pidDebuggingMode(wrist, SensorValue[UpButton], SensorValue[DownButton], &result);
 
         // Obtain relative arm angles.
         shoulderAngle = getDegrees(shoulder, false);
