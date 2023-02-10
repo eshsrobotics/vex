@@ -6,6 +6,26 @@
 // Drivetrain           drivetrain    4, 5, 6, 3      
 // Flywheel             motor_group   8, 9            
 // roller               motor         7               
+// expansion            digital_out   A               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// Intakemotors         motor_group   1, 10           
+// Drivetrain           drivetrain    4, 5, 6, 3      
+// Flywheel             motor_group   8, 9            
+// roller               motor         7               
+// expansion            digital_out   A               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// Intakemotors         motor_group   1, 10           
+// Drivetrain           drivetrain    4, 5, 6, 3      
+// Flywheel             motor_group   8, 9            
+// roller               motor         7               
 // ---- END VEXCODE CONFIGURED DEVICES ----
 // ---- START VEXCODE CONFIGURED DEVICES ----
 // Robot Configuration:
@@ -267,10 +287,17 @@ void usercontrol(void) {
     }
 
     if(rollerEnabled == true) {
-    roller.spin(fwd, ROLLER_MAX_SPEED, pct);
-    }else {
+      roller.spin(fwd, ROLLER_MAX_SPEED, pct);
+    } else {
       roller.stop();
     }
+
+    if(ButtonDown) {
+      expansion.set(false);
+    } else if (ButtonUp) {
+      expansion.set(true);
+    }
+  
     
     wait(20, msec); // Sleep the task for a short amount of time to
                     // prevent wasted resources.

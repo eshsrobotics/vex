@@ -8,6 +8,7 @@ extern motor_group Intakemotors;
 extern drivetrain Drivetrain;
 extern motor_group Flywheel;
 extern motor roller;
+extern digital_out expansion;
 
 /**
  * Used to initialize code/tasks/devices added using tools in VEXcode Pro.
