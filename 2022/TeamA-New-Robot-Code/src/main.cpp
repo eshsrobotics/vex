@@ -158,11 +158,11 @@ void usercontrol(void) {
     if (current != previous) {
       // The drive state has changed
       // We noticed drifting problems when we drive in a straight line after turning
-      if (previous == TURNING && current == FORWARD) {
+      if ((previous == TURNING && current == FORWARD) || (previous == TURNING && current == STOPPED)) {
         correctiveFrames = 1;
-        correctiveLeftVelocity = -previousLeft * 0;
-        correctiveRightVelocity = -previousRight * 0;
-        correctiveDecay = 0.95;
+        correctiveLeftVelocity = -previousLeft * 0.1;
+        correctiveRightVelocity = -previousRight * 0.1;
+        correctiveDecay = 0.7;
       }
       previous = current;
     }
