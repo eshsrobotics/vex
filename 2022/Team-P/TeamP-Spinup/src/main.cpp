@@ -292,9 +292,9 @@ void usercontrol(void) {
       roller.stop();
     }
 
-    if(ButtonDown) {
+    if (Controller1.ButtonDown.pressing()) {
       expansion.set(false);
-    } else if (ButtonUp) {
+    } else if (Controller1.ButtonUp.pressing()) {
       expansion.set(true);
     }
   
