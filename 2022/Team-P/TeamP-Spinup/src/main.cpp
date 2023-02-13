@@ -6,23 +6,8 @@
 // Drivetrain           drivetrain    4, 5, 6, 3      
 // Flywheel             motor_group   8, 9            
 // roller               motor         7               
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// Controller1          controller                    
-// Intakemotors         motor_group   1, 10           
-// Drivetrain           drivetrain    4, 5, 6, 3      
-// Flywheel             motor_group   8, 9            
-// Roller               motor         7               
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// Controller1          controller                    
-// Intakemotors         motor_group   1, 10           
-// Drivetrain           drivetrain    4, 5, 6, 3      
-// Flywheel             motor_group   8, 9            
+// expansionLeft        digital_out   A               
+// expansionRight       digital_out   B               
 // ---- END VEXCODE CONFIGURED DEVICES ----
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
@@ -32,15 +17,6 @@
 /*    Description:  Competition Template                                      */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// Controller1          controller                    
-// Intakemotors         motor_group   1, 10           
-// Drivetrain           drivetrain    4, 5, 6, 3      
-// Flywheel             motor_group   8, 9            
-// ---- END VEXCODE CONFIGURED DEVICES ----
 
 #include "vex.h"
 
@@ -131,6 +107,8 @@ void pre_auton(void) {
 
   // All activities that occur before the competition starts
   // Example: clearing encoders, setting servo positions, ...
+  expansionLeft.set(true);
+  expansionRight.set(true);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -266,11 +244,20 @@ void usercontrol(void) {
       lastRollerButtonPressTimeSeconds = currentTimeSeconds;
     }
 
-    if(rollerEnabled == true) {
-    roller.spin(fwd, ROLLER_MAX_SPEED, pct);
-    }else {
+    if (rollerEnabled == true) {
+      roller.spin(fwd, ROLLER_MAX_SPEED, pct);
+    } else {
       roller.stop();
     }
+
+    if (Controller1.ButtonUp.pressing()) {
+      expansionLeft.set(false);
+      expansionRight.set(false);
+    } else if (Controller1.ButtonDown.pressing()) {
+      expansionLeft.set(true);
+      expansionRight.set(true);
+    }
+  
     
     wait(20, msec); // Sleep the task for a short amount of time to
                     // prevent wasted resources.
