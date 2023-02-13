@@ -1,0 +1,26 @@
+[style]
+based_on_style = yapf
+indent_width = 4
+coalesce_brackets = true
+
+# When lines are too long, put each element/parameter on a line of its own....
+split_all_comma_separated_values = true
+
+# ...except the first paramter of function calls, which needs to go on the same
+# line as the call itself.
+#
+# I *hate* it when formatters do this:
+#
+#     foo(
+#         long_param_1=100, long_param_2=101, long_param_3=102
+#     )
+#
+# instead of doing this:
+#
+#     foo(long_param_1=100,
+#         long_param_2=101,
+#         long_param_3=102)
+#
+# It's the _number one_ thing I despise about Black.
+split_before_first_argument = false
+split_penalty_after_opening_bracket = 1000
