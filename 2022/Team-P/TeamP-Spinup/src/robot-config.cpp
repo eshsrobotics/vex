@@ -23,7 +23,8 @@ motor FlywheelMotorA = motor(PORT8, ratio18_1, false);
 motor FlywheelMotorB = motor(PORT9, ratio18_1, true);
 motor_group Flywheel = motor_group(FlywheelMotorA, FlywheelMotorB);
 motor roller = motor(PORT7, ratio18_1, false);
-digital_out expansion = digital_out(Brain.ThreeWirePort.A);
+digital_out expansionLeft = digital_out(Brain.ThreeWirePort.A);
+digital_out expansionRight = digital_out(Brain.ThreeWirePort.B);
 
 // VEXcode generated functions
 // define variable for remote controller enable/disable
