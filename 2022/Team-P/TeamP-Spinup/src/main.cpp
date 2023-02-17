@@ -9,6 +9,28 @@
 // expansionLeft        digital_out   A               
 // expansionRight       digital_out   B               
 // ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// Intakemotors         motor_group   1, 10           
+// Drivetrain           drivetrain    4, 5, 6, 3      
+// Flywheel             motor_group   8, 9            
+// roller               motor         7               
+// expansionLeft        digital_out   A               
+// expansionRight       digital_out   B               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// Intakemotors         motor_group   1, 10           
+// Drivetrain           drivetrain    4, 5, 6, 3      
+// Flywheel             motor_group   8, 9            
+// roller               motor         7               
+// expansionLeft        digital_out   A               
+// expansionRight       digital_out   B               
+// ---- END VEXCODE CONFIGURED DEVICES ----
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /*    Module:       main.cpp                                                  */
