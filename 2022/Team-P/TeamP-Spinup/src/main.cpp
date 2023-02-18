@@ -73,8 +73,8 @@ competition Competition;
 
 // define your global instances of motors and other devices here
 
-// This fuction take 3 inputs which are the degrees of freedom (foward back and 
-// left right, and turning) and converts then into 4 outputs (The  motor speeds).
+// This function takes 3 inputs which are the degrees of freedom (foward back and 
+// left right, and turning) and converts then into 4 outputs (the motor speeds).
 // 
 // Arguments: 
 // - strafeLeftRight: Sideways strafing value from -100 to 100.
@@ -83,7 +83,6 @@ competition Competition;
 //                    Negative numbers move backwards.
 // - turnLeftRight:   Turning counterclockwise and clockwise value from -100 to 100.
 //                    Negative numbers turn counterclockwise. 
-
 void mechDrive(int strafeLeftRight, int forwardBack, int turnLeftRight) {
 
   double front_right_speed = forwardBack - strafeLeftRight - turnLeftRight;
@@ -103,10 +102,10 @@ void mechDrive(int strafeLeftRight, int forwardBack, int turnLeftRight) {
     }
     m.spin(fwd, value, pct);
   };
-   clamp(front_right_speed, front_right);
-   clamp(front_left_speed, front_left);
-   clamp(back_left_speed, back_left); 
-   clamp(back_right_speed, back_right);
+  clamp(front_right_speed, front_right);
+  clamp(front_left_speed, front_left);
+  clamp(back_left_speed, back_left); 
+  clamp(back_right_speed, back_right);
   //front_right.spin(fwd, 50, pct); // This is spinning the front LEFT?!
   //front_left.spin(fwd, 50, pct); // This is spinning the back LEFT?!
   //back_left.spin(fwd, 50, pct); // This is spinning the back RIGHT?!
@@ -160,22 +159,18 @@ void autonomous(void) {
 // autonomous routines.
 void auton_implementation() {
 
-  // The amount of time to reverse the chassis without also activating the
-  // roller.  The goal is for us to make contact with the blue/red roller
-  // behind us, then activate the roller motor _while driving backward_ in
-  // order to guarantee that it rolls.
-  const double REVERSE_DRIVE_MS = 150.0;
-
   // The roll time ms needs to spin for a certain amount of time
   // in order to attain our team's desired color.
   //
   // The roller should turn counter-clockwise in order to get the color of your
   // team.
-  const double ROLL_TIME_MS = 300;
+  const double ROLL_TIME_MS = 1000;
 
-  // This const was set in place in order to tell us what speed the autonous
-  // should be at
-  const double DRIVE_VELOCITY_PCT = 20;
+  // The amount of time needed to drive sideways in regards to the hard starting position.
+  // The roller should move forward and spin in order to turn the roller pin.
+  const double DRIVE_SIDEWAYS_MS = 2000; 
+
+  const double DRIVE_VELOCITY_PCT = 35;
 
   const double ROLLER_VELOCITY_PCT = 50;
 
@@ -185,19 +180,24 @@ void auton_implementation() {
 
     double elapsedTimeMs = Brain.timer(msec) - START_TIME_MS;
 
-    if (elapsedTimeMs < REVERSE_DRIVE_MS) {
-      // Step 1: Reverse the drive.
-      // Drivetrain.drive(reverse, DRIVE_VELOCITY_PCT, velocityUnits::pct);
-      left_motor_group.spin(reverse, DRIVE_VELOCITY_PCT, velocityUnits::pct);
-    } else if (elapsedTimeMs >= REVERSE_DRIVE_MS &&
-               elapsedTimeMs < REVERSE_DRIVE_MS + ROLL_TIME_MS) {
-      // Step 2: Activiate the roller.
-      Intakemotors.spin(directionType::rev, ROLLER_VELOCITY_PCT, velocityUnits::pct);
+    if (elapsedTimeMs < DRIVE_SIDEWAYS_MS) {
+      // Step 1: Drive robot sideways to its left.
+      mechDrive(-DRIVE_VELOCITY_PCT, 0, 0);
+    } else if (elapsedTimeMs >= DRIVE_SIDEWAYS_MS &&
+               elapsedTimeMs < DRIVE_SIDEWAYS_MS + ROLL_TIME_MS) {
+      // Step 2: Activate the roller.
+      roller.spin(directionType::rev, ROLLER_VELOCITY_PCT, velocityUnits::pct);
+
+      // Drive forward to maintain contact with the roller pin.
+      mechDrive(0, 30, 0);
+    } else if (elapsedTimeMs >= DRIVE_SIDEWAYS_MS + ROLL_TIME_MS &&
+               elapsedTimeMs < DRIVE_SIDEWAYS_MS + ROLL_TIME_MS + DRIVE_SIDEWAYS_MS) {
+      // Step 3: Drive sideways to the right to return to the robot's original position.
+      mechDrive(DRIVE_VELOCITY_PCT, 0, 0);
+      roller.stop();
     } else {
-      // Step 3: Stop the roller.
-      Intakemotors.stop();
-      // Drivetrain.stop();
-      left_motor_group.stop();
+      // Step 4: Stop the drive.
+      mechDrive(0, 0, 0);
     }
   }
 }
