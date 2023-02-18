@@ -10,6 +10,9 @@ extern motor RightBack;
 extern motor RightMiddle;
 extern motor RightFront;
 extern controller Controller1;
+extern motor intake;
+extern motor flywheel;
+extern distance distanceSensor;
 
 /**
  * Used to initialize code/tasks/devices added using tools in VEXcode Pro.

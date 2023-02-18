@@ -8,6 +8,9 @@
 // RightMiddle          motor         2               
 // RightFront           motor         1               
 // Controller1          controller                    
+// intake               motor         4               
+// flywheel             motor         5               
+// distanceSensor       distance      11              
 // ---- END VEXCODE CONFIGURED DEVICES ----
 // ---- START VEXCODE CONFIGURED DEVICES ----
 // Robot Configuration:
@@ -19,6 +22,8 @@
 // RightMiddle          motor         2               
 // RightFront           motor         1               
 // Controller1          controller                    
+// intake               motor         4               
+// flywheel             motor         5               
 // ---- END VEXCODE CONFIGURED DEVICES ----
 // ---- START VEXCODE CONFIGURED DEVICES ----
 // Robot Configuration:
@@ -30,6 +35,7 @@
 // RightMiddle          motor         2               
 // RightFront           motor         1               
 // Controller1          controller                    
+// intake               motor         4               
 // ---- END VEXCODE CONFIGURED DEVICES ----
 // ---- START VEXCODE CONFIGURED DEVICES ----
 // Robot Configuration:
@@ -41,6 +47,9 @@
 // RightMiddle          motor         2               
 // RightFront           motor         1               
 // Controller1          controller                    
+// intake               motor         4               
+// flywheel             motor         5               
+// distanceSensor       distance      6               
 // ---- END VEXCODE CONFIGURED DEVICES ----
 // ---- START VEXCODE CONFIGURED DEVICES ----
 // Robot Configuration:
@@ -52,6 +61,8 @@
 // RightMiddle          motor         2               
 // RightFront           motor         1               
 // Controller1          controller                    
+// intake               motor         4               
+// flywheel             motor         5               
 // ---- END VEXCODE CONFIGURED DEVICES ----
 // ---- START VEXCODE CONFIGURED DEVICES ----
 // Robot Configuration:
@@ -63,182 +74,7 @@
 // RightMiddle          motor         2               
 // RightFront           motor         1               
 // Controller1          controller                    
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// LeftBack             motor         8               
-// LeftMiddle           motor         9               
-// LeftFront            motor         10              
-// RightBack            motor         3               
-// RightMiddle          motor         2               
-// RightFront           motor         1               
-// Controller1          controller                    
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// LeftBack             motor         8               
-// LeftMiddle           motor         9               
-// LeftFront            motor         10              
-// RightBack            motor         3               
-// RightMiddle          motor         2               
-// RightFront           motor         1               
-// Controller1          controller                    
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// LeftBack             motor         8               
-// LeftMiddle           motor         9               
-// LeftFront            motor         10              
-// RightBack            motor         3               
-// RightMiddle          motor         2               
-// RightFront           motor         1               
-// Controller1          controller                    
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// LeftBack             motor         8               
-// LeftMiddle           motor         9               
-// LeftFront            motor         10              
-// RightBack            motor         3               
-// RightMiddle          motor         2               
-// RightFront           motor         1               
-// Controller1          controller                    
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// LeftBack             motor         8               
-// LeftMiddle           motor         9               
-// LeftFront            motor         10              
-// RightBack            motor         3               
-// RightMiddle          motor         2               
-// RightFront           motor         1               
-// Controller1          controller                    
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// LeftBack             motor         8               
-// LeftMiddle           motor         9               
-// LeftFront            motor         10              
-// RightBack            motor         3               
-// RightMiddle          motor         2               
-// RightFront           motor         1               
-// Controller1          controller                    
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// LeftBack             motor         8               
-// LeftMiddle           motor         9               
-// LeftFront            motor         10              
-// RightBack            motor         3               
-// RightMiddle          motor         2               
-// RightFront           motor         1               
-// Controller1          controller                    
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// LeftBack             motor         8               
-// LeftMiddle           motor         9               
-// LeftFront            motor         10              
-// RightBack            motor         3               
-// RightMiddle          motor         2               
-// RightFront           motor         1               
-// Controller1          controller                    
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// LeftBack             motor         8               
-// LeftMiddle           motor         9               
-// LeftFront            motor         10              
-// RightBack            motor         3               
-// RightMiddle          motor         2               
-// RightFront           motor         1               
-// Controller1          controller                    
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// LeftBack             motor         8               
-// LeftMiddle           motor         9               
-// LeftFront            motor         10              
-// RightBack            motor         3               
-// RightMiddle          motor         2               
-// RightFront           motor         1               
-// Controller1          controller                    
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// LeftBack             motor         8               
-// LeftMiddle           motor         9               
-// LeftFront            motor         10              
-// RightBack            motor         3               
-// RightMiddle          motor         2               
-// RightFront           motor         1               
-// Controller1          controller                    
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// LeftBack             motor         8               
-// LeftMiddle           motor         9               
-// LeftFront            motor         10              
-// RightBack            motor         3               
-// RightMiddle          motor         2               
-// RightFront           motor         1               
-// Controller1          controller                    
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// LeftBack             motor         8               
-// LeftMiddle           motor         9               
-// LeftFront            motor         10              
-// RightBack            motor         3               
-// RightMiddle          motor         2               
-// RightFront           motor         1               
-// Controller1          controller                    
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// LeftBack             motor         8               
-// LeftMiddle           motor         9               
-// LeftFront            motor         10              
-// RightBack            motor         3               
-// RightMiddle          motor         2               
-// RightFront           motor         1               
-// Controller1          controller                    
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// LeftBack             motor         8               
-// LeftMiddle           motor         9               
-// LeftFront            motor         10              
-// RightBack            motor         3               
-// RightMiddle          motor         2               
-// RightFront           motor         1               
-// Controller1          controller                    
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// LeftBack             motor         8               
-// LeftMiddle           motor         9               
-// LeftFront            motor         10              
-// RightBack            motor         3               
-// RightMiddle          motor         2               
-// RightFront           motor         1               
-// Controller1          controller                    
+// intake               motor         4               
 // ---- END VEXCODE CONFIGURED DEVICES ----
 // ---- START VEXCODE CONFIGURED DEVICES ----
 // Robot Configuration:
@@ -384,6 +220,11 @@ void usercontrol(void) {
 
   const int EPSILON = 25;
   const int DEADZONE = 5;
+
+  // The values for the velocities of the roller/intake and flywheel
+  const int INTAKE_VELOCITY_PCT = 100;
+  const int FLYWHEEL_VELOCITY_PCT = 100;
+
   while (1) {
     // This is the main execution loop for the user control program.
     // Each time through the loop your program should update motor + servo
@@ -456,6 +297,60 @@ void usercontrol(void) {
         spinMotors(leftJoystick, rightJoystick, DEADZONE);
       } else {
         spinMotors(leftJoystick / 2, rightJoystick / 2, DEADZONE);
+      }
+    }
+
+    // While L2 is held down, the roller will spin, while it is released, the roller will stop
+    if (Controller1.ButtonL1.pressing()) {
+      intake.setVelocity(INTAKE_VELOCITY_PCT / 2, percent);
+      intake.spin(forward);
+    } else {
+      intake.stop();
+    }
+
+    // If the distance sensor detects an object within 55 mm (5.5 cm), the shooter will
+    // automatically turn on and when R1 is pressed on the controller, the intake will turn on,
+    // pushing the disc into the shooter and launching it
+    //
+    // If the sensor does not detect an object, the intake is automatically on, when R1 is
+    // pressed, the shooter turns on, and when L1 is pressed, the intake stops
+    if(distanceSensor.objectDistance(mm) < 55) {
+      flywheel.setVelocity(FLYWHEEL_VELOCITY_PCT, percent);
+      flywheel.spin(forward);
+      Controller1.Screen.setCursor(3, 1);
+      Controller1.Screen.print("Shooter - %.2f     ", flywheel.velocity(pct));
+      if(Controller1.ButtonR1.pressing()) {
+        intake.setVelocity(INTAKE_VELOCITY_PCT, percent);
+        intake.spin(forward);
+      } else if (Controller1.ButtonR2.pressing()) {
+        intake.setVelocity(INTAKE_VELOCITY_PCT, percent);
+        intake.spin(reverse);
+        flywheel.setVelocity(FLYWHEEL_VELOCITY_PCT / 4, percent);
+        flywheel.spin(reverse);
+      } else {
+        intake.stop();
+      }
+    } else {
+      if (Controller1.ButtonR1.pressing()) {
+        flywheel.setVelocity(FLYWHEEL_VELOCITY_PCT, percent);
+        flywheel.spin(forward);
+        Controller1.Screen.setCursor(3, 1);
+        Controller1.Screen.print("Shooter - %.2f     ", flywheel.velocity(pct));
+      } else {
+        flywheel.stop();
+        Controller1.Screen.setCursor(3, 1);
+        Controller1.Screen.print("Shooter - %.2f     ", flywheel.velocity(pct));
+      }
+      if (Controller1.ButtonR2.pressing()) {
+        intake.setVelocity(INTAKE_VELOCITY_PCT, percent);
+        intake.spin(reverse);
+        flywheel.setVelocity(FLYWHEEL_VELOCITY_PCT / 4, percent);
+        flywheel.spin(reverse);
+      } else if (Controller1.ButtonL2.pressing()) {
+        intake.stop();
+      } else {
+        intake.setVelocity(INTAKE_VELOCITY_PCT, percent);
+        intake.spin(forward);
       }
     }
 
