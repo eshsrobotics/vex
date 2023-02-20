@@ -109,6 +109,7 @@
 // ---- END VEXCODE CONFIGURED DEVICES ----
 
 #include "vex.h"
+#include <cmath>
 
 using namespace vex;
 
@@ -116,12 +117,12 @@ using namespace vex;
 competition Competition;
 
 // define your global instances of motors and other devices here
-enum DriveState {
-  STOPPED,
-  FORWARD,
-  BACKWARD,
-  TURNING
-};
+
+// Returns the sign of X: +1 if positive, -1 if negative, 0 otherwise.
+double signum(double x) {
+  return (x > 0 ? 1.0 : x < 0 ? -1.0 : 0.0);
+}
+
 
 /*---------------------------------------------------------------------------*/
 /*                          Pre-Autonomous Functions                         */
@@ -167,14 +168,6 @@ void autonomous(void) {
 /*  You must modify the code to add your own robot specific commands here.   */
 /*---------------------------------------------------------------------------*/
 
-// Returns the absolute value of an input number
-int abs(int num) {
-  if (num < 0) {
-    return -num;
-  }
-  return num;
-}
-
 void spinMotors(int left, int right, int deadzone) {
   if (abs(left) <= deadzone) {
     LeftBack.stop();
@@ -205,25 +198,39 @@ void spinMotors(int left, int right, int deadzone) {
 
 void usercontrol(void) {
   // User control code here, inside the loop
-  DriveState current = STOPPED, previous = STOPPED;
-
-  // The amount of frames that user input is ignored to correct the robot's motion
-  int correctiveFrames = 0;
-
-  // This is what will happen during the corrective frames instead of using user input
-  double correctiveLeftVelocity = 0.0;
-  double correctiveRightVelocity = 0.0;
-  double correctiveDecay = 0.0;
-
-  int previousLeft = 0;
-  int previousRight = 0;
-
-  const int EPSILON = 25;
   const int DEADZONE = 5;
+  double leftVelocity = 0.0, rightVelocity = 0.0;
+
+  // The maximum change in velocity per frame that we allow.  The actual
+  // acceleration will tend to be a fraction of this, based on the magnitude of 
+  // the joystick channels.
+  //
+  // A value of 20.0 here capts the maximum velocity at 50% (for reasons that
+  // are not clear at all!), but we at least maintain decent control.
+  const double ACCELERATION = 20.0;  
+
+  // Left to its own devices, the robot's speed will decay on its own.
+  // This happens independently for both sides of the chassis.
+  const double VELOCITY_DECAY_FACTOR = 0.60;
+
+  // Don't allow the left or right sides to go faster than this.
+  const int MAX_VELOCITY_PERCENT = 100.0;
+
+  // This chassis turns opn a dime, and it's actually somewhat hard to control
+  // when it's spinning.  So we turn at a slower rate than we drive straight.
+  const double TURN_REDUCTION_FACTOR = 0.20;
 
   // The values for the velocities of the roller/intake and flywheel
   const int INTAKE_VELOCITY_PCT = 100;
   const int FLYWHEEL_VELOCITY_PCT = 100;
+
+  const brakeType BRAKING_MODE = brakeType::brake;
+  LeftBack.setBrake(BRAKING_MODE);
+  LeftMiddle.setBrake(BRAKING_MODE);
+  LeftFront.setBrake(BRAKING_MODE);
+  RightBack.setBrake(BRAKING_MODE);
+  RightMiddle.setBrake(BRAKING_MODE);
+  RightFront.setBrake(BRAKING_MODE);
 
   while (1) {
     // This is the main execution loop for the user control program.
@@ -238,67 +245,33 @@ void usercontrol(void) {
     int leftJoystick = Controller1.Axis3.position(percent);
     int rightJoystick = Controller1.Axis2.position(percent);
 
-    // Sets the current drive state to whichever state the robot is driving in
-    if (leftJoystick < 0 && rightJoystick < 0 && abs(leftJoystick - rightJoystick) < EPSILON) {
-      current = BACKWARD;
-    } else if (leftJoystick > 0 && rightJoystick > 0 && abs(leftJoystick - rightJoystick) < EPSILON) {
-      current = FORWARD;
-    } else if (leftJoystick == 0 && rightJoystick == 0) {
-      current = STOPPED;
-    } else {
-      current = TURNING;
+    leftVelocity += (leftJoystick / 100.0) * ACCELERATION;
+    rightVelocity += (rightJoystick / 100.0) * ACCELERATION;
+    
+    if (fabs(leftVelocity) > MAX_VELOCITY_PERCENT) {
+      leftVelocity = MAX_VELOCITY_PERCENT * signum(leftVelocity);
     }
 
-    if (current != previous) {
-      // The drive state has changed
-      // We noticed drifting problems when we drive in a straight line after turning
-      if ((previous == TURNING && current == FORWARD) || (previous == TURNING && current == STOPPED)) {
-        correctiveFrames = 1;
-        correctiveLeftVelocity = -previousLeft * 0.1;
-        correctiveRightVelocity = -previousRight * 0.1;
-        correctiveDecay = 0.7;
-      }
-      previous = current;
+    if (fabs(rightVelocity) > MAX_VELOCITY_PERCENT) {
+      rightVelocity = MAX_VELOCITY_PERCENT * signum(rightVelocity);
     }
-
-    Controller1.Screen.clearScreen();
 
     Controller1.Screen.setCursor(1, 1);
-    if (current == STOPPED) {
-      Controller1.Screen.print("Current: Stopped");
-    } else if (current == TURNING) {
-      Controller1.Screen.print("Current: Turning");
-    } else if (current == FORWARD) {
-      Controller1.Screen.print("Current: Forward");
-    } else if (current == BACKWARD) {
-      Controller1.Screen.print("Current: Backward");
-    }
-
+    Controller1.Screen.print("Left V  - %.2f     ", leftVelocity);
     Controller1.Screen.setCursor(2, 1);
-    if (previous == STOPPED) {
-      Controller1.Screen.print("Previous: Stopped");
-    } else if (previous == TURNING) {
-      Controller1.Screen.print("Previous: Turning");
-    } else if (previous == FORWARD) {
-      Controller1.Screen.print("Previous: Forward");
-    } else if (previous == BACKWARD) {
-      Controller1.Screen.print("Previous: Backward");
+    Controller1.Screen.print("Right V - %.2f     ", rightVelocity);
+
+    if ((rightJoystick > 0 && leftJoystick > 0) || (rightJoystick < 0 && leftJoystick < 0)) {
+      spinMotors(leftJoystick, rightJoystick, DEADZONE);
+    } else {
+      spinMotors(leftJoystick * TURN_REDUCTION_FACTOR, 
+                 rightJoystick * TURN_REDUCTION_FACTOR,
+                 DEADZONE);
     }
 
-    if (correctiveFrames > 0) {
-      // The robot's driving state changed, use corrective measures
-      spinMotors((int)correctiveLeftVelocity, (int)correctiveRightVelocity, 0);
-      correctiveLeftVelocity *= correctiveDecay;
-      correctiveRightVelocity *= correctiveDecay;
-      correctiveFrames--;
-    } else {
-      // Use user input
-      if ((rightJoystick > 0 && leftJoystick > 0) || (rightJoystick < 0 && leftJoystick < 0)) {
-        spinMotors(leftJoystick, rightJoystick, DEADZONE);
-      } else {
-        spinMotors(leftJoystick / 2, rightJoystick / 2, DEADZONE);
-      }
-    }
+    // Motion decays on its own if not maintained by the user.
+    leftVelocity *= VELOCITY_DECAY_FACTOR;
+    rightVelocity *= VELOCITY_DECAY_FACTOR;
 
     // While L2 is held down, the roller will spin, while it is released, the roller will stop
     if (Controller1.ButtonL1.pressing()) {
@@ -353,9 +326,6 @@ void usercontrol(void) {
         intake.spin(forward);
       }
     }
-
-    previousLeft = leftJoystick;
-    previousRight = rightJoystick;
 
     wait(20, msec); // Sleep the task for a short amount of time to
                     // prevent wasted resources.
