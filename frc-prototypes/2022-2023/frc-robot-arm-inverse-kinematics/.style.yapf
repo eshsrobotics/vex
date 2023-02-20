@@ -1,6 +1,7 @@
+# {based_on_style: yapf, indent_width: 4, coalesce_brackets: true, split_all_comma_separated_values: true, indent_closing_brackets: false, split_before_first_argument: false, split_before_closing_bracket: false, split_before_expression_after_opening_paren: false, split_penalty_after_opening_bracket: 1000000}
 [style]
 based_on_style = yapf
-indent_width = 4
+indent_width = 2
 coalesce_brackets = true
 
 # When lines are too long, put each element/parameter on a line of its own....
@@ -22,5 +23,9 @@ split_all_comma_separated_values = true
 #         long_param_3=102)
 #
 # It's the _number one_ thing I despise about Black.
+
+indent_closing_brackets = false
 split_before_first_argument = false
-split_penalty_after_opening_bracket = 1000
+split_before_closing_bracket = false
+split_before_expression_after_opening_paren = false
+split_penalty_after_opening_bracket = 1000000
