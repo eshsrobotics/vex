@@ -15,7 +15,7 @@ motor RightBack = motor(PORT3, ratio18_1, true);
 motor RightMiddle = motor(PORT2, ratio18_1, true);
 motor RightFront = motor(PORT1, ratio18_1, false);
 controller Controller1 = controller(primary);
-motor intake = motor(PORT4, ratio18_1, false);
+motor intake = motor(PORT4, ratio18_1, true);
 motor flywheel = motor(PORT5, ratio18_1, false);
 distance distanceSensor = distance(PORT11);
 
