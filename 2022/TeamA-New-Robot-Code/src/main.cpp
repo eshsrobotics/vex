@@ -1,92 +1,3 @@
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// LeftBack             motor         8               
-// LeftMiddle           motor         9               
-// LeftFront            motor         10              
-// RightBack            motor         3               
-// RightMiddle          motor         2               
-// RightFront           motor         1               
-// Controller1          controller                    
-// intake               motor         4               
-// flywheel             motor         5               
-// distanceSensor       distance      11              
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// LeftBack             motor         8               
-// LeftMiddle           motor         9               
-// LeftFront            motor         10              
-// RightBack            motor         3               
-// RightMiddle          motor         2               
-// RightFront           motor         1               
-// Controller1          controller                    
-// intake               motor         4               
-// flywheel             motor         5               
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// LeftBack             motor         8               
-// LeftMiddle           motor         9               
-// LeftFront            motor         10              
-// RightBack            motor         3               
-// RightMiddle          motor         2               
-// RightFront           motor         1               
-// Controller1          controller                    
-// intake               motor         4               
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// LeftBack             motor         8               
-// LeftMiddle           motor         9               
-// LeftFront            motor         10              
-// RightBack            motor         3               
-// RightMiddle          motor         2               
-// RightFront           motor         1               
-// Controller1          controller                    
-// intake               motor         4               
-// flywheel             motor         5               
-// distanceSensor       distance      6               
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// LeftBack             motor         8               
-// LeftMiddle           motor         9               
-// LeftFront            motor         10              
-// RightBack            motor         3               
-// RightMiddle          motor         2               
-// RightFront           motor         1               
-// Controller1          controller                    
-// intake               motor         4               
-// flywheel             motor         5               
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// LeftBack             motor         8               
-// LeftMiddle           motor         9               
-// LeftFront            motor         10              
-// RightBack            motor         3               
-// RightMiddle          motor         2               
-// RightFront           motor         1               
-// Controller1          controller                    
-// intake               motor         4               
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// LeftBack             motor         8               
-// LeftMiddle           motor         9               
-// LeftFront            motor         10              
-// RightBack            motor         3               
-// RightMiddle          motor         2               
-// RightFront           motor         1               
-// Controller1          controller                    
-// ---- END VEXCODE CONFIGURED DEVICES ----
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /*    Module:       main.cpp                                                  */
@@ -106,7 +17,11 @@
 // RightMiddle          motor         2               
 // RightFront           motor         1               
 // Controller1          controller                    
+// intake               motor         4               
+// flywheel             motor         5               
+// distanceSensor       distance      11              
 // ---- END VEXCODE CONFIGURED DEVICES ----
+
 
 #include "vex.h"
 #include <cmath>
@@ -216,13 +131,16 @@ void usercontrol(void) {
   // Don't allow the left or right sides to go faster than this.
   const int MAX_VELOCITY_PERCENT = 100.0;
 
-  // This chassis turns opn a dime, and it's actually somewhat hard to control
+  // This chassis turns on a dime, and it's actually somewhat hard to control
   // when it's spinning.  So we turn at a slower rate than we drive straight.
   const double TURN_REDUCTION_FACTOR = 0.20;
 
   // The values for the velocities of the roller/intake and flywheel
-  const int INTAKE_VELOCITY_PCT = 100;
+  const int INTAKE_VELOCITY_PCT = 50;
   const int FLYWHEEL_VELOCITY_PCT = 100;
+  
+  // The value for how far the distance sensor will try to detecdt a disc
+  const int DISTANCE_SENSOR_DETECTION_MM = 75;
 
   const brakeType BRAKING_MODE = brakeType::brake;
   LeftBack.setBrake(BRAKING_MODE);
@@ -257,9 +175,7 @@ void usercontrol(void) {
     }
 
     Controller1.Screen.setCursor(1, 1);
-    Controller1.Screen.print("Left V  - %.2f     ", leftVelocity);
-    Controller1.Screen.setCursor(2, 1);
-    Controller1.Screen.print("Right V - %.2f     ", rightVelocity);
+    Controller1.Screen.print("L - %.2f, R - %.2f     ", leftVelocity, rightVelocity);
 
     if ((rightJoystick > 0 && leftJoystick > 0) || (rightJoystick < 0 && leftJoystick < 0)) {
       spinMotors(leftJoystick, rightJoystick, DEADZONE);
@@ -277,19 +193,18 @@ void usercontrol(void) {
     if (Controller1.ButtonL1.pressing()) {
       intake.setVelocity(INTAKE_VELOCITY_PCT / 2, percent);
       intake.spin(forward);
-    } else {
-      intake.stop();
     }
 
-    // If the distance sensor detects an object within 55 mm (5.5 cm), the shooter will
+    Controller1.Screen.setCursor(2, 1);
+    Controller1.Screen.print("Distance - %.2f mm     ", distanceSensor.objectDistance(mm));
+
+    // If the distance sensor detects an object within 75 mm (7.5 cm), the shooter will
     // automatically turn on and when R1 is pressed on the controller, the intake will turn on,
     // pushing the disc into the shooter and launching it
     //
     // If the sensor does not detect an object, the intake is automatically on, when R1 is
     // pressed, the shooter turns on, and when L1 is pressed, the intake stops
-    if(distanceSensor.objectDistance(mm) < 55) {
-      flywheel.setVelocity(FLYWHEEL_VELOCITY_PCT, percent);
-      flywheel.spin(forward);
+    if(distanceSensor.objectDistance(mm) < DISTANCE_SENSOR_DETECTION_MM) {
       Controller1.Screen.setCursor(3, 1);
       Controller1.Screen.print("Shooter - %.2f     ", flywheel.velocity(pct));
       if(Controller1.ButtonR1.pressing()) {
@@ -302,19 +217,16 @@ void usercontrol(void) {
         flywheel.spin(reverse);
       } else {
         intake.stop();
+        flywheel.setVelocity(FLYWHEEL_VELOCITY_PCT, percent);
+        flywheel.spin(forward);
       }
     } else {
+      Controller1.Screen.setCursor(3, 1);
+      Controller1.Screen.print("Shooter - %.2f     ", flywheel.velocity(pct));
       if (Controller1.ButtonR1.pressing()) {
         flywheel.setVelocity(FLYWHEEL_VELOCITY_PCT, percent);
         flywheel.spin(forward);
-        Controller1.Screen.setCursor(3, 1);
-        Controller1.Screen.print("Shooter - %.2f     ", flywheel.velocity(pct));
-      } else {
-        flywheel.stop();
-        Controller1.Screen.setCursor(3, 1);
-        Controller1.Screen.print("Shooter - %.2f     ", flywheel.velocity(pct));
-      }
-      if (Controller1.ButtonR2.pressing()) {
+      } else if (Controller1.ButtonR2.pressing()) {
         intake.setVelocity(INTAKE_VELOCITY_PCT, percent);
         intake.spin(reverse);
         flywheel.setVelocity(FLYWHEEL_VELOCITY_PCT / 4, percent);
@@ -324,6 +236,7 @@ void usercontrol(void) {
       } else {
         intake.setVelocity(INTAKE_VELOCITY_PCT, percent);
         intake.spin(forward);
+        flywheel.stop();
       }
     }
 
