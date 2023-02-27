@@ -202,7 +202,10 @@ float getDegrees(int jointIndex, bool reset) {
         return shoulderDegrees - initialShoulderDegrees;
     case elbow:
         if (reset) {
-            initialElbowDegrees = elbowDegrees;
+              // Because the elbow is *supposed* to be at 180 degrees when the arm is fully vertical,
+            // but its actual measured angle is 0 after the encoder reset, we need to add to the measured
+            // value to make it line up with our math.
+            initialElbowDegrees = elbowDegrees - 180;
         }
         return elbowDegrees - initialElbowDegrees;
     case wrist:
@@ -281,12 +284,13 @@ void robotArmMode(bool up, bool down, bool left, bool right, jointAngles *result
     float theta = asin(newY / h);
     float phi = asin(newX / h);
 
-    // 0 degrees for the shoulder and elbow must be vertical.
+    // 0 degrees (as calculated by the inverse kinematics formula) for
+    // the shoulder and elbow must be vertical.
     float newShoulderAngle = (alpha + theta) * RADIANS_TO_DEGREES - 90;
-    float newElbowAngle = 180 - gamma * RADIANS_TO_DEGREES;
+    float newElbowAngle = gamma * RADIANS_TO_DEGREES;
 
     // The wrist must always face forward.
-    float newWristAngle = (beta + phi) * RADIANS_TO_DEGREES - 90;
+    float newWristAngle = (beta + phi) * RADIANS_TO_DEGREES;
 
     result->shoulderAngle = newShoulderAngle;
     result->elbowAngle = newElbowAngle;
