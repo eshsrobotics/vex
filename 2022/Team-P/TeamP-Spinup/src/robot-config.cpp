@@ -25,6 +25,11 @@ motor_group Flywheel = motor_group(FlywheelMotorA, FlywheelMotorB);
 motor roller = motor(PORT7, ratio18_1, false);
 digital_out expansionLeft = digital_out(Brain.ThreeWirePort.A);
 digital_out expansionRight = digital_out(Brain.ThreeWirePort.B);
+/*vex-vision-config:begin*/
+signature VisionSensor__RED_BASKET = signature (1, 8407, 9149, 8778, -1277, -551, -914, 7.6, 0);
+signature VisionSensor__BLUE_BASKET = signature (2, -4587, -2979, -3783, 13927, 20339, 17133, 4.4, 0);
+vision VisionSensor = vision (PORT11, 50, VisionSensor__RED_BASKET, VisionSensor__BLUE_BASKET);
+/*vex-vision-config:end*/
 
 // VEXcode generated functions
 // define variable for remote controller enable/disable
