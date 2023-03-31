@@ -49,7 +49,25 @@ while(1==1){
   rightBack.spin(forward);
   Brain.Screen.clearLine(1);
   Brain.Screen.print("%d",speed);
-}
-}
 
-if(Vision.takeSnapshot(Vision__GREEN_CUBE)
+  Vision.takeSnapshot(Vision__GREEN_CUBE);
+
+  while(Vision.largestObject.exists){
+    while(Vision.largestObject.originX!=0){
+      while(Vision.largestObject.originX>0){
+        leftFront.setVelocity(100,percent);
+        leftFront.spinFor(forward, 1, degrees);
+        leftBack.setVelocity(100,percent);
+        leftBack.spinFor(forward, 1, degrees);
+        rightFront.setVelocity(100,percent);
+        rightFront.spinFor(reverse, 1, degrees);
+        rightBack.setVelocity(100,percent);
+        rightBack.spinFor(reverse, 1, degrees);
+
+
+  
+      }
+    }
+  }
+}
+}
