@@ -8,6 +8,7 @@
 // roller               motor         7               
 // expansionLeft        digital_out   A               
 // expansionRight       digital_out   B               
+// VisionSensor         vision        11              
 // ---- END VEXCODE CONFIGURED DEVICES ----
 // ---- START VEXCODE CONFIGURED DEVICES ----
 // Robot Configuration:
@@ -19,6 +20,7 @@
 // roller               motor         7               
 // expansionLeft        digital_out   A               
 // expansionRight       digital_out   B               
+// VisionSensor         vision        11              
 // ---- END VEXCODE CONFIGURED DEVICES ----
 // ---- START VEXCODE CONFIGURED DEVICES ----
 // Robot Configuration:
@@ -30,6 +32,66 @@
 // roller               motor         7               
 // expansionLeft        digital_out   A               
 // expansionRight       digital_out   B               
+// Vision11             vision        11              
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// Intakemotors         motor_group   1, 10           
+// Drivetrain           drivetrain    4, 5, 6, 3      
+// Flywheel             motor_group   8, 9            
+// roller               motor         7               
+// expansionLeft        digital_out   A               
+// expansionRight       digital_out   B               
+// Vision11             vision        11              
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// Intakemotors         motor_group   1, 10           
+// Drivetrain           drivetrain    4, 5, 6, 3      
+// Flywheel             motor_group   8, 9            
+// roller               motor         7               
+// expansionLeft        digital_out   A               
+// expansionRight       digital_out   B               
+// Vision11             vision        11              
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// Intakemotors         motor_group   1, 10           
+// Drivetrain           drivetrain    4, 5, 6, 3      
+// Flywheel             motor_group   8, 9            
+// roller               motor         7               
+// expansionLeft        digital_out   A               
+// expansionRight       digital_out   B               
+// Vision11             vision        11              
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// Intakemotors         motor_group   1, 10           
+// Drivetrain           drivetrain    4, 5, 6, 3      
+// Flywheel             motor_group   8, 9            
+// roller               motor         7               
+// expansionLeft        digital_out   A               
+// expansionRight       digital_out   B               
+// Vision11             vision        11              
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller
+// Intakemotors         motor_group   1, 10
+// Drivetrain           drivetrain    4, 5, 6, 3
+// Flywheel             motor_group   8, 9
+// roller               motor         7
+// expansionLeft        digital_out   A
+// expansionRight       digital_out   B
 // ---- END VEXCODE CONFIGURED DEVICES ----
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
@@ -41,23 +103,24 @@
 /*----------------------------------------------------------------------------*/
 
 #include "vex.h"
+#include "vision-sensor-configuration.h"
 
 using namespace vex;
 
-// The code was not working and we figured out that all the ports on our brain shifted by one.
-// For example when we tried to spin the motor in port 4 it would spin port 5.
-// We added the -1s so it would activate the correct ports.
+// The code was not working and we figured out that all the ports on our brain
+// shifted by one. For example when we tried to spin the motor in port 4 it
+// would spin port 5. We added the -1s so it would activate the correct ports.
 // We do not know why this is happening.
 
 const int FRONT_LEFT_PORT = 4 - 1;  // we want port 4 to spin
 const int FRONT_RIGHT_PORT = 3 - 1; // we want port 3 to spin
 const int BACK_RIGHT_PORT = 6 - 1;  // we want port 6 to spin
 const int BACK_LEFT_PORT = 5 - 1;   // we want port 5 to spin
-const int FLYWHEEL_MAX_SPEED = 100;
+const int FLYWHEEL_MAX_SPEED = 80;  // 100 pct power is too much for the field.
 const int INTAKE_MAX_SPEED = 100;
 const int ROLLER_MAX_SPEED = 100;
 
-motor front_left(FRONT_LEFT_PORT);  
+motor front_left(FRONT_LEFT_PORT);
 motor back_left(BACK_LEFT_PORT);
 motor_group left_motor_group(front_left, back_left);
 
@@ -73,25 +136,27 @@ competition Competition;
 
 // define your global instances of motors and other devices here
 
-// This function takes 3 inputs which are the degrees of freedom (foward back and 
-// left right, and turning) and converts then into 4 outputs (the motor speeds).
-// 
-// Arguments: 
+// This function takes 3 inputs which are the degrees of freedom (foward back
+// and left right, and turning) and converts then into 4 outputs (the motor
+// speeds).
+//
+// Arguments:
 // - strafeLeftRight: Sideways strafing value from -100 to 100.
 //                    Negative numbers strafe left.
 // - fowardBack:      Moving foward and backwards value from -100 to 100.
 //                    Negative numbers move backwards.
-// - turnLeftRight:   Turning counterclockwise and clockwise value from -100 to 100.
-//                    Negative numbers turn counterclockwise. 
+// - turnLeftRight:   Turning counterclockwise and clockwise value from -100 to
+// 100.
+//                    Negative numbers turn counterclockwise.
 void mechDrive(int strafeLeftRight, int forwardBack, int turnLeftRight) {
 
   double front_right_speed = forwardBack - strafeLeftRight - turnLeftRight;
   double back_right_speed = forwardBack + strafeLeftRight - turnLeftRight;
   double front_left_speed = forwardBack + strafeLeftRight + turnLeftRight;
-  double back_left_speed = forwardBack - strafeLeftRight + turnLeftRight;  
+  double back_left_speed = forwardBack - strafeLeftRight + turnLeftRight;
 
   // Clamp values between -100 to 100 and spins the motor.
-  auto clamp = [] (int value, motor& m) {
+  auto clamp = [](int value, motor &m) {
     if (value < -100) {
       value = -100;
     } else if (value > 100) {
@@ -104,12 +169,12 @@ void mechDrive(int strafeLeftRight, int forwardBack, int turnLeftRight) {
   };
   clamp(front_right_speed, front_right);
   clamp(front_left_speed, front_left);
-  clamp(back_left_speed, back_left); 
+  clamp(back_left_speed, back_left);
   clamp(back_right_speed, back_right);
-  //front_right.spin(fwd, 50, pct); // This is spinning the front LEFT?!
-  //front_left.spin(fwd, 50, pct); // This is spinning the back LEFT?!
-  //back_left.spin(fwd, 50, pct); // This is spinning the back RIGHT?!
-  //back_right.spin(fwd, 50, pct); // This does NOTHING?!
+  // front_right.spin(fwd, 50, pct); // This is spinning the front LEFT?!
+  // front_left.spin(fwd, 50, pct); // This is spinning the back LEFT?!
+  // back_left.spin(fwd, 50, pct); // This is spinning the back RIGHT?!
+  // back_right.spin(fwd, 50, pct); // This does NOTHING?!
 }
 
 /*---------------------------------------------------------------------------*/
@@ -164,11 +229,12 @@ void auton_implementation() {
   //
   // The roller should turn counter-clockwise in order to get the color of your
   // team.
-  const double ROLL_TIME_MS = 1000;
+  const double ROLL_TIME_MS = 1080;
 
-  // The amount of time needed to drive sideways in regards to the hard starting position.
-  // The roller should move forward and spin in order to turn the roller pin.
-  const double DRIVE_SIDEWAYS_MS = 2000; 
+  // The amount of time needed to drive sideways in regards to the hard starting
+  // position. The roller should move forward and spin in order to turn the
+  // roller pin.
+  const double DRIVE_SIDEWAYS_MS = 1800;
 
   const double DRIVE_VELOCITY_PCT = 35;
 
@@ -191,8 +257,10 @@ void auton_implementation() {
       // Drive forward to maintain contact with the roller pin.
       mechDrive(0, 30, 0);
     } else if (elapsedTimeMs >= DRIVE_SIDEWAYS_MS + ROLL_TIME_MS &&
-               elapsedTimeMs < DRIVE_SIDEWAYS_MS + ROLL_TIME_MS + DRIVE_SIDEWAYS_MS) {
-      // Step 3: Drive sideways to the right to return to the robot's original position.
+               elapsedTimeMs <
+                   DRIVE_SIDEWAYS_MS + ROLL_TIME_MS + DRIVE_SIDEWAYS_MS) {
+      // Step 3: Drive sideways to the right to return to the robot's original
+      // position.
       mechDrive(DRIVE_VELOCITY_PCT, 0, 0);
       roller.stop();
     } else {
@@ -234,9 +302,13 @@ void usercontrol(void) {
     int fowardBack = Controller1.Axis3.value();
     int turnValue = Controller1.Axis1.value();
     const double currentTimeSeconds = Brain.timer(sec);
-    bool flywheelCooldownExceeded = currentTimeSeconds - lastFlywheelButtonPressTimeSeconds > flywheelToggleCooldownSeconds;
-    bool intakeCooldownExceeded = currentTimeSeconds - lastIntakeButtonPressTimeSeconds > intakeToggleCooldownSeconds;
-    bool rollerCooldownExeeded = currentTimeSeconds - lastRollerButtonPressTimeSeconds > rollerToggleCooldwonSeconds;
+    bool flywheelCooldownExceeded =
+        currentTimeSeconds - lastFlywheelButtonPressTimeSeconds >
+        flywheelToggleCooldownSeconds;
+    bool intakeCooldownExceeded =
+        currentTimeSeconds - lastIntakeButtonPressTimeSeconds >
+        intakeToggleCooldownSeconds;
+      
     mechDrive(leftRight, fowardBack, turnValue);
 
     if (Controller1.ButtonX.pressing() && flywheelCooldownExceeded) {
@@ -245,7 +317,7 @@ void usercontrol(void) {
     }
 
     if (flywheelEnabled == true) {
-      Flywheel.spin(fwd, FLYWHEEL_MAX_SPEED, pct);   
+      Flywheel.spin(fwd, FLYWHEEL_MAX_SPEED, pct);
     } else {
       Flywheel.stop(brakeType::coast);
     }
@@ -255,16 +327,13 @@ void usercontrol(void) {
       lastIntakeButtonPressTimeSeconds = currentTimeSeconds;
     }
 
-     if (intakeEnabled == true) {
-      Intakemotors.spin(reverse, INTAKE_MAX_SPEED, pct);   
+    if (intakeEnabled == true) {
+      Intakemotors.spin(reverse, INTAKE_MAX_SPEED, pct);
     } else {
       Intakemotors.stop(brakeType::coast);
     }
 
-    if (Controller1.ButtonR2.pressing() && rollerCooldownExeeded) {
-      rollerEnabled = !rollerEnabled;
-      lastRollerButtonPressTimeSeconds = currentTimeSeconds;
-    }
+    rollerEnabled = Controller1.ButtonR2.pressing();
 
     if (rollerEnabled == true) {
       roller.spin(fwd, ROLLER_MAX_SPEED, pct);
@@ -279,8 +348,51 @@ void usercontrol(void) {
       expansionLeft.set(true);
       expansionRight.set(true);
     }
-  
-    
+
+    int x = 0;
+    int center = 150;// The x coordinate for the center of the vision sensor
+    int OKError = 50; //Used to set a range of values to count is being just in front.
+    if (Controller1.ButtonR1.pressing())
+    {
+      VisionSensor.takeSnapshot(VisionSensor__BLUE_BASKET);
+      if (VisionSensor.largestObject.exists)
+      {
+        x = VisionSensor.largestObject.centerX;
+        if(x< (center-OKError)) //If the object is to the left of center
+        {
+          right_motor_group.spin(directionType::fwd, 25, velocityUnits::pct);
+          left_motor_group.spin(directionType::rev, 25, velocityUnits::pct);
+        } else if (x> center + OKError) //If the object is to the right of center
+        {
+          right_motor_group.spin(directionType::rev, 25, velocityUnits::pct);
+          left_motor_group.spin(directionType::fwd, 25, velocityUnits::pct);
+        } else //The object is not to the right of center and not to the left of center
+        {
+          left_motor_group.stop(brakeType::brake);
+          right_motor_group.stop(brakeType::brake);
+        }
+      }
+        VisionSensor.takeSnapshot(VisionSensor__RED_BASKET);
+      if (VisionSensor.largestObject.exists)
+      {
+        x = VisionSensor.largestObject.centerX;
+        if(x< (center-OKError)) //If the object is to the left of center
+        {
+          right_motor_group.spin(directionType::fwd, 25, velocityUnits::pct);
+          left_motor_group.spin(directionType::rev, 25, velocityUnits::pct);
+        } else if (x> center + OKError) //If the object is to the right of center
+        {
+          right_motor_group.spin(directionType::rev, 25, velocityUnits::pct);
+          left_motor_group.spin(directionType::fwd, 25, velocityUnits::pct);
+        } else //The object is not to the right of center and not to the left of center
+        {
+          left_motor_group.stop(brakeType::brake);
+          right_motor_group.stop(brakeType::brake);
+        }
+      }
+      task::sleep(100);
+    }
+
     wait(20, msec); // Sleep the task for a short amount of time to
                     // prevent wasted resources.
   }
