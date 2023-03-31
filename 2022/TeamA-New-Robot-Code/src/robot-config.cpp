@@ -12,12 +12,14 @@ motor LeftBack = motor(PORT8, ratio18_1, true);
 motor LeftMiddle = motor(PORT9, ratio18_1, false);
 motor LeftFront = motor(PORT10, ratio18_1, false);
 motor RightBack = motor(PORT3, ratio18_1, true);
-motor RightMiddle = motor(PORT2, ratio18_1, true);
-motor RightFront = motor(PORT1, ratio18_1, false);
+motor RightMiddle = motor(PORT2, ratio18_1, false);
+motor RightFront = motor(PORT1, ratio18_1, true);
 controller Controller1 = controller(primary);
 motor intake = motor(PORT4, ratio18_1, true);
 motor flywheel = motor(PORT5, ratio18_1, false);
 distance distanceSensor = distance(PORT11);
+digital_out LeftPneumatic = digital_out(Brain.ThreeWirePort.A);
+digital_out RightPneumatic = digital_out(Brain.ThreeWirePort.B);
 
 // VEXcode generated functions
 // define variable for remote controller enable/disable

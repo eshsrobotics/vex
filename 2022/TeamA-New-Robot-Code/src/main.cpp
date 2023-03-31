@@ -1,12 +1,3 @@
-/*----------------------------------------------------------------------------*/
-/*                                                                            */
-/*    Module:       main.cpp                                                  */
-/*    Author:       VEX                                                       */
-/*    Created:      Thu Sep 26 2019                                           */
-/*    Description:  Competition Template                                      */
-/*                                                                            */
-/*----------------------------------------------------------------------------*/
-
 // ---- START VEXCODE CONFIGURED DEVICES ----
 // Robot Configuration:
 // [Name]               [Type]        [Port(s)]
@@ -20,8 +11,99 @@
 // intake               motor         4               
 // flywheel             motor         5               
 // distanceSensor       distance      11              
+// LeftPneumatic        digital_out   A               
+// RightPneumatic       digital_out   B               
 // ---- END VEXCODE CONFIGURED DEVICES ----
-
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// LeftBack             motor         8               
+// LeftMiddle           motor         9               
+// LeftFront            motor         10              
+// RightBack            motor         3               
+// RightMiddle          motor         2               
+// RightFront           motor         1               
+// Controller1          controller                    
+// intake               motor         4               
+// flywheel             motor         5               
+// distanceSensor       distance      11              
+// LeftPneumatic        digital_out   A               
+// RightPneumatic       digital_out   B               
+// Vision20             vision        20              
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// LeftBack             motor         8               
+// LeftMiddle           motor         9               
+// LeftFront            motor         10              
+// RightBack            motor         3               
+// RightMiddle          motor         2               
+// RightFront           motor         1               
+// Controller1          controller                    
+// intake               motor         4               
+// flywheel             motor         5               
+// distanceSensor       distance      11              
+// LeftPneumatic        digital_out   A               
+// RightPneumatic       digital_out   B               
+// Vision20             vision        20              
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// LeftBack             motor         8               
+// LeftMiddle           motor         9               
+// LeftFront            motor         10              
+// RightBack            motor         3               
+// RightMiddle          motor         2               
+// RightFront           motor         1               
+// Controller1          controller                    
+// intake               motor         4               
+// flywheel             motor         5               
+// distanceSensor       distance      11              
+// LeftPneumatic        digital_out   A               
+// RightPneumatic       digital_out   B               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// LeftBack             motor         8               
+// LeftMiddle           motor         9               
+// LeftFront            motor         10              
+// RightBack            motor         3               
+// RightMiddle          motor         2               
+// RightFront           motor         1               
+// Controller1          controller                    
+// intake               motor         4               
+// flywheel             motor         5               
+// distanceSensor       distance      11              
+// LeftPneumatic        digital_out   A               
+// RightPneumatic       digital_out   B               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// LeftBack             motor         8               
+// LeftMiddle           motor         9               
+// LeftFront            motor         10              
+// RightBack            motor         3               
+// RightMiddle          motor         2               
+// RightFront           motor         1               
+// Controller1          controller                    
+// intake               motor         4               
+// flywheel             motor         5               
+// distanceSensor       distance      11              
+// LeftPneumatic        digital_out   A               
+// RightPneumatic       digital_out   B               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/*    Module:       main.cpp                                                  */
+/*    Author:       VEX                                                       */
+/*    Created:      Thu Sep 26 2019                                           */
+/*    Description:  Competition Template                                      */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
 
 #include "vex.h"
 #include <cmath>
@@ -55,6 +137,8 @@ void pre_auton(void) {
 
   // All activities that occur before the competition starts
   // Example: clearing encoders, setting servo positions, ...
+  LeftPneumatic.set(false);
+  RightPneumatic.set(false);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -71,6 +155,134 @@ void autonomous(void) {
   // ..........................................................................
   // Insert autonomous user code here.
   // ..........................................................................
+
+  // Set to true if we are doing programming skills, this will fire the expansion at
+  // the end of the auton routine if it is true
+  bool easy_roller = true;
+  int elapsed_time_ms;
+
+  // Set times for how long the robot spins the flywheel, moves the intake, drives
+  // backward, and moves the roller
+  const int READY_FLYWHEEL = 0;
+  const int SHOOT_PRELOADS = 0;
+  const int DRIVE_TO_ROLLER_EASY = 500;
+  const int MOVE_ROLLER_EASY = 500;
+  const int DRIVE_TO_ROLLER_HARD_1 = 750;
+  const int TURN_TO_ROLLER_HARD = 1000;
+  const int DRIVE_TO_ROLLER_HARD_2 = 500;
+  const int MOVE_ROLLER_HARD = 750;
+
+  // Sets the percentage for the drive motors' velocity, the intake velocity, the
+  // roller velocity, and the flywheel velocity
+  const int DRIVE_VELOCITY = 100;
+  const int INTAKE_VELOCITY = 50;
+  const int ROLLER_VELOCITY = INTAKE_VELOCITY / 2;
+  const int FLYWHEEL_VELOCITY = 100;
+  
+  // Autonomous does not start at zero, when the autonomous routine starts, the match
+  // may start minutes later. 
+  int start_time_ms = Brain.timer(msec);
+
+  // Sets velocities for the drive and flywheel motors
+  LeftBack.setVelocity(DRIVE_VELOCITY, pct);  
+  LeftMiddle.setVelocity(DRIVE_VELOCITY, pct);
+  LeftFront.setVelocity(DRIVE_VELOCITY, pct);
+  RightBack.setVelocity(DRIVE_VELOCITY, pct);
+  RightMiddle.setVelocity(DRIVE_VELOCITY, pct);
+  RightFront.setVelocity(DRIVE_VELOCITY, pct);
+  flywheel.setVelocity(FLYWHEEL_VELOCITY, pct);
+
+  // Starts moving the flywheel to spin it to full speed
+  // flywheel.spin(forward);
+
+  if (!easy_roller) {
+    LeftBack.spin(forward);
+    LeftMiddle.spin(forward);
+    LeftFront.spin(forward);
+    RightBack.spin(forward);
+    RightMiddle.spin(forward);
+    RightFront.spin(forward);
+  }
+
+  while(true) {
+    elapsed_time_ms = Brain.timer(msec) - start_time_ms;
+    
+    if (easy_roller) {
+      // If the robot is done readying the flywheel, start the intake, once the discs have
+      // finished shooting, stop the intake and flywheel and drive to the roller, when the
+      // robot is done driving to the roller, start the intake/roller and stop the drive
+      // After the intake/roller is done moving, stop everything and quit out of the while loop
+      if (elapsed_time_ms > READY_FLYWHEEL + SHOOT_PRELOADS + DRIVE_TO_ROLLER_EASY + MOVE_ROLLER_EASY) {
+        intake.stop();
+        break;
+      } else if (elapsed_time_ms > READY_FLYWHEEL + SHOOT_PRELOADS + DRIVE_TO_ROLLER_EASY) {
+        LeftBack.stop();
+        LeftMiddle.stop();
+        LeftFront.stop();
+        RightBack.stop();
+        RightMiddle.stop();
+        RightFront.stop();
+        intake.setVelocity(ROLLER_VELOCITY, pct);
+        intake.spin(forward);
+      } else if (elapsed_time_ms > READY_FLYWHEEL + SHOOT_PRELOADS) {
+        intake.stop();
+        flywheel.stop();
+        LeftBack.spin(forward);
+        LeftMiddle.spin(forward);
+        LeftFront.spin(forward);
+        RightBack.spin(forward);
+        RightMiddle.spin(forward);
+        RightFront.spin(forward);
+      } else if (elapsed_time_ms > READY_FLYWHEEL) {
+        // intake.setVelocity(INTAKE_VELOCITY, pct);
+        // intake.spin(forward);
+      }
+    } else {
+      if (elapsed_time_ms > DRIVE_TO_ROLLER_HARD_1 + TURN_TO_ROLLER_HARD + DRIVE_TO_ROLLER_HARD_2 + MOVE_ROLLER_HARD) {
+        intake.stop();
+        break;
+      } else if (elapsed_time_ms > DRIVE_TO_ROLLER_HARD_1 + TURN_TO_ROLLER_HARD + DRIVE_TO_ROLLER_HARD_2) {
+        LeftBack.stop();
+        LeftMiddle.stop();
+        LeftFront.stop();
+        RightBack.stop();
+        RightMiddle.stop();
+        RightFront.stop();
+        intake.setVelocity(ROLLER_VELOCITY, pct);
+        intake.spin(forward);
+      } else if (elapsed_time_ms > DRIVE_TO_ROLLER_HARD_1 + TURN_TO_ROLLER_HARD) {
+        // Stops the motors to reset momentum
+        LeftBack.stop(hold);
+        LeftMiddle.stop();
+        LeftFront.stop(hold);
+        RightBack.stop(hold);
+        RightMiddle.stop(hold);
+        RightFront.stop(hold);
+
+        LeftBack.spin(forward);
+        LeftMiddle.spin(forward);
+        LeftFront.spin(forward);
+        RightBack.spin(forward);
+        RightMiddle.spin(forward);
+        RightFront.spin(forward);
+      } else if (elapsed_time_ms > DRIVE_TO_ROLLER_HARD_1) {
+        // Stops the motors to reset momentum
+        LeftBack.stop(hold);
+        LeftMiddle.stop(hold);
+        LeftFront.stop(hold);
+        RightBack.stop(hold);
+        RightMiddle.stop(hold);
+        RightFront.stop(hold);
+
+        LeftBack.spin(forward);
+        LeftMiddle.spin(forward);
+        LeftFront.spin(forward);
+        RightBack.spin(reverse);
+        RightMiddle.spin(reverse);
+        RightFront.spin(reverse);
+      }
+    }
+  }
 }
 
 /*---------------------------------------------------------------------------*/
@@ -106,8 +318,8 @@ void spinMotors(int left, int right, int deadzone) {
     RightMiddle.setVelocity(right, percent);
     RightFront.setVelocity(right, percent);
     RightBack.spin(forward);
-    RightMiddle.spin(reverse);
-    RightFront.spin(reverse);
+    RightMiddle.spin(forward);
+    RightFront.spin(forward);
   }
 }
 
@@ -120,26 +332,26 @@ void usercontrol(void) {
   // acceleration will tend to be a fraction of this, based on the magnitude of 
   // the joystick channels.
   //
-  // A value of 20.0 here capts the maximum velocity at 50% (for reasons that
+  // A value of 20.0 here caps the maximum velocity at 50% (for reasons that
   // are not clear at all!), but we at least maintain decent control.
-  const double ACCELERATION = 20.0;  
+  const double ACCELERATION = 100.0;  
 
   // Left to its own devices, the robot's speed will decay on its own.
   // This happens independently for both sides of the chassis.
-  const double VELOCITY_DECAY_FACTOR = 0.60;
+  const double VELOCITY_DECAY_FACTOR = 0.80;
 
   // Don't allow the left or right sides to go faster than this.
   const int MAX_VELOCITY_PERCENT = 100.0;
 
   // This chassis turns on a dime, and it's actually somewhat hard to control
   // when it's spinning.  So we turn at a slower rate than we drive straight.
-  const double TURN_REDUCTION_FACTOR = 0.20;
+  const double TURN_REDUCTION_FACTOR = 1.00;
 
   // The values for the velocities of the roller/intake and flywheel
   const int INTAKE_VELOCITY_PCT = 50;
-  const int FLYWHEEL_VELOCITY_PCT = 100;
+  const int FLYWHEEL_VELOCITY_PCT = 70;
   
-  // The value for how far the distance sensor will try to detecdt a disc
+  // The value for how far the distance sensor will try to detect a disc
   const int DISTANCE_SENSOR_DETECTION_MM = 75;
 
   const brakeType BRAKING_MODE = brakeType::brake;
@@ -177,12 +389,22 @@ void usercontrol(void) {
     Controller1.Screen.setCursor(1, 1);
     Controller1.Screen.print("L - %.2f, R - %.2f     ", leftVelocity, rightVelocity);
 
-    if ((rightJoystick > 0 && leftJoystick > 0) || (rightJoystick < 0 && leftJoystick < 0)) {
-      spinMotors(leftJoystick, rightJoystick, DEADZONE);
+    if (Controller1.ButtonL2.pressing()) {
+      if ((rightJoystick > 0 && leftJoystick > 0) || (rightJoystick < 0 && leftJoystick < 0)) {
+        spinMotors(leftJoystick / 2, rightJoystick / 2, DEADZONE);
+      } else {
+        spinMotors(leftJoystick / 2 * TURN_REDUCTION_FACTOR, 
+                  rightJoystick / 2 * TURN_REDUCTION_FACTOR,
+                  DEADZONE);
+      }
     } else {
-      spinMotors(leftJoystick * TURN_REDUCTION_FACTOR, 
-                 rightJoystick * TURN_REDUCTION_FACTOR,
-                 DEADZONE);
+      if ((rightJoystick > 0 && leftJoystick > 0) || (rightJoystick < 0 && leftJoystick < 0)) {
+        spinMotors(leftJoystick, rightJoystick, DEADZONE);
+      } else {
+        spinMotors(leftJoystick * TURN_REDUCTION_FACTOR, 
+                  rightJoystick * TURN_REDUCTION_FACTOR,
+                  DEADZONE);
+      }
     }
 
     // Motion decays on its own if not maintained by the user.
@@ -191,7 +413,7 @@ void usercontrol(void) {
 
     // While L2 is held down, the roller will spin, while it is released, the roller will stop
     if (Controller1.ButtonL1.pressing()) {
-      intake.setVelocity(INTAKE_VELOCITY_PCT / 2, percent);
+      intake.setVelocity(100, percent);
       intake.spin(forward);
     }
 
@@ -211,7 +433,7 @@ void usercontrol(void) {
         intake.setVelocity(INTAKE_VELOCITY_PCT, percent);
         intake.spin(forward);
       } else if (Controller1.ButtonR2.pressing()) {
-        intake.setVelocity(INTAKE_VELOCITY_PCT, percent);
+        intake.setVelocity(100, percent);
         intake.spin(reverse);
         flywheel.setVelocity(FLYWHEEL_VELOCITY_PCT / 4, percent);
         flywheel.spin(reverse);
@@ -227,17 +449,20 @@ void usercontrol(void) {
         flywheel.setVelocity(FLYWHEEL_VELOCITY_PCT, percent);
         flywheel.spin(forward);
       } else if (Controller1.ButtonR2.pressing()) {
-        intake.setVelocity(INTAKE_VELOCITY_PCT, percent);
+        intake.setVelocity(100, percent);
         intake.spin(reverse);
         flywheel.setVelocity(FLYWHEEL_VELOCITY_PCT / 4, percent);
         flywheel.spin(reverse);
-      } else if (Controller1.ButtonL2.pressing()) {
-        intake.stop();
       } else {
         intake.setVelocity(INTAKE_VELOCITY_PCT, percent);
         intake.spin(forward);
         flywheel.stop();
       }
+    }
+
+    if (Controller1.ButtonDown.pressing()) {
+      LeftPneumatic.set(true);
+      RightPneumatic.set(true);
     }
 
     wait(20, msec); // Sleep the task for a short amount of time to

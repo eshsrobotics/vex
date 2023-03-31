@@ -13,6 +13,8 @@ extern controller Controller1;
 extern motor intake;
 extern motor flywheel;
 extern distance distanceSensor;
+extern digital_out LeftPneumatic;
+extern digital_out RightPneumatic;
 
 /**
  * Used to initialize code/tasks/devices added using tools in VEXcode Pro.
