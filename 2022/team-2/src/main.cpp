@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /*    Module:       main.cpp                                                  */
-/*    Author:       C:\Users\eshsp                                            */
+/*    Author:       Mary, Caden, Brian, Jackson                               */
 /*    Created:      Thu Mar 30 2023                                           */
 /*    Description:  V5 project                                                */
 /*                                                                            */
