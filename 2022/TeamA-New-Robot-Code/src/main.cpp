@@ -417,8 +417,8 @@ void usercontrol(void) {
       intake.spin(forward);
     }
 
-    Controller1.Screen.setCursor(2, 1);
-    Controller1.Screen.print("Distance - %.2f mm     ", distanceSensor.objectDistance(mm));
+    // Controller1.Screen.setCursor(2, 1);
+    // Controller1.Screen.print("Distance - %.2f mm     ", distanceSensor.objectDistance(mm));
 
     // If the distance sensor detects an object within 75 mm (7.5 cm), the shooter will
     // automatically turn on and when R1 is pressed on the controller, the intake will turn on,
@@ -427,8 +427,8 @@ void usercontrol(void) {
     // If the sensor does not detect an object, the intake is automatically on, when R1 is
     // pressed, the shooter turns on, and when L1 is pressed, the intake stops
     if(distanceSensor.objectDistance(mm) < DISTANCE_SENSOR_DETECTION_MM) {
-      Controller1.Screen.setCursor(3, 1);
-      Controller1.Screen.print("Shooter - %.2f     ", flywheel.velocity(pct));
+      // Controller1.Screen.setCursor(3, 1);
+      // Controller1.Screen.print("Shooter - %.2f     ", flywheel.velocity(pct));
       if(Controller1.ButtonR1.pressing()) {
         intake.setVelocity(INTAKE_VELOCITY_PCT, percent);
         intake.spin(forward);
@@ -443,8 +443,8 @@ void usercontrol(void) {
         flywheel.spin(forward);
       }
     } else {
-      Controller1.Screen.setCursor(3, 1);
-      Controller1.Screen.print("Shooter - %.2f     ", flywheel.velocity(pct));
+      // Controller1.Screen.setCursor(3, 1);
+      // Controller1.Screen.print("Shooter - %.2f     ", flywheel.velocity(pct));
       if (Controller1.ButtonR1.pressing()) {
         flywheel.setVelocity(FLYWHEEL_VELOCITY_PCT, percent);
         flywheel.spin(forward);
@@ -464,6 +464,24 @@ void usercontrol(void) {
       LeftPneumatic.set(true);
       RightPneumatic.set(true);
     }
+
+    Brain.Screen.setCursor(1, 1);
+    Brain.Screen.print("Left front temp - %.2f      ", LeftFront.temperature(temperatureUnits::fahrenheit));
+    Brain.Screen.setCursor(2, 1);
+    Brain.Screen.print("Left middle temp - %.2f      ", LeftMiddle.temperature(temperatureUnits::fahrenheit));
+    Brain.Screen.setCursor(3, 1);
+    Brain.Screen.print("Left back temp - %.2f      ", LeftBack.temperature(temperatureUnits::fahrenheit));
+    Brain.Screen.setCursor(4, 1);
+    Brain.Screen.print("Right front temp - %.2f      ", RightFront.temperature(temperatureUnits::fahrenheit));
+    Brain.Screen.setCursor(5, 1);
+    Brain.Screen.print("Right middle temp - %.2f      ", RightMiddle.temperature(temperatureUnits::fahrenheit));
+    Brain.Screen.setCursor(6, 1);
+    Brain.Screen.print("Right back temp - %.2f      ", RightBack.temperature(temperatureUnits::fahrenheit));
+
+    Controller1.Screen.setCursor(1, 1);
+    Controller1.Screen.print("Left temp - %.2f      ", LeftMiddle.temperature(temperatureUnits::fahrenheit));
+    Controller1.Screen.setCursor(2, 1);
+    Controller1.Screen.print("Right temp - %.2f      ", RightMiddle.temperature(temperatureUnits::fahrenheit));
 
     wait(20, msec); // Sleep the task for a short amount of time to
                     // prevent wasted resources.
