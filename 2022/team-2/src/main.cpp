@@ -14,7 +14,7 @@
 // FrontLeft            motor         11              
 // FrontRight           motor         1               
 // BackLeft             motor         12              
-// VisionSensor         vision        2               
+// VisionSensor         vision        3               
 // Controller1          controller                    
 // ---- END VEXCODE CONFIGURED DEVICES ----
 

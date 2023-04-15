@@ -9,7 +9,7 @@ extern motor BackRight;
 extern motor FrontLeft;
 extern motor FrontRight;
 extern motor BackLeft;
-extern signature VisionSensor__SIG_1;
+extern signature VisionSensor__GREEN_BOX;
 extern signature VisionSensor__SIG_2;
 extern signature VisionSensor__SIG_3;
 extern signature VisionSensor__SIG_4;
