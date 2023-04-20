@@ -20,8 +20,8 @@ vision VisionSensor = vision (PORT16, 50, VisionSensor__ORANGE_CUBE, VisionSenso
 /*vex-vision-config:end*/
 line LeftLineTracker = line(Brain.ThreeWirePort.B);
 line RightLineTracker = line(Brain.ThreeWirePort.C);
-servo Camera_motor = servo(Brain.ThreeWirePort.A);
 led LED_RED = led(Brain.ThreeWirePort.D);
+motor cameraMotor = motor(PORT10, ratio18_1, false);
 
 // VEXcode generated functions
 // define variable for remote controller enable/disable

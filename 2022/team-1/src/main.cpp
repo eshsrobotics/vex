@@ -9,6 +9,61 @@
 // VisionSensor         vision        16              
 // LeftLineTracker      line          B               
 // RightLineTracker     line          C               
+// LED_RED              led           D               
+// cameraMotor          motor         10              
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// leftFront            motor         11              
+// rightFront           motor         13              
+// leftBack             motor         9               
+// rightBack            motor         1               
+// VisionSensor         vision        16              
+// LeftLineTracker      line          B               
+// RightLineTracker     line          C               
+// LED_RED              led           D               
+// cameraMotor          motor         20              
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// leftFront            motor         11              
+// rightFront           motor         13              
+// leftBack             motor         9               
+// rightBack            motor         1               
+// VisionSensor         vision        16              
+// LeftLineTracker      line          B               
+// RightLineTracker     line          C               
+// LED_RED              led           D               
+// Motor20              motor         20              
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// leftFront            motor         11              
+// rightFront           motor         13              
+// leftBack             motor         9               
+// rightBack            motor         1               
+// VisionSensor         vision        16              
+// LeftLineTracker      line          B               
+// RightLineTracker     line          C               
+// LED_RED              led           D               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// leftFront            motor         11              
+// rightFront           motor         13              
+// leftBack             motor         9               
+// rightBack            motor         1               
+// VisionSensor         vision        16              
+// LeftLineTracker      line          B               
+// RightLineTracker     line          C               
 // Camera_motor         servo         A               
 // LED_RED              led           D               
 // ---- END VEXCODE CONFIGURED DEVICES ----
@@ -87,17 +142,19 @@ int main() {
   int rotateSpeed = 0;
   int y = 0;
   int Ycenter = 110;
-  int OKErrorY = 40;
+  int OKErrorY = 50;
   int upDownSpeed = 0;
-  int servoChange = 0;
     leftFront.setVelocity(100,percent);
           leftBack.setVelocity(100,percent);
           rightFront.setVelocity(100,percent);
           rightBack.setVelocity(100,percent);
-  Camera_motor.setPosition(10,degrees);
+          cameraMotor.setVelocity(60,percent);
+  cameraMotor.setPosition(0,degrees);
 
   while (1 == 1) {
-
+     Brain.Screen.clearLine(1);
+      Brain.Screen.print("%f",cameraMotor.position(degrees));
+     
     VisionSensor.takeSnapshot(VisionSensor__GREEN_CUBE);
     if(VisionSensor.largestObject.exists){
       x = (VisionSensor.largestObject.centerX);
@@ -119,35 +176,42 @@ int main() {
           rightBack.spinFor(forward, rotateSpeed, degrees);
         }
 
+
+
+
+        y = (VisionSensor.largestObject.centerY);
+      upDownSpeed = (Ycenter-y)*0.6;
+
+        if(y<(Ycenter-OKErrorY)){
+          Brain.Screen.clearLine(1);
+          Brain.Screen.print("tring to look up");
+          cameraMotor.spinFor(forward,(Ycenter-y),degrees);
+        }
+    VisionSensor.takeSnapshot(VisionSensor__GREEN_CUBE);
+    y = (VisionSensor.largestObject.centerY);
+    upDownSpeed = (Ycenter-y)*0.6;
+        if(y>(Ycenter+OKErrorY)){
+          Brain.Screen.clearLine(1);
+          Brain.Screen.print("tring to look down");
+          cameraMotor.spinFor(forward,(Ycenter-y),degrees);
+        }
     }
-  else{
+    }
+  
+
+       
+    if(!VisionSensor.largestObject.exists){
       leftFront.spinFor(forward, 30, degrees, false);
           leftBack.spinFor(forward, 30, degrees, false);
           rightFront.spinFor(reverse, 30, degrees, false);
           rightBack.spinFor(reverse, 30, degrees);
-          Camera_motor.setPosition(10,degrees);
-  }
-
-        /*y = (VisionSensor.largestObject.centerY);
-      upDownSpeed = (Ycenter-y)*0.6;
-
-        if(y<(Ycenter-OKErrorY)){
-          Camera_motor.setPosition(x,degrees);
-        }
-    VisionSensor.takeSnapshot(VisionSensor__GREEN_CUBE);
-    x = (VisionSensor.largestObject.centerX);
-    rotateSpeed = (Xcenter-x)*0.6;
-        if(x>(Xcenter+OKErrorX)){
-          leftFront.spinFor(reverse, rotateSpeed, degrees, false);
-          leftBack.spinFor(reverse, rotateSpeed, degrees, false);
-          rightFront.spinFor(forward, rotateSpeed, degrees, false);
-          rightBack.spinFor(forward, rotateSpeed, degrees);
-        }*/
-
-    
-
+          cameraMotor.setPosition(-10,degrees);
+          Brain.Screen.print("trying to look around");
 
   }
 
+  
+ 
+  
   
 }

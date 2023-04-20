@@ -20,8 +20,8 @@ extern signature VisionSensor__SIG_7;
 extern vision VisionSensor;
 extern line LeftLineTracker;
 extern line RightLineTracker;
-extern servo Camera_motor;
 extern led LED_RED;
+extern motor cameraMotor;
 
 /**
  * Used to initialize code/tasks/devices added using tools in VEXcode Pro.
