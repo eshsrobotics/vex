@@ -24,6 +24,7 @@ led LED_RED = led(Brain.ThreeWirePort.D);
 motor cameraMotor = motor(PORT10, ratio18_1, true);
 line FrontRightTracker = line(Brain.ThreeWirePort.E);
 line FrontLeftTracker = line(Brain.ThreeWirePort.F);
+distance DistanceSensor = distance(PORT18);
 
 // VEXcode generated functions
 // define variable for remote controller enable/disable

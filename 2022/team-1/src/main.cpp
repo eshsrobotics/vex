@@ -1,78 +1,95 @@
 // ---- START VEXCODE CONFIGURED DEVICES ----
 // Robot Configuration:
 // [Name]               [Type]        [Port(s)]
-// Controller1          controller                    
-// leftFront            motor         11              
-// rightFront           motor         13              
-// leftBack             motor         9               
-// rightBack            motor         1               
-// VisionSensor         vision        16              
-// BackRightTracker     line          B               
-// BackLeftTracker      line          C               
-// LED_RED              led           D               
-// cameraMotor          motor         10              
-// FrontRightTracker    line          E               
-// FrontLeftTracker     line          F               
+// Controller1          controller
+// leftFront            motor         11
+// rightFront           motor         13
+// leftBack             motor         9
+// rightBack            motor         1
+// VisionSensor         vision        16
+// BackRightTracker     line          B
+// BackLeftTracker      line          C
+// LED_RED              led           D
+// cameraMotor          motor         10
+// FrontRightTracker    line          E
+// FrontLeftTracker     line          F
+// DistanceSensor       distance      18
 // ---- END VEXCODE CONFIGURED DEVICES ----
 // ---- START VEXCODE CONFIGURED DEVICES ----
 // Robot Configuration:
 // [Name]               [Type]        [Port(s)]
-// Controller1          controller                    
-// leftFront            motor         11              
-// rightFront           motor         13              
-// leftBack             motor         9               
-// rightBack            motor         1               
-// VisionSensor         vision        16              
-// BackRightTracker     line          B               
-// BackLeftTracker      line          C               
-// LED_RED              led           D               
-// cameraMotor          motor         10              
-// FrontRightTracker    line          E               
+// Controller1          controller
+// leftFront            motor         11
+// rightFront           motor         13
+// leftBack             motor         9
+// rightBack            motor         1
+// VisionSensor         vision        16
+// BackRightTracker     line          B
+// BackLeftTracker      line          C
+// LED_RED              led           D
+// cameraMotor          motor         10
+// FrontRightTracker    line          E
+// FrontLeftTracker     line          F
 // ---- END VEXCODE CONFIGURED DEVICES ----
 // ---- START VEXCODE CONFIGURED DEVICES ----
 // Robot Configuration:
 // [Name]               [Type]        [Port(s)]
-// Controller1          controller                    
-// leftFront            motor         11              
-// rightFront           motor         13              
-// leftBack             motor         9               
-// rightBack            motor         1               
-// VisionSensor         vision        16              
-// LeftLineTracker      line          B               
-// BackLeftTracker      line          C               
-// LED_RED              led           D               
-// cameraMotor          motor         10              
-// FrontRightTracker    line          E               
+// Controller1          controller
+// leftFront            motor         11
+// rightFront           motor         13
+// leftBack             motor         9
+// rightBack            motor         1
+// VisionSensor         vision        16
+// BackRightTracker     line          B
+// BackLeftTracker      line          C
+// LED_RED              led           D
+// cameraMotor          motor         10
+// FrontRightTracker    line          E
 // ---- END VEXCODE CONFIGURED DEVICES ----
 // ---- START VEXCODE CONFIGURED DEVICES ----
 // Robot Configuration:
 // [Name]               [Type]        [Port(s)]
-// Controller1          controller                    
-// leftFront            motor         11              
-// rightFront           motor         13              
-// leftBack             motor         9               
-// rightBack            motor         1               
-// VisionSensor         vision        16              
-// LeftLineTracker      line          B               
-// RightLineTracker     line          C               
-// LED_RED              led           D               
-// cameraMotor          motor         10              
-// FrontRightTracker    line          E               
+// Controller1          controller
+// leftFront            motor         11
+// rightFront           motor         13
+// leftBack             motor         9
+// rightBack            motor         1
+// VisionSensor         vision        16
+// LeftLineTracker      line          B
+// BackLeftTracker      line          C
+// LED_RED              led           D
+// cameraMotor          motor         10
+// FrontRightTracker    line          E
 // ---- END VEXCODE CONFIGURED DEVICES ----
 // ---- START VEXCODE CONFIGURED DEVICES ----
 // Robot Configuration:
 // [Name]               [Type]        [Port(s)]
-// Controller1          controller                    
-// leftFront            motor         11              
-// rightFront           motor         13              
-// leftBack             motor         9               
-// rightBack            motor         1               
-// VisionSensor         vision        16              
-// LeftLineTracker      line          B               
-// RightLineTracker     line          C               
-// LED_RED              led           D               
-// cameraMotor          motor         10              
-// FrontRight           line          E               
+// Controller1          controller
+// leftFront            motor         11
+// rightFront           motor         13
+// leftBack             motor         9
+// rightBack            motor         1
+// VisionSensor         vision        16
+// LeftLineTracker      line          B
+// RightLineTracker     line          C
+// LED_RED              led           D
+// cameraMotor          motor         10
+// FrontRightTracker    line          E
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller
+// leftFront            motor         11
+// rightFront           motor         13
+// leftBack             motor         9
+// rightBack            motor         1
+// VisionSensor         vision        16
+// LeftLineTracker      line          B
+// RightLineTracker     line          C
+// LED_RED              led           D
+// cameraMotor          motor         10
+// FrontRight           line          E
 // ---- END VEXCODE CONFIGURED DEVICES ----
 // ---- START VEXCODE CONFIGURED DEVICES ----
 // Robot Configuration:
@@ -320,7 +337,7 @@ void detectLikedCube(int Xcenter, int Ycenter, int OKErrorX, int OKErrorY) {
 
   if (y < (Ycenter - OKErrorY)) {
     Brain.Screen.clearLine(1);
-     Brain.Screen.setCursor(2, 1);
+    Brain.Screen.setCursor(2, 1);
     Brain.Screen.print("tring to look up  ");
     cameraMotor.spinFor(forward, (upDownSpeed), degrees);
   }
@@ -337,13 +354,27 @@ void detectLikedCube(int Xcenter, int Ycenter, int OKErrorX, int OKErrorY) {
 
 // Looks arround in a clockwise direction looking for the target.
 void lookAround() {
-  leftFront.spinFor(forward, 30, degrees, false);//False makes the robot not wait for the robot to reach teh desired position to continue with the code
+  leftFront.spinFor(
+      forward, 30, degrees,
+      false); // False makes the robot not wait for the robot to reach teh
+              // desired position to continue with the code
   leftBack.spinFor(forward, 30, degrees, false);
   rightFront.spinFor(reverse, 30, degrees, false);
-  rightBack.spinFor(reverse, 30, degrees); //No false means code will not continue until robot reaches desired position
+  rightBack.spinFor(reverse, 30,
+                    degrees); // No false means code will not continue until
+                              // robot reaches desired position
   cameraMotor.spinToPosition(30, degrees);
   Brain.Screen.setCursor(2, 1);
   Brain.Screen.print("trying to look around");
+}
+
+void BackUp() {
+  int BackUpDistance = 0;
+  BackUpDistance = (800 - DistanceSensor.objectDistance(mm)) * 0.7;
+  leftFront.spinFor(reverse, BackUpDistance, degrees, false);
+  rightFront.spinFor(reverse, BackUpDistance, degrees, false);
+  leftBack.spinFor(reverse, BackUpDistance, degrees, false);
+  rightBack.spinFor(reverse, BackUpDistance, degrees);
 }
 
 void lineTrackerInfo() {
@@ -351,11 +382,50 @@ void lineTrackerInfo() {
   int fl = FrontLeftTracker.reflectivity(pct);
   int br = BackRightTracker.reflectivity(pct);
   int bl = BackLeftTracker.reflectivity(pct);
+  int BackUpDistance = 0;
   const int screenX = 1;
   const int screenY = 3;
   Brain.Screen.setCursor(screenY, screenX);
   Brain.Screen.print("FR: %02d, FL: %02d, BR: %02d, BL: %02d", fr, fl, br, bl);
+  VisionSensor.takeSnapshot(VisionSensor__DISLIKED_CUBE);
+  while (((FrontRightTracker.reflectivity() < 63) ||
+          (FrontLeftTracker.reflectivity() < 63) ||
+          (BackRightTracker.reflectivity() < 63) ||
+          (BackLeftTracker.reflectivity() < 63)) &&
+         (DistanceSensor.objectDistance(mm)) < 1000) {
+    VisionSensor.takeSnapshot(VisionSensor__DISLIKED_CUBE);
+  }
 }
+
+void MoveUp() {
+  int MoveUpDistance = 0;
+  MoveUpDistance = (DistanceSensor.objectDistance(mm) - 900) * 0.7;
+  leftFront.spinFor(forward, MoveUpDistance, degrees, false);
+  rightFront.spinFor(forward, MoveUpDistance, degrees, false);
+  leftBack.spinFor(forward, MoveUpDistance, degrees, false);
+  rightBack.spinFor(forward, MoveUpDistance, degrees);
+}
+
+void DistanceInfo() {
+  Brain.Screen.setCursor(4, 1);
+  Brain.Screen.print("%01s",
+                     DistanceSensor.isObjectDetected() ? "TRUE" : "FALSE");
+  Brain.Screen.setCursor(5, 1);
+  Brain.Screen.print("%01f", DistanceSensor.objectDistance(mm));
+}
+
+
+struct VisionTarget {
+  double x;
+  double y;
+  double distanceFeet;
+  bool cubeExists;
+}
+
+void trackColor(signature colorSignature, ){
+  if(VisionSensor.objectCount() == 0){
+    
+  }
 
 int main() {
   // Initializing Robot Configuration. DO NOT REMOVE!
@@ -386,10 +456,19 @@ int main() {
     VisionSensor.takeSnapshot(VisionSensor__LIKED_CUBE);
     if (VisionSensor.largestObject.exists) {
       detectLikedCube(Xcenter, Ycenter, OKErrorX, OKErrorY);
+      // lineTrackerInfo();
+      DistanceInfo();
+      if ((DistanceSensor.objectDistance(mm)) < 800) {
+        BackUp();
+      }
+
+      if (1700 > (DistanceSensor.objectDistance(mm)) &&
+          (DistanceSensor.objectDistance(mm)) > 900) {
+        MoveUp();
+      }
+
     } else {
       lookAround();
     }
-    lineTrackerInfo();
-
   }
 }

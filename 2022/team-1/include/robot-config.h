@@ -24,6 +24,7 @@ extern led LED_RED;
 extern motor cameraMotor;
 extern line FrontRightTracker;
 extern line FrontLeftTracker;
+extern distance DistanceSensor;
 
 /**
  * Used to initialize code/tasks/devices added using tools in VEXcode Pro.
