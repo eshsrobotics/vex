@@ -9,8 +9,8 @@ extern motor BackRight;
 extern motor FrontLeft;
 extern motor FrontRight;
 extern motor BackLeft;
+extern signature VisionSensor__ORANGE_BOX;
 extern signature VisionSensor__GREEN_BOX;
-extern signature VisionSensor__SIG_2;
 extern signature VisionSensor__SIG_3;
 extern signature VisionSensor__SIG_4;
 extern signature VisionSensor__SIG_5;
@@ -20,7 +20,7 @@ extern vision VisionSensor;
 extern controller Controller1;
 
 /**
- * Used to initialize code/tasks/devices added using tools in VEXcode Pro.
+ * Used to initialize code/tasks/devices added using tools in VEXcode Text.
  * 
  * This should be called at the start of your int main function.
  */
