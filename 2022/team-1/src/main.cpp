@@ -162,8 +162,7 @@ void MoveUp() {
 
 void DistanceInfo() {
   Brain.Screen.setCursor(4, 1);
-  Brain.Screen.print("%01s",
-                     DistanceSensor.isObjectDetected() ? "TRUE" : "FALSE");
+  Brain.Screen.print("%01s", DistanceSensor.isObjectDetected() ? "TRUE" : "FALSE");
   Brain.Screen.setCursor(5, 1);
   Brain.Screen.print("%01f", DistanceSensor.objectDistance(mm));
 }
@@ -210,7 +209,7 @@ int main() {
     VisionSensor.takeSnapshot(VisionSensor__LIKED_CUBE);
     if (VisionSensor.largestObject.exists) {
       detectLikedCube(Xcenter, Ycenter, OKErrorX, OKErrorY);
-      // lineTrackerInfo();
+      lineTrackerInfo();
       DistanceInfo();
       if ((DistanceSensor.objectDistance(mm)) < 800) {
         BackUp();
