@@ -26,6 +26,20 @@
 #include "vex.h"
 #include <cmath>
 
+const double AVERAGE_FLOOR_VALUE = 59.5;
+const double FLOOR_SPREAD = 8.5;
+const double AVRAGE_NEW_TAPE_VALUE = 77.5;
+const double NEW_TAPE_SPREAD = 15.5;
+const double AVERAGE_OLD_TAPE_VALUE = 63;
+const double OLD_TAPE_SPREAD = 10;
+
+double FloorPercentage (double lineSensorReading) {
+  const double min = AVERAGE_FLOOR_VALUE - FLOOR_SPREAD;
+  const double max = AVERAGE_FLOOR_VALUE + FLOOR_SPREAD;
+  const double u = (lineSensorReading - min)/(max - min);
+  return u;
+}
+
 using namespace vex;
 
 signature hatedCube = VisionSensor__LIKED_CUBE;
