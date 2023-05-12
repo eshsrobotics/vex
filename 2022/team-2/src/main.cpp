@@ -38,13 +38,26 @@ void drive(double forwardBack, double leftRight, double rotate) {
   BackRight.spin(forward);
 } 
 
+
+
+
+
 int main() {
   // Initializing Robot Configuration. DO NOT REMOVE!
   vexcodeInit();
+
+  double forwardBack = 0;
+  double leftRight = 0;
+  double rotate = 0; 
+
   while (true) {
-    drive(Controller1.Axis3.position(percent), 
-          Controller1.Axis4.position(percent),
-          Controller1.Axis1.position(percent));
+    forwardBack = Controller1.Axis3.position(percent);
+    leftRight = Controller1.Axis4.position(percent);
+    rotate = Controller1.Axis1.position(percent);
+
+    drive(forwardBack, 
+          leftRight,
+          rotate);
 
     wait(50, msec);
   }
