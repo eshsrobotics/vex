@@ -18,6 +18,10 @@ extern signature VisionSensor__SIG_6;
 extern signature VisionSensor__SIG_7;
 extern vision VisionSensor;
 extern controller Controller1;
+extern line TapeDetectorFL;
+extern line TapeDetectorFR;
+extern line TapeDetectorBL;
+extern line LineDetectorBR;
 
 /**
  * Used to initialize code/tasks/devices added using tools in VEXcode Pro.
