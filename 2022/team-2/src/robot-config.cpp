@@ -23,6 +23,10 @@ signature VisionSensor__SIG_7 = signature (7, 0, 0, 0, 0, 0, 0, 3, 0);
 vision VisionSensor = vision (PORT3, 50, VisionSensor__GREEN_BOX, VisionSensor__SIG_2, VisionSensor__SIG_3, VisionSensor__SIG_4, VisionSensor__SIG_5, VisionSensor__SIG_6, VisionSensor__SIG_7);
 /*vex-vision-config:end*/
 controller Controller1 = controller(primary);
+line TapeDetectorFL = line(Brain.ThreeWirePort.A);
+line TapeDetectorFR = line(Brain.ThreeWirePort.B);
+line TapeDetectorBL = line(Brain.ThreeWirePort.C);
+line LineDetectorBR = line(Brain.ThreeWirePort.D);
 
 // VEXcode generated functions
 // define variable for remote controller enable/disable
