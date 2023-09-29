@@ -10,8 +10,8 @@ const double WHEEL_BASE = 130.0;
 
 const double WHEEL_GEAR_RATIO = 1.0;
 
-extern brain Brain;
-extern controller Controller;
+extern vex::brain Brain;
+extern vex::controller Controller;
 extern vex::motor leftMotor;
 extern vex::motor rightMotor;
 extern vex::drivetrain drive;
