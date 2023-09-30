@@ -50,6 +50,32 @@ int tank_drive() {
     return 0;
 }
 
+int arcade_drive() {
+    while (true) {
+        int straightSpeed = Controller.Axis2.position();
+        int turnSpeed = -Controller.Axis1.position();
+        Controller.Screen.setCursor(1,1);
+        Controller.Screen.print(straightSpeed);
+        Controller.Screen.setCursor(2,1);
+        Controller.Screen.print(turnSpeed);
+        Controller.Screen.clearScreen();
+
+
+        if ((straightSpeed < 5 || straightSpeed > -5) || (turnSpeed < 5 || turnSpeed > -5)) {
+            leftMotor.setVelocity(-(straightSpeed + turnSpeed), percent);
+            rightMotor.setVelocity(-(straightSpeed - turnSpeed), percent);
+            leftMotor.spin(forward);
+            rightMotor.spin(forward);
+        } else {
+            leftMotor.stop();
+            rightMotor.stop();
+        }
+
+        wait(20, msec);
+    }
+    return 0;
+}
+
 void vexcodeInit(void) {
-    task rc_auto_loop_task_Controller(tank_drive);
+    task rc_auto_loop_task_Controller(arcade_drive);
 }
