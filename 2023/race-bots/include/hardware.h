@@ -1,7 +1,7 @@
 #include "vex.h"
 
-const int LEFT_MOTOR_PORT = 10;
-const int RIGHT_MOTOR_PORT = 11;
+const int LEFT_MOTOR_PORT = 2-1;
+const int RIGHT_MOTOR_PORT = 1-1;
 
 // Don't know actual values
 const double WHEEL_TRAVEL = 320.0;

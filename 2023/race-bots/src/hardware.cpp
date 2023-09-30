@@ -3,8 +3,10 @@
 using namespace vex;
 brain Brain;
 controller Controller = controller(primary);
-motor leftMotor = motor(LEFT_MOTOR_PORT);
-motor rightMotor = motor(RIGHT_MOTOR_PORT);
+// motor format: motor(port, reversed) where port is an integer for the port
+// number and reverse is a boolean for if the motor needs to be reversed or not
+motor leftMotor = motor(LEFT_MOTOR_PORT, false);
+motor rightMotor = motor(RIGHT_MOTOR_PORT, true);
 drivetrain drive = drivetrain(leftMotor, rightMotor, WHEEL_TRAVEL, TRACK_WIDTH, WHEEL_BASE, mm, WHEEL_GEAR_RATIO);
 
 bool leftStop = true;
@@ -14,6 +16,12 @@ int tank_drive() {
     while (true) {
         int leftSpeed = Controller.Axis3.position();
         int rightSpeed = Controller.Axis2.position();
+        Controller.Screen.setCursor(1,1);
+        Controller.Screen.print(leftSpeed);
+        Controller.Screen.setCursor(2,1);
+        Controller.Screen.print(rightSpeed);
+        Controller.Screen.clearScreen();
+
 
         if (leftSpeed < 5 && leftSpeed > -5 && leftStop) {
             leftMotor.stop();
