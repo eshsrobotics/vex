@@ -1,3 +1,4 @@
+#include "vex.h"
 #include "hardware.h"
 
 using namespace vex;

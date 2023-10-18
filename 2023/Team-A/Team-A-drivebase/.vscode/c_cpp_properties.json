@@ -9,8 +9,8 @@
 			"${vex_gcc}/arm-none-eabi/armv7-arm/thumb",
 			"${vex_sdkPath}/gcc/include",
 			"${vex_sdkPath}/include/**",
-			"${workspaceFolder}/include/**",
-			"${workspaceFolder}/src/**"
+			"$Team-A-drivebase/TeamA-Drivebase-Test/include/**",
+			"$Team-A-drivebase/TeamA-Drivebase-Test/src/**"
 		]
 	},
 	"configurations": [
@@ -19,7 +19,7 @@
 			"includePath": [
 				"${vex_sdkIncludes}"
 			],
-			"compilerPath": "${vex_compilerPath}",
+			"compilerPath": "c:/Users/frc1/AppData/Roaming/Code/User/globalStorage/vexrobotics.vexcode/tools/cpp/toolchain_win32/clang/bin/clang",
 			"cStandard": "gnu99",
 			"cppStandard": "gnu++11",
 			"intelliSenseMode": "windows-clang-x86"
