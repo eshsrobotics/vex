@@ -9,8 +9,8 @@
 			"${vex_gcc}/arm-none-eabi/armv7-arm/thumb",
 			"${vex_sdkPath}/gcc/include",
 			"${vex_sdkPath}/include/**",
-			"$Team-A-drivebase/TeamA-Drivebase-Test/include/**",
-			"$Team-A-drivebase/TeamA-Drivebase-Test/src/**"
+			"${workspaceFolder}/TeamA-Drivebase-Test/include/**",
+			"${workspaceFolder}/TeamA-Drivebase-Test/src/**"
 		]
 	},
 	"configurations": [
