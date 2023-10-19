@@ -1,4 +1,7 @@
-#include "vex.h"
+#include "v5.h"
+#include "v5_vcs.h"
+
+using namespace vex;
 
 const int LEFT_FRONT_MOTOR_PORT = 1-1;
 const int LEFT_TOP_MOTOR_PORT = 2-1;
