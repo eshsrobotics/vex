@@ -22,3 +22,34 @@ void tank_drive(double leftSpeedPercent,
         right.stop(ROBOT_BRAKE_TYPE); 
     }
 }   
+
+
+void arcade_drive(double horizontalChannel,
+                  double verticalChannel,
+                  motor_group& left,
+                  motor_group& right) { 
+
+    double straightSpeed = verticalChannel;
+    double spinSpeed = horizontalChannel;
+
+    // Dead zones are where the joystick value sets to zero within a certain
+    // radius of the center.
+    if (fabs(straightSpeed)< JOYSTICK_DEADZONE_PERCENT) {
+        straightSpeed = 0;
+    }
+    if (fabs(spinSpeed)< JOYSTICK_DEADZONE_PERCENT) {
+        spinSpeed = 0;
+    }
+
+    if (spinSpeed == 0 && straightSpeed == 0) {
+        // This stops the robot if the user lets go of the joystick.
+        left.stop(ROBOT_BRAKE_TYPE);
+        right.stop(ROBOT_BRAKE_TYPE);
+    } else {
+        // This makes the robot move forward if the user moves the joystick.
+        left.setVelocity(-(straightSpeed + spinSpeed), percent);
+        right.setVelocity(-(straightSpeed - spinSpeed), percent);
+        left.spin(forward);
+        right.spin(forward);
+    }
+}
