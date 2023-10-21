@@ -1,3 +1,6 @@
+#ifndef HARDWARE_H_IS_PRESENT
+#define HARDWARE_H_IS_PRESENT
+
 #include "v5.h"
 #include "v5_vcs.h"
 
@@ -29,3 +32,4 @@ extern vex::motor_group leftMotors;
 extern vex::motor_group rightMotors;
 
 void vexcodeInit(void);
+#endif // (#ifndef HARDWARE_H_IS_PRESENT)
