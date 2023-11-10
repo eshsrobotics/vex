@@ -20,6 +20,8 @@ const double WHEEL_BASE = 130.0;
 
 const double WHEEL_GEAR_RATIO = 1.0;
 
+const double WHEEL_CIRCUMFERENCE = 10.2101761242;
+
 extern vex::brain Brain;
 extern vex::controller Controller;
 extern vex::motor leftFrontMotor;

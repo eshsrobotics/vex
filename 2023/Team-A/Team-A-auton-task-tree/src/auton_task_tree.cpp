@@ -107,14 +107,60 @@ void WaitMillisecondsTask::start() {
   doneTimeMilliseconds = startTimeMilliseconds + waitPeriodMilliseconds;
 }
 
+
+/*--------------------------------------------------------*/
+/*                   Driving Methods                      */
+/*--------------------------------------------------------*/
+
+DriveStraightTask::DriveStraightTask(vex::motor_group &left_motor_group, 
+                                     vex::motor_group &right_motor_group, 
+                                     double distanceInches,
+                                     std::function<double(double)> translateFunction)
+    : Task("Drive task"), left_motor_group(left_motor_group), right_motor_group(right_motor_group),
+      distanceInches(distanceInches), translateFunction(translateFunction) {}
+
+bool DriveStraightTask::done() const { return left_motor_group.isDone(); }
+
+void DriveStraightTask::start() {
+  double correctDistanceInches = translateFunction(distanceInches);
+  const bool WAIT_FOR_COMPLETION = false;
+  if (distanceInches > 0) {
+    left_motor_group.spinFor(vex::forward, (distanceInches*360)/WHEEL_CIRCUMFERENCE, degrees, WAIT_FOR_COMPLETION);
+    right_motor_group.spinFor(vex::forward, (distanceInches*360)/WHEEL_CIRCUMFERENCE, degrees, WAIT_FOR_COMPLETION);
+  } else {
+    left_motor_group.spinFor(vex::reverse, -(distanceInches*360)/WHEEL_CIRCUMFERENCE, degrees, WAIT_FOR_COMPLETION);
+    right_motor_group.spinFor(vex::reverse, -(distanceInches*360)/WHEEL_CIRCUMFERENCE, degrees, WAIT_FOR_COMPLETION);
+  }
+}
+
+// TurnTask::TurnTask(vex::motor_group& motor_group1, 
+//                    vex::motor_group& motor_group2,
+//                    double rotationAmountDegrees,
+//                    std::function<double(double)> turnCorrectionFunc)
+//     : Task("Turn task"), drivetrain(drivetrain),
+//       rotationAmountDegrees(rotationAmountDegrees),
+//       turnCorrectionFunc(turnCorrectionFunc) {}
+
+// bool TurnTask::done() const { return drivetrain.isDone(); }
+
+// void TurnTask::start() {
+//   if (rotationAmountDegrees > 0) {
+//     drivetrain.turnFor(right, rotationAmountDegrees, degrees, false);
+//   } else {
+//     drivetrain.turnFor(left, -rotationAmountDegrees, degrees, false);
+//   }
+// }
+
 std::shared_ptr<Task> get_auton(AUTON_TYPE type) {
 
   auto wait0 = std::shared_ptr<Task>(new WaitMillisecondsTask(0));
+  auto driveTwelve = std::shared_ptr<Task>(new DriveStraightTask(leftMotors, rightMotors, 12.0));
   
   // The root task always needs to be wait0
 
   switch(type) {
     case TEST_AUTON:
+      addTask(wait0, driveTwelve);
       break;
 
   }

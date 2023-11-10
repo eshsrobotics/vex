@@ -9,6 +9,7 @@
 
 #include "vex.h"
 #include "hardware.h"
+#include "auton_task_tree.h"
 
 using namespace vex;
 
@@ -47,6 +48,9 @@ void autonomous(void) {
   // ..........................................................................
   // Insert autonomous user code here.
   // ..........................................................................
+
+  auto root_task = get_auton(TEST_AUTON);
+  execute(root_task);
 }
 
 /*---------------------------------------------------------------------------*/
