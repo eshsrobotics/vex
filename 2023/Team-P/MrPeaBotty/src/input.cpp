@@ -25,9 +25,11 @@ void tank_drive(double leftSpeedPercent,
 
 
 void arcade_drive(double horizontalChannel,
-                  double verticalChannel,
-                  motor_group& left,
-                  motor_group& right) { 
+                  double verticalChannel, 
+                  vex::motor& frontRight,
+                  vex::motor& frontLeft,
+                  vex::motor& backRight,
+                  vex::motor& backLeft) { 
 
     double straightSpeed = verticalChannel;
     double spinSpeed = horizontalChannel;
@@ -43,13 +45,24 @@ void arcade_drive(double horizontalChannel,
 
     if (spinSpeed == 0 && straightSpeed == 0) {
         // This stops the robot if the user lets go of the joystick.
-        left.stop(ROBOT_BRAKE_TYPE);
-        right.stop(ROBOT_BRAKE_TYPE);
+        frontLeft.stop(ROBOT_BRAKE_TYPE);
+        frontRight.stop(ROBOT_BRAKE_TYPE);
+        backLeft.stop(ROBOT_BRAKE_TYPE);
+        backRight.stop(ROBOT_BRAKE_TYPE);
     } else {
         // This makes the robot move forward if the user moves the joystick.
-        left.setVelocity(-(straightSpeed + spinSpeed), percent);
-        right.setVelocity(-(straightSpeed - spinSpeed), percent);
-        left.spin(forward);
-        right.spin(forward);
+
+        // The "real" Arcade Drive formula uses -(straight - spin) for the right
+        // side of the differential drive.  For reasons that aren't clear to us,
+        // that did not work in this case; we had to reverse the sense of the
+        // right side of the drive in order to move correctly.  We need to
+        // review the arcade drive formula again.
+        double leftSpeed = -(straightSpeed + spinSpeed);
+        double rightSpeed = -(straightSpeed - spinSpeed) * -1.0; // <-- Note the kludge.
+        
+        frontLeft.spin(forward, leftSpeed, percent);
+        frontRight.spin(forward, rightSpeed, percent);            
+        backLeft.spin(forward, leftSpeed, percent);
+        backRight.spin(forward, rightSpeed, percent);
     }
 }
