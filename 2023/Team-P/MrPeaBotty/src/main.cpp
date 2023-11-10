@@ -8,6 +8,8 @@
 /*----------------------------------------------------------------------------*/
 
 #include "vex.h"
+#include "input.h"
+#include "hardwareConstitution.h"
 
 using namespace vex;
 
@@ -59,6 +61,7 @@ void autonomous(void) {
 /*---------------------------------------------------------------------------*/
 
 void usercontrol(void) {
+
   // User control code here, inside the loop
   while (1) {
     // This is the main execution loop for the user control program.
@@ -69,6 +72,10 @@ void usercontrol(void) {
     // Insert user code here. This is where you use the joystick values to
     // update your motors, etc.
     // ........................................................................
+    
+    arcade_drive(Controller.Axis4.position(),
+                 Controller.Axis3.position(), 
+                 R1, L1, R2, L2);
 
     wait(20, msec); // Sleep the task for a short amount of time to
                     // prevent wasted resources.
