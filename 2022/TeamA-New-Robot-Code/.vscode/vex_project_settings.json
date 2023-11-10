@@ -1,10 +1,10 @@
 {
 	"project": {
-		"name": "TeamA-New-Robot-Code-vscode",
-		"slot": 2,
+		"name": "TeamA-New-Robot-Code",
+		"slot": 1,
 		"description": "Empty V5 C++ Project",
 		"platform": "V5",
-		"creationDate": "Fri, 20 Oct 2023 22:59:49 GMT",
+		"creationDate": "Sat, 21 Oct 2023 00:17:35 GMT",
 		"language": "cpp",
 		"sdkVersion": "V5_20220726_10_00_00",
 		"cpp": {

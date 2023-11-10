@@ -1,8 +1,8 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /*    Module:       main.cpp                                                  */
-/*    Author:       FRC1                                                      */
-/*    Created:      9/28/2023, 4:09:23 PM                                     */
+/*    Author:       frc1                                                      */
+/*    Created:      11/9/2023, 3:53:17 PM                                     */
 /*    Description:  V5 project                                                */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
@@ -29,7 +29,6 @@ competition Competition;
 
 void pre_auton(void) {
 
-  vexcodeInit();
   // All activities that occur before the competition starts
   // Example: clearing encoders, setting servo positions, ...
 }
@@ -60,17 +59,6 @@ void autonomous(void) {
 /*  You must modify the code to add your own robot specific commands here.   */
 /*---------------------------------------------------------------------------*/
 
-void reverse_drive() {
-  bool done = false;
-
-  double start_time = Brain.timer
-
-  while (!done) {
-    leftMotor.spin(directionType::fwd);
-    rightMotor.spin(directionType::fwd);
-  }
-}
-
 void usercontrol(void) {
   // User control code here, inside the loop
   while (1) {
@@ -82,9 +70,6 @@ void usercontrol(void) {
     // Insert user code here. This is where you use the joystick values to
     // update your motors, etc.
     // ........................................................................
-
-    Controller.ButtonB.pressed(reverse_drive);
-  
 
     wait(20, msec); // Sleep the task for a short amount of time to
                     // prevent wasted resources.
