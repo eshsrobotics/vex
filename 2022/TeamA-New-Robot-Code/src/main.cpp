@@ -478,9 +478,9 @@ void usercontrol(void) {
     Brain.Screen.setCursor(6, 1);
     Brain.Screen.print("Right back temp - %.2f      ", RightBack.temperature(temperatureUnits::fahrenheit));
 
-    Controller1.Screen.setCursor(1, 1);
-    Controller1.Screen.print("Left temp - %.2f      ", LeftMiddle.temperature(temperatureUnits::fahrenheit));
     Controller1.Screen.setCursor(2, 1);
+    Controller1.Screen.print("Left temp - %.2f      ", LeftMiddle.temperature(temperatureUnits::fahrenheit));
+    Controller1.Screen.setCursor(3, 1);
     Controller1.Screen.print("Right temp - %.2f      ", RightMiddle.temperature(temperatureUnits::fahrenheit));
 
     wait(20, msec); // Sleep the task for a short amount of time to
