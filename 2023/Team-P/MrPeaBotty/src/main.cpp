@@ -61,7 +61,7 @@ void autonomous(void) {
 /*---------------------------------------------------------------------------*/
 
 void usercontrol(void) {
-
+  bool clawClose = true;
   // User control code here, inside the loop
   while (1) {
     // This is the main execution loop for the user control program.
@@ -75,7 +75,18 @@ void usercontrol(void) {
     
     arcade_drive(Controller.Axis4.position(),
                  Controller.Axis3.position(), 
-                 R1, L1, R2, L2);
+                 R, L);
+
+    if (Controller.ButtonL1.pressing()==true){
+      clawClose = false; 
+    }
+      else if (Controller.ButtonR1.pressing()==true) {
+      clawClose=true;
+    }
+
+    moveArm (Controller.Axis2.position(),
+              clawClose,armMotor,clawMotor);
+
 
     wait(20, msec); // Sleep the task for a short amount of time to
                     // prevent wasted resources.

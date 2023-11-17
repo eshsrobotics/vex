@@ -25,11 +25,9 @@ void tank_drive(double leftSpeedPercent,
 
 
 void arcade_drive(double horizontalChannel,
-                  double verticalChannel, 
-                  vex::motor& frontRight,
-                  vex::motor& frontLeft,
-                  vex::motor& backRight,
-                  vex::motor& backLeft) { 
+                  double verticalChannel,
+                  vex::motor_group& left, 
+                  vex::motor_group& right) { 
 
     double straightSpeed = verticalChannel;
     double spinSpeed = horizontalChannel;
@@ -45,10 +43,8 @@ void arcade_drive(double horizontalChannel,
 
     if (spinSpeed == 0 && straightSpeed == 0) {
         // This stops the robot if the user lets go of the joystick.
-        frontLeft.stop(ROBOT_BRAKE_TYPE);
-        frontRight.stop(ROBOT_BRAKE_TYPE);
-        backLeft.stop(ROBOT_BRAKE_TYPE);
-        backRight.stop(ROBOT_BRAKE_TYPE);
+        left.stop(ROBOT_BRAKE_TYPE);
+        right.stop(ROBOT_BRAKE_TYPE);
     } else {
         // This makes the robot move forward if the user moves the joystick.
 
@@ -60,9 +56,7 @@ void arcade_drive(double horizontalChannel,
         double leftSpeed = -(straightSpeed + spinSpeed);
         double rightSpeed = -(straightSpeed - spinSpeed) * -1.0; // <-- Note the kludge.
         
-        frontLeft.spin(forward, leftSpeed, percent);
-        frontRight.spin(forward, rightSpeed, percent);            
-        backLeft.spin(forward, leftSpeed, percent);
-        backRight.spin(forward, rightSpeed, percent);
+        left.spin(forward, leftSpeed, percent);
+        right.spin(forward, rightSpeed, percent);
     }
 }

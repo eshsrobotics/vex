@@ -6,7 +6,7 @@
 
 using namespace vex;
 
-const int LEFT_FRONT_MOTOR_PORT = 1-1;
+const int LEFT_FRONT_MOTOR_PORT = 4-1;
 const int LEFT_TOP_MOTOR_PORT = 2-1;
 const int LEFT_BACK_MOTOR_PORT = 3-1;
 const int RIGHT_FRONT_MOTOR_PORT = 15-1;
