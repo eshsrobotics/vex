@@ -133,23 +133,20 @@ void DriveStraightTask::start() {
   }
 }
 
-// TurnTask::TurnTask(vex::motor_group& motor_group1, 
-//                    vex::motor_group& motor_group2,
-//                    double rotationAmountDegrees,
-//                    std::function<double(double)> turnCorrectionFunc)
-//     : Task("Turn task"), drivetrain(drivetrain),
-//       rotationAmountDegrees(rotationAmountDegrees),
-//       turnCorrectionFunc(turnCorrectionFunc) {}
+// TurnTask is untested, we will need to figure out if this is the correct equation for turning the input degrees into left and right degrees
+TurnTask::TurnTask(vex::motor_group& motor_group1, 
+                   vex::motor_group& motor_group2,
+                   double rotationAmountDegrees)
+    : Task("Turn task"), left_motor_group(left_motor_group), right_motor_group(right_motor_group),
+      rotationAmountDegrees(rotationAmountDegrees) {}
 
-// bool TurnTask::done() const { return drivetrain.isDone(); }
+bool TurnTask::done() const { return left_motor_group.isDone(); }
 
-// void TurnTask::start() {
-//   if (rotationAmountDegrees > 0) {
-//     drivetrain.turnFor(right, rotationAmountDegrees, degrees, false);
-//   } else {
-//     drivetrain.turnFor(left, -rotationAmountDegrees, degrees, false);
-//   }
-// }
+void TurnTask::start() {
+  // This should theoretically convert the input degrees into functions for the left and right wheels
+  left_motor_group.spinFor((rotationAmountDegrees*WHEEL_BASE)/WHEEL_DIAMETER, degrees, false);
+  right_motor_group.spinFor((-rotationAmountDegrees*WHEEL_BASE)/WHEEL_DIAMETER, degrees, false);
+}
 
 std::shared_ptr<Task> get_auton(AUTON_TYPE type) {
 

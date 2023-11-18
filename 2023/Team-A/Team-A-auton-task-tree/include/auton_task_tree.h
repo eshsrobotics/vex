@@ -106,9 +106,9 @@ struct DriveStraightTask : public Task {
 // If the turning and driving tasks are running at the same time, one of them
 // will overwrite the other, because they are both using the same drivetrain.
 struct TurnTask : public Task {
-  vex::drivetrain &drivetrain;
+  vex::motor_group &left_motor_group;
+  vex::motor_group &right_motor_group;
   double rotationAmountDegrees;
-  std::function<double(double)> turnCorrectionFunc;
 
   // If a positive number is passed in, the robot will turn clockwise (right),
   // otherwise, the robot will turn counterclockwise (left)
@@ -118,11 +118,7 @@ struct TurnTask : public Task {
   // For drives that don't turn correctly, you may pass in a correction function that maps an input 
   // to a number that will casuse a drive to turn correctly.
   // The defualt correction function is just the identity function.
-  TurnTask(vex::drivetrain &drivetrain,
-           double rotationAmountDegrees,
-           std::function<double(double)> turnCorrectionFunc = [](double angleDegrees) {
-             return angleDegrees;
-           });
+  TurnTask(vex::motor_group &motor_group1, vex::motor_group &motor_group2, double rotationAmountDegrees);
 
   bool done() const;
   void start();

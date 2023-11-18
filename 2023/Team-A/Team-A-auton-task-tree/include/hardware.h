@@ -13,14 +13,16 @@ const int RIGHT_FRONT_MOTOR_PORT = 11-1;
 const int RIGHT_TOP_MOTOR_PORT = 12-1;
 const int RIGHT_BACK_MOTOR_PORT = 13-1;
 
-// Don't know actual values
-const double WHEEL_TRAVEL = 320.0;
-const double TRACK_WIDTH = 320.0;
+// Don't know actual value (this is the distance between the centers of the left and right wheels)
 const double WHEEL_BASE = 130.0;
 
+// Still need to calculate
 const double WHEEL_GEAR_RATIO = 1.0;
 
+const double WHEEL_DIAMETER = 3.25;
 const double WHEEL_CIRCUMFERENCE = 10.2101761242;
+
+const double PI = 3.14159265359;
 
 extern vex::brain Brain;
 extern vex::controller Controller;
