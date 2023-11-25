@@ -16,6 +16,23 @@ competition Competition;
 
 // define your global instances of motors and other devices here
 
+// Catapult mode variable
+// Mode 0 is auto, mode 1 is semi-auto, mode 2 is manual
+enum CatapultMode {
+  AUTO_MODE = 1,
+  SEMI_AUTO_MODE = 2,
+  MANUAL_MODE = 3,
+};
+CatapultMode currentMode = AUTO_MODE;
+
+// This is the state machine that runs during the catapult's automatic mode
+enum AutoState {
+  START,
+  STANDBY,
+  WAITING_TO_FIRE,
+  FIRING_STATE
+};
+
 /*---------------------------------------------------------------------------*/
 /*                          Pre-Autonomous Functions                         */
 /*                                                                           */
@@ -58,12 +75,94 @@ void autonomous(void) {
 /*  You must modify the code to add your own robot specific commands here.   */
 /*---------------------------------------------------------------------------*/
 
+void changeMode() {
+  // When the mode goes out of the range, set it back to 0
+  switch (currentMode) {
+    case AUTO_MODE:
+      currentMode = SEMI_AUTO_MODE;
+      Controller.Screen.setCursor(1, 1);
+      Controller.Screen.print("Catapult: Semi-auto");
+      break;
+    case SEMI_AUTO_MODE:
+      currentMode = MANUAL_MODE;
+      Controller.Screen.setCursor(1, 1);
+      Controller.Screen.print("Catapult: Manual   ");
+      break;
+    case MANUAL_MODE:
+      currentMode = AUTO_MODE;
+      Controller.Screen.setCursor(1, 1);
+      Controller.Screen.print("Catapult: Auto     ");
+      break;
+  }
+}
+
+void semiAutoShoot() {
+  if (currentMode == SEMI_AUTO_MODE && triballDetector.objectDistance(inches) <= DISTANCE_SENSOR_DETECT_TRIBALL_INCHES) {
+    catapult.spinFor(360.0, degrees, false);
+  }
+}
+
 void usercontrol(void) {
   // User control code here, inside the loop
+
+  Controller.ButtonA.pressed(changeMode);
+  Controller.ButtonR1.pressed(semiAutoShoot);
+
+  AutoState state = START;
+  const double INITIAL_ROTATION = catapult.position(degrees);
+  double currentRotation = catapult.position(degrees);
+
+  double triballDetectionTimeMsec = Brain.timer(msec);
   while (1) {
     // This is the main execution loop for the user control program.
     // Each time through the loop your program should update motor + servo
     // values based on feedback from the joysticks.
+    currentRotation = catapult.position(degrees);
+
+    if (currentMode == AUTO_MODE) {
+      // Auto mode
+      // will use a state machine
+
+      switch (state) {
+        case START:
+          state = STANDBY;
+          break;
+
+        case STANDBY:
+          if (triballDetector.objectDistance(inches) <= DISTANCE_SENSOR_DETECT_TRIBALL_INCHES)
+          {
+            triballDetectionTimeMsec = Brain.timer(msec);
+            state = WAITING_TO_FIRE;
+          }
+          break;
+        
+        case WAITING_TO_FIRE:
+          // Brain.timer(msec) = current time, triballDetectionTimeMsec = time
+          // when the robot detects the triball, MILLISECONDS_TO_SHOOT = waiting
+          // period before the catapult starts shooting
+          if (Brain.timer(msec) >= triballDetectionTimeMsec + MILLISECONDS_TO_SHOOT)  {
+            catapult.spinFor(360.0, degrees, false);
+            state = FIRING_STATE;
+          }
+          break;
+        
+        case FIRING_STATE:
+          if (catapult.isDone()) {
+            state = STANDBY;
+          }
+          break;
+
+        default:
+          break;
+      }
+    } else if (currentMode == MANUAL_MODE) {
+      // Manual mode
+      if (Controller.ButtonR1.pressing()) {
+        catapult.spin(forward);
+      } else {
+        catapult.stop();
+      }
+    }
 
     // ........................................................................
     // Insert user code here. This is where you use the joystick values to

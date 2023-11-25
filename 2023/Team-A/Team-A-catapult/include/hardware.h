@@ -10,7 +10,8 @@ const int CATAPULT_PORT = 1 - 1;
 const int DISTANCE_PORT = 2 - 1;
 
 // Don't know actual value
-const double DISTANCE_SENSOR_DETECT_TRIBALL = 1.0;
+const double DISTANCE_SENSOR_DETECT_TRIBALL_INCHES = 1.0;
+const double MILLISECONDS_TO_SHOOT = 2500.0;
 
 extern vex::brain Brain;
 extern vex::controller Controller;
