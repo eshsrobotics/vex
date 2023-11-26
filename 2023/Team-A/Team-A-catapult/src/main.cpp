@@ -129,10 +129,15 @@ void usercontrol(void) {
           break;
 
         case STANDBY:
-          if (triballDetector.objectDistance(inches) <= DISTANCE_SENSOR_DETECT_TRIBALL_INCHES)
-          {
-            triballDetectionTimeMsec = Brain.timer(msec);
-            state = WAITING_TO_FIRE;
+          if (triballDetector.installed()) {
+            if (triballDetector.objectDistance(inches) <= DISTANCE_SENSOR_DETECT_TRIBALL_INCHES) {
+              triballDetectionTimeMsec = Brain.timer(msec);
+              state = WAITING_TO_FIRE;
+            }
+          } else {
+            // Uh-oh, no distance sensor!  Print something.
+            Controller.Screen.print("No distance sensor detected. Check port, cable, or sensor.");
+
           }
           break;
         
@@ -150,9 +155,6 @@ void usercontrol(void) {
           if (catapult.isDone()) {
             state = STANDBY;
           }
-          break;
-
-        default:
           break;
       }
     } else if (currentMode == MANUAL_MODE) {
