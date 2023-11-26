@@ -141,3 +141,4 @@ enum AUTON_TYPE {
 // A lot of these trees reuse common elements, so it makes sense to
 // generate all fo them here.
 std::shared_ptr<Task> get_auton(AUTON_TYPE type);
+

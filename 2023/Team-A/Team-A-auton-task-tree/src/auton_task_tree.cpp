@@ -152,15 +152,16 @@ std::shared_ptr<Task> get_auton(AUTON_TYPE type) {
 
   auto wait0 = std::shared_ptr<Task>(new WaitMillisecondsTask(0));
   auto driveTwelve = std::shared_ptr<Task>(new DriveStraightTask(leftMotors, rightMotors, 12.0));
+  auto turnNinety = std::shared_ptr<Task>(new TurnTask(leftMotors, rightMotors, 90.0));
   
   // The root task always needs to be wait0
 
   switch(type) {
     case TEST_AUTON:
-      addTask(wait0, driveTwelve);
+      addTask(wait0, turnNinety);
       break;
 
   }
 
   return wait0;
-}
+}              
