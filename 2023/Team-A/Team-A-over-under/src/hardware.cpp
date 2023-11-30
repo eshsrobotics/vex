@@ -15,6 +15,8 @@ motor rightBackMotor = motor(RIGHT_BACK_MOTOR_PORT, true);
 motor_group leftMotors = motor_group(leftFrontMotor, leftTopMotor, leftBackMotor);
 motor_group rightMotors = motor_group(rightFrontMotor, rightTopMotor, rightBackMotor);
 inertial inertialSensor = inertial(INERTIAL_SENSOR_PORT);
+motor catapult = motor(CATAPULT_PORT, false);
+distance triballDetector = distance(DISTANCE_PORT);
 
 bool leftStop = true;
 bool rightStop = true;

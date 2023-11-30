@@ -7,7 +7,6 @@
 #include "v5_vcs.h"
 #include "hardware.h"
 
-
 #define waitUntil(condition)                                                   \
   do {                                                                         \
     wait(5, msec);                                                             \
