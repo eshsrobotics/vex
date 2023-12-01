@@ -183,6 +183,8 @@ void usercontrol(void) {
       }
     }
 
+    intakeIn.setVelocity(100, percent);
+    intakeOut.setVelocity(100, percent);
     // Intake code (3 different modes):
     // - One button (L2) to spin both intake motors inward (load a triball onto
     //   the catapult)
