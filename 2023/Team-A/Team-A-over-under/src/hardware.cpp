@@ -17,87 +17,90 @@ motor_group rightMotors = motor_group(rightFrontMotor, rightTopMotor, rightBackM
 inertial inertialSensor = inertial(INERTIAL_SENSOR_PORT);
 motor catapult = motor(CATAPULT_PORT, false);
 distance triballDetector = distance(DISTANCE_PORT);
+// Need to know if these will be reversed or not
+motor intakeOut = motor(INTAKE_OUT_PORT, false);
+motor intakeIn = motor(INTAKE_IN_PORT, false);
 
-bool leftStop = true;
-bool rightStop = true;
+// bool leftStop = true;
+// bool rightStop = true;
 
-// TODO: Move this code back into usercontrol(), where it belongs.
-int tank_drive() {
-    while (true) {
-        int leftSpeed = Controller.Axis3.position();
-        int rightSpeed = Controller.Axis2.position();
-        Controller.Screen.setCursor(1,1);
-        Controller.Screen.print(leftSpeed);
-        Controller.Screen.setCursor(2,1);
-        Controller.Screen.print(rightSpeed);
-        Controller.Screen.clearScreen();
+// // TODO: Move this code back into usercontrol(), where it belongs.
+// int tank_drive() {
+//     while (true) {
+        // int leftSpeed = Controller.Axis3.position();
+        // int rightSpeed = Controller.Axis2.position();
+        // Controller.Screen.setCursor(1,1);
+        // Controller.Screen.print(leftSpeed);
+        // Controller.Screen.setCursor(2,1);
+        // Controller.Screen.print(rightSpeed);
+        // Controller.Screen.clearScreen();
 
 
-        if (leftSpeed < 5 && leftSpeed > -5 && leftStop) {
-            leftMotors.stop();
-            leftStop = false;
-        } else {
-            leftStop = true;
-        }
-        if (rightSpeed < 5 && rightSpeed > -5 && rightStop) {
-            rightMotors.stop();
-            rightStop = false;
-        } else {
-            rightStop = true;
-        }
+        // if (leftSpeed < 5 && leftSpeed > -5 && leftStop) {
+        //     leftMotors.stop();
+        //     leftStop = false;
+        // } else {
+        //     leftStop = true;
+        // }
+        // if (rightSpeed < 5 && rightSpeed > -5 && rightStop) {
+        //     rightMotors.stop();
+        //     rightStop = false;
+        // } else {
+        //     rightStop = true;
+        // }
 
-        if (leftStop) {
-            leftMotors.setVelocity(leftSpeed, percent);
-            leftMotors.spin(forward);
-        }
-        if (rightStop) {
-            rightMotors.setVelocity(rightSpeed, percent);
-            rightMotors.spin(forward);
-        }
+        // if (leftStop) {
+        //     leftMotors.setVelocity(leftSpeed, percent);
+        //     leftMotors.spin(forward);
+        // }
+        // if (rightStop) {
+        //     rightMotors.setVelocity(rightSpeed, percent);
+        //     rightMotors.spin(forward);
+        // }
 
         // Run the inertial sensor
-        Controller.Screen.print("Hi.");
-        if (inertialSensor.installed()) {
-            // inertialSensor.startCalibration();
-            Controller.Screen.print("%.2f %2.f %.2f",
-                                    inertialSensor.roll(),
-                                    inertialSensor.pitch(),
-                                    inertialSensor.yaw());
-        } else {
-            Controller.Screen.print("Inertial sensor not detected. Check port, wire, or sensor.");
-        }
+//         Controller.Screen.print("Hi.");
+//         if (inertialSensor.installed()) {
+//             // inertialSensor.startCalibration();
+//             Controller.Screen.print("%.2f %2.f %.2f",
+//                                     inertialSensor.roll(),
+//                                     inertialSensor.pitch(),
+//                                     inertialSensor.yaw());
+//         } else {
+//             Controller.Screen.print("Inertial sensor not detected. Check port, wire, or sensor.");
+//         }
 
-        wait(20, msec);
-    }
-    return 0;
-}
+//         wait(20, msec);
+//     }
+//     return 0;
+// }
 
-int arcade_drive() {
-    while (true) {
-        int straightSpeed = Controller.Axis2.position();
-        int turnSpeed = -Controller.Axis1.position();
-        Controller.Screen.setCursor(1,1);
-        Controller.Screen.print(straightSpeed);
-        Controller.Screen.setCursor(2,1);
-        Controller.Screen.print(turnSpeed);
-        Controller.Screen.clearScreen();
+// int arcade_drive() {
+//     while (true) {
+//         int straightSpeed = Controller.Axis2.position();
+//         int turnSpeed = -Controller.Axis1.position();
+//         Controller.Screen.setCursor(1,1);
+//         Controller.Screen.print(straightSpeed);
+//         Controller.Screen.setCursor(2,1);
+//         Controller.Screen.print(turnSpeed);
+//         Controller.Screen.clearScreen();
 
 
-        if ((straightSpeed < 5 || straightSpeed > -5) || (turnSpeed < 5 || turnSpeed > -5)) {
-            leftMotors.setVelocity(-(straightSpeed + turnSpeed), percent);
-            rightMotors.setVelocity(-(straightSpeed - turnSpeed), percent);
-            leftMotors.spin(forward);
-            rightMotors.spin(forward);
-        } else {
-            leftMotors.stop();
-            rightMotors.stop();
-        }
+//         if ((straightSpeed < 5 || straightSpeed > -5) || (turnSpeed < 5 || turnSpeed > -5)) {
+//             leftMotors.setVelocity(-(straightSpeed + turnSpeed), percent);
+//             rightMotors.setVelocity(-(straightSpeed - turnSpeed), percent);
+//             leftMotors.spin(forward);
+//             rightMotors.spin(forward);
+//         } else {
+//             leftMotors.stop();
+//             rightMotors.stop();
+//         }
 
-        wait(20, msec);
-    }
-    return 0;
-}
+//         wait(20, msec);
+//     }
+//     return 0;
+// }
 
 void vexcodeInit(void) {
-    task rc_auto_loop_task_Controller(tank_drive);
+    // task rc_auto_loop_task_Controller(tank_drive);
 }

@@ -13,11 +13,12 @@ const int RIGHT_FRONT_MOTOR_PORT = 15-1;
 const int RIGHT_TOP_MOTOR_PORT = 12-1;
 const int RIGHT_BACK_MOTOR_PORT = 13-1;
 
-const int INERTIAL_SENSOR_PORT = 7-1;
-
 // Need to find actual values
 const int CATAPULT_PORT = 5 - 1;
 const int DISTANCE_PORT = 6 - 1;
+const int INERTIAL_SENSOR_PORT = 7-1;
+const int INTAKE_OUT_PORT = 8-1;
+const int INTAKE_IN_PORT = 9-1;
 
 // Don't know actual value (this is the distance between the centers of the left and right wheels)
 const double WHEEL_BASE = 130.0;
@@ -47,6 +48,8 @@ extern vex::motor_group rightMotors;
 extern vex::inertial inertialSensor;
 extern vex::motor catapult;
 extern vex::distance triballDetector;
+extern vex::motor intakeIn;
+extern vex::motor intakeOut;
 
 void vexcodeInit(void);
 #endif // (#ifndef HARDWARE_H_IS_PRESENT)
