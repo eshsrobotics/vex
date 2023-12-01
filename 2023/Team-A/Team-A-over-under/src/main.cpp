@@ -118,6 +118,17 @@ void usercontrol(void) {
   double currentRotation = catapult.position(degrees);
 
   double triballDetectionTimeMsec = Brain.timer(msec);
+  
+  bool leftStop = true;
+  bool rightStop = true;
+
+  int leftSpeed = 0;
+  int rightSpeed = 0;
+
+  // Print the initial catapult mode
+  Controller.Screen.setCursor(1, 1);
+  Controller.Screen.print("Catapult: Auto     ");
+
   while (1) {
     // This is the main execution loop for the user control program.
     // Each time through the loop your program should update motor + servo
@@ -141,7 +152,8 @@ void usercontrol(void) {
             }
           } else {
             // Uh-oh, no distance sensor!  Print something.
-            Controller.Screen.print("No distance sensor detected. Check port, cable, or sensor.");
+            // Controller.Screen.setCursor(4, 1);
+            // Controller.Screen.print("No distance sensor detected. Check port, cable, or sensor.");
 
           }
           break;
@@ -169,6 +181,91 @@ void usercontrol(void) {
       } else {
         catapult.stop();
       }
+    }
+
+    // Intake code (3 different modes):
+    // - One button (L2) to spin both intake motors inward (load a triball onto
+    //   the catapult)
+    // - One button (L1) to spin both intake motors outward (Eject a triball)
+    // - One button (R2) to spin only the outer motor (to index a triball - to
+    //   hold it in our intake so we can drive around with the triball)
+    // - If multiple buttons pressed at the same time, don't move the intake
+    if (Controller.ButtonL2.pressing() && !Controller.ButtonL1.pressing() && !Controller.ButtonR2.pressing()) {
+      intakeIn.spin(forward);
+      intakeOut.spin(forward);
+    } else if (Controller.ButtonL1.pressing() && !Controller.ButtonL2.pressing() && !Controller.ButtonR2.pressing()) {
+      intakeIn.spin(reverse);
+      intakeOut.spin(reverse);
+    } else if (Controller.ButtonR2.pressing() && !Controller.ButtonL2.pressing() && !Controller.ButtonL1.pressing()) {
+      intakeIn.stop();
+      intakeOut.spin(forward);
+    } else {
+      intakeIn.stop();
+      intakeOut.stop();
+    }
+
+    leftSpeed = Controller.Axis3.position();
+    rightSpeed = Controller.Axis2.position();
+
+    const int DEADZONE = 5;
+    if (fabs(leftSpeed) < DEADZONE) {
+      leftSpeed = 0;
+    } 
+    if (fabs(rightSpeed) < DEADZONE) {
+      rightSpeed = 0;
+    } 
+
+    if (leftSpeed == 0 && leftStop) {
+        leftMotors.stop();
+        leftStop = false;
+    } else {
+        leftStop = true;
+    }
+    if (rightSpeed == 0 && rightStop) {
+        rightMotors.stop();
+        rightStop = false;
+    } else {
+        rightStop = true;
+    }
+
+    if (leftStop) {
+        leftMotors.setVelocity(leftSpeed, percent);
+        leftMotors.spin(forward);
+    }
+    if (rightStop) {
+        rightMotors.setVelocity(rightSpeed, percent);
+        rightMotors.spin(forward);
+    }
+
+    // Run the inertial sensor
+    if (inertialSensor.installed()) {
+        // inertialSensor.startCalibration();
+        Controller.Screen.setCursor(3, 1);
+        Controller.Screen.print("(%2.2f, %2.2f, %2.2f)         ",
+                                inertialSensor.roll(),
+                                inertialSensor.pitch(),
+                                inertialSensor.yaw());
+    } else {
+      Controller.Screen.setCursor(3, 1);
+      Controller.Screen.print("Inertial sensor not detected. Check port, wire, or sensor.");
+    }
+
+    Controller.Screen.setCursor(2, 1);
+    // Controller.Screen.print("L=%3.2f, R=%3.2f ", leftSpeed, rightSpeed);
+    Controller.Screen.print(leftSpeed);
+    Controller.Screen.print(" / ");
+    Controller.Screen.print(rightSpeed);
+    Controller.Screen.print("   ");
+
+    if (currentMode == AUTO_MODE) {
+      Controller.Screen.setCursor(1, 1);
+      Controller.Screen.print("Catapult: Auto     ");
+    } else if (currentMode == SEMI_AUTO_MODE) {
+      Controller.Screen.setCursor(1, 1);
+      Controller.Screen.print("Catapult: Semi-auto");
+    } else if (currentMode == MANUAL_MODE) {
+      Controller.Screen.setCursor(1, 1);
+      Controller.Screen.print("Catapult: Manual   ");
     }
 
     // ........................................................................
