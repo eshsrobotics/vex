@@ -10,6 +10,7 @@
 #include "vex.h"
 #include "input.h"
 #include "hardwareConstitution.h"
+#include "armSubsystem.h"
 
 using namespace vex;
 
@@ -32,6 +33,10 @@ void pre_auton(void) {
 
   // All activities that occur before the competition starts
   // Example: clearing encoders, setting servo positions, ...
+  calibrateClaw(clawMotor);
+  // Open the arm to trap-jaw position to keep the robot dimensions below 18x18
+  // inches
+  moveArm(0, CLAW_OPEN, armMotor, clawMotor);
 }
 
 /*---------------------------------------------------------------------------*/
