@@ -18,7 +18,8 @@ enum ClawState {
 // a bump sensor activates.  At that point, we know that the claw is closed, and
 // we make a record of its current encoder position.  The open position is
 // always relative to that.
-void calibrateClaw(vex::motor& clawMotor);
+void calibrateClaw(vex::motor& clawMotor,
+                   vex::bumper& clawBumper);
 
 // when the button is pressed the code thats moves the arm and claw keeps
 // repeating the same code until the claw reaches its fully open state. it then

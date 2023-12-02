@@ -33,7 +33,14 @@ void pre_auton(void) {
 
   // All activities that occur before the competition starts
   // Example: clearing encoders, setting servo positions, ...
-  calibrateClaw(clawMotor);
+
+  // Because the triport constructor is extremely sensitive to the order of
+  // initialization (it seems to want the Brain to be initialized before it),
+  // we do the actual initialization at the last possible moment.
+  bumper
+  clawBumper(Brain.ThreeWirePort.A);
+  calibrateClaw(clawMotor, clawBumper);
+
   // Open the arm to trap-jaw position to keep the robot dimensions below 18x18
   // inches
   moveArm(0, CLAW_OPEN, armMotor, clawMotor);
@@ -66,7 +73,7 @@ void autonomous(void) {
 /*---------------------------------------------------------------------------*/
 
 void usercontrol(void) {
-  bool clawClose = true;
+
   // User control code here, inside the loop
   while (1) {
     // This is the main execution loop for the user control program.
@@ -77,20 +84,23 @@ void usercontrol(void) {
     // Insert user code here. This is where you use the joystick values to
     // update your motors, etc.
     // ........................................................................
-    
+
     arcade_drive(Controller.Axis4.position(),
-                 Controller.Axis3.position(), 
+                 Controller.Axis3.position(),
                  R, L);
 
-    if (Controller.ButtonL1.pressing()==true){
-      clawClose = false; 
+    ClawState clawState = CLAW_NEUTRAL;
+    if (Controller.ButtonL1.pressing() == true)
+    {
+      clawState = CLAW_OPEN;
     }
-      else if (Controller.ButtonR1.pressing()==true) {
-      clawClose=true;
+    else if (Controller.ButtonR1.pressing() == true)
+    {
+      clawState = CLAW_CLOSE;
     }
 
     moveArm (Controller.Axis2.position(),
-              clawClose,armMotor,clawMotor);
+            clawState, armMotor, clawMotor);
 
 
     wait(20, msec); // Sleep the task for a short amount of time to

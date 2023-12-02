@@ -15,6 +15,9 @@
  * with three degrees of freedom.                                            *
  *****************************************************************************/
 
+// TODO: Redo the calculations with the arm oriented from a vertical
+// perspective.  Bet you dollars to donuts the equation will change slightly!
+
 #define MAX_PID_CONTROLLERS 4
 float P[MAX_PID_CONTROLLERS];
 float I[MAX_PID_CONTROLLERS];
@@ -231,7 +234,8 @@ float getDegrees(int jointIndex, bool reset) {
  * @param down       True if the down button is being pressed and false if it is not.
  * @param left       True if the left button is being pressed and false if it is not.
  * @param right      True if the right button is being pressed and false if it is not.
- * @param result     A data structure that we will use to store our three output angles.
+ * @param result     Out parameter.  A data structure that we will use to
+ *                   store all three of our three output angles.
  */
 void robotArmMode(bool up, bool down, bool left, bool right, jointAngles *result) {
     // How much the buttons move the X and Y values for the arm.
@@ -308,8 +312,9 @@ void robotArmMode(bool up, bool down, bool left, bool right, jointAngles *result
  * @param jointIndex The joint you are debugging.  One of shoulder, elbow, or wrist.
  * @param up         True if the up button is being pressed and false if it is not.
  * @param down       True if the down button is being pressed and false if it is not.
- * @param result     A data structure that we will use to *one* of the three output angles
- *                   (namely, the one you are debugging.)  The other two will be set to 0.
+ * @param result     Out parameter.  A data structure that we will use to
+ *                   *one* of the three output angles (namely, the one you are
+ *                   debugging.)  The other two will be set to 0.
  */
 void pidDebuggingMode(int jointIndex, bool up, bool down, jointAngles *result) {
 
@@ -344,13 +349,15 @@ task main() {
     getDegrees(elbow, true);
     getDegrees(wrist, true);
 
-    // TODO: Determine these constants.
-    // Start with the wrist; it's the lightest and problems with it will do the
-    // least harm.
+    // PID constants for the shoulder, elbow, and wrist joints on this
+    // specific bot.
+    //
+    // PID tuning was done by calling pidDebuggingMode() instead of
+    // robotArmMode(), tuning each joint until the steady-state oscillation
+    // was down to acceptable levels.  Adding I just made things harder to
+    // tune, so these are really PD controllers.
     setPID(shoulder, 8.000, 0.000, 13.500);
     setPID(elbow, 2.300, 0.000, 7.000);
-    // setPID(elbow,    1.500, 0.000, 1.600);  // The elbow needs more oomph than the wrist
-    // setPID(wrist,    1.200, 0.000, 1.250); // Not bad!
     setPID(wrist, 2.000, 0.000, 4.600);
 
     // Version 2 of the robot arm: all movements are controlled using PID.  We
