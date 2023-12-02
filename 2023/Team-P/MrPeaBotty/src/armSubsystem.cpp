@@ -77,16 +77,6 @@ void moveArm(double armSpeedPercent,
             break;        
     };
 
-    if (clawState == CLAW_NEUTRAL)
-    {
-        
-    }
     
-
-    clawMotor.setTimeout(1000 * CLAW_OPEN_TIMEOUT_SEC, timeUnits::msec);
-    clawMotor.setVelocity(CLAW_VELOCITY_PCT, percentUnits::pct);
-    clawMotor.spinFor(directionType::fwd, 
-                      CLAW_OPEN_DEGREES, 
-                      rotationUnits::deg, 
-                      BLOCK_UNTIL_DONE);
+    //clawMotor.setTimeout(1000 * CLAW_OPEN_TIMEOUT_SEC, timeUnits::msec);
 }

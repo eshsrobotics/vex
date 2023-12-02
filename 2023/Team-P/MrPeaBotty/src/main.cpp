@@ -66,7 +66,7 @@ void autonomous(void) {
 /*---------------------------------------------------------------------------*/
 
 void usercontrol(void) {
-  bool clawClose = true;
+ 
   // User control code here, inside the loop
   while (1) {
     // This is the main execution loop for the user control program.
@@ -82,15 +82,18 @@ void usercontrol(void) {
                  Controller.Axis3.position(), 
                  R, L);
 
-    if (Controller.ButtonL1.pressing()==true){
-      clawClose = false; 
+    ClawState clawState = CLAW_NEUTRAL; 
+    if (Controller.ButtonL1.pressing() == true)
+    {
+      clawState = CLAW_OPEN;
     }
-      else if (Controller.ButtonR1.pressing()==true) {
-      clawClose=true;
+    else if (Controller.ButtonR1.pressing() == true)
+    {
+      clawState = CLAW_CLOSE;
     }
 
     moveArm (Controller.Axis2.position(),
-              clawClose,armMotor,clawMotor);
+            clawState, armMotor, clawMotor);
 
 
     wait(20, msec); // Sleep the task for a short amount of time to
