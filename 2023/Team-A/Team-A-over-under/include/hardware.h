@@ -35,6 +35,8 @@ const double WHEEL_CIRCUMFERENCE = 10.2101761242;
 
 const double PI = 3.14159265359;
 
+const int DEADZONE = 5;
+
 extern vex::brain Brain;
 extern vex::controller Controller;
 extern vex::motor leftFrontMotor;

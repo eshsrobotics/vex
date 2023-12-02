@@ -158,7 +158,7 @@ std::shared_ptr<Task> get_auton(AUTON_TYPE type) {
 
   switch(type) {
     case TEST_AUTON:
-      addTask(wait0, turnNinety);
+      // addTask(wait0, turnNinety);
       break;
 
   }

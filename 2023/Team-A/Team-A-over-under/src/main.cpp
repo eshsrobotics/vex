@@ -102,8 +102,8 @@ void changeMode() {
 }
 
 void semiAutoShoot() {
-  if (currentMode == SEMI_AUTO_MODE && triballDetector.objectDistance(inches) <= DISTANCE_SENSOR_DETECT_TRIBALL_INCHES) {
-    catapult.spinFor(360.0, degrees, false);
+  if (currentMode == SEMI_AUTO_MODE /*&& triballDetector.objectDistance(inches) <= DISTANCE_SENSOR_DETECT_TRIBALL_INCHES*/) {
+    catapult.spinFor(180.0, degrees, false);
   }
 }
 
@@ -118,16 +118,15 @@ void usercontrol(void) {
   double currentRotation = catapult.position(degrees);
 
   double triballDetectionTimeMsec = Brain.timer(msec);
-  
-  bool leftStop = true;
-  bool rightStop = true;
 
-  int leftSpeed = 0;
-  int rightSpeed = 0;
+  int straightSpeed = 0;
+  int turnSpeed = 0;
 
   // Print the initial catapult mode
   Controller.Screen.setCursor(1, 1);
   Controller.Screen.print("Catapult: Auto     ");
+
+  catapult.setBrake(hold);
 
   while (1) {
     // This is the main execution loop for the user control program.
@@ -163,7 +162,7 @@ void usercontrol(void) {
           // when the robot detects the triball, MILLISECONDS_TO_SHOOT = waiting
           // period before the catapult starts shooting
           if (Brain.timer(msec) >= triballDetectionTimeMsec + MILLISECONDS_TO_SHOOT)  {
-            catapult.spinFor(360.0, degrees, false);
+            catapult.spinFor(180.0, degrees, false);
             state = FIRING_STATE;
           }
           break;
@@ -192,51 +191,37 @@ void usercontrol(void) {
     // - One button (R2) to spin only the outer motor (to index a triball - to
     //   hold it in our intake so we can drive around with the triball)
     // - If multiple buttons pressed at the same time, don't move the intake
-    if (Controller.ButtonL2.pressing() && !Controller.ButtonL1.pressing() && !Controller.ButtonR2.pressing()) {
+    // - If the left arrow is pressed, it spins the outside intake motor inward
+    //   and spins the inside intake motor outward to shoot the triball
+    if (Controller.ButtonL2.pressing() && !Controller.ButtonL1.pressing() && !Controller.ButtonR2.pressing() && !Controller.ButtonLeft.pressing()) {
       intakeIn.spin(forward);
       intakeOut.spin(forward);
-    } else if (Controller.ButtonL1.pressing() && !Controller.ButtonL2.pressing() && !Controller.ButtonR2.pressing()) {
+    } else if (Controller.ButtonL1.pressing() && !Controller.ButtonL2.pressing() && !Controller.ButtonR2.pressing() && !Controller.ButtonLeft.pressing()) {
       intakeIn.spin(reverse);
       intakeOut.spin(reverse);
-    } else if (Controller.ButtonR2.pressing() && !Controller.ButtonL2.pressing() && !Controller.ButtonL1.pressing()) {
+    } else if (Controller.ButtonR2.pressing() && !Controller.ButtonL2.pressing() && !Controller.ButtonL1.pressing() && !Controller.ButtonLeft.pressing()) {
       intakeIn.stop();
       intakeOut.spin(forward);
+    } else if (Controller.ButtonLeft.pressing() && !Controller.ButtonL2.pressing() && !Controller.ButtonL1.pressing() && !Controller.ButtonR2.pressing()) {
+      intakeOut.spin(forward);
+      intakeIn.spin(reverse);
     } else {
       intakeIn.stop();
       intakeOut.stop();
     }
 
-    leftSpeed = Controller.Axis3.position();
-    rightSpeed = Controller.Axis2.position();
+    straightSpeed = Controller.Axis3.position();
+    turnSpeed = Controller.Axis1.position();
 
-    const int DEADZONE = 5;
-    if (fabs(leftSpeed) < DEADZONE) {
-      leftSpeed = 0;
-    } 
-    if (fabs(rightSpeed) < DEADZONE) {
-      rightSpeed = 0;
-    } 
 
-    if (leftSpeed == 0 && leftStop) {
-        leftMotors.stop();
-        leftStop = false;
-    } else {
-        leftStop = true;
-    }
-    if (rightSpeed == 0 && rightStop) {
-        rightMotors.stop();
-        rightStop = false;
-    } else {
-        rightStop = true;
-    }
-
-    if (leftStop) {
-        leftMotors.setVelocity(leftSpeed, percent);
+    if ((straightSpeed < 5 || straightSpeed > -5) || (turnSpeed < 5 || turnSpeed > -5)) {
+        leftMotors.setVelocity(-(straightSpeed + turnSpeed), percent);
+        rightMotors.setVelocity(-(straightSpeed - turnSpeed), percent);
         leftMotors.spin(forward);
-    }
-    if (rightStop) {
-        rightMotors.setVelocity(rightSpeed, percent);
         rightMotors.spin(forward);
+    } else {
+        leftMotors.stop();
+        rightMotors.stop();
     }
 
     // Run the inertial sensor
@@ -254,9 +239,10 @@ void usercontrol(void) {
 
     Controller.Screen.setCursor(2, 1);
     // Controller.Screen.print("L=%3.2f, R=%3.2f ", leftSpeed, rightSpeed);
-    Controller.Screen.print(leftSpeed);
-    Controller.Screen.print(" / ");
-    Controller.Screen.print(rightSpeed);
+    Controller.Screen.print("S: ");
+    Controller.Screen.print(straightSpeed);
+    Controller.Screen.print(" / T: ");
+    Controller.Screen.print(turnSpeed);
     Controller.Screen.print("   ");
 
     if (currentMode == AUTO_MODE) {
