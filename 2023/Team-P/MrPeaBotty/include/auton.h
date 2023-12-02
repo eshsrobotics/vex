@@ -3,10 +3,24 @@
 
 #include <vector>
 
+
 enum AutonAction {
+     // Drives forward or backward. The parameter represents the velocity,
+     // between -100 and 100. 0 stops driving.
      DRIVE_FWD,
-     TURN,
+     
+     // Turns the chassis. The parameter represents turn speed: +100 is maximum
+     // rotation speed clockwise, and -100 is maximum speed counterclockwise. 0
+     // stops rotation. 
+     TURN_CLOCKWISE,
+
+     // Moves the arm. The parameter represents arm movement speed: +100 is
+     // maximum arm speed upwards, while -100 is maximum arm speed downwards,
+     // and 0 is 0 arm speed.  
      MOVE_ARM,
+     
+     // Open or closes the claw. A positive parameter opens the claw, while a
+     // negative one closes the claw, and 0 doesn't move the claw.
      OPEN_CLAW
 };
 
@@ -17,15 +31,18 @@ struct AutonStep {
     //For example, for drive fwd the parameter would be speed.
     double parameter;
 
-    //This is so that the bot knows how long to drive, how long to rotate, etc.
-    double timeoutMS;
+    //This is for how soon to start this action after auton begins. Negative
+    //values are not allowed.
+    double startTimeMS;
 };
 
 std::vector<AutonStep> autonPlan = {
-    {DRIVE_FWD, 50, 500}
+    {DRIVE_FWD, 50, 0}, 
+    {DRIVE_FWD, 0, 15000}
 };
 
-
+// Takes an auton plan and executes it.
+void executeAutonPlan(std::vector<AutonStep>& autonPlan);
 
 
 #endif //AUTON_H_IS_INCLUDED
