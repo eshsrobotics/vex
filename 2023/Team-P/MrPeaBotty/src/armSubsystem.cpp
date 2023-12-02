@@ -4,9 +4,9 @@
 using namespace vex;
 
 // Will be overwritten by calibrateClaw().
-double clawAngleWhenClosedDegrees = 0; 
+double clawAngleWhenClosedDegrees = 0;
 
-void calibrateClaw(vex::motor& clawMotor) {
+void calibrateClaw(motor& clawMotor, bumper& clawBumper) {
 
     // Deliberately close claw until we get a read from the claw bump sensor.
     // That tells us the claw has closed.
@@ -53,7 +53,7 @@ void moveArm(double armSpeedPercent,
                 // break the bot.
                 return;
             }
-            clawMotor.spinToPosition(CLAW_ANGLE_WHEN_OPEN_DEGREES, 
+            clawMotor.spinToPosition(CLAW_ANGLE_WHEN_OPEN_DEGREES,
                                      deg,
                                      CLAW_VELOCITY_PCT,
                                      vex::velocityUnits::pct,
@@ -65,18 +65,18 @@ void moveArm(double armSpeedPercent,
                 // Like the CLA_OPEN function, if we try to close the claw even
                 // more, then it would break the bot.
                 return;
-            } 
+            }
             // We're setting the clawMotor to spin to 0 degrees regardless if
             // there's something interrupting, so that the claw can keep biting
             // down on the triball.
-            clawMotor.spinToPosition(clawAngleWhenClosedDegrees, 
+            clawMotor.spinToPosition(clawAngleWhenClosedDegrees,
                                      deg,
                                      CLAW_VELOCITY_PCT,
                                      vex::velocityUnits::pct,
-                                     false); 
-            break;        
+                                     false);
+            break;
     };
 
-    
+
     //clawMotor.setTimeout(1000 * CLAW_OPEN_TIMEOUT_SEC, timeUnits::msec);
 }

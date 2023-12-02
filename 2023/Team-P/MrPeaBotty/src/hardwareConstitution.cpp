@@ -14,8 +14,3 @@ vex::motor_group R(R1, R2);
 vex::brain Brain;
 
 vex::controller Controller(vex::controllerType::primary);
-
-vex::bumper clawBumper(clawBumpSensorPort);
-
-vex::triport tri(0);
-vex::triport::port& clawBumpSensorPort = tri.A;
