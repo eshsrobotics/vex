@@ -37,9 +37,8 @@ void pre_auton(void) {
   // Because the triport constructor is extremely sensitive to the order of
   // initialization (it seems to want the Brain to be initialized before it),
   // we do the actual initialization at the last possible moment.
-  triport tri(PORT22);
-  triport::port& clawBumpSensorPort = tri.A;
-  bumper clawBumper(clawBumpSensorPort);
+  bumper
+  clawBumper(Brain.ThreeWirePort.A);
   calibrateClaw(clawMotor, clawBumper);
 
   // Open the arm to trap-jaw position to keep the robot dimensions below 18x18
