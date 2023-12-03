@@ -26,7 +26,8 @@ void calibrateClaw(vex::motor& clawMotor,
 // does the reverse when the same button is pressed
 void moveArm(double armSpeedPercent,
              ClawState clawState,
-             vex::motor& armMotor,
+             vex::motor& armMotorLeft,
+             vex::motor& armMotorRight,
              vex::motor& clawMotor);
 
 // We decided to go with brake, because, if we use coast, then, if we're

@@ -38,13 +38,12 @@ void pre_auton(void) {
   // Because the triport constructor is extremely sensitive to the order of
   // initialization (it seems to want the Brain to be initialized before it),
   // we do the actual initialization at the last possible moment.
-  bumper
-  clawBumper(Brain.ThreeWirePort.A);
+  bumper clawBumper(Brain.ThreeWirePort.A);
   calibrateClaw(clawMotor, clawBumper);
 
   // Open the arm to trap-jaw position to keep the robot dimensions below 18x18
   // inches
-  moveArm(0, CLAW_OPEN, armMotor, clawMotor);
+  moveArm(0, CLAW_OPEN, armMotorLeft, armMotorRight, clawMotor);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -89,7 +88,7 @@ void usercontrol(void) {
 
     arcade_drive(Controller.Axis4.position(),
                  Controller.Axis3.position(),
-                 R, L);
+                 L, R);
 
     ClawState clawState = CLAW_NEUTRAL;
     if (Controller.ButtonL1.pressing() == true)
@@ -102,7 +101,7 @@ void usercontrol(void) {
     }
 
     moveArm (Controller.Axis2.position(),
-            clawState, armMotor, clawMotor);
+            clawState, armMotorLeft, armMotorRight, clawMotor);
 
 
     wait(20, msec); // Sleep the task for a short amount of time to

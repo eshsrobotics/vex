@@ -70,7 +70,7 @@ void executeAutonPlan(vector<AutonStep>& autonPlan) {
             }
             // 4.1.2.) Execute robot logic for current step.
             arcade_drive(turnSpeedPct, driveSpeedPct, L, R);
-            moveArm(armSpeedPct, clawState, armMotor, clawMotor);
+            moveArm(armSpeedPct, clawState, armMotorLeft, armMotorRight, clawMotor);
 
             // 4.1.2.) Increments index. (Moves to next step)
             index++;

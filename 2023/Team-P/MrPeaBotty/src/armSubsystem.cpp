@@ -25,26 +25,29 @@ void calibrateClaw(motor& clawMotor, bumper& clawBumper) {
 
 void moveArm(double armSpeedPercent,
              ClawState clawState,
-             motor& armMotor,
+             motor& armMotorLeft,
+             motor& armMotorRight,
              motor& clawMotor) {
 
     if (armSpeedPercent != 0) {
-        armMotor.spin(directionType::fwd, armSpeedPercent, percentUnits::pct);
+        armMotorLeft.spin(directionType::fwd, armSpeedPercent, percentUnits::pct);
+        armMotorRight.spin(directionType::fwd, -armSpeedPercent, percentUnits::pct);
     } else {
-        armMotor.stop(ARM_BRAKE_TYPE);
+        armMotorLeft.stop(ARM_BRAKE_TYPE);
+        armMotorRight.stop(ARM_BRAKE_TYPE);
     }
 
     // open or close the claw and keep going till it is done. Zero degrees is
     // considered fully open, and 90 degrees is considered fully closed (for now).
-    const double CLAW_OPEN_DEGREES = 90;
-    // const double CLAW_OPEN_TIMEOUT_SEC = 0.5;
     const double CLAW_VELOCITY_PCT = 80;
-    //  const bool BLOCK_UNTIL_DONE = false;
     const double CLAW_ANGLE_WHEN_OPEN_DEGREES = 90 + clawAngleWhenClosedDegrees;
 
     // What is the claw's current angle?  0 is fully closed, 90 is open to the
     // trap-jaw angle.
     const double CURRENT_CLAW_ANGLE_DEGREES = clawMotor.position(deg) + clawAngleWhenClosedDegrees;
+
+    Controller.Screen.setCursor(2, 1);
+    Controller.Screen.print("Claw Angle: %.1f  ", CURRENT_CLAW_ANGLE_DEGREES);
 
     switch (clawState) {
         case CLAW_NEUTRAL:
