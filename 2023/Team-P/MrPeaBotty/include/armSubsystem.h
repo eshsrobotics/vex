@@ -29,13 +29,11 @@ void moveArm(double armSpeedPercent,
              vex::motor& armMotor,
              vex::motor& clawMotor);
 
-// Causes arm motor to move at the given speed instantaneously.
-void moveArmInstantaneously(double armSpeedPercent,
-                            vex::motor& armMotor);
-
-// Causes claw motor to Keep opening until fully open or keep closing until
-// fully closed.
-void moveClawContinuously(int clawState,
-                            vex::motor& clawMotor);
+// We decided to go with brake, because, if we use coast, then, if we're
+// possessing a triball and we're going up, and we use coast, then the triball
+// might weigh us down, causing the arm to go down.
+//
+// Hold will require constant energy usage in order to make the arm stay up.
+const vex::brakeType ARM_BRAKE_TYPE = vex::brakeType::brake;
 
 #endif // (#ifndef ARMSUBSYSTEM_H_IS_PRESENT)

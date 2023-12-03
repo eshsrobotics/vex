@@ -14,12 +14,12 @@ void tank_drive(double leftSpeedPercent,
     if (leftSpeedPercent > JOYSTICK_DEADZONE_PERCENT || leftSpeedPercent < -JOYSTICK_DEADZONE_PERCENT) {
         left.spin(directionType::fwd, leftSpeedPercent, percentUnits::pct);
     } else {
-        left.stop(ROBOT_BRAKE_TYPE); //This is to make sure that when the input hits the deadzone, the bot stops moving.
+        left.stop(DRIVE_BRAKE_TYPE); //This is to make sure that when the input hits the deadzone, the bot stops moving.
     }
     if (rightSpeedPercent > JOYSTICK_DEADZONE_PERCENT || rightSpeedPercent < -JOYSTICK_DEADZONE_PERCENT) {
         right.spin(directionType::fwd, rightSpeedPercent, percentUnits::pct);
     } else {
-        right.stop(ROBOT_BRAKE_TYPE); 
+        right.stop(DRIVE_BRAKE_TYPE); 
     }
 }   
 
@@ -43,8 +43,8 @@ void arcade_drive(double horizontalChannel,
 
     if (spinSpeed == 0 && straightSpeed == 0) {
         // This stops the robot if the user lets go of the joystick.
-        left.stop(ROBOT_BRAKE_TYPE);
-        right.stop(ROBOT_BRAKE_TYPE);
+        left.stop(DRIVE_BRAKE_TYPE);
+        right.stop(DRIVE_BRAKE_TYPE);
     } else {
         // This makes the robot move forward if the user moves the joystick.
 

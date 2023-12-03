@@ -11,6 +11,7 @@
 #include "input.h"
 #include "hardwareConstitution.h"
 #include "armSubsystem.h"
+#include "auton.h"
 
 using namespace vex;
 
@@ -60,6 +61,7 @@ void autonomous(void) {
   // ..........................................................................
   // Insert autonomous user code here.
   // ..........................................................................
+  executeAutonPlan(autonPlan);
 }
 
 /*---------------------------------------------------------------------------*/

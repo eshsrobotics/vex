@@ -5,7 +5,7 @@
 
 
 enum AutonAction {
-     // Drives forward or backward. The parameter represents the velocity,
+     // Drives forward or backward. The parameter represents the velocity
      // between -100 and 100. 0 stops driving.
      DRIVE_FWD,
      
@@ -20,7 +20,7 @@ enum AutonAction {
      MOVE_ARM,
      
      // Open or closes the claw. A positive parameter opens the claw, while a
-     // negative one closes the claw, and 0 doesn't move the claw.
+     // negative one closes the claw, and 0 stops the claw.
      OPEN_CLAW
 };
 
@@ -36,12 +36,11 @@ struct AutonStep {
     double startTimeMS;
 };
 
-std::vector<AutonStep> autonPlan = {
-    {DRIVE_FWD, 50, 0}, 
-    {DRIVE_FWD, 0, 15000}
-};
+extern std::vector<AutonStep> autonPlan;
 
-// Takes an auton plan and executes it.
+
+// Takes an auton plan and executes it. Warning: The Last Step in the Plan must
+// be a stop action, and will be executed for 1 frame.
 void executeAutonPlan(std::vector<AutonStep>& autonPlan);
 
 

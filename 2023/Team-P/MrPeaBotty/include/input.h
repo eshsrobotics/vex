@@ -1,4 +1,8 @@
+#ifndef INPUT_H_IS_INCLUDED
+#define INPUT_H_IS_INCLUDED
+
 #include "vex.h"
+
 
 // Allows you to control the drive using a tank-drive scheme.
 //
@@ -17,10 +21,9 @@ const double JOYSTICK_DEADZONE_PERCENT = 1;
 
 // Hold makes it so that the wheel will instantly stop spinning once the
 // joystick hits a deadzone.
-const vex::brakeType ROBOT_BRAKE_TYPE = vex::brakeType::coast;
+const vex::brakeType DRIVE_BRAKE_TYPE = vex::brakeType::coast;
 
-// Allows you to control the arm and the claw's movement 
-void moveArm(double armSpeedPercent,
-             bool clawClose,
-             vex::motor& armMotor,
-             vex::motor& clawMotor);
+
+
+
+#endif //INPUT_H_IS_INCLUDED

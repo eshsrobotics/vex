@@ -28,7 +28,11 @@ void moveArm(double armSpeedPercent,
              motor& armMotor,
              motor& clawMotor) {
 
-    armMotor.spin(directionType::fwd, armSpeedPercent, percentUnits::pct);
+    if (armSpeedPercent != 0) {
+        armMotor.spin(directionType::fwd, armSpeedPercent, percentUnits::pct);
+    } else {
+        armMotor.stop(ARM_BRAKE_TYPE);
+    }
 
     // open or close the claw and keep going till it is done. Zero degrees is
     // considered fully open, and 90 degrees is considered fully closed (for now).
