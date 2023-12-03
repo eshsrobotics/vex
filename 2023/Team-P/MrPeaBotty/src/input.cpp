@@ -47,14 +47,8 @@ void arcade_drive(double horizontalChannel,
         right.stop(DRIVE_BRAKE_TYPE);
     } else {
         // This makes the robot move forward if the user moves the joystick.
-
-        // The "real" Arcade Drive formula uses -(straight - spin) for the right
-        // side of the differential drive.  For reasons that aren't clear to us,
-        // that did not work in this case; we had to reverse the sense of the
-        // right side of the drive in order to move correctly.  We need to
-        // review the arcade drive formula again.
         double leftSpeed = -(straightSpeed + spinSpeed);
-        double rightSpeed = -(straightSpeed - spinSpeed) * -1.0; // <-- Note the kludge.
+        double rightSpeed = -(straightSpeed - spinSpeed); 
         
         left.spin(forward, leftSpeed, percent);
         right.spin(forward, rightSpeed, percent);

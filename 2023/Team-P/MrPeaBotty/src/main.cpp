@@ -74,7 +74,8 @@ void autonomous(void) {
 /*---------------------------------------------------------------------------*/
 
 void usercontrol(void) {
-
+  
+  motor m(10);
   // User control code here, inside the loop
   while (1) {
     // This is the main execution loop for the user control program.
@@ -103,6 +104,7 @@ void usercontrol(void) {
     moveArm (Controller.Axis2.position(),
             clawState, armMotorLeft, armMotorRight, clawMotor);
 
+    m.spin(fwd, 100, pct);
 
     wait(20, msec); // Sleep the task for a short amount of time to
                     // prevent wasted resources.

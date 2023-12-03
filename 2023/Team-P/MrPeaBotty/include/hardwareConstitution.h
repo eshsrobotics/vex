@@ -14,13 +14,18 @@ extern vex::motor armMotorRight;
 extern vex::triport tri;
 extern vex::triport::port& clawBumpSensorPort;
 
-const int LEFT_MOTOR_PORT_FRONT = 5;
-const int LEFT_MOTOR_PORT_BACK = 6;
-const int RIGHT_MOTOR_PORT_FRONT = 7;
-const int RIGHT_MOTOR_PORT_BACK = 8;
-const int CLAW_MOTOR_PORT = 9;
-const int ARM_MOTOR_LEFT_PORT = 19;
-const int ARM_MOTOR_RIGHT_PORT = 11;
+// There are a number of broken ports on the current Brain.
+// Ports that have been tested and work in isolation: 10, 18
+// Ports known to be broken: 1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 13, 14, 15, 16, 17, 20
+// Ports that have not yet been tested: None
+// Ports that give resistance, but do not fully spin the test motor: 12, 19
 
-//Port 20 and 10 are bad.
+const int LEFT_MOTOR_PORT_FRONT = 15;//5;
+const int LEFT_MOTOR_PORT_BACK = 6;//16;
+const int RIGHT_MOTOR_PORT_FRONT = 12;//7;
+const int RIGHT_MOTOR_PORT_BACK = 19;//8;
+const int CLAW_MOTOR_PORT = 9;
+const int ARM_MOTOR_LEFT_PORT = 18;//19;
+const int ARM_MOTOR_RIGHT_PORT = 17;//11;
+
 #endif // (#ifndef HARDWARE_H_INLCUDED)
