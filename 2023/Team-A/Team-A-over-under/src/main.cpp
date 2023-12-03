@@ -25,7 +25,7 @@ enum CatapultMode {
   SEMI_AUTO_MODE = 2,
   MANUAL_MODE = 3,
 };
-CatapultMode currentMode = AUTO_MODE;
+CatapultMode currentMode = MANUAL_MODE;
 
 // This is the state machine that runs during the catapult's automatic mode
 enum AutoState {
@@ -49,6 +49,8 @@ void pre_auton(void) {
 
   // All activities that occur before the competition starts
   // Example: clearing encoders, setting servo positions, ...
+  wingletLeft.set(true);
+  wingletRight.set(true);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -124,7 +126,7 @@ void usercontrol(void) {
 
   // Print the initial catapult mode
   Controller.Screen.setCursor(1, 1);
-  Controller.Screen.print("Catapult: Auto     ");
+  Controller.Screen.print("Catapult: Manual   ");
 
   catapult.setBrake(hold);
 
@@ -223,27 +225,35 @@ void usercontrol(void) {
         leftMotors.stop();
         rightMotors.stop();
     }
+    
+    if (Controller.ButtonUp.pressing()) {
+      wingletLeft.set(false);
+      wingletRight.set(false);
+    } else if (Controller.ButtonDown.pressing()) {
+      wingletLeft.set(true);
+      wingletRight.set(true);
+    }
 
     // Run the inertial sensor
     if (inertialSensor.installed()) {
         // inertialSensor.startCalibration();
-        Controller.Screen.setCursor(3, 1);
-        Controller.Screen.print("(%2.2f, %2.2f, %2.2f)         ",
-                                inertialSensor.roll(),
-                                inertialSensor.pitch(),
-                                inertialSensor.yaw());
+        // Controller.Screen.setCursor(3, 1);
+        // Controller.Screen.print("(%2.2f, %2.2f, %2.2f)         ",
+        //                         inertialSensor.roll(),
+        //                         inertialSensor.pitch(),
+        //                         inertialSensor.yaw());
     } else {
-      Controller.Screen.setCursor(3, 1);
-      Controller.Screen.print("Inertial sensor not detected. Check port, wire, or sensor.");
+      // Controller.Screen.setCursor(3, 1);
+      // Controller.Screen.print("Inertial sensor not detected. Check port, wire, or sensor.");
     }
 
-    Controller.Screen.setCursor(2, 1);
-    // Controller.Screen.print("L=%3.2f, R=%3.2f ", leftSpeed, rightSpeed);
-    Controller.Screen.print("S: ");
-    Controller.Screen.print(straightSpeed);
-    Controller.Screen.print(" / T: ");
-    Controller.Screen.print(turnSpeed);
-    Controller.Screen.print("   ");
+    // Controller.Screen.setCursor(2, 1);
+    // // Controller.Screen.print("L=%3.2f, R=%3.2f ", leftSpeed, rightSpeed);
+    // Controller.Screen.print("S: ");
+    // Controller.Screen.print(straightSpeed);
+    // Controller.Screen.print(" / T: ");
+    // Controller.Screen.print(turnSpeed);
+    // Controller.Screen.print("   ");
 
     if (currentMode == AUTO_MODE) {
       Controller.Screen.setCursor(1, 1);

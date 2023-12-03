@@ -20,6 +20,8 @@ distance triballDetector = distance(DISTANCE_PORT);
 // Need to know if these will be reversed or not
 motor intakeOut = motor(INTAKE_OUT_PORT, false);
 motor intakeIn = motor(INTAKE_IN_PORT, false);
+digital_out wingletLeft = digital_out(Brain.ThreeWirePort.A);
+digital_out wingletRight = digital_out(Brain.ThreeWirePort.B);
 
 // bool leftStop = true;
 // bool rightStop = true;
