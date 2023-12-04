@@ -15,6 +15,9 @@ void arcade_drive(double horizontalChannel,
                   vex::motor_group& left, 
                   vex::motor_group& right);
 
+void arcade_drive_by_quadrant(double rotate,
+                              double drive);
+
 // Sets the deadzone, which is a value where anything less will be treated as
 // zero input.
 const double JOYSTICK_DEADZONE_PERCENT = 1;

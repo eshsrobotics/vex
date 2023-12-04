@@ -1,5 +1,9 @@
 #include "input.h"
+#include "hardwareConstitution.h"
+#include <algorithm>
 
+using std::abs;
+using std::max;
 using namespace vex;
 
 void tank_drive(double leftSpeedPercent,
@@ -48,9 +52,58 @@ void arcade_drive(double horizontalChannel,
     } else {
         // This makes the robot move forward if the user moves the joystick.
         double leftSpeed = -(straightSpeed + spinSpeed);
-        double rightSpeed = -(straightSpeed - spinSpeed); 
+        double rightSpeed = -(straightSpeed - spinSpeed) * -1.0; 
         
         left.spin(forward, leftSpeed, percent);
         right.spin(forward, rightSpeed, percent);
+    }
+}
+
+// Use an algorithm that determines the arcade drive motor strengths
+// by calculating the quadrant of the velocity vector.
+//
+// Note that this function studiously avoids using the vex::motorgroup object.
+void arcade_drive_by_quadrant(double rotate, double drive) {
+
+
+    double maximum = max(abs(drive), abs(rotate));
+    double total = drive + rotate, difference = drive - rotate;
+
+    auto spinLeftMotors = [](double speedPct) {
+        L1.spin(fwd, speedPct, pct);
+        L2.spin(fwd, speedPct, pct);
+    };
+
+    auto spinRightMotors = [](double speedPct) {
+        R1.spin(fwd, speedPct, pct);
+        R2.spin(fwd, speedPct, pct);
+    };
+
+    if (drive == 0 && rotate == 0) {
+        L1.stop(DRIVE_BRAKE_TYPE);
+        L2.stop(DRIVE_BRAKE_TYPE);
+        R1.stop(DRIVE_BRAKE_TYPE);
+        R2.stop(DRIVE_BRAKE_TYPE);
+    }
+
+    if (drive >= 0) {
+        if (rotate >= 0) {
+            // Quadrant 1.
+            spinLeftMotors(maximum);
+            spinRightMotors(difference);
+        } else {
+            // Quadrant 2.
+            spinLeftMotors(total);
+            spinRightMotors(maximum);
+        }
+    } else {
+        if (rotate >= 0) {
+            // Quadrant 4.
+            spinLeftMotors(total);
+            spinRightMotors(-maximum);
+        } else {
+            spinLeftMotors(-maximum);
+            spinRightMotors(difference);
+        }
     }
 }

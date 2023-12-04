@@ -75,7 +75,8 @@ void autonomous(void) {
 
 void usercontrol(void) {
   
-  motor m(10);
+  // motor m(10);
+
   // User control code here, inside the loop
   while (1) {
     // This is the main execution loop for the user control program.
@@ -87,9 +88,13 @@ void usercontrol(void) {
     // update your motors, etc.
     // ........................................................................
 
-    arcade_drive(Controller.Axis4.position(),
-                 Controller.Axis3.position(),
-                 L, R);
+    double horizontalChannel = Controller.Axis4.position();
+    double verticalChannel = Controller.Axis3.position();
+    // arcade_drive(Controller.Axis4.position(),
+    //              Controller.Axis3.position(),
+    //              L, R);
+    arcade_drive_by_quadrant(horizontalChannel, 
+                             verticalChannel);
 
     ClawState clawState = CLAW_NEUTRAL;
     if (Controller.ButtonL1.pressing() == true)
@@ -102,9 +107,9 @@ void usercontrol(void) {
     }
 
     moveArm (Controller.Axis2.position(),
-            clawState, armMotorLeft, armMotorRight, clawMotor);
+             clawState, armMotorLeft, armMotorRight, clawMotor);
 
-    m.spin(fwd, 100, pct);
+    // m.spin(fwd, 100, pct);
 
     wait(20, msec); // Sleep the task for a short amount of time to
                     // prevent wasted resources.
