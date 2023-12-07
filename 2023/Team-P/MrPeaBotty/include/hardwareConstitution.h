@@ -18,10 +18,10 @@ extern vex::triport::port& clawBumpSensorPort;
 // These ports seem loose: 2, 3, 13, 18
 const int LEFT_MOTOR_PORT_FRONT = 11;
 const int LEFT_MOTOR_PORT_BACK = 12; // OK
-const int RIGHT_MOTOR_PORT_FRONT = 3;
+const int RIGHT_MOTOR_PORT_FRONT = 13;
 const int RIGHT_MOTOR_PORT_BACK = 14;
 const int CLAW_MOTOR_PORT = 15;
-const int ARM_MOTOR_LEFT_PORT = 5;
-const int ARM_MOTOR_RIGHT_PORT = 19; // OK
+const int ARM_MOTOR_LEFT_PORT = 16;
+const int ARM_MOTOR_RIGHT_PORT = 17; // OK
 
 #endif // (#ifndef HARDWARE_H_INLCUDED)

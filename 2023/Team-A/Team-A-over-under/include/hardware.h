@@ -15,7 +15,7 @@ const int RIGHT_BACK_MOTOR_PORT = 12-1;
 
 // Need to find actual values
 const int CATAPULT_PORT = 1 - 1;
-const int DISTANCE_PORT = 6 - 1;
+const int DISTANCE_PORT = 10 - 1;
 const int INERTIAL_SENSOR_PORT = 19-1;
 const int INTAKE_OUT_PORT = 7-1;
 const int INTAKE_IN_PORT = 18-1;
@@ -24,8 +24,8 @@ const int INTAKE_IN_PORT = 18-1;
 const double WHEEL_BASE = 130.0;
 
 // Don't know actual value
-const double DISTANCE_SENSOR_DETECT_TRIBALL_INCHES = 1.0;
-const double MILLISECONDS_TO_SHOOT = 2500.0;
+const double DISTANCE_SENSOR_DETECT_TRIBALL_MM = 75.0;
+const double MILLISECONDS_TO_SHOOT = 250.0;
 
 // Still need to calculate
 const double WHEEL_GEAR_RATIO = 1.0;

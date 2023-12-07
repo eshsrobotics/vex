@@ -49,8 +49,8 @@ void pre_auton(void) {
 
   // All activities that occur before the competition starts
   // Example: clearing encoders, setting servo positions, ...
-  wingletLeft.set(true);
-  wingletRight.set(true);
+  wingletLeft.set(false);
+  wingletRight.set(false);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -68,8 +68,16 @@ void autonomous(void) {
   // Insert autonomous user code here.
   // ..........................................................................
 
+  leftMotors.setVelocity(100, percent);
+  rightMotors.setVelocity(100, percent);
+
   auto root_task = get_auton(TEST_AUTON);
   execute(root_task);
+  intakeOut.spinFor(-360, degrees, false);
+  rightMotors.spinFor(-360, degrees);
+  intakeOut.spinFor(-2*360, degrees);
+  leftMotors.spinFor((2*360)/WHEEL_CIRCUMFERENCE, degrees, false);
+  rightMotors.spinFor((2*360)/WHEEL_CIRCUMFERENCE, degrees, false);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -105,8 +113,14 @@ void changeMode() {
 
 void semiAutoShoot() {
   if (currentMode == SEMI_AUTO_MODE /*&& triballDetector.objectDistance(inches) <= DISTANCE_SENSOR_DETECT_TRIBALL_INCHES*/) {
-    catapult.spinFor(180.0, degrees, false);
+    catapult.spinFor(360.0, degrees, false);
   }
+}
+
+void printCataTemp() {
+  Brain.Screen.setCursor(1, 1);
+  Brain.Screen.print(catapult.temperature(fahrenheit));
+  Controller.Screen.print("   ");
 }
 
 void usercontrol(void) {
@@ -114,6 +128,7 @@ void usercontrol(void) {
 
   Controller.ButtonA.pressed(changeMode);
   Controller.ButtonR1.pressed(semiAutoShoot);
+  Controller.ButtonX.pressed(printCataTemp);
 
   AutoState state = START;
   const double INITIAL_ROTATION = catapult.position(degrees);
@@ -147,7 +162,7 @@ void usercontrol(void) {
 
         case STANDBY:
           if (triballDetector.installed()) {
-            if (triballDetector.objectDistance(inches) <= DISTANCE_SENSOR_DETECT_TRIBALL_INCHES) {
+            if (triballDetector.objectDistance(mm) <= DISTANCE_SENSOR_DETECT_TRIBALL_MM) {
               triballDetectionTimeMsec = Brain.timer(msec);
               state = WAITING_TO_FIRE;
             }
@@ -164,7 +179,7 @@ void usercontrol(void) {
           // when the robot detects the triball, MILLISECONDS_TO_SHOOT = waiting
           // period before the catapult starts shooting
           if (Brain.timer(msec) >= triballDetectionTimeMsec + MILLISECONDS_TO_SHOOT)  {
-            catapult.spinFor(180.0, degrees, false);
+            catapult.spinFor(360.0, degrees, false);
             state = FIRING_STATE;
           }
           break;
@@ -215,8 +230,14 @@ void usercontrol(void) {
     straightSpeed = Controller.Axis3.position();
     turnSpeed = Controller.Axis1.position();
 
+    if (fabs(straightSpeed) < DEADZONE) {
+        straightSpeed = 0;
+    }
+    if (fabs(turnSpeed) < DEADZONE) {
+        turnSpeed = 0;
+    }
 
-    if ((straightSpeed < 5 || straightSpeed > -5) || (turnSpeed < 5 || turnSpeed > -5)) {
+    if ((fabs(straightSpeed) > DEADZONE) || (fabs(turnSpeed) > DEADZONE)) {
         leftMotors.setVelocity(-(straightSpeed + turnSpeed), percent);
         rightMotors.setVelocity(-(straightSpeed - turnSpeed), percent);
         leftMotors.spin(forward);
