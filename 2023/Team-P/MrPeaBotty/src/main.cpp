@@ -35,15 +35,9 @@ void pre_auton(void) {
   // All activities that occur before the competition starts
   // Example: clearing encoders, setting servo positions, ...
 
-  // Because the triport constructor is extremely sensitive to the order of
-  // initialization (it seems to want the Brain to be initialized before it),
-  // we do the actual initialization at the last possible moment.
-  bumper clawBumper(Brain.ThreeWirePort.A);
-  calibrateClaw(clawMotor, clawBumper);
-
   // Open the arm to trap-jaw position to keep the robot dimensions below 18x18
   // inches
-  moveArm(0, CLAW_OPEN, armMotorLeft, armMotorRight, clawMotor);
+  // moveArm(0, CLAW_OPEN, armMotorLeft, armMotorRight, clawMotor);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -60,6 +54,7 @@ void autonomous(void) {
   // ..........................................................................
   // Insert autonomous user code here.
   // ..........................................................................
+  calibrateClaw(clawMotor, getBumper());
   executeAutonPlan(autonPlan);
 }
 
@@ -75,7 +70,7 @@ void autonomous(void) {
 
 void usercontrol(void) {
   
-  // motor m(10);
+  calibrateClaw(clawMotor, getBumper());
 
   // User control code here, inside the loop
   while (1) {
@@ -106,7 +101,7 @@ void usercontrol(void) {
       clawState = CLAW_CLOSE;
     }
 
-    moveArm (Controller.Axis2.position(),
+    moveArm (-Controller.Axis2.position(),
              clawState, armMotorLeft, armMotorRight, clawMotor);
 
     // m.spin(fwd, 100, pct);

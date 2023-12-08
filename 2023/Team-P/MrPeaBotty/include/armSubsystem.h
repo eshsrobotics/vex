@@ -18,6 +18,12 @@ enum ClawState {
 // a bump sensor activates.  At that point, we know that the claw is closed, and
 // we make a record of its current encoder position.  The open position is
 // always relative to that.
+//
+// Note: We deliberately make calibrateClaw() idempotent, meaning that running
+// it more than once has no additional effect.  This is because motors are not
+// allowed to run during pre_auton(), and calibrateClaw() necessarily runs the
+// clawMotor; therefore we have no choice but to call it at the beginning of
+// both teleop AND autonomous.
 void calibrateClaw(vex::motor& clawMotor,
                    vex::bumper& clawBumper);
 
