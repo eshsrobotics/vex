@@ -16,7 +16,7 @@ void calibrateClaw(motor& clawMotor, bumper& clawBumper) {
 
     // Deliberately close claw until we get a read from the claw bump sensor.
     // That tells us the claw has closed.
-    clawMotor.spin(fwd, 66, pct);
+    clawMotor.spin(fwd, CLAW_CALIBRATION_CLOSURE_SPEED_PCT, pct);
     while (!clawBumper.pressing()) {
         wait(20, msec);
     }
@@ -46,11 +46,11 @@ void moveArm(double armSpeedPercent,
     // open or close the claw and keep going till it is done. Zero degrees is
     // considered fully open, and 90 degrees is considered fully closed (for now).
     const double CLAW_VELOCITY_PCT = 80;
-    const double CLAW_ANGLE_WHEN_OPEN_DEGREES = 90 + clawAngleWhenClosedDegrees;
+    const double CLAW_ANGLE_WHEN_OPEN_DEGREES = clawAngleWhenClosedDegrees - 90;
 
     // What is the claw's current angle?  0 is fully closed, 90 is open to the
     // trap-jaw angle.
-    const double CURRENT_CLAW_ANGLE_DEGREES = clawMotor.position(deg) + clawAngleWhenClosedDegrees;
+    const double CURRENT_CLAW_ANGLE_DEGREES = clawAngleWhenClosedDegrees - clawMotor.position(deg);
 
     Controller.Screen.setCursor(2, 1);
     Controller.Screen.print("Claw %6s at %.1f°", 

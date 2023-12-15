@@ -9,6 +9,9 @@ enum ClawState {
     CLAW_NEUTRAL
 };
 
+// How quickly the claw closes during the initial calibration.
+const double CLAW_CALIBRATION_CLOSURE_SPEED_PCT = 30.0;
+
 // When the robot starts, we don't know if the claw is open or closed.  That's a
 // problem, because we need to know how many degrees to move the arm in order to
 // open or close it. Also, if the arm _is_ open, we don't want t open it any
