@@ -133,9 +133,9 @@ void DriveStraightTask::start() {
   }
 }
 
-// TurnTask is untested, we will need to figure out if this is the correct equation for turning the input degrees into left and right degrees
-TurnTask::TurnTask(vex::motor_group& motor_group1, 
-                   vex::motor_group& motor_group2,
+// For TurnTask, positive is counterclockwise, negative is clockwise
+TurnTask::TurnTask(vex::motor_group &left_motor_group, 
+                   vex::motor_group &right_motor_group,
                    double rotationAmountDegrees)
     : Task("Turn task"), left_motor_group(left_motor_group), right_motor_group(right_motor_group),
       rotationAmountDegrees(rotationAmountDegrees) {}
@@ -143,22 +143,23 @@ TurnTask::TurnTask(vex::motor_group& motor_group1,
 bool TurnTask::done() const { return left_motor_group.isDone(); }
 
 void TurnTask::start() {
-  // This should theoretically convert the input degrees into functions for the left and right wheels
-  left_motor_group.spinFor((rotationAmountDegrees*WHEEL_BASE)/WHEEL_DIAMETER, degrees, false);
-  right_motor_group.spinFor((-rotationAmountDegrees*WHEEL_BASE)/WHEEL_DIAMETER, degrees, false);
+  // Had to use trial and error to find what value to multiply by, but it works now
+  left_motor_group.spinFor(1.75*(rotationAmountDegrees*WHEEL_BASE)/WHEEL_DIAMETER, degrees, false);
+  right_motor_group.spinFor(1.75*(-rotationAmountDegrees*WHEEL_BASE)/WHEEL_DIAMETER, degrees, false);
 }
 
 std::shared_ptr<Task> get_auton(AUTON_TYPE type) {
 
   auto wait0 = std::shared_ptr<Task>(new WaitMillisecondsTask(0));
   auto driveTwelve = std::shared_ptr<Task>(new DriveStraightTask(leftMotors, rightMotors, 12.0));
-  auto turnNinety = std::shared_ptr<Task>(new TurnTask(leftMotors, rightMotors, 90.0));
+  auto turn90 = std::shared_ptr<Task>(new TurnTask(leftMotors, rightMotors, 90.0));
+  auto turn180 = std::shared_ptr<Task>(new TurnTask(leftMotors, rightMotors, 180.0));
   
   // The root task always needs to be wait0
 
   switch(type) {
     case TEST_AUTON:
-      // addTask(wait0, turnNinety);
+      addTask(wait0, turn180);
       break;
 
   }
