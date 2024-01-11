@@ -144,8 +144,8 @@ bool TurnTask::done() const { return left_motor_group.isDone(); }
 
 void TurnTask::start() {
   // Had to use trial and error to find what value to multiply by, but it works now
-  left_motor_group.spinFor(1.75*(rotationAmountDegrees*WHEEL_BASE)/WHEEL_DIAMETER, degrees, false);
-  right_motor_group.spinFor(1.75*(-rotationAmountDegrees*WHEEL_BASE)/WHEEL_DIAMETER, degrees, false);
+  left_motor_group.spinFor(1.75*(rotationAmountDegrees*WHEEL_BASE_INCHES)/WHEEL_DIAMETER, degrees, false);
+  right_motor_group.spinFor(1.75*(-rotationAmountDegrees*WHEEL_BASE_INCHES)/WHEEL_DIAMETER, degrees, false);
 }
 
 std::shared_ptr<Task> get_auton(AUTON_TYPE type) {

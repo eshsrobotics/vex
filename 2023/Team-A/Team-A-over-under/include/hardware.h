@@ -20,8 +20,8 @@ const int INERTIAL_SENSOR_PORT = 19-1;
 const int INTAKE_OUT_PORT = 7-1;
 const int INTAKE_IN_PORT = 18-1;
 
-// This value is in inches
-const double WHEEL_BASE = 10.125;
+// The distance between the centers of the left and right wheels of the robot
+const double WHEEL_BASE_INCHES = 10.125;
 
 // Don't know actual value
 const double DISTANCE_SENSOR_DETECT_TRIBALL_INCHES = 1.0;
