@@ -54,8 +54,8 @@ void autonomous(void) {
   // ..........................................................................
   // Insert autonomous user code here.
   // ..........................................................................
-  calibrateClaw(clawMotor, getBumper());
-  executeAutonPlan(autonPlan);
+  // calibrateClaw(clawMotor, getBumper());
+  // executeAutonPlan(autonPlan);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -75,44 +75,48 @@ void usercontrol(void) {
   Controller.Screen.setCursor(1, 1);
   Controller.Screen.print("Uche was here!");
   
-  // User control code here, inside the loop
-  while (1) {
-    // This is the main execution loop for the user control program.
-    // Each time through the loop your program should update motor + servo
-    // values based on feedback from the joysticks.
-
-    // ........................................................................
-    // Insert user code here. This is where you use the joystick values to
-    // update your motors, etc.
-    // ........................................................................
-
-    double horizontalChannel = Controller.Axis4.position();
-    double verticalChannel = Controller.Axis3.position();
-    // arcade_drive(Controller.Axis4.position(),
-    //              Controller.Axis3.position(),
-    //              L, R);
-
-    arcade_drive_by_quadrant(horizontalChannel, 
-                             verticalChannel);
-
-    ClawState clawState = CLAW_NEUTRAL;
-    if (Controller.ButtonL1.pressing() == true)
-    {
-      clawState = CLAW_OPEN;
-    }
-    else if (Controller.ButtonR1.pressing() == true)
-    {
-      clawState = CLAW_CLOSE;
-    }
-
-    moveArm (-Controller.Axis2.position(),
-             clawState, armMotorLeft, armMotorRight, clawMotor);
-
-    // m.spin(fwd, 100, pct);
-
+  while (true) {
     wait(20, msec); // Sleep the task for a short amount of time to
-                    // prevent wasted resources.
   }
+
+  // // User control code here, inside the loop
+  // while (1) {
+  //   // This is the main execution loop for the user control program.
+  //   // Each time through the loop your program should update motor + servo
+  //   // values based on feedback from the joysticks.
+
+  //   // ........................................................................
+  //   // Insert user code here. This is where you use the joystick values to
+  //   // update your motors, etc.
+  //   // ........................................................................
+
+  //   double horizontalChannel = Controller.Axis4.position();
+  //   double verticalChannel = Controller.Axis3.position();
+  //   // arcade_drive(Controller.Axis4.position(),
+  //   //              Controller.Axis3.position(),
+  //   //              L, R);
+
+  //   arcade_drive_by_quadrant(horizontalChannel, 
+  //                            verticalChannel);
+
+  //   ClawState clawState = CLAW_NEUTRAL;
+  //   if (Controller.ButtonL1.pressing() == true)
+  //   {
+  //     clawState = CLAW_OPEN;
+  //   }
+  //   else if (Controller.ButtonR1.pressing() == true)
+  //   {
+  //     clawState = CLAW_CLOSE;
+  //   }
+
+  //   moveArm (-Controller.Axis2.position(),
+  //            clawState, armMotorLeft, armMotorRight, clawMotor);
+
+  //   // m.spin(fwd, 100, pct);
+
+  //   wait(20, msec); // Sleep the task for a short amount of time to
+  //                   // prevent wasted resources.
+  // }
 }
 
 //
