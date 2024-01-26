@@ -102,7 +102,3 @@ digital_out wingletRight = digital_out(Brain.ThreeWirePort.B);
 //     }
 //     return 0;
 // }
-
-void vexcodeInit(void) {
-    // task rc_auto_loop_task_Controller(tank_drive);
-}
