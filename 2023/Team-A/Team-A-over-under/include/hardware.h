@@ -14,11 +14,9 @@ const int RIGHT_TOP_MOTOR_PORT = 15-1;
 const int RIGHT_BACK_MOTOR_PORT = 12-1;
 
 // Need to find actual values
-const int CATAPULT_PORT = 1 - 1;
-const int DISTANCE_PORT = 6 - 1;
 const int INERTIAL_SENSOR_PORT = 19-1;
-const int INTAKE_OUT_PORT = 7-1;
-const int INTAKE_IN_PORT = 18-1;
+const int LIFT_PORT = 14-1;
+const int FLYWHEEL_PORT = 16-1;
 
 // The distance between the centers of the left and right wheels of the robot
 const double WHEEL_BASE_INCHES = 10.125;
@@ -48,10 +46,8 @@ extern vex::motor rightBackMotor;
 extern vex::motor_group leftMotors;
 extern vex::motor_group rightMotors;
 extern vex::inertial inertialSensor;
-extern vex::motor catapult;
-extern vex::distance triballDetector;
-extern vex::motor intakeIn;
-extern vex::motor intakeOut;
+extern vex::motor liftMotor;
+extern vex::motor flywheelMotor;
 extern digital_out wingletLeft;
 extern digital_out wingletRight;
 
