@@ -51,5 +51,4 @@ extern vex::motor flywheelMotor;
 extern digital_out wingletLeft;
 extern digital_out wingletRight;
 
-void vexcodeInit(void);
 #endif // (#ifndef HARDWARE_H_IS_PRESENT)
