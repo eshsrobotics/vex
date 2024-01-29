@@ -70,7 +70,7 @@ void autonomous(void) {
 
 void usercontrol(void) {
 
-  // calibrateClaw(clawMotor, getBumper());
+  calibrateClaw(clawMotor, getBumper());
   Controller.Screen.clearScreen();
   Controller.Screen.setCursor(1, 1);
   Controller.Screen.print("Uche was here!");
