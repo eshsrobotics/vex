@@ -9,6 +9,9 @@ enum ClawState {
     CLAW_NEUTRAL
 };
 
+// How quickly the claw closes during the initial calibration.
+const double CLAW_CALIBRATION_CLOSURE_SPEED_PCT = 30.0;
+
 // When the robot starts, we don't know if the claw is open or closed.  That's a
 // problem, because we need to know how many degrees to move the arm in order to
 // open or close it. Also, if the arm _is_ open, we don't want t open it any
@@ -18,6 +21,12 @@ enum ClawState {
 // a bump sensor activates.  At that point, we know that the claw is closed, and
 // we make a record of its current encoder position.  The open position is
 // always relative to that.
+//
+// Note: We deliberately make calibrateClaw() idempotent, meaning that running
+// it more than once has no additional effect.  This is because motors are not
+// allowed to run during pre_auton(), and calibrateClaw() necessarily runs the
+// clawMotor; therefore we have no choice but to call it at the beginning of
+// both teleop AND autonomous.
 void calibrateClaw(vex::motor& clawMotor,
                    vex::bumper& clawBumper);
 
@@ -26,7 +35,8 @@ void calibrateClaw(vex::motor& clawMotor,
 // does the reverse when the same button is pressed
 void moveArm(double armSpeedPercent,
              ClawState clawState,
-             vex::motor& armMotor,
+             vex::motor& armMotorLeft,
+             vex::motor& armMotorRight,
              vex::motor& clawMotor);
 
 // We decided to go with brake, because, if we use coast, then, if we're

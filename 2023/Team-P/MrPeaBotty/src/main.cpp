@@ -35,16 +35,9 @@ void pre_auton(void) {
   // All activities that occur before the competition starts
   // Example: clearing encoders, setting servo positions, ...
 
-  // Because the triport constructor is extremely sensitive to the order of
-  // initialization (it seems to want the Brain to be initialized before it),
-  // we do the actual initialization at the last possible moment.
-  bumper
-  clawBumper(Brain.ThreeWirePort.A);
-  calibrateClaw(clawMotor, clawBumper);
-
   // Open the arm to trap-jaw position to keep the robot dimensions below 18x18
   // inches
-  moveArm(0, CLAW_OPEN, armMotor, clawMotor);
+  // moveArm(0, CLAW_OPEN, armMotorLeft, armMotorRight, clawMotor);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -61,6 +54,7 @@ void autonomous(void) {
   // ..........................................................................
   // Insert autonomous user code here.
   // ..........................................................................
+  calibrateClaw(clawMotor, getBumper());
   executeAutonPlan(autonPlan);
 }
 
@@ -76,6 +70,11 @@ void autonomous(void) {
 
 void usercontrol(void) {
 
+  calibrateClaw(clawMotor, getBumper());
+  Controller.Screen.clearScreen();
+  Controller.Screen.setCursor(1, 1);
+  Controller.Screen.print("Uche was here!");
+  
   // User control code here, inside the loop
   while (1) {
     // This is the main execution loop for the user control program.
@@ -87,9 +86,14 @@ void usercontrol(void) {
     // update your motors, etc.
     // ........................................................................
 
-    arcade_drive(Controller.Axis4.position(),
-                 Controller.Axis3.position(),
-                 R, L);
+    double horizontalChannel = Controller.Axis4.position();
+    double verticalChannel = Controller.Axis3.position();
+    // arcade_drive(Controller.Axis4.position(),
+    //              Controller.Axis3.position(),
+    //              L, R);
+
+    arcade_drive_by_quadrant(horizontalChannel, 
+                             verticalChannel);
 
     ClawState clawState = CLAW_NEUTRAL;
     if (Controller.ButtonL1.pressing() == true)
@@ -101,9 +105,10 @@ void usercontrol(void) {
       clawState = CLAW_CLOSE;
     }
 
-    moveArm (Controller.Axis2.position(),
-            clawState, armMotor, clawMotor);
+    moveArm (-Controller.Axis2.position(),
+             clawState, armMotorLeft, armMotorRight, clawMotor);
 
+    // m.spin(fwd, 100, pct);
 
     wait(20, msec); // Sleep the task for a short amount of time to
                     // prevent wasted resources.

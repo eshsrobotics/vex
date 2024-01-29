@@ -4,13 +4,19 @@
 using namespace vex;
 
 // Will be overwritten by calibrateClaw().
-double clawAngleWhenClosedDegrees = 0;
+const double INVALID_CLAW_ANGLE = -1234.0;
+double clawAngleWhenClosedDegrees = INVALID_CLAW_ANGLE;
 
 void calibrateClaw(motor& clawMotor, bumper& clawBumper) {
 
+    if (clawAngleWhenClosedDegrees != INVALID_CLAW_ANGLE) {
+        // We are already calibrated!  No-op.
+        return;
+    }
+
     // Deliberately close claw until we get a read from the claw bump sensor.
     // That tells us the claw has closed.
-    clawMotor.spin(fwd, 66, pct);
+    clawMotor.spin(fwd, CLAW_CALIBRATION_CLOSURE_SPEED_PCT, pct);
     while (!clawBumper.pressing()) {
         wait(20, msec);
     }
@@ -25,32 +31,38 @@ void calibrateClaw(motor& clawMotor, bumper& clawBumper) {
 
 void moveArm(double armSpeedPercent,
              ClawState clawState,
-             motor& armMotor,
+             motor& armMotorLeft,
+             motor& armMotorRight,
              motor& clawMotor) {
 
     if (armSpeedPercent != 0) {
-        armMotor.spin(directionType::fwd, armSpeedPercent, percentUnits::pct);
+        armMotorLeft.spin(directionType::fwd, armSpeedPercent, percentUnits::pct);
+        armMotorRight.spin(directionType::fwd, -armSpeedPercent, percentUnits::pct);
     } else {
-        armMotor.stop(ARM_BRAKE_TYPE);
+        armMotorLeft.stop(ARM_BRAKE_TYPE);
+        armMotorRight.stop(ARM_BRAKE_TYPE);
     }
 
     // open or close the claw and keep going till it is done. Zero degrees is
     // considered fully open, and 90 degrees is considered fully closed (for now).
-    const double CLAW_OPEN_DEGREES = 90;
-    // const double CLAW_OPEN_TIMEOUT_SEC = 0.5;
     const double CLAW_VELOCITY_PCT = 80;
-    //  const bool BLOCK_UNTIL_DONE = false;
-    const double CLAW_ANGLE_WHEN_OPEN_DEGREES = 90 + clawAngleWhenClosedDegrees;
+    const double CLAW_ANGLE_WHEN_OPEN_DEGREES = clawAngleWhenClosedDegrees - 90;
 
     // What is the claw's current angle?  0 is fully closed, 90 is open to the
     // trap-jaw angle.
-    const double CURRENT_CLAW_ANGLE_DEGREES = clawMotor.position(deg) + clawAngleWhenClosedDegrees;
+    const double CURRENT_CLAW_ANGLE_DEGREES = clawAngleWhenClosedDegrees - clawMotor.position(deg);
+
+    Controller.Screen.setCursor(2, 1);
+    Controller.Screen.print("Claw %6s at %.1f°", 
+                            getBumper().pressing() ? "Closed" : "Open",
+                            CURRENT_CLAW_ANGLE_DEGREES);
 
     switch (clawState) {
         case CLAW_NEUTRAL:
             // If the claw's open, leave it open.  If the claw is biting, let it
             // bite.
-            return;
+            clawMotor.stop(brakeType::brake);
+            break;
         case CLAW_OPEN:
             if (CURRENT_CLAW_ANGLE_DEGREES >= 90) {
                 // The claw is already fully open.  Opening it more would just
@@ -66,7 +78,7 @@ void moveArm(double armSpeedPercent,
 
         case CLAW_CLOSE:
             if(CURRENT_CLAW_ANGLE_DEGREES <= 0) {
-                // Like the CLA_OPEN function, if we try to close the claw even
+                // Like the CLAW_OPEN function, if we try to close the claw even
                 // more, then it would break the bot.
                 return;
             }
