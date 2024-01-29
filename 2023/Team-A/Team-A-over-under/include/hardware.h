@@ -1,3 +1,6 @@
+// HARDWARE.H: Declarations for the hardware for our competition robot.
+
+
 #ifndef HARDWARE_H_IS_PRESENT
 #define HARDWARE_H_IS_PRESENT
 

@@ -1,3 +1,5 @@
+// HARDWARE.CPP: Definitions for Hardware.h.
+
 #include "vex.h"
 #include "hardware.h"
 

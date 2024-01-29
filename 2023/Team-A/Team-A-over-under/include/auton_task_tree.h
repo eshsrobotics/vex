@@ -1,3 +1,5 @@
+// AUTON_TASK_TREE.H: declarations for Task base class, tree execution, and other derived Task classes
+
 #include <functional>
 #include <memory> // shared_ptr<T>
 #include <string>

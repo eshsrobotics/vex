@@ -1,3 +1,5 @@
+// AUTON_TASK_TREE.CPP: Contains definitions for Auton_task_tree.h
+
 #include "auton_task_tree.h"
 #include "vex.h"
 #include <cstring> // std::snprintf()

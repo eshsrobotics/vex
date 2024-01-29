@@ -3,7 +3,7 @@
 /*    Module:       main.cpp                                                  */
 /*    Author:       frc1                                                      */
 /*    Created:      11/9/2023, 3:53:17 PM                                     */
-/*    Description:  V5 project                                                */
+/*    Description:  Entry point for robot; contains auton and teleop code.    */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
@@ -15,6 +15,44 @@ using namespace vex;
 
 // A global instance of competition
 competition Competition;
+
+enum FlywheelState {
+  // Initial state of the state machine
+  // - transitions: default (unconditional)
+  START,
+
+  // The state when flywheel is not moving.
+  // - transitions:
+  //   * R1.pressed() == true: TOGGLE_ON_STATE_PRESSED
+  //   * R2.pressed() == true: INSTANTANEOUS_STATE
+  //   * else: DEFAULT_STATE
+  DEFAULT_STATE,
+
+  // Flywheel activation for triball loads (arm is up)
+  // - transitions:
+  //   * R1.pressed() == false: TOGGLE_ON_STATE_RELEASED
+  //   * R1.pressed() == true: TOGGLE_ON_STATE_PRESSED
+  TOGGLE_ON_STATE_PRESSED,
+
+  // Flywheel still activated for triball loads, waiting to turn off (arm is still up)
+  // - transitions:
+  //   * R1.pressed() == false: TOGGLE_ON_STATE_RELEASED
+  //   * R1.pressed() == true: TOGGLE_OFF_STATE_PRESSED
+  TOGGLE_ON_STATE_RELEASED,
+
+  // Flywheel deactivated, waiting for user to release (arm is still up)
+  // - transitions:
+  //   * R1.pressed () == true: TOGGLE_OFF_STATE_PRESSED
+  //   * R1.pressed () == false: DEFAULT_STATE
+  TOGGLE_OFF_STATE_PRESSED,
+
+  // Flywheel activation for triball intake (arm is down)
+  // - transitions:
+  //   * R2.pressed() == true: INSTANTANEOUS_STATE
+  //   * R2.pressed() == false: DEFAULT_STATE
+  INSTANTANEOUS_STATE,
+
+};
 
 // define your global instances of motors and other devices here
 
@@ -71,7 +109,10 @@ void usercontrol(void) {
   int straightSpeed = 0;
   int turnSpeed = 0;
 
-  while (1) {
+  FlywheelState flywheelState = START;
+
+
+  while (true) {
     // This is the main execution loop for the user control program.
     // Each time through the loop your program should update motor + servo
     // values based on feedback from the joysticks.
@@ -88,7 +129,7 @@ void usercontrol(void) {
         leftMotors.stop();
         rightMotors.stop();
     }
-    
+
     if (Controller.ButtonUp.pressing()) {
       wingletLeft.set(false);
       wingletRight.set(false);
@@ -110,19 +151,75 @@ void usercontrol(void) {
       // Controller.Screen.print("Inertial sensor not detected. Check port, wire, or sensor.");
     }
 
-    if(Controller.ButtonL1.pressing() && !Controller.ButtonL2.pressing()){
+
+
+    // Our flywheel is at the end of a 4-bar lift.  When it's in the "down"
+    // position, it can serve as a triball intake.  In the "up" position, it
+    // allows us to  match-load triballs as quickly as possible.
+
+    // The driver asked us to have two "modes" for the flywheel: one where the
+    // lift is up, the flywheel is on, and they can just tap a button (R1) to
+    // turn the flywheel off; and another where the lift is down in "intake
+    // mode" and the driver can tap a button (R2) to turn on the flywheel 'just
+    // a little' to suck up a triball.
+
+    // This state machine hopefully implements that request.
+    switch (flywheelState) {
+      case START:
+        flywheelState = DEFAULT_STATE;
+        break;
+
+      case DEFAULT_STATE:
+
+        flywheelMotor.stop();
+        if (Controller.ButtonR1.pressing()) {
+          flywheelState = TOGGLE_ON_STATE_PRESSED;
+        } else if (Controller.ButtonR2.pressing()) {
+          flywheelState = INSTANTANEOUS_STATE;
+        }
+        break;
+
+      case TOGGLE_ON_STATE_PRESSED:
+
+        flywheelMotor.spin(forward);
+        if (!Controller.ButtonR1.pressing()) {
+          flywheelState = TOGGLE_ON_STATE_RELEASED;
+        }
+        break;
+
+      case TOGGLE_ON_STATE_RELEASED:
+
+        flywheelMotor.spin(forward);
+        if (Controller.ButtonR1.pressing()) {
+          flywheelState = TOGGLE_OFF_STATE_PRESSED;
+        }
+        break;
+
+      case TOGGLE_OFF_STATE_PRESSED:
+
+        flywheelMotor.stop();
+        if (!Controller.ButtonR1.pressing()) {
+          flywheelState = DEFAULT_STATE;
+        }
+        break;
+
+      case INSTANTANEOUS_STATE:
+
+        flywheelMotor.spin(forward);
+        if (!Controller.ButtonR2.pressing()) {
+          flywheelState = DEFAULT_STATE;
+        }
+        break;
+    }
+
+    if (Controller.ButtonL1.pressing() && !Controller.ButtonL2.pressing()) {
       liftMotor.spin(forward);
-    } else if(Controller.ButtonL2.pressing() && !Controller.ButtonL1.pressing()){
+    } else if (Controller.ButtonL2.pressing() && !Controller.ButtonL1.pressing()) {
       liftMotor.spin(reverse);
     } else {
       liftMotor.stop();
     }
 
-    if(Controller.ButtonR1.pressing()){
-      flywheelMotor.spin(forward);
-    } else {
-      flywheelMotor.stop();
-    }
 
     // ........................................................................
     // Insert user code here. This is where you use the joystick values to
