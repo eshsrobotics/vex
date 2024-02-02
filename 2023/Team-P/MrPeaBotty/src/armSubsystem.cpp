@@ -45,7 +45,6 @@ void moveArm(double armSpeedPercent,
 
     // open or close the claw and keep going till it is done. Zero degrees is
     // considered fully open, and 90 degrees is considered fully closed (for now).
-    const double CLAW_VELOCITY_PCT = 80;
     const double CLAW_ANGLE_WHEN_OPEN_DEGREES = clawAngleWhenClosedDegrees - 90;
 
     // What is the claw's current angle?  0 is fully closed, 90 is open to the
@@ -77,7 +76,7 @@ void moveArm(double armSpeedPercent,
             break;
 
         case CLAW_CLOSE:
-            if(CURRENT_CLAW_ANGLE_DEGREES <= 0) {
+            if(CURRENT_CLAW_ANGLE_DEGREES <= -5) {
                 // Like the CLAW_OPEN function, if we try to close the claw even
                 // more, then it would break the bot.
                 return;
@@ -85,7 +84,7 @@ void moveArm(double armSpeedPercent,
             // We're setting the clawMotor to spin to 0 degrees regardless if
             // there's something interrupting, so that the claw can keep biting
             // down on the triball.
-            clawMotor.spinToPosition(clawAngleWhenClosedDegrees,
+            clawMotor.spinToPosition(clawAngleWhenClosedDegrees - 5,
                                      deg,
                                      CLAW_VELOCITY_PCT,
                                      vex::velocityUnits::pct,

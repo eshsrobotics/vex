@@ -10,7 +10,7 @@ enum ClawState {
 };
 
 // How quickly the claw closes during the initial calibration.
-const double CLAW_CALIBRATION_CLOSURE_SPEED_PCT = 30.0;
+const double CLAW_CALIBRATION_CLOSURE_SPEED_PCT = 25.0;
 
 // When the robot starts, we don't know if the claw is open or closed.  That's a
 // problem, because we need to know how many degrees to move the arm in order to
@@ -38,12 +38,18 @@ void moveArm(double armSpeedPercent,
              vex::motor& armMotorLeft,
              vex::motor& armMotorRight,
              vex::motor& clawMotor);
-
+//This controls the claw speed during teleop, different from the value used in
+//the claw motor spin function. That value affects the claw movement speed during
+//calibration.
+const double CLAW_VELOCITY_PCT = 20;
 // We decided to go with brake, because, if we use coast, then, if we're
 // possessing a triball and we're going up, and we use coast, then the triball
 // might weigh us down, causing the arm to go down.
 //
 // Hold will require constant energy usage in order to make the arm stay up.
-const vex::brakeType ARM_BRAKE_TYPE = vex::brakeType::brake;
+//We used break at first but realized that it just makes the motor shut down,
+//and the part can still be moved, similar to putting a car in neutral.
+//Switching to hold.
+const vex::brakeType ARM_BRAKE_TYPE = vex::brakeType::hold;
 
 #endif // (#ifndef ARMSUBSYSTEM_H_IS_PRESENT)
