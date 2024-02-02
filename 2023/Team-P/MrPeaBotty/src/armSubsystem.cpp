@@ -45,7 +45,6 @@ void moveArm(double armSpeedPercent,
 
     // open or close the claw and keep going till it is done. Zero degrees is
     // considered fully open, and 90 degrees is considered fully closed (for now).
-    const double CLAW_VELOCITY_PCT = 80;
     const double CLAW_ANGLE_WHEN_OPEN_DEGREES = clawAngleWhenClosedDegrees - 90;
 
     // What is the claw's current angle?  0 is fully closed, 90 is open to the
