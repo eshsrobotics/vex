@@ -27,7 +27,8 @@
 			"compilerPath": "c:/Users/frc1/AppData/Roaming/Code/User/globalStorage/vexrobotics.vexcode/tools/cpp/toolchain_win32/clang/bin/clang",
 			"cStandard": "gnu99",
 			"cppStandard": "gnu++11",
-			"intelliSenseMode": "windows-clang-x86"
+			"intelliSenseMode": "windows-clang-x86",
+			"configurationProvider": "ms-vscode.makefile-tools"
 		},
 		{
 			"name": "Mac",

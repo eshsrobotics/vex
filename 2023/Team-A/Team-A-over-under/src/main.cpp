@@ -23,35 +23,49 @@ enum FlywheelState {
 
   // The state when flywheel is not moving.
   // - transitions:
-  //   * R1.pressed() == true: TOGGLE_ON_STATE_PRESSED
-  //   * R2.pressed() == true: INSTANTANEOUS_STATE
+  //   * R1.pressed() == true: TOGGLE_ON_STATE_PRESSED_FLYWHEEL_FORWARD
+  //   * R2.pressed() == true: TOGGLE_ON_STATE_PRESSED_FLYWHEEL_BACKWARD
+  //   * Y.pressed == true: INSTANTANEOUS_STATE
   //   * else: DEFAULT_STATE
   DEFAULT_STATE,
 
-  // Flywheel activation for triball loads (arm is up)
+  // Flywheel activation for triball loads, fly_dir = forward (arm is up)
   // - transitions:
-  //   * R1.pressed() == false: TOGGLE_ON_STATE_RELEASED
-  //   * R1.pressed() == true: TOGGLE_ON_STATE_PRESSED
-  TOGGLE_ON_STATE_PRESSED,
+  //   * R1.pressed() == false: TOGGLE_ON_STATE_RELEASED_FLYWHEEL_STILL_ACTIVE
+  //   * R1.pressed() == true: TOGGLE_ON_STATE_PRESSED_FLYWHEEL_FORWARD
+  TOGGLE_ON_STATE_PRESSED_FLYWHEEL_FORWARD,
+
+  // Flywheel activation for triball loads, fly_dir = backward (arm is up)
+  // - transitions:
+  //   * R2.pressed == true: TOGGLE_ON_STATE_PRESSED_FLYWHEEL_BACKWARD
+  //   * R2.pressed == false: TOGGLE_ON_STATE_RELEASED_FLYWHEEL_STILL_ACTIVE
+  TOGGLE_ON_STATE_PRESSED_FLYWHEEL_BACKWARD,
 
   // Flywheel still activated for triball loads, waiting to turn off (arm is still up)
   // - transitions:
-  //   * R1.pressed() == false: TOGGLE_ON_STATE_RELEASED
-  //   * R1.pressed() == true: TOGGLE_OFF_STATE_PRESSED
-  TOGGLE_ON_STATE_RELEASED,
+  //   * R1.pressed == false and fly_dir == forward: TOGGLE_ON_STATE_RELEASED_FLYWHEEL_STILL_ACTIVE
+  //   * R2.pressed == false and fly_dir == backward: TOGGLE_ON_STATE_RELEASED_FLYWHEEL_STILL_ACTIVE
+  //   * R1.pressed == true and fly_dir == forward: TOGGLE_OFF_STATE_RELEASED_FLYWHEEL_INACTIVE
+  //   * R2.pressed == true and fly_dir == backward: TOGGLE_OFF_STATE_RELEASED_FLYWHEEL_INACTIVE
+  TOGGLE_ON_STATE_RELEASED_FLYWHEEL_STILL_ACTIVE,
 
-  // Flywheel deactivated, waiting for user to release (arm is still up)
+  // Flywheel has just stopped; waiting for user to release the button.
   // - transitions:
-  //   * R1.pressed () == true: TOGGLE_OFF_STATE_PRESSED
-  //   * R1.pressed () == false: DEFAULT_STATE
-  TOGGLE_OFF_STATE_PRESSED,
-
+  //   * R1.pressed == true: TOGGLE_OFF_STATE_RELEASED_FLYWHEEL_INACTIVE
+  //   * R2.pressed == true: TOGGLE_OFF_STATE_RELEASED_FLYWHEEL_INACTIVE
+  //   * R1.pressed == false AND R2.pressed == false: DEFAULT_STATE
+  TOGGLE_OFF_STATE_RELEASED_FLYWHEEL_INACTIVE,
+  
   // Flywheel activation for triball intake (arm is down)
   // - transitions:
-  //   * R2.pressed() == true: INSTANTANEOUS_STATE
-  //   * R2.pressed() == false: DEFAULT_STATE
+  //   * Y.pressed() == true: INSTANTANEOUS_STATE
+  //   * Y.pressed() == false: DEFAULT_STATE
   INSTANTANEOUS_STATE,
+};
 
+enum FlywheelDirection {
+  FORWARD,
+  BACKWARD
 };
 
 // define your global instances of motors and other devices here
@@ -108,8 +122,10 @@ void usercontrol(void) {
 
   int straightSpeed = 0;
   int turnSpeed = 0;
-
   FlywheelState flywheelState = START;
+  FlywheelDirection fly_dir = FORWARD;
+
+  flywheelMotor.setVelocity(100, percent);
 
 
   while (true) {
@@ -167,47 +183,75 @@ void usercontrol(void) {
     switch (flywheelState) {
       case START:
         flywheelState = DEFAULT_STATE;
+        Brain.Screen.setCursor(3, 1);
+        Brain.Screen.print("START                     ");
+        flywheelMotor.stop();
         break;
 
       case DEFAULT_STATE:
-
-        flywheelMotor.stop();
+        
         if (Controller.ButtonR1.pressing()) {
-          flywheelState = TOGGLE_ON_STATE_PRESSED;
+          flywheelState = TOGGLE_ON_STATE_PRESSED_FLYWHEEL_FORWARD;
+          fly_dir = FORWARD;
+          flywheelMotor.spin(forward);
+          
+          Brain.Screen.setCursor(3, 1);
+          Brain.Screen.print("TOGGLE_ON_STATE_PRESSED_FLYWHEEL_FORWARD ");
         } else if (Controller.ButtonR2.pressing()) {
+          flywheelState = TOGGLE_ON_STATE_PRESSED_FLYWHEEL_BACKWARD;          
+          fly_dir = BACKWARD;
+          flywheelMotor.spin(reverse);
+          Brain.Screen.setCursor(3, 1);
+          Brain.Screen.print("TOGGLE_ON_STATE_PRESSED_FLYWHEEL_BACKWARD ");
+        } else if (Controller.ButtonY.pressing()) {
           flywheelState = INSTANTANEOUS_STATE;
+          flywheelMotor.spin(forward);          
+          
+          Brain.Screen.setCursor(3, 1);
+          Brain.Screen.print("INSTANTANEOUS_STATE     ");
         }
         break;
 
-      case TOGGLE_ON_STATE_PRESSED:
+      case TOGGLE_ON_STATE_PRESSED_FLYWHEEL_FORWARD:
 
-        flywheelMotor.spin(forward);
         if (!Controller.ButtonR1.pressing()) {
-          flywheelState = TOGGLE_ON_STATE_RELEASED;
+          flywheelState = TOGGLE_ON_STATE_RELEASED_FLYWHEEL_STILL_ACTIVE;
+          
+          Brain.Screen.setCursor(3, 1);
+          Brain.Screen.print("TOGGLE_ON_STATE_RELEASED_FLYWHEEL_STILL_ACTIVE");
         }
         break;
 
       case TOGGLE_ON_STATE_RELEASED:
 
-        flywheelMotor.spin(forward);
+        // flywheelMotor.spin(forward);
         if (Controller.ButtonR1.pressing()) {
           flywheelState = TOGGLE_OFF_STATE_PRESSED;
+          flywheelMotor.stop();
+          Brain.Screen.setCursor(3, 1);
+          Brain.Screen.print("TOGGLE_OFF_STATE_PRESSED");
         }
         break;
 
       case TOGGLE_OFF_STATE_PRESSED:
 
-        flywheelMotor.stop();
+        // flywheelMotor.stop();
         if (!Controller.ButtonR1.pressing()) {
           flywheelState = DEFAULT_STATE;
+          flywheelMotor.stop();
+          Brain.Screen.setCursor(3, 1);
+          Brain.Screen.print("DEFAULT_STATE           ");
         }
         break;
 
       case INSTANTANEOUS_STATE:
 
-        flywheelMotor.spin(forward);
-        if (!Controller.ButtonR2.pressing()) {
+        // flywheelMotor.spin(forward);
+        if (!Controller.ButtonY.pressing()) {
           flywheelState = DEFAULT_STATE;
+          flywheelMotor.stop();
+          Brain.Screen.setCursor(3, 1);
+          Brain.Screen.print("DEFAULT_STATE           ");
         }
         break;
     }
