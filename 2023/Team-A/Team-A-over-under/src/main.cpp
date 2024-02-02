@@ -183,7 +183,7 @@ void usercontrol(void) {
       case START:
         flywheelState = DEFAULT_STATE;
         Brain.Screen.setCursor(3, 1);
-        Brain.Screen.print("START                     ");
+        Brain.Screen.print("START                                         ");
         flywheelMotor.stop();
         break;
 
@@ -195,19 +195,19 @@ void usercontrol(void) {
           flywheelMotor.spin(forward);
 
           Brain.Screen.setCursor(3, 1);
-          Brain.Screen.print("TOGGLE_ON_STATE_PRESSED_FLYWHEEL_FORWARD");
+          Brain.Screen.print("TOGGLE_ON_STATE_PRESSED_FLYWHEEL_FORWARD      ");
         } else if (Controller.ButtonR2.pressing()) {
           flywheelState = TOGGLE_ON_STATE_PRESSED_FLYWHEEL_BACKWARD;
           fly_dir = BACKWARD;
           flywheelMotor.spin(reverse);
           Brain.Screen.setCursor(3, 1);
-          Brain.Screen.print("TOGGLE_ON_STATE_PRESSED_FLYWHEEL_BACKWARD");
+          Brain.Screen.print("TOGGLE_ON_STATE_PRESSED_FLYWHEEL_BACKWARD     ");
         } else if (Controller.ButtonY.pressing()) {
           flywheelState = INSTANTANEOUS_STATE;
           flywheelMotor.spin(forward);
 
           Brain.Screen.setCursor(3, 1);
-          Brain.Screen.print("INSTANTANEOUS_STATE     ");
+          Brain.Screen.print("INSTANTANEOUS_STATE                           ");
         }
         break;
 
@@ -238,7 +238,7 @@ void usercontrol(void) {
           flywheelState = TOGGLE_OFF_STATE_RELEASED_FLYWHEEL_INACTIVE;
 
           Brain.Screen.setCursor(3, 1);
-          Brain.Screen.print("TOGGLE_OFF_STATE_RELEASED_FLYWHEEL_INACTIVE");
+          Brain.Screen.print("TOGGLE_OFF_STATE_RELEASED_FLYWHEEL_INACTIVE   ");
         }
         break;
 
@@ -248,7 +248,7 @@ void usercontrol(void) {
           flywheelState = DEFAULT_STATE;
 
           Brain.Screen.setCursor(3, 1);
-          Brain.Screen.print("DEFAULT_STATE");
+          Brain.Screen.print("DEFAULT_STATE                                 ");
         }
         break;
 
@@ -258,7 +258,7 @@ void usercontrol(void) {
           flywheelState = DEFAULT_STATE;
           flywheelMotor.stop();
           Brain.Screen.setCursor(3, 1);
-          Brain.Screen.print("DEFAULT_STATE           ");
+          Brain.Screen.print("DEFAULT_STATE                                 ");
         }
         break;
     }
