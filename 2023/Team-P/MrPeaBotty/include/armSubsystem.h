@@ -10,7 +10,7 @@ enum ClawState {
 };
 
 // How quickly the claw closes during the initial calibration.
-const double CLAW_CALIBRATION_CLOSURE_SPEED_PCT = 20.0;
+const double CLAW_CALIBRATION_CLOSURE_SPEED_PCT = 25.0;
 
 // When the robot starts, we don't know if the claw is open or closed.  That's a
 // problem, because we need to know how many degrees to move the arm in order to
@@ -41,7 +41,7 @@ void moveArm(double armSpeedPercent,
 //This controls the claw speed during teleop, different from the value used in
 //the claw motor spin function. That value affects the claw movement speed during
 //calibration.
-const double CLAW_VELOCITY_PCT = 10;
+const double CLAW_VELOCITY_PCT = 20;
 // We decided to go with brake, because, if we use coast, then, if we're
 // possessing a triball and we're going up, and we use coast, then the triball
 // might weigh us down, causing the arm to go down.
