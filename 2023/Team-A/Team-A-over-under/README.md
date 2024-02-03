@@ -9,8 +9,9 @@
 - Flywheel Arm Subsystem
   * `L1`: Raise lift
   * `L2`: Lower lift
-  * `R1`: Toggle flywheel
-  * `R2`: Hold down to spin the flywheel temporarily (this will be used when the robot is trying to intake triballs)
+  * `R1`: Toggle flywheel forward
+  * `R2`: Toggle flywheel backward
+  * `Y`: Hold down to spin the flywheel temporarily (this will be used when the robot is trying to intake triballs)
 
 - Differential drive (arcade drive scheme):
   * `Axis 3` (left joystick vertical axis): Drives forward/backward
