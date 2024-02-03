@@ -14,6 +14,8 @@
 #include "auton.h"
 
 using namespace vex;
+using std::min;
+using std::max;
 
 // A global instance of competition
 competition Competition;
@@ -74,7 +76,12 @@ void usercontrol(void) {
   Controller.Screen.clearScreen();
   Controller.Screen.setCursor(1, 1);
   Controller.Screen.print("Uche was here!");
-  
+  double velocity_x = 0;
+  double velocity_y = 0;
+  const double acceleration = 1.0; // Probably too fast
+  const double decay = 0.9; // Probably too high.
+  const double maximum_velocity = 1000.0; // Probably too high.
+
   // User control code here, inside the loop
   while (1) {
     // This is the main execution loop for the user control program.
@@ -91,9 +98,22 @@ void usercontrol(void) {
     // arcade_drive(Controller.Axis4.position(),
     //              Controller.Axis3.position(),
     //              L, R);
-    horizontalChannel *= 0.60;
-    arcade_drive_by_quadrant(horizontalChannel, 
-                             verticalChannel);
+    
+    // Every frame, if the joystick has a nonzero contribution,
+    // we add it to our current velocity vector.  The velocity
+    // vector persists from frame to frame, so we'd continue at
+    // the same speed forever.  BUT!  See the decay below. 
+    velocity_x += horizontalChannel * acceleration;
+    velocity_y += verticalChannel * acceleration;
+    velocity_x = max(min(maximum_velocity, velocity_x), -maximum_velocity);
+    velocity_y = max(min(maximum_velocity, velocity_y), -maximum_velocity);
+
+    arcade_drive_by_quadrant(/* velocity_x */ horizontalChannel, 
+                             velocity_y);
+
+    // Causes the robot to slow down naturally without human input.
+    velocity_x *= decay;
+    velocity_y *= decay;
 
     ClawState clawState = CLAW_NEUTRAL;
     if (Controller.ButtonL1.pressing() == true)
