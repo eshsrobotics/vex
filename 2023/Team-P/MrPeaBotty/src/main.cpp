@@ -78,9 +78,10 @@ void usercontrol(void) {
   Controller.Screen.print("Uche was here!");
   double velocity_x = 0;
   double velocity_y = 0;
-  const double acceleration = 1.0; // Probably too fast
-  const double decay = 0.9; // Probably too high.
-  const double maximum_velocity = 1000.0; // Probably too high.
+  const double turning_acceleration = 0.02;
+  const double forward_acceleration = 0.03; // Gradual forward acceleration....
+  const double decay = 0.995;               // ...with a quick decay.
+  const double maximum_velocity = 40.0;   // Probably too high.
 
   // User control code here, inside the loop
   while (1) {
@@ -103,12 +104,12 @@ void usercontrol(void) {
     // we add it to our current velocity vector.  The velocity
     // vector persists from frame to frame, so we'd continue at
     // the same speed forever.  BUT!  See the decay below. 
-    velocity_x += horizontalChannel * acceleration;
-    velocity_y += verticalChannel * acceleration;
+    velocity_x += horizontalChannel * turning_acceleration;
+    velocity_y += verticalChannel * forward_acceleration;
     velocity_x = max(min(maximum_velocity, velocity_x), -maximum_velocity);
     velocity_y = max(min(maximum_velocity, velocity_y), -maximum_velocity);
 
-    arcade_drive_by_quadrant(/* velocity_x */ horizontalChannel, 
+    arcade_drive_by_quadrant(velocity_x, 
                              velocity_y);
 
     // Causes the robot to slow down naturally without human input.
