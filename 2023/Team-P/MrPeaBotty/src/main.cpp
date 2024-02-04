@@ -73,7 +73,7 @@ void usercontrol(void) {
   calibrateClaw(clawMotor, getBumper());
   Controller.Screen.clearScreen();
   Controller.Screen.setCursor(1, 1);
-  Controller.Screen.print("Uche was here!");
+  Controller.Screen.print("Calibration finished!");
   
   // User control code here, inside the loop
   while (1) {
