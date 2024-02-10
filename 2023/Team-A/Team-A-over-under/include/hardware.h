@@ -15,18 +15,12 @@ const int LEFT_BACK_MOTOR_PORT = 3-1;
 const int RIGHT_FRONT_MOTOR_PORT = 13-1;
 const int RIGHT_TOP_MOTOR_PORT = 15-1;
 const int RIGHT_BACK_MOTOR_PORT = 12-1;
-
-// Need to find actual values
 const int INERTIAL_SENSOR_PORT = 19-1;
 const int LIFT_PORT = 14-1;
-const int FLYWHEEL_PORT = 16-1;
+const int FLYWHEEL_PORT = 18-1;
 
 // The distance between the centers of the left and right wheels of the robot
 const double WHEEL_BASE_INCHES = 10.125;
-
-// Don't know actual value
-const double DISTANCE_SENSOR_DETECT_TRIBALL_INCHES = 1.0;
-const double MILLISECONDS_TO_SHOOT = 2500.0;
 
 // Still need to calculate
 const double WHEEL_GEAR_RATIO = 1.0;
@@ -37,6 +31,8 @@ const double WHEEL_CIRCUMFERENCE = 10.2101761242;
 const double PI = 3.14159265359;
 
 const int DEADZONE = 5;
+
+const int DEGREES_FOR_LIFT_UP = 100;
 
 extern vex::brain Brain;
 extern vex::controller Controller;
