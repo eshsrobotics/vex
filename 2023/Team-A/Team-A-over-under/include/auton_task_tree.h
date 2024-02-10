@@ -83,12 +83,13 @@ struct DriveStraightTask : public Task {
   vex::motor_group &left_motor_group;
   vex::motor_group &right_motor_group;
   double distanceInches;
+  int speed;
   std::function<double (double)> translateFunction;
 
   // If a negative number is passed in, the robot will drive backwards instead
   // of forwards
   DriveStraightTask(
-      vex::motor_group &motor_group1, vex::motor_group &motor_group2, double distanceInches,
+      vex::motor_group &motor_group1, vex::motor_group &motor_group2, double distanceInches, int speed,
       std::function<double(double)> translateFunction = [](double d) {
         return d;
       });

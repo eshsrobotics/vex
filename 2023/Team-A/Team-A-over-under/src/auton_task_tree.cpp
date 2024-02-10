@@ -117,15 +117,18 @@ void WaitMillisecondsTask::start() {
 DriveStraightTask::DriveStraightTask(vex::motor_group &left_motor_group, 
                                      vex::motor_group &right_motor_group, 
                                      double distanceInches,
+                                     int speed,
                                      std::function<double(double)> translateFunction)
     : Task("Drive task"), left_motor_group(left_motor_group), right_motor_group(right_motor_group),
-      distanceInches(distanceInches), translateFunction(translateFunction) {}
+      distanceInches(distanceInches), speed(speed), translateFunction(translateFunction) {}
 
 bool DriveStraightTask::done() const { return left_motor_group.isDone(); }
 
 void DriveStraightTask::start() {
   double correctDistanceInches = translateFunction(distanceInches);
   const bool WAIT_FOR_COMPLETION = false;
+  left_motor_group.setVelocity(speed, percent);
+  right_motor_group.setVelocity(speed, percent);
   if (distanceInches > 0) {
     left_motor_group.spinFor(vex::forward, (distanceInches*360)/WHEEL_CIRCUMFERENCE, degrees, WAIT_FOR_COMPLETION);
     right_motor_group.spinFor(vex::forward, (distanceInches*360)/WHEEL_CIRCUMFERENCE, degrees, WAIT_FOR_COMPLETION);
@@ -152,19 +155,21 @@ void TurnTask::start() {
 
 std::shared_ptr<Task> get_auton(AUTON_TYPE type) {
 
-  auto wait0 = std::shared_ptr<Task>(new WaitMillisecondsTask(0));
-  auto driveTwelve = std::shared_ptr<Task>(new DriveStraightTask(leftMotors, rightMotors, 12.0));
+  auto initialWait = std::shared_ptr<Task>(new WaitMillisecondsTask(3000));
+  auto drive = std::shared_ptr<Task>(new DriveStraightTask(leftMotors, rightMotors, 20.0, 50));
+  auto driveBack = std::shared_ptr<Task>(new DriveStraightTask(leftMotors, rightMotors, -18.0, 90));
   auto turn90 = std::shared_ptr<Task>(new TurnTask(leftMotors, rightMotors, 90.0));
   auto turn180 = std::shared_ptr<Task>(new TurnTask(leftMotors, rightMotors, 180.0));
   
-  // The root task always needs to be wait0
+  // The root task always needs to be initialWait
 
   switch(type) {
     case TEST_AUTON:
-      addTask(wait0, turn180);
+      addTask(initialWait, drive);
+      addTask(drive, driveBack);
       break;
 
   }
 
-  return wait0;
+  return initialWait;
 }              

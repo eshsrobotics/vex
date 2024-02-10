@@ -19,7 +19,7 @@ motor_group rightMotors = motor_group(rightFrontMotor, rightTopMotor, rightBackM
 inertial inertialSensor = inertial(INERTIAL_SENSOR_PORT);
 digital_out wingletLeft = digital_out(Brain.ThreeWirePort.A);
 digital_out wingletRight = digital_out(Brain.ThreeWirePort.B);
-motor liftMotor = motor(LIFT_PORT, false);
+motor liftMotor = motor(LIFT_PORT, true);
 motor flywheelMotor = motor(FLYWHEEL_PORT, false);
 
 void vexcodeInit(void) {

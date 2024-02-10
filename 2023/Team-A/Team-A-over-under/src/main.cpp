@@ -121,10 +121,16 @@ void usercontrol(void) {
 
   int straightSpeed = 0;
   int turnSpeed = 0;
+
+  bool wingletOpen = false;
+  bool liftUp = false;
+
   FlywheelState flywheelState = START;
   FlywheelDirection fly_dir = FORWARD;
 
   flywheelMotor.setVelocity(100, percent);
+
+  liftMotor.setBrake(hold);
 
 
   while (true) {
@@ -135,7 +141,20 @@ void usercontrol(void) {
     straightSpeed = Controller.Axis3.position();
     turnSpeed = Controller.Axis1.position();
 
-    if ((straightSpeed < 5 || straightSpeed > -5) || (turnSpeed < 5 || turnSpeed > -5)) {
+    // If the lift is up, the robot will drive and turn at half of the normal
+    // speed
+    if (liftUp) {
+      straightSpeed = straightSpeed / 2;
+      turnSpeed = turnSpeed / 2;
+    }
+
+    // If the winglet is open, the robot's front and back are switched so the
+    // winglet side is the front
+    if (wingletOpen) {
+      straightSpeed = -straightSpeed;
+    }
+
+    if ((straightSpeed < DEADZONE || straightSpeed > -DEADZONE) || (turnSpeed < DEADZONE || turnSpeed > -DEADZONE)) {
         leftMotors.setVelocity(-(straightSpeed + turnSpeed), percent);
         rightMotors.setVelocity(-(straightSpeed - turnSpeed), percent);
         leftMotors.spin(forward);
@@ -148,9 +167,11 @@ void usercontrol(void) {
     if (Controller.ButtonUp.pressing()) {
       wingletLeft.set(false);
       wingletRight.set(false);
+      wingletOpen = true;
     } else if (Controller.ButtonDown.pressing()) {
       wingletLeft.set(true);
       wingletRight.set(true);
+      wingletOpen = false;
     }
 
     // Run the inertial sensor
@@ -236,7 +257,7 @@ void usercontrol(void) {
         if ((Controller.ButtonR1.pressing() && fly_dir == FORWARD) ||
             (Controller.ButtonR2.pressing() && fly_dir == BACKWARD)) {
           flywheelState = TOGGLE_OFF_STATE_RELEASED_FLYWHEEL_INACTIVE;
-
+          flywheelMotor.stop();
           Brain.Screen.setCursor(3, 1);
           Brain.Screen.print("TOGGLE_OFF_STATE_RELEASED_FLYWHEEL_INACTIVE   ");
         }
@@ -271,13 +292,22 @@ void usercontrol(void) {
       liftMotor.stop();
     }
 
+    if (liftMotor.position(degrees) >= DEGREES_FOR_LIFT_UP) {
+      liftUp = true;
+    } else {
+      liftUp = false;
+    }
+
+    Brain.Screen.setCursor(2, 1);
+    Brain.Screen.print(liftMotor.position(degrees));
+
 
     // ........................................................................
     // Insert user code here. This is where you use the joystick values to
     // update your motors, etc.
     // ........................................................................
 
-    wait(20, msec); // Sleep the task for a short amount of time to
+    vex::wait(20, msec); // Sleep the task for a short amount of time to
                     // prevent wasted resources.
   }
 }
@@ -295,6 +325,6 @@ int main() {
 
   // Prevent main from exiting with an infinite loop.
   while (true) {
-    wait(100, msec);
+    vex::wait(100, msec);
   }
 }
