@@ -17,8 +17,8 @@ motor rightBackMotor = motor(RIGHT_BACK_MOTOR_PORT, true);
 motor_group leftMotors = motor_group(leftFrontMotor, leftTopMotor, leftBackMotor);
 motor_group rightMotors = motor_group(rightFrontMotor, rightTopMotor, rightBackMotor);
 inertial inertialSensor = inertial(INERTIAL_SENSOR_PORT);
-digital_out wingletLeft = digital_out(Brain.ThreeWirePort.A);
-digital_out wingletRight = digital_out(Brain.ThreeWirePort.B);
+digital_out winglet = digital_out(Brain.ThreeWirePort.G);
+digital_out climbingHook = digital_out(Brain.ThreeWirePort.H);
 motor liftMotor = motor(LIFT_PORT, true);
 motor flywheelMotor = motor(FLYWHEEL_PORT, false);
 

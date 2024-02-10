@@ -83,8 +83,8 @@ void pre_auton(void) {
 
   // All activities that occur before the competition starts
   // Example: clearing encoders, setting servo positions, ...
-  wingletLeft.set(true);
-  wingletRight.set(true);
+  winglet.set(true);
+  climbingHook.set(true);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -165,13 +165,15 @@ void usercontrol(void) {
     }
 
     if (Controller.ButtonUp.pressing()) {
-      wingletLeft.set(false);
-      wingletRight.set(false);
+      winglet.set(false);
       wingletOpen = true;
     } else if (Controller.ButtonDown.pressing()) {
-      wingletLeft.set(true);
-      wingletRight.set(true);
+      winglet.set(true);
       wingletOpen = false;
+    }
+
+    if (Controller.ButtonLeft.pressing()) {
+      climbingHook.set(false);
     }
 
     // Run the inertial sensor
