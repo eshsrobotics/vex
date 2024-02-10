@@ -73,7 +73,7 @@ void usercontrol(void) {
   calibrateClaw(clawMotor, getBumper());
   Controller.Screen.clearScreen();
   Controller.Screen.setCursor(1, 1);
-  Controller.Screen.print("Uche was here!");
+  Controller.Screen.print("Calibration finished!");
   
   // User control code here, inside the loop
   while (1) {
@@ -91,7 +91,7 @@ void usercontrol(void) {
     // arcade_drive(Controller.Axis4.position(),
     //              Controller.Axis3.position(),
     //              L, R);
-
+    horizontalChannel *= 0.60;
     arcade_drive_by_quadrant(horizontalChannel, 
                              verticalChannel);
 
