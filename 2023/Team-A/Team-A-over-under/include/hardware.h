@@ -33,6 +33,8 @@ const double PI = 3.14159265359;
 
 const int DEADZONE = 5;
 
+const int DEGREES_FOR_LIFT_UP = 100;
+
 extern vex::brain Brain;
 extern vex::controller Controller;
 extern vex::motor leftFrontMotor;
