@@ -126,7 +126,7 @@ void moveArm(double armSpeedPercent,
 
         case CLOSING:
             clawMotor.spin(directionType::fwd, -CLAW_SPEED_PCT, percentUnits::pct);
-            if (clawPosition = CLAW_NEUTRAL) {
+            if (clawPosition == CLAW_NEUTRAL) {
                 state = DEFAULT_STATE;
                 Controller.Screen.print(fmt, "DEFAULT_STATE");
             } else if (isClosing && fabs(delta) < CLAW_ANGLE_CHANGE_THRESHOLD_DEGREES) {

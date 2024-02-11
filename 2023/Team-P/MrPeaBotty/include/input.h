@@ -2,7 +2,41 @@
 #define INPUT_H_IS_INCLUDED
 
 #include "vex.h"
+#include "armSubsystem.h"
 
+// A "control scheme" is a mapping from controller inputs to standard outputs
+// that we can use during teleop.
+//
+// The control scheme consists of two things: A data structure that contains our
+// "outputs" and a function that maps inputs to the output structure based on a
+// mapping argument.
+struct ControlMapping {
+    // Joystick channels, regardless of drive scheme.  Values range from -100 to 100.
+    double turnLeftRight, driveForwardBack;
+
+    // Arm control.  Values range from -100 to 100.
+    double armPower;
+    ClawPosition clawPosition;
+
+    // If false, the robot will drive according to a tank drive scheme (the
+    // turnLeftRight and driveForwardBack channels will be mathematically
+    // translated.)
+    bool arcade_drive_enabled;
+};
+
+enum DriveScheme {
+    // Arcade drive with left joystick (channels 3 and 4.)
+    // Right joystick vertical channel (channel 2) controls arm movement.
+    // L1 opens the claw; R1 closes it; releasing both buttons makes the claw neutral.
+    DEFAULT_DRIVE_SCHEME,
+
+    // Tank drive with both joysticks' vertical channels (channels 2 and 3.)
+    // D pad up/down bottoms lift and lower the arm.
+    // L1 opens the claw; L2 closes it; the neutral claw state is never reached.
+    LEO_DRIVE_SCHEME,
+};
+
+ControlMapping getControlMapping(DriveScheme driveScheme);
 
 // Allows you to control the drive using a tank-drive scheme.
 //

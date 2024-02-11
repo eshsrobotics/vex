@@ -108,3 +108,50 @@ void arcade_drive_by_quadrant(double rotate, double drive) {
         }
     }
 }
+
+// This function maps controller inputs to a standardized bag of variables.
+// That way, the robot doesn't care _how_ the humans drive it; it just cares
+// that it gets its marching orders.
+ControlMapping getControlMapping(DriveScheme driveScheme) {
+
+    ControlMapping mapping;
+
+    switch (driveScheme) {
+        // Used for two competitions.
+        case DEFAULT_DRIVE_SCHEME:
+            mapping.turnLeftRight = Controller.Axis4.position();
+            mapping.driveForwardBack = Controller.Axis3.position();
+            mapping.arcade_drive_enabled = true;
+            mapping.armPower = -Controller.Axis2.position();
+            mapping.clawPosition = CLAW_NEUTRAL;
+            if (Controller.ButtonL1.pressing()) {
+                mapping.clawPosition = CLAW_OPEN;
+            } else if (Controller.ButtonR1.pressing()) {
+                mapping.clawPosition = CLAW_CLOSE;
+            }
+            break;
+
+        // Drive scheme proposed by Leo.  Allows all of the useful controls
+        // (except the claw) to be on one side of the controller.
+        case LEO_DRIVE_SCHEME:
+        // TODO: Translate this to tank drive
+            //mapping.turnLeftRight = Controller.Axis4.position();
+            //mapping.driveForwardBack = Controller.Axis3.position();
+            mapping.arcade_drive_enabled = false;
+            mapping.armPower = 0;
+            if (Controller.ButtonUp.pressing()) {
+                mapping.armPower = 100;
+            } else if (Controller.ButtonDown.pressing()) {
+                mapping.armPower = -100;
+            }
+            if (Controller.ButtonL1.pressing()) {
+                mapping.clawPosition = CLAW_OPEN;
+            } else if (Controller.ButtonL2.pressing()) {
+                mapping.clawPosition = CLAW_CLOSE;
+            }
+            break;
+
+    }
+
+    return mapping;
+}
