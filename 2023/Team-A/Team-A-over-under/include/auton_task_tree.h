@@ -129,10 +129,9 @@ struct TurnTask : public Task {
 
 // These are the different types of autonomous trajectories we will support.
 enum AUTON_TYPE {
-
-  // This is the autonomous routine for when the robot starts at the 
-  // side of the ramp that is down, and when we also want the win point.
+  ALLIANCE_TRIBALL,
   TEST_AUTON
+
 };
 
 // Returns the autonomous task tree that the caller requested.

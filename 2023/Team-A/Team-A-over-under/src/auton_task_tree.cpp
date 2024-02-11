@@ -155,9 +155,14 @@ void TurnTask::start() {
 
 std::shared_ptr<Task> get_auton(AUTON_TYPE type) {
 
-  auto initialWait = std::shared_ptr<Task>(new WaitMillisecondsTask(3000));
+  auto initialWait = std::shared_ptr<Task>(new WaitMillisecondsTask(0));
   auto drive = std::shared_ptr<Task>(new DriveStraightTask(leftMotors, rightMotors, 20.0, 50));
   auto driveBack = std::shared_ptr<Task>(new DriveStraightTask(leftMotors, rightMotors, -18.0, 90));
+
+  auto driveToGoal = std::shared_ptr<Task>(new DriveStraightTask(leftMotors, rightMotors, 20.0, 50));
+  auto driveAwayFromGoal = std::shared_ptr<Task>(new DriveStraightTask(leftMotors, rightMotors, -18.0, 90));
+  auto driveToClimbPole = std::shared_ptr<Task>(new DriveStraightTask(leftMotors, rightMotors, 20.0, 50));
+  
   auto turn90 = std::shared_ptr<Task>(new TurnTask(leftMotors, rightMotors, 90.0));
   auto turn180 = std::shared_ptr<Task>(new TurnTask(leftMotors, rightMotors, 180.0));
   
@@ -168,7 +173,11 @@ std::shared_ptr<Task> get_auton(AUTON_TYPE type) {
       addTask(initialWait, drive);
       addTask(drive, driveBack);
       break;
-
+    case ALLIANCE_TRIBALL:
+      addTask(initialWait, driveToGoal);
+      addTask(driveToGoal, driveAwayFromGoal);
+      addTask(driveAwayFromGoal, turn90);
+      addTask(turn90, driveToClimbPole);
   }
 
   return initialWait;
