@@ -148,21 +148,27 @@ TurnTask::TurnTask(vex::motor_group &left_motor_group,
 bool TurnTask::done() const { return left_motor_group.isDone(); }
 
 void TurnTask::start() {
+  left_motor_group.setVelocity(50, percent);
+  right_motor_group.setVelocity(50, percent);
   // Had to use trial and error to find what value to multiply by, but it works now
-  left_motor_group.spinFor(1.75*(rotationAmountDegrees*WHEEL_BASE_INCHES)/WHEEL_DIAMETER, degrees, false);
-  right_motor_group.spinFor(1.75*(-rotationAmountDegrees*WHEEL_BASE_INCHES)/WHEEL_DIAMETER, degrees, false);
+  left_motor_group.spinFor(0.58*(rotationAmountDegrees*WHEEL_BASE_INCHES)/WHEEL_DIAMETER, degrees, false);
+  right_motor_group.spinFor(0.58*(-rotationAmountDegrees*WHEEL_BASE_INCHES)/WHEEL_DIAMETER, degrees, false);
 }
 
 std::shared_ptr<Task> get_auton(AUTON_TYPE type) {
 
   auto initialWait = std::shared_ptr<Task>(new WaitMillisecondsTask(0));
+  auto secondWait1 = std::shared_ptr<Task>(new WaitMillisecondsTask(1000));
+  auto secondWait2 = std::shared_ptr<Task>(new WaitMillisecondsTask(1000));
+  auto secondWait3 = std::shared_ptr<Task>(new WaitMillisecondsTask(1000));
   auto drive = std::shared_ptr<Task>(new DriveStraightTask(leftMotors, rightMotors, 20.0, 50));
   auto driveBack = std::shared_ptr<Task>(new DriveStraightTask(leftMotors, rightMotors, -18.0, 90));
 
-  auto driveToGoal = std::shared_ptr<Task>(new DriveStraightTask(leftMotors, rightMotors, 20.0, 50));
-  auto driveAwayFromGoal = std::shared_ptr<Task>(new DriveStraightTask(leftMotors, rightMotors, -18.0, 90));
-  auto driveToClimbPole = std::shared_ptr<Task>(new DriveStraightTask(leftMotors, rightMotors, 20.0, 50));
+  auto driveToGoal = std::shared_ptr<Task>(new DriveStraightTask(leftMotors, rightMotors, 20.0, 25));
+  auto driveAwayFromGoal = std::shared_ptr<Task>(new DriveStraightTask(leftMotors, rightMotors, -18.0, 25));
+  auto driveToClimbPole = std::shared_ptr<Task>(new DriveStraightTask(leftMotors, rightMotors, 20.0, 25));
   
+  auto turnToPole = std::shared_ptr<Task>(new TurnTask(leftMotors, rightMotors, 45.0));
   auto turn90 = std::shared_ptr<Task>(new TurnTask(leftMotors, rightMotors, 90.0));
   auto turn180 = std::shared_ptr<Task>(new TurnTask(leftMotors, rightMotors, 180.0));
   
@@ -170,14 +176,16 @@ std::shared_ptr<Task> get_auton(AUTON_TYPE type) {
 
   switch(type) {
     case TEST_AUTON:
-      addTask(initialWait, drive);
-      addTask(drive, driveBack);
+      addTask(initialWait, turn90);
       break;
     case ALLIANCE_TRIBALL:
       addTask(initialWait, driveToGoal);
-      addTask(driveToGoal, driveAwayFromGoal);
-      addTask(driveAwayFromGoal, turn90);
-      addTask(turn90, driveToClimbPole);
+      addTask(driveToGoal, secondWait1);
+      addTask(secondWait1, driveAwayFromGoal);
+      addTask(driveAwayFromGoal, secondWait2);
+      addTask(secondWait2, turnToPole);
+      addTask(turnToPole, secondWait3);
+      addTask(secondWait3, driveToClimbPole);
   }
 
   return initialWait;
