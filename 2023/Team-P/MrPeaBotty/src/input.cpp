@@ -102,6 +102,7 @@ void arcade_drive_by_quadrant(double rotate, double drive) {
             spinLeftMotors(total);
             spinRightMotors(-maximum);
         } else {
+            // Quadrant 3.
             spinLeftMotors(-maximum);
             spinRightMotors(difference);
         }

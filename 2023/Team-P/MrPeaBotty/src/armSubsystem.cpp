@@ -3,34 +3,62 @@
 
 using namespace vex;
 
-// Will be overwritten by calibrateClaw().
-const double INVALID_CLAW_ANGLE = -1234.0;
-double clawAngleWhenClosedDegrees = INVALID_CLAW_ANGLE;
+// As long as the claw angle is changing in the correct direction (positive for
+// opening and negative for closing), then this variable controls how big that
+// change to convince us where we are closing or opening.
+//
+// This number was determined arbitrarily determined for programming purposes.
+// It still needs to be determined EXPERIMENTALLY.
+// WARNING: If this value is too large, closing/opening will get false positives
+// as it will get fooled that is done.
+const double CLAW_ANGLE_CHANGE_THRESHOLD_DEGREES = 1.0;
 
-void calibrateClaw(motor& clawMotor, bumper& clawBumper) {
+// Represents the different things that the claw is doing (it is either doing nothing, closing, etc.)
+enum ClawState {
 
-    if (clawAngleWhenClosedDegrees != INVALID_CLAW_ANGLE) {
-        // We are already calibrated!  No-op.
-        return;
-    }
+    // Initial state
+    START,
 
-    // Deliberately close claw until we get a read from the claw bump sensor.
-    // That tells us the claw has closed.
-    clawMotor.spin(fwd, CLAW_CALIBRATION_CLOSURE_SPEED_PCT, pct);
-    while (!clawBumper.pressing()) {
-        wait(20, msec);
-    }
+    // A state where the claw is neither being opened nor close.
+    // - transitions:
+    //   * ClawPosition == Claw_Neutral: DEFAULT_STATE
+    //   * ClawPosition == Claw_Closed: CLOSING
+    //   * ClawPosition == Claw_OPEN: OPENING
+    DEFAULT_STATE,
 
-    // By knowing the angle the claw makes when it is closed, we can easily open
-    // to some offset FROM that angle, or return TO that angle in order to
-    // re-close the claw.
-    //
-    // Now is tha time.  Get the angle.
-    clawAngleWhenClosedDegrees = clawMotor.position(deg);
-}
+    // A state where the claw is opening but has not completely opened.
+    // - transitions:
+    //   * ClawPosition == Claw_Closed: CLOSING
+    //   * ClawPosition == Claw_Neutral: DEFAULT_STATE
+    //   * Angle is opening sufficiently: OPENING
+    //   * Angle is not changing much: OPENING_SUSTAINED
+    OPENING,
+
+    // A state where the claw has fully opened and wants to remain opened.
+    // - transitions:
+    //   * ClawPosition == Claw_Neutral: DEFAULT_STATE
+    //   * ClawPosition == Claw_Closed: CLOSING
+    //   * ClawPosition == Claw_Open: OPENING_SUSTAINED
+    OPENING_SUSTAINED,
+
+    // A state where the claw is closing has not completely closed.
+    // - transitions:
+    //   * ClawPosition == Claw_Open: OPENING
+    //   * ClawPosition == Claw_Neutral: DEFAULT_STATE
+    //   * Angle is closing sufficiently: CLOSING
+    //   * Angle is not closing sufficiently: CLOSING_SUSTAINED
+    CLOSING,
+
+    // A state where the claw has fully closed and wants to remain closed.
+    // - transitions:
+    //   * ClawPosition == claw_Neutral: DEFAULT_STATE
+    //   * ClawPosition == claw_Closed: CLOSING_SUSTAINED
+    //   * ClawPosition == claw_Open: OPENING
+    CLOSING_SUSTAINED
+};
 
 void moveArm(double armSpeedPercent,
-             ClawState clawState,
+             ClawPosition clawPosition,
              motor& armMotorLeft,
              motor& armMotorRight,
              motor& clawMotor) {
@@ -43,55 +71,81 @@ void moveArm(double armSpeedPercent,
         armMotorRight.stop(ARM_BRAKE_TYPE);
     }
 
-    // open or close the claw and keep going till it is done. Zero degrees is
-    // considered fully open, and 90 degrees is considered fully closed (for now).
-    const double CLAW_ANGLE_WHEN_OPEN_DEGREES = clawAngleWhenClosedDegrees - 90;
+    static ClawState state = START;
+    static double lastClawAngleDegrees = 0;
+    double delta = clawMotor.position(rotationUnits::deg) - lastClawAngleDegrees;
 
-    // What is the claw's current angle?  0 is fully closed, 90 is open to the
-    // trap-jaw angle.
-    const double CURRENT_CLAW_ANGLE_DEGREES = clawAngleWhenClosedDegrees - clawMotor.position(deg);
+    // In the following code, we are assuming that negative numbers for the
+    // clawMotor.spin closes the claw and positive numbers open it.
+    bool isOpening = (delta >= 0);
+    bool isClosing = (delta <= 0);
 
-    Controller.Screen.setCursor(2, 1);
-    Controller.Screen.print("Claw %6s at %.1f°", 
-                            getBumper().pressing() ? "Closed" : "Open",
-                            CURRENT_CLAW_ANGLE_DEGREES);
-
-    switch (clawState) {
-        case CLAW_NEUTRAL:
-            // If the claw's open, leave it open.  If the claw is biting, let it
-            // bite.
-            clawMotor.stop(brakeType::brake);
-            break;
-        case CLAW_OPEN:
-            if (CURRENT_CLAW_ANGLE_DEGREES >= 90) {
-                // The claw is already fully open.  Opening it more would just
-                // break the bot.
-                return;
-            }
-            clawMotor.spinToPosition(CLAW_ANGLE_WHEN_OPEN_DEGREES,
-                                     deg,
-                                     CLAW_VELOCITY_PCT,
-                                     vex::velocityUnits::pct,
-                                     false);
+    Controller.Screen.setCursor(1, 1);
+    const char* fmt = "%-17s";
+    switch (state) {
+        case START:
+            state = DEFAULT_STATE;
+            Controller.Screen.print(fmt, "DEFAULT_STATE");
             break;
 
-        case CLAW_CLOSE:
-            if(CURRENT_CLAW_ANGLE_DEGREES <= -CLAW_OVERBITE_ANGLE_DEGREES) {
-                // Like the CLAW_OPEN function, if we try to close the claw even
-                // more, then it would break the bot.
-                return;
+        case DEFAULT_STATE:
+            clawMotor.stop(brakeType::hold);
+            if (clawPosition == CLAW_CLOSE) {
+                state = CLOSING;
+                Controller.Screen.print(fmt, "CLOSING");
+            } else if (clawPosition == CLAW_OPEN) {
+                state = OPENING;
+                Controller.Screen.print(fmt, "OPENING");
             }
-            // We're setting the clawMotor to spin to 0 degrees regardless if
-            // there's something interrupting, so that the claw can keep biting
-            // down on the triball.
-            clawMotor.spinToPosition(clawAngleWhenClosedDegrees - CLAW_OVERBITE_ANGLE_DEGREES,
-                                     deg,
-                                     CLAW_VELOCITY_PCT,
-                                     vex::velocityUnits::pct,
-                                     false);
+            break;
+
+        case OPENING:
+            clawMotor.spin(directionType::fwd, CLAW_SPEED_PCT, percentUnits::pct);
+            if (clawPosition == CLAW_NEUTRAL) {
+                state = DEFAULT_STATE;
+                Controller.Screen.print(fmt, "DEFAULT_STATE");
+            } else if (clawPosition == CLAW_CLOSE) {
+                state = CLOSING;
+                Controller.Screen.print(fmt, "CLOSING");
+            } else if (isOpening && fabs(delta) < CLAW_ANGLE_CHANGE_THRESHOLD_DEGREES) {
+                state = OPENING_SUSTAINED;
+                Controller.Screen.print(fmt, "OPENING_SUSTAINED");
+            }
+            break;
+
+        case OPENING_SUSTAINED:
+            clawMotor.spin(directionType::fwd, CLAW_SPEED_SUSTAINED_PCT, percentUnits::pct);
+            if (clawPosition == CLAW_NEUTRAL) {
+                state = DEFAULT_STATE;
+                Controller.Screen.print(fmt, "DEFAULT_STATE");
+            } else if (clawPosition == CLAW_CLOSE) {
+                state = CLOSING;
+                Controller.Screen.print(fmt, "CLOSING");
+            }
+            break;
+
+        case CLOSING:
+            clawMotor.spin(directionType::fwd, -CLAW_SPEED_PCT, percentUnits::pct);
+            if (clawPosition = CLAW_NEUTRAL) {
+                state = DEFAULT_STATE;
+                Controller.Screen.print(fmt, "DEFAULT_STATE");
+            } else if (isClosing && fabs(delta) < CLAW_ANGLE_CHANGE_THRESHOLD_DEGREES) {
+                state = CLOSING_SUSTAINED;
+                Controller.Screen.print(fmt, "CLOSING_SUSTAINED");
+            }
+            break;
+
+        case CLOSING_SUSTAINED:
+            clawMotor.spin(directionType::fwd, -CLAW_SPEED_SUSTAINED_PCT, percentUnits::pct);
+            if (clawPosition == CLAW_NEUTRAL) {
+                state = DEFAULT_STATE;
+                Controller.Screen.print(fmt, "DEFAULT_STATE");
+            } else if (clawPosition == CLAW_OPEN) {
+                state = OPENING;
+                Controller.Screen.print(fmt, "OPENING");
+            }
             break;
     };
 
-
-    //clawMotor.setTimeout(1000 * CLAW_OPEN_TIMEOUT_SEC, timeUnits::msec);
+    lastClawAngleDegrees = clawMotor.position(rotationUnits::deg);
 }

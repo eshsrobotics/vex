@@ -28,7 +28,7 @@ void executeAutonPlan(vector<AutonStep>& autonPlan) {
     double driveSpeedPct = 0;
     double armSpeedPct = 0;
     double turnSpeedPct = 0;
-    ClawState clawState = CLAW_NEUTRAL;
+    ClawPosition clawState = CLAW_NEUTRAL;
     double startTimeSec = Brain.timer(vex::timeUnits::sec);
 
     // 4.) Until we have executed the last step:
