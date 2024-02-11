@@ -76,7 +76,7 @@ void moveArm(double armSpeedPercent,
             break;
 
         case CLAW_CLOSE:
-            if(CURRENT_CLAW_ANGLE_DEGREES <= -5) {
+            if(CURRENT_CLAW_ANGLE_DEGREES <= -CLAW_OVERBITE_ANGLE_DEGREES) {
                 // Like the CLAW_OPEN function, if we try to close the claw even
                 // more, then it would break the bot.
                 return;
@@ -84,7 +84,7 @@ void moveArm(double armSpeedPercent,
             // We're setting the clawMotor to spin to 0 degrees regardless if
             // there's something interrupting, so that the claw can keep biting
             // down on the triball.
-            clawMotor.spinToPosition(clawAngleWhenClosedDegrees - 5,
+            clawMotor.spinToPosition(clawAngleWhenClosedDegrees - CLAW_OVERBITE_ANGLE_DEGREES,
                                      deg,
                                      CLAW_VELOCITY_PCT,
                                      vex::velocityUnits::pct,

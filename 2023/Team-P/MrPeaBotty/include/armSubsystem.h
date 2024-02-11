@@ -52,4 +52,8 @@ const double CLAW_VELOCITY_PCT = 20;
 //Switching to hold.
 const vex::brakeType ARM_BRAKE_TYPE = vex::brakeType::hold;
 
+//This constant is here to make the claw close beyond 0 degrees
+//in an attempt to increase the bite force of the bot. We're
+//making it a constant to modify the value easier in the long run. 
+const int CLAW_OVERBITE_ANGLE_DEGREES = 10;
 #endif // (#ifndef ARMSUBSYSTEM_H_IS_PRESENT)
