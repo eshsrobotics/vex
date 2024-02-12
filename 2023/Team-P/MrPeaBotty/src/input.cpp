@@ -7,12 +7,12 @@ using std::max;
 using namespace vex;
 
 void tank_drive(double leftSpeedPercent,
-                double rightSpeedPercent, 
-                motor_group& left, 
+                double rightSpeedPercent,
+                motor_group& left,
                 motor_group& right) {
 
     // Deadzones are the region where the input is so low it's registered as zero input.
-    // Since controllers aren't precise, and don't return to "position 0" when you take 
+    // Since controllers aren't precise, and don't return to "position 0" when you take
     // your finger off, we need a deadzone value where we cut output when the input is too low.
 
     if (leftSpeedPercent > JOYSTICK_DEADZONE_PERCENT || leftSpeedPercent < -JOYSTICK_DEADZONE_PERCENT) {
@@ -23,15 +23,15 @@ void tank_drive(double leftSpeedPercent,
     if (rightSpeedPercent > JOYSTICK_DEADZONE_PERCENT || rightSpeedPercent < -JOYSTICK_DEADZONE_PERCENT) {
         right.spin(directionType::fwd, rightSpeedPercent, percentUnits::pct);
     } else {
-        right.stop(DRIVE_BRAKE_TYPE); 
+        right.stop(DRIVE_BRAKE_TYPE);
     }
-}   
+}
 
 
 void arcade_drive(double horizontalChannel,
                   double verticalChannel,
-                  vex::motor_group& left, 
-                  vex::motor_group& right) { 
+                  vex::motor_group& left,
+                  vex::motor_group& right) {
 
     double straightSpeed = verticalChannel;
     double spinSpeed = horizontalChannel;
@@ -52,8 +52,8 @@ void arcade_drive(double horizontalChannel,
     } else {
         // This makes the robot move forward if the user moves the joystick.
         double leftSpeed = -(straightSpeed + spinSpeed);
-        double rightSpeed = -(straightSpeed - spinSpeed) * -1.0; 
-        
+        double rightSpeed = -(straightSpeed - spinSpeed) * -1.0;
+
         left.spin(forward, leftSpeed, percent);
         right.spin(forward, rightSpeed, percent);
     }
@@ -109,48 +109,48 @@ void arcade_drive_by_quadrant(double rotate, double drive) {
     }
 }
 
-// This function maps controller inputs to a standardized bag of variables.
-// That way, the robot doesn't care _how_ the humans drive it; it just cares
-// that it gets its marching orders.
 ControlMapping getControlMapping(DriveScheme driveScheme) {
 
     ControlMapping mapping;
 
     switch (driveScheme) {
-        // Used for two competitions.
-        case DEFAULT_DRIVE_SCHEME:
-            mapping.turnLeftRight = Controller.Axis4.position();
-            mapping.driveForwardBack = Controller.Axis3.position();
-            mapping.arcade_drive_enabled = true;
-            mapping.armPower = -Controller.Axis2.position();
-            mapping.clawPosition = CLAW_NEUTRAL;
-            if (Controller.ButtonL1.pressing()) {
-                mapping.clawPosition = CLAW_OPEN;
-            } else if (Controller.ButtonR1.pressing()) {
-                mapping.clawPosition = CLAW_CLOSE;
-            }
-            break;
 
-        // Drive scheme proposed by Leo.  Allows all of the useful controls
-        // (except the claw) to be on one side of the controller.
+        // Drive scheme proposed by Leo on 2024-02-11.  Allows all of the
+        // useful controls (except the claw) to be on one side of the
+        // controller.
         case LEO_DRIVE_SCHEME:
-        // TODO: Translate this to tank drive
-            //mapping.turnLeftRight = Controller.Axis4.position();
-            //mapping.driveForwardBack = Controller.Axis3.position();
             mapping.arcade_drive_enabled = false;
-            mapping.armPower = 0;
+            mapping.leftSpeed            = Controller.Axis3.position();
+            mapping.rightSpeed           = Controller.Axis2.position();
+
+            mapping.armPower             = 0;
             if (Controller.ButtonUp.pressing()) {
-                mapping.armPower = 100;
+                mapping.armPower         = 100;
             } else if (Controller.ButtonDown.pressing()) {
-                mapping.armPower = -100;
+                mapping.armPower         = -100;
             }
+
             if (Controller.ButtonL1.pressing()) {
-                mapping.clawPosition = CLAW_OPEN;
+                mapping.clawPosition     = CLAW_OPEN;
             } else if (Controller.ButtonL2.pressing()) {
-                mapping.clawPosition = CLAW_CLOSE;
+                mapping.clawPosition     = CLAW_CLOSE;
             }
             break;
 
+        // Our initial drive scheme.
+        case DEFAULT_DRIVE_SCHEME:
+        default:
+            mapping.arcade_drive_enabled = true;
+            mapping.turnLeftRight        = Controller.Axis4.position();
+            mapping.driveForwardBack     = Controller.Axis3.position();
+            mapping.armPower             = -Controller.Axis2.position();
+            mapping.clawPosition         = CLAW_NEUTRAL;
+            if (Controller.ButtonL1.pressing()) {
+                mapping.clawPosition     = CLAW_OPEN;
+            } else if (Controller.ButtonR1.pressing()) {
+                mapping.clawPosition     = CLAW_CLOSE;
+            }
+            break;
     }
 
     return mapping;
