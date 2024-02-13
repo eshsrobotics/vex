@@ -27,7 +27,7 @@ void tank_drive(double leftSpeedPercent,
     }
 }
 
-
+// The original arcade_drive that Matthew wrote and tested in main street fair.
 void arcade_drive(double horizontalChannel,
                   double verticalChannel,
                   vex::motor_group& left,
@@ -112,6 +112,7 @@ void arcade_drive_by_quadrant(double rotate, double drive) {
 ControlMapping getControlMapping(DriveScheme driveScheme) {
 
     ControlMapping mapping;
+    static ClawPosition lastClawPosition = CLAW_NEUTRAL;
 
     switch (driveScheme) {
 
@@ -134,6 +135,9 @@ ControlMapping getControlMapping(DriveScheme driveScheme) {
                 mapping.clawPosition     = CLAW_OPEN;
             } else if (Controller.ButtonL2.pressing()) {
                 mapping.clawPosition     = CLAW_CLOSE;
+            } else {
+                // keeps the claw going in the direction it was already going
+                mapping.clawPosition = lastClawPosition;
             }
             break;
 
@@ -153,5 +157,6 @@ ControlMapping getControlMapping(DriveScheme driveScheme) {
             break;
     }
 
+    lastClawPosition = mapping.clawPosition;
     return mapping;
 }

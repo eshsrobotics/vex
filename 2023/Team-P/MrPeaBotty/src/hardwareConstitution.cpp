@@ -1,18 +1,21 @@
 #include "hardwareConstitution.h"
 
-vex::motor L1(LEFT_MOTOR_PORT_FRONT, true);
-vex::motor L2(LEFT_MOTOR_PORT_BACK, true);
-vex::motor R1(RIGHT_MOTOR_PORT_FRONT);
-vex::motor R2(RIGHT_MOTOR_PORT_BACK);
-vex::motor armMotorLeft(ARM_MOTOR_LEFT_PORT);
-vex::motor armMotorRight(ARM_MOTOR_RIGHT_PORT);
-vex::motor clawMotor(CLAW_MOTOR_PORT, true);
+using namespace vex;
 
-vex::brain Brain;
+motor L1(LEFT_MOTOR_PORT_FRONT, true);
+motor L2(LEFT_MOTOR_PORT_BACK, true);
+motor R1(RIGHT_MOTOR_PORT_FRONT);
+motor R2(RIGHT_MOTOR_PORT_BACK);
+motor_group Left(L1, L2);
+motor_group Right(R1, R2);
+motor armMotorLeft(ARM_MOTOR_LEFT_PORT);
+motor armMotorRight(ARM_MOTOR_RIGHT_PORT);
+motor clawMotor(CLAW_MOTOR_PORT, true);
+brain Brain;
 
-vex::bumper& getBumper() {
-    static vex::bumper b(Brain.ThreeWirePort.A);
+bumper& getBumper() {
+    static bumper b(Brain.ThreeWirePort.A);
     return b;
 }
 
-vex::controller Controller(vex::controllerType::primary);
+controller Controller(controllerType::primary);

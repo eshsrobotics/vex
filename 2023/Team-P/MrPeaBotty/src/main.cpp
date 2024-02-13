@@ -80,29 +80,22 @@ void usercontrol(void) {
     // update your motors, etc.
     // ........................................................................
 
-    double horizontalChannel = Controller.Axis4.position();
-    double verticalChannel = Controller.Axis3.position();
-    // arcade_drive(Controller.Axis4.position(),
-    //              Controller.Axis3.position(),
-    //              L, R);
-    horizontalChannel *= 0.60;
-    arcade_drive_by_quadrant(horizontalChannel, 
-                             verticalChannel);
+    ControlMapping controlMap = getControlMapping(LEO_DRIVE_SCHEME);
 
-    ClawPosition clawState = CLAW_NEUTRAL;
-    if (Controller.ButtonL1.pressing() == true)
-    {
-      clawState = CLAW_OPEN;
-    }
-    else if (Controller.ButtonR1.pressing() == true)
-    {
-      clawState = CLAW_CLOSE;
+    if (controlMap.arcade_drive_enabled) {
+        double horizontalChannel = controlMap.turnLeftRight;
+        double verticalChannel = controlMap.driveForwardBack;
+
+        // Sanjay wanted the robot to turn slower to make it easier to control.
+        horizontalChannel *= 0.6;
+
+        arcade_drive_by_quadrant(horizontalChannel, verticalChannel);
+    } else {
+        tank_drive(controlMap.leftSpeed, controlMap.rightSpeed, Left, Right);
     }
 
-    moveArm (-Controller.Axis2.position(),
-             clawState, armMotorLeft, armMotorRight, clawMotor);
-
-    // m.spin(fwd, 100, pct);
+    moveArm (controlMap.armPower,
+             controlMap.clawPosition, armMotorLeft, armMotorRight, clawMotor);
 
     wait(20, msec); // Sleep the task for a short amount of time to
                     // prevent wasted resources.
