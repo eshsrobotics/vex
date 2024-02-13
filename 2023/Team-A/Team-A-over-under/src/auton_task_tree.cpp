@@ -161,14 +161,29 @@ std::shared_ptr<Task> get_auton(AUTON_TYPE type) {
   auto secondWait1 = std::shared_ptr<Task>(new WaitMillisecondsTask(1000));
   auto secondWait2 = std::shared_ptr<Task>(new WaitMillisecondsTask(1000));
   auto secondWait3 = std::shared_ptr<Task>(new WaitMillisecondsTask(1000));
+  auto secondWait4 = std::shared_ptr<Task>(new WaitMillisecondsTask(1000));
+  auto secondWait5 = std::shared_ptr<Task>(new WaitMillisecondsTask(1000));
+  auto secondWait6 = std::shared_ptr<Task>(new WaitMillisecondsTask(1000));
+  auto secondWait7 = std::shared_ptr<Task>(new WaitMillisecondsTask(1000));
   auto drive = std::shared_ptr<Task>(new DriveStraightTask(leftMotors, rightMotors, 20.0, 50));
   auto driveBack = std::shared_ptr<Task>(new DriveStraightTask(leftMotors, rightMotors, -18.0, 90));
 
-  auto driveToGoal = std::shared_ptr<Task>(new DriveStraightTask(leftMotors, rightMotors, 20.0, 25));
-  auto driveAwayFromGoal = std::shared_ptr<Task>(new DriveStraightTask(leftMotors, rightMotors, -18.0, 25));
-  auto driveToClimbPole = std::shared_ptr<Task>(new DriveStraightTask(leftMotors, rightMotors, 20.0, 25));
+  // auto driveToGoal = std::shared_ptr<Task>(new DriveStraightTask(leftMotors, rightMotors, 20.0, 25));
+  // auto driveAwayFromGoal = std::shared_ptr<Task>(new DriveStraightTask(leftMotors, rightMotors, -18.0, 25));
+  // auto driveSlight = std::shared_ptr<Task>(new DriveStraightTask(leftMotors, rightMotors, 2.5, 25)); 
+  // auto driveToClimbPole = std::shared_ptr<Task>(new DriveStraightTask(leftMotors, rightMotors, 20.0, 25));
+
+  auto driveMatchLoadBar = std::shared_ptr<Task>(new DriveStraightTask(leftMotors, rightMotors, 10.0, 25));
+  auto driveToGoal = std::shared_ptr<Task>(new DriveStraightTask(leftMotors, rightMotors, 10.0, 25));
+  auto driveFromGoal = std::shared_ptr<Task>(new DriveStraightTask(leftMotors, rightMotors, -10.0, 25));
+  auto driveTowardPole = std::shared_ptr<Task>(new DriveStraightTask(leftMotors, rightMotors, 10.0, 25));
+  auto driveToPole = std::shared_ptr<Task>(new DriveStraightTask(leftMotors, rightMotors, 10.0, 25));
+
+  auto turnToGoal = std::shared_ptr<Task>(new TurnTask(leftMotors, rightMotors, 45.0));
+  auto turnFromGoal = std::shared_ptr<Task>(new TurnTask(leftMotors, rightMotors, -45.0));
+  auto turnToPole = std::shared_ptr<Task>(new TurnTask(leftMotors, rightMotors, -45.0));
   
-  auto turnToPole = std::shared_ptr<Task>(new TurnTask(leftMotors, rightMotors, 45.0));
+  // auto turnToPole = std::shared_ptr<Task>(new TurnTask(leftMotors, rightMotors, 45.0));
   auto turn90 = std::shared_ptr<Task>(new TurnTask(leftMotors, rightMotors, 90.0));
   auto turn180 = std::shared_ptr<Task>(new TurnTask(leftMotors, rightMotors, 180.0));
   
@@ -179,13 +194,30 @@ std::shared_ptr<Task> get_auton(AUTON_TYPE type) {
       addTask(initialWait, turn90);
       break;
     case ALLIANCE_TRIBALL:
-      addTask(initialWait, driveToGoal);
-      addTask(driveToGoal, secondWait1);
-      addTask(secondWait1, driveAwayFromGoal);
-      addTask(driveAwayFromGoal, secondWait2);
-      addTask(secondWait2, turnToPole);
-      addTask(turnToPole, secondWait3);
-      addTask(secondWait3, driveToClimbPole);
+      // addTask(initialWait, driveToGoal);
+      // addTask(driveToGoal, secondWait1);
+      // addTask(secondWait1, driveAwayFromGoal);
+      // addTask(driveAwayFromGoal, secondWait2);
+      // addTask(secondWait2, driveSlight);
+      // addTask(driveSlight, secondWait3);
+      // addTask(secondWait3, turnToPole);
+      // addTask(turnToPole, secondWait4);
+      // addTask(secondWait4, driveToClimbPole);
+      addTask(initialWait, driveMatchLoadBar);
+      addTask(driveMatchLoadBar, secondWait1);
+      addTask(secondWait1, turnToGoal);
+      addTask(turnToGoal, secondWait2);
+      addTask(secondWait2, driveToGoal);
+      addTask(driveToGoal, secondWait3);
+      addTask(secondWait3, driveFromGoal);
+      addTask(driveFromGoal, secondWait4);
+      addTask(secondWait4, turnFromGoal);
+      addTask(turnFromGoal, secondWait5);
+      addTask(secondWait5, driveTowardPole);
+      addTask(driveTowardPole, secondWait6);
+      addTask(secondWait6, turnToPole);
+      addTask(turnToPole, secondWait7);
+      addTask(secondWait7, driveToPole);
   }
 
   return initialWait;

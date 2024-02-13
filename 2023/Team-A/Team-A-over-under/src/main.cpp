@@ -174,6 +174,8 @@ void usercontrol(void) {
 
     if (Controller.ButtonLeft.pressing()) {
       climbingHook.set(false);
+    } else if (Controller.ButtonRight.pressing()) {
+      climbingHook.set(true);
     }
 
     // Run the inertial sensor
