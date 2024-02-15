@@ -18,7 +18,7 @@ const int RIGHT_BACK_MOTOR_PORT = 19-1;
 
 const int INERTIAL_SENSOR_PORT = 20-1;
 const int LIFT_PORT = 10-1;
-const int FLYWHEEL_PORT = 5-1;
+const int FLYWHEEL_PORT = 6-1;
 
 // The distance between the centers of the left and right wheels of the robot
 const double WHEEL_BASE_INCHES = 10.125;

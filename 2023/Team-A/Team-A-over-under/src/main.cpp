@@ -119,6 +119,9 @@ void autonomous(void) {
 void usercontrol(void) {
   // User control code here, inside the loop
 
+  Brain.Screen.setCursor(1, 1);
+  Brain.Screen.print("Arcade code");
+  
   int straightSpeed = 0;
   int turnSpeed = 0;
 
@@ -138,7 +141,7 @@ void usercontrol(void) {
     // Each time through the loop your program should update motor + servo
     // values based on feedback from the joysticks.
 
-    straightSpeed = Controller.Axis3.position();
+    straightSpeed = -Controller.Axis3.position();
     turnSpeed = Controller.Axis1.position();
 
     // If the lift is up, the robot will drive and turn at half of the normal
@@ -148,11 +151,11 @@ void usercontrol(void) {
       turnSpeed = turnSpeed / 2;
     }
 
-    // If the winglet is open, the robot's front and back are switched so the
-    // winglet side is the front
-    if (wingletOpen) {
-      straightSpeed = -straightSpeed;
-    }
+    // // If the winglet is open, the robot's front and back are switched so the
+    // // winglet side is the front
+    // if (wingletOpen) {
+    //   straightSpeed = -straightSpeed;
+    // }
 
     if ((straightSpeed < DEADZONE || straightSpeed > -DEADZONE) || (turnSpeed < DEADZONE || turnSpeed > -DEADZONE)) {
         leftMotors.setVelocity(-(straightSpeed + turnSpeed), percent);
@@ -304,6 +307,37 @@ void usercontrol(void) {
 
     Brain.Screen.setCursor(2, 1);
     Brain.Screen.print(liftMotor.position(degrees));
+
+    if (Controller.ButtonX.pressing()) {
+      Brain.Screen.setCursor(5, 1);
+      Brain.Screen.print("Left back: ");
+      Brain.Screen.print(leftBackMotor.temperature(fahrenheit));
+      Brain.Screen.print("             ");
+      Brain.Screen.setCursor(6, 1);
+      Brain.Screen.print("Left middle: ");
+      Brain.Screen.print(leftTopMotor.temperature(fahrenheit));
+      Brain.Screen.print("             ");
+      Brain.Screen.setCursor(7, 1);
+      Brain.Screen.print("Left front: ");
+      Brain.Screen.print(leftFrontMotor.temperature(fahrenheit));
+      Brain.Screen.print("             ");
+      Brain.Screen.setCursor(8, 1);
+      Brain.Screen.print("Right back: ");
+      Brain.Screen.print(rightBackMotor.temperature(fahrenheit));
+      Brain.Screen.print("             ");
+      Brain.Screen.setCursor(9, 1);
+      Brain.Screen.print("Right middle: ");
+      Brain.Screen.print(rightTopMotor.temperature(fahrenheit));
+      Brain.Screen.print("             ");
+      Brain.Screen.setCursor(10, 1);
+      Brain.Screen.print("Right front: ");
+      Brain.Screen.print(rightFrontMotor.temperature(fahrenheit));
+      Brain.Screen.print("             ");
+      Brain.Screen.setCursor(10, 1);
+      Brain.Screen.print("Flywheel: ");
+      Brain.Screen.print(flywheelMotor.temperature(fahrenheit));
+      Brain.Screen.print("          ");
+    }
 
 
     // ........................................................................
