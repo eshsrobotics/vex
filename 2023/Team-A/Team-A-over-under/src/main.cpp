@@ -142,7 +142,7 @@ void usercontrol(void) {
     // values based on feedback from the joysticks.
 
     straightSpeed = -Controller.Axis3.position();
-    turnSpeed = Controller.Axis1.position();
+    turnSpeed = Controller.Axis1.position() * 0.75;
 
     // If the lift is up, the robot will drive and turn at half of the normal
     // speed

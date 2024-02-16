@@ -116,12 +116,22 @@ struct TurnTask : public Task {
   // If a positive number is passed in, the robot will turn clockwise (right),
   // otherwise, the robot will turn counterclockwise (left)
   //
-  // Unfortunatly some drives don't turn the correct number of degrees when asked to do so.
-  // (Note that drive that uses a gyro WILL turn correct numbeer of degrees.)
+  // Unfortunately some drives don't turn the correct number of degrees when asked to do so.
+  // (Note that drive that uses a gyro WILL turn correct number of degrees.)
   // For drives that don't turn correctly, you may pass in a correction function that maps an input 
-  // to a number that will casuse a drive to turn correctly.
-  // The defualt correction function is just the identity function.
+  // to a number that will cause a drive to turn correctly.
+  // The default correction function is just the identity function.
   TurnTask(vex::motor_group &motor_group1, vex::motor_group &motor_group2, double rotationAmountDegrees);
+
+  bool done() const;
+  void start();
+};
+
+struct PneumaticTask : public Task {
+  vex::digital_out &pneumatic;
+  bool value;
+
+  PneumaticTask(vex::digital_out &pneumatic, bool value);
 
   bool done() const;
   void start();

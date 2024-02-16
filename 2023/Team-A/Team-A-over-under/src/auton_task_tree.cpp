@@ -148,40 +148,55 @@ TurnTask::TurnTask(vex::motor_group &left_motor_group,
 bool TurnTask::done() const { return left_motor_group.isDone(); }
 
 void TurnTask::start() {
-  left_motor_group.setVelocity(50, percent);
-  right_motor_group.setVelocity(50, percent);
+  left_motor_group.setVelocity(40, percent);
+  right_motor_group.setVelocity(40, percent);
   // Had to use trial and error to find what value to multiply by, but it works now
   left_motor_group.spinFor(0.58*(rotationAmountDegrees*WHEEL_BASE_INCHES)/WHEEL_DIAMETER, degrees, false);
   right_motor_group.spinFor(0.58*(-rotationAmountDegrees*WHEEL_BASE_INCHES)/WHEEL_DIAMETER, degrees, false);
 }
 
+PneumaticTask::PneumaticTask(vex::digital_out &pneumatic, 
+                   bool value)
+    : Task("Pneumatic task"), pneumatic(pneumatic),
+      value(value) {}
+
+bool PneumaticTask::done() const { return pneumatic.value() == value; }
+
+void PneumaticTask::start() {
+  pneumatic.set(value);
+}
+
 std::shared_ptr<Task> get_auton(AUTON_TYPE type) {
 
-  auto initialWait = std::shared_ptr<Task>(new WaitMillisecondsTask(0));
-  auto secondWait1 = std::shared_ptr<Task>(new WaitMillisecondsTask(1000));
-  auto secondWait2 = std::shared_ptr<Task>(new WaitMillisecondsTask(1000));
-  auto secondWait3 = std::shared_ptr<Task>(new WaitMillisecondsTask(1000));
-  auto secondWait4 = std::shared_ptr<Task>(new WaitMillisecondsTask(1000));
-  auto secondWait5 = std::shared_ptr<Task>(new WaitMillisecondsTask(1000));
-  auto secondWait6 = std::shared_ptr<Task>(new WaitMillisecondsTask(1000));
-  auto secondWait7 = std::shared_ptr<Task>(new WaitMillisecondsTask(1000));
-  auto drive = std::shared_ptr<Task>(new DriveStraightTask(leftMotors, rightMotors, 20.0, 50));
-  auto driveBack = std::shared_ptr<Task>(new DriveStraightTask(leftMotors, rightMotors, -18.0, 90));
+  auto initialWait = shared_ptr<Task>(new WaitMillisecondsTask(0));
+  auto secondWait1 = shared_ptr<Task>(new WaitMillisecondsTask(1000));
+  auto secondWait2 = shared_ptr<Task>(new WaitMillisecondsTask(1000));
+  auto secondWait3 = shared_ptr<Task>(new WaitMillisecondsTask(1000));
+  auto secondWait4 = shared_ptr<Task>(new WaitMillisecondsTask(1000));
+  auto secondWait5 = shared_ptr<Task>(new WaitMillisecondsTask(1000));
+  auto secondWait6 = shared_ptr<Task>(new WaitMillisecondsTask(1000));
+  auto secondWait7 = shared_ptr<Task>(new WaitMillisecondsTask(1000));
+  auto drive = shared_ptr<Task>(new DriveStraightTask(leftMotors, rightMotors, 20.0, 50));
+  auto driveBack = shared_ptr<Task>(new DriveStraightTask(leftMotors, rightMotors, -18.0, 90));
 
   // auto driveToGoal = std::shared_ptr<Task>(new DriveStraightTask(leftMotors, rightMotors, 20.0, 25));
   // auto driveAwayFromGoal = std::shared_ptr<Task>(new DriveStraightTask(leftMotors, rightMotors, -18.0, 25));
   // auto driveSlight = std::shared_ptr<Task>(new DriveStraightTask(leftMotors, rightMotors, 2.5, 25)); 
   // auto driveToClimbPole = std::shared_ptr<Task>(new DriveStraightTask(leftMotors, rightMotors, 20.0, 25));
 
-  auto driveMatchLoadBar = std::shared_ptr<Task>(new DriveStraightTask(leftMotors, rightMotors, 10.0, 25));
-  auto driveToGoal = std::shared_ptr<Task>(new DriveStraightTask(leftMotors, rightMotors, 10.0, 25));
-  auto driveFromGoal = std::shared_ptr<Task>(new DriveStraightTask(leftMotors, rightMotors, -10.0, 25));
-  auto driveTowardPole = std::shared_ptr<Task>(new DriveStraightTask(leftMotors, rightMotors, 10.0, 25));
-  auto driveToPole = std::shared_ptr<Task>(new DriveStraightTask(leftMotors, rightMotors, 10.0, 25));
+  auto driveMatchLoadBar = std::shared_ptr<Task>(new DriveStraightTask(leftMotors, rightMotors, 9.5, 15));
+  auto driveToGoal = std::shared_ptr<Task>(new DriveStraightTask(leftMotors, rightMotors, 10.5, 75));
+  auto driveFromGoal = std::shared_ptr<Task>(new DriveStraightTask(leftMotors, rightMotors, -6.5, 25));
+  auto driveTowardPole = std::shared_ptr<Task>(new DriveStraightTask(leftMotors, rightMotors, 25.0, 25));
+  auto driveToPole = std::shared_ptr<Task>(new DriveStraightTask(leftMotors, rightMotors, 25.0, 25));
 
-  auto turnToGoal = std::shared_ptr<Task>(new TurnTask(leftMotors, rightMotors, 45.0));
-  auto turnFromGoal = std::shared_ptr<Task>(new TurnTask(leftMotors, rightMotors, -45.0));
-  auto turnToPole = std::shared_ptr<Task>(new TurnTask(leftMotors, rightMotors, -45.0));
+  auto turnToGoal = std::shared_ptr<Task>(new TurnTask(leftMotors, rightMotors, 55.0));
+  auto turnFromGoal = std::shared_ptr<Task>(new TurnTask(leftMotors, rightMotors, 85.0));
+  auto turnToPole = std::shared_ptr<Task>(new TurnTask(leftMotors, rightMotors, -30.0));
+
+  auto extendHook = std::shared_ptr<Task>(new PneumaticTask(climbingHook, false));
+  auto retractHook = std::shared_ptr<Task>(new PneumaticTask(climbingHook, true));
+  auto extendWing = std::shared_ptr<Task>(new PneumaticTask(winglet, false));
   
   // auto turnToPole = std::shared_ptr<Task>(new TurnTask(leftMotors, rightMotors, 45.0));
   auto turn90 = std::shared_ptr<Task>(new TurnTask(leftMotors, rightMotors, 90.0));
@@ -206,18 +221,21 @@ std::shared_ptr<Task> get_auton(AUTON_TYPE type) {
       addTask(initialWait, driveMatchLoadBar);
       addTask(driveMatchLoadBar, secondWait1);
       addTask(secondWait1, turnToGoal);
+      addTask(turnToGoal, extendHook);
       addTask(turnToGoal, secondWait2);
       addTask(secondWait2, driveToGoal);
       addTask(driveToGoal, secondWait3);
       addTask(secondWait3, driveFromGoal);
+      addTask(driveFromGoal, retractHook);
       addTask(driveFromGoal, secondWait4);
       addTask(secondWait4, turnFromGoal);
       addTask(turnFromGoal, secondWait5);
       addTask(secondWait5, driveTowardPole);
-      addTask(driveTowardPole, secondWait6);
+      addTask(driveTowardPole, extendWing);
+      addTask(extendWing, secondWait6);
       addTask(secondWait6, turnToPole);
-      addTask(turnToPole, secondWait7);
-      addTask(secondWait7, driveToPole);
+      // addTask(turnToPole, secondWait7);
+      // addTask(secondWait7, driveToPole);
   }
 
   return initialWait;
