@@ -102,7 +102,7 @@ void autonomous(void) {
   // Insert autonomous user code here.
   // ..........................................................................
 
-  auto root_task = get_auton(ALLIANCE_TRIBALL);
+  auto root_task = get_auton(MATCH_LOAD_ZONE);
   execute(root_task);
 }
 

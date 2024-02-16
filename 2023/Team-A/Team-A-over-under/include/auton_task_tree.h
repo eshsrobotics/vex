@@ -140,8 +140,8 @@ struct PneumaticTask : public Task {
 // These are the different types of autonomous trajectories we will support.
 enum AUTON_TYPE {
   ALLIANCE_TRIBALL,
-  TEST_AUTON
-
+  TEST_AUTON,
+  MATCH_LOAD_ZONE
 };
 
 // Returns the autonomous task tree that the caller requested.
