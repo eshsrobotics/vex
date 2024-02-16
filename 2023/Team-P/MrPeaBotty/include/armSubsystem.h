@@ -10,17 +10,15 @@ enum ClawPosition {
     CLAW_NEUTRAL
 };
 
-// How quickly the claw closes/opens in the OPENING and CLOSING states.
+// How quickly the claw closes/opens in the CLOSING and OPENING states.
 const double CLAW_SPEED_PCT = 80;
 
-// As long as the claw angle is changing in the correct direction (positive for
-// opening and negative for closing), then this variable controls how big that
-// change to convince us where we are closing or opening.
+// As long as the claw angle is changing in the correct direction (positive
+// for opening and negative for closing), then this variable controls how big
+// that change to convince us that we are still closing or opening.
 //
-// This number was determined arbitrarily determined for programming purposes.
-// It still needs to be determined EXPERIMENTALLY.
-// WARNING: If this value is too large, closing/opening will get false positives
-// as it will get fooled that is done.
+// WARNING: If this value is too large, closing/opening will get false
+// positives as it will get fooled into 'thinking' that is done.
 const double CLAW_ANGLE_CHANGE_THRESHOLD_DEGREES = 0.05;
 
 // The claw must open or close for at least this long before we are willing to
