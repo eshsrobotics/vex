@@ -66,7 +66,7 @@ void arcade_drive(double horizontalChannel,
 void arcade_drive_by_quadrant(double rotate, double drive) {
 
 
-    double maximum = max(abs(drive), abs(rotate));
+    double maximum = max(fabs(drive), fabs(rotate));
     double total = drive + rotate, difference = drive - rotate;
 
     auto spinLeftMotors = [](double speedPct) {
@@ -126,9 +126,9 @@ ControlMapping getControlMapping(DriveScheme driveScheme) {
 
             mapping.armPower             = 0;
             if (Controller.ButtonUp.pressing()) {
-                mapping.armPower         = 100;
-            } else if (Controller.ButtonDown.pressing()) {
                 mapping.armPower         = -100;
+            } else if (Controller.ButtonDown.pressing()) {
+                mapping.armPower         = 100;
             }
 
             if (Controller.ButtonL1.pressing()) {
@@ -156,7 +156,6 @@ ControlMapping getControlMapping(DriveScheme driveScheme) {
             }
             break;
     }
-
     lastClawPosition = mapping.clawPosition;
     return mapping;
 }

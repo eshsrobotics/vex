@@ -82,15 +82,22 @@ void usercontrol(void) {
 
     ControlMapping controlMap = getControlMapping(LEO_DRIVE_SCHEME);
 
+    const double SLOWDOWN_FACTOR = 0.6;
+
     if (controlMap.arcade_drive_enabled) {
         double horizontalChannel = controlMap.turnLeftRight;
         double verticalChannel = controlMap.driveForwardBack;
 
         // Sanjay wanted the robot to turn slower to make it easier to control.
-        horizontalChannel *= 0.6;
+        horizontalChannel *= SLOWDOWN_FACTOR;
 
         arcade_drive_by_quadrant(horizontalChannel, verticalChannel);
     } else {
+        // If the left and right speeds are not the same, we are rotating in some capacity.
+        if (controlMap.leftSpeed != controlMap.rightSpeed) {
+            controlMap.leftSpeed *= SLOWDOWN_FACTOR;
+            controlMap.rightSpeed *= SLOWDOWN_FACTOR;
+        }
         tank_drive(controlMap.leftSpeed, controlMap.rightSpeed, Left, Right);
     }
 

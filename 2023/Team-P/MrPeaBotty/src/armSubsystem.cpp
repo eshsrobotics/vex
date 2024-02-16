@@ -3,16 +3,6 @@
 
 using namespace vex;
 
-// As long as the claw angle is changing in the correct direction (positive for
-// opening and negative for closing), then this variable controls how big that
-// change to convince us where we are closing or opening.
-//
-// This number was determined arbitrarily determined for programming purposes.
-// It still needs to be determined EXPERIMENTALLY.
-// WARNING: If this value is too large, closing/opening will get false positives
-// as it will get fooled that is done.
-const double CLAW_ANGLE_CHANGE_THRESHOLD_DEGREES = 1.0;
-
 // Represents the different things that the claw is doing (it is either doing nothing, closing, etc.)
 enum ClawState {
 
@@ -73,6 +63,16 @@ void moveArm(double armSpeedPercent,
 
     static ClawState state = START;
     static double lastClawAngleDegrees = 0;
+
+    // The time when we started the OPENING or CLOSING states. This matters
+    // because we need to close or open for a minimum period of time before
+    // going into the SUSTAIN speed.
+    //
+    // Without this, a delta of 0 will cause us to immediately transition from
+    // OPENING to OPENING_SUSTAINED (or CLOSING to CLOSING_SUSTAINED) without
+    // the claw actually having opened or closed.
+    static double startTimeMilliseconds = 0;
+
     double delta = clawMotor.position(rotationUnits::deg) - lastClawAngleDegrees;
 
     // In the following code, we are assuming that negative numbers for the
@@ -92,60 +92,76 @@ void moveArm(double armSpeedPercent,
             clawMotor.stop(brakeType::hold);
             if (clawPosition == CLAW_CLOSE) {
                 state = CLOSING;
+                startTimeMilliseconds = Brain.timer(msec);
                 Controller.Screen.print(fmt, "CLOSING");
             } else if (clawPosition == CLAW_OPEN) {
                 state = OPENING;
+                startTimeMilliseconds = Brain.timer(msec);
                 Controller.Screen.print(fmt, "OPENING");
             }
             break;
 
         case OPENING:
-            clawMotor.spin(directionType::fwd, CLAW_SPEED_PCT, percentUnits::pct);
+            clawMotor.spin(directionType::rev, CLAW_SPEED_PCT, percentUnits::pct);
             if (clawPosition == CLAW_NEUTRAL) {
                 state = DEFAULT_STATE;
                 Controller.Screen.print(fmt, "DEFAULT_STATE");
             } else if (clawPosition == CLAW_CLOSE) {
                 state = CLOSING;
+                startTimeMilliseconds = Brain.timer(msec);
                 Controller.Screen.print(fmt, "CLOSING");
-            } else if (isOpening && fabs(delta) < CLAW_ANGLE_CHANGE_THRESHOLD_DEGREES) {
+            } else if (isOpening && 
+                       //fabs(delta) < CLAW_ANGLE_CHANGE_THRESHOLD_DEGREES && 
+                       Brain.timer(msec) - startTimeMilliseconds > MINIMUM_TIME_BEFORE_SUSTAIN_MILLISECONDS) {
                 state = OPENING_SUSTAINED;
                 Controller.Screen.print(fmt, "OPENING_SUSTAINED");
             }
             break;
 
         case OPENING_SUSTAINED:
-            clawMotor.spin(directionType::fwd, CLAW_SPEED_SUSTAINED_PCT, percentUnits::pct);
+            clawMotor.spin(directionType::rev, CLAW_SPEED_OPENING_SUSTAINED_PCT, percentUnits::pct);
             if (clawPosition == CLAW_NEUTRAL) {
                 state = DEFAULT_STATE;
                 Controller.Screen.print(fmt, "DEFAULT_STATE");
             } else if (clawPosition == CLAW_CLOSE) {
                 state = CLOSING;
+                startTimeMilliseconds = Brain.timer(msec);
                 Controller.Screen.print(fmt, "CLOSING");
             }
             break;
 
         case CLOSING:
-            clawMotor.spin(directionType::fwd, -CLAW_SPEED_PCT, percentUnits::pct);
+            clawMotor.spin(directionType::fwd, CLAW_SPEED_PCT, percentUnits::pct);
             if (clawPosition == CLAW_NEUTRAL) {
                 state = DEFAULT_STATE;
                 Controller.Screen.print(fmt, "DEFAULT_STATE");
-            } else if (isClosing && fabs(delta) < CLAW_ANGLE_CHANGE_THRESHOLD_DEGREES) {
+            } else if (isClosing && 
+                       //fabs(delta) < CLAW_ANGLE_CHANGE_THRESHOLD_DEGREES && 
+                       Brain.timer(msec) - startTimeMilliseconds > MINIMUM_TIME_BEFORE_SUSTAIN_MILLISECONDS) {
                 state = CLOSING_SUSTAINED;
                 Controller.Screen.print(fmt, "CLOSING_SUSTAINED");
             }
             break;
 
         case CLOSING_SUSTAINED:
-            clawMotor.spin(directionType::fwd, -CLAW_SPEED_SUSTAINED_PCT, percentUnits::pct);
+            clawMotor.spin(directionType::fwd, CLAW_SPEED_CLOSING_SUSTAINED_PCT, percentUnits::pct);
             if (clawPosition == CLAW_NEUTRAL) {
                 state = DEFAULT_STATE;
                 Controller.Screen.print(fmt, "DEFAULT_STATE");
             } else if (clawPosition == CLAW_OPEN) {
                 state = OPENING;
+                startTimeMilliseconds = Brain.timer(msec);
                 Controller.Screen.print(fmt, "OPENING");
             }
             break;
     };
+
+    Controller.Screen.setCursor(2, 1);
+    Controller.Screen.print("Pos: %-12s", 
+        (clawPosition == CLAW_NEUTRAL ? "CLAW_NEUTRAL" : 
+            (clawPosition == CLAW_OPEN ? "CLAW_OPEN" : "CLAW_CLOSE")));
+    Controller.Screen.setCursor(3, 1);
+    Controller.Screen.print("Power: %.2fW  ", clawMotor.power(watt));    
 
     lastClawAngleDegrees = clawMotor.position(rotationUnits::deg);
 }
