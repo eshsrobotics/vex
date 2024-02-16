@@ -13,10 +13,6 @@ enum ClawPosition {
 // How quickly the claw closes/opens in the OPENING and CLOSING states.
 const double CLAW_SPEED_PCT = 80;
 
-// The speed of the claw when it is fully closed/opened when we are trying to maintain position.
-const double CLAW_SPEED_OPENING_SUSTAINED_PCT = 80;//10;
-const double CLAW_SPEED_CLOSING_SUSTAINED_PCT = 80;//25;
-
 // As long as the claw angle is changing in the correct direction (positive for
 // opening and negative for closing), then this variable controls how big that
 // change to convince us where we are closing or opening.
@@ -27,7 +23,14 @@ const double CLAW_SPEED_CLOSING_SUSTAINED_PCT = 80;//25;
 // as it will get fooled that is done.
 const double CLAW_ANGLE_CHANGE_THRESHOLD_DEGREES = 0.05;
 
-const double MINIMUM_TIME_BEFORE_SUSTAIN_MILLISECONDS = 1000;
+// The claw must open or close for at least this long before we are willing to
+// consider stopping it.  This prevents us from thinking the claw is "open"
+// when it's really still closed, and vice versa.
+//
+// Don't make this value 0 for that reason.  Also, avoid making it too long so
+// that the motor doesn't strain.  More than 500 milliseconds is probably
+// excessive.
+const double MINIMUM_TIME_BEFORE_SUSTAIN_MILLISECONDS = 100;
 
 // when the button is pressed the code thats moves the arm and claw keeps
 // repeating the same code until the claw reaches its fully open state. it then
@@ -37,11 +40,6 @@ void moveArm(double armSpeedPercent,
              vex::motor& armMotorLeft,
              vex::motor& armMotorRight,
              vex::motor& clawMotor);
-
-//This controls the claw speed during teleop, different from the value used in
-//the claw motor spin function. That value affects the claw movement speed during
-//calibration.
-const double CLAW_VELOCITY_PCT = 20;
 
 // We decided to go with brake, because, if we use coast, then, if we're
 // possessing a triball and we're going up, and we use coast, then the triball

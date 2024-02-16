@@ -61,7 +61,18 @@ void moveArm(double armSpeedPercent,
         armMotorRight.stop(ARM_BRAKE_TYPE);
     }
 
+    /////////////////////////////////////////////////////////////////////////
+    // Move the claw.                                                      //
+    //                                                                     //
+    // There are a lot of static variables here!  We'll explain them as we //
+    // go.                                                                 //
+    /////////////////////////////////////////////////////////////////////////
+
     static ClawState state = START;
+
+    // The angle the clawMotor had at the end of the most recent call to
+    // moveArm().  We use this to tell how much how claw has opened or closed;
+    // this in turn tells us if we need to stop opening or stop closing.
     static double lastClawAngleDegrees = 0;
 
     // The time when we started the OPENING or CLOSING states. This matters
@@ -70,9 +81,28 @@ void moveArm(double armSpeedPercent,
     //
     // Without this, a delta of 0 will cause us to immediately transition from
     // OPENING to OPENING_SUSTAINED (or CLOSING to CLOSING_SUSTAINED) without
-    // the claw actually having opened or closed.
+    // the claw actually having been given a chance to move.
     static double startTimeMilliseconds = 0;
 
+    // During the CLAW_OPEN and/or CLAW_CLOSE states, we open or close the
+    // claw, changing its angle until we perceive that the change has stopped
+    // somehow (due to being fully open or fully closed -- this is how we
+    // avoid needing additional sensors.)  But our previous strategy of just
+    // continuing to run the claw motor after that led to the motor going
+    // limp after a few cycles of opening and closing!  We suspect, but have
+    // no proof, that we somehow tripped a built-in VEX smart motor failsafe
+    // in so doing.
+    //
+    // So how do we maintain the fully-open or fully-closed position properly?
+    // Easy: ask the motor to do that itself.  By saving the claw angle when
+    // we detect that opening or closing has stopped, we can call
+    // clawMotor.setPosition() to make the motor's built-in firmware maintain
+    // a holding pattern at that position.
+    //
+    // It's like having a servo with more steps.
+    static double recordedClawAngleDegrees = 0;
+
+    // Change in angle since the last time moveArm() was called.
     double delta = clawMotor.position(rotationUnits::deg) - lastClawAngleDegrees;
 
     // In the following code, we are assuming that negative numbers for the
@@ -91,12 +121,14 @@ void moveArm(double armSpeedPercent,
         case DEFAULT_STATE:
             clawMotor.stop(brakeType::hold);
             if (clawPosition == CLAW_CLOSE) {
-                state = CLOSING;
-                startTimeMilliseconds = Brain.timer(msec);
+                state                    = CLOSING;
+                recordedClawAngleDegrees = clawMotor.position(rotationUnits::deg);
+                startTimeMilliseconds    = Brain.timer(msec);
                 Controller.Screen.print(fmt, "CLOSING");
             } else if (clawPosition == CLAW_OPEN) {
-                state = OPENING;
-                startTimeMilliseconds = Brain.timer(msec);
+                state                    = OPENING;
+                recordedClawAngleDegrees = clawMotor.position(rotationUnits::deg);
+                startTimeMilliseconds    = Brain.timer(msec);
                 Controller.Screen.print(fmt, "OPENING");
             }
             break;
@@ -107,19 +139,22 @@ void moveArm(double armSpeedPercent,
                 state = DEFAULT_STATE;
                 Controller.Screen.print(fmt, "DEFAULT_STATE");
             } else if (clawPosition == CLAW_CLOSE) {
-                state = CLOSING;
-                startTimeMilliseconds = Brain.timer(msec);
+                state                    = CLOSING;
+                recordedClawAngleDegrees = clawMotor.position(rotationUnits::deg);
+                startTimeMilliseconds    = Brain.timer(msec);
                 Controller.Screen.print(fmt, "CLOSING");
-            } else if (isOpening && 
-                       //fabs(delta) < CLAW_ANGLE_CHANGE_THRESHOLD_DEGREES && 
+            } else if (isOpening &&
+                       fabs(delta) < CLAW_ANGLE_CHANGE_THRESHOLD_DEGREES &&
                        Brain.timer(msec) - startTimeMilliseconds > MINIMUM_TIME_BEFORE_SUSTAIN_MILLISECONDS) {
+                // We've opened long enough, and the angle isn't changing.  Go
+                // into a holding pattern!
                 state = OPENING_SUSTAINED;
                 Controller.Screen.print(fmt, "OPENING_SUSTAINED");
             }
             break;
 
         case OPENING_SUSTAINED:
-            clawMotor.spin(directionType::rev, CLAW_SPEED_OPENING_SUSTAINED_PCT, percentUnits::pct);
+            clawMotor.setPosition(recordedClawAngleDegrees, rotationUnits::deg);
             if (clawPosition == CLAW_NEUTRAL) {
                 state = DEFAULT_STATE;
                 Controller.Screen.print(fmt, "DEFAULT_STATE");
@@ -135,33 +170,36 @@ void moveArm(double armSpeedPercent,
             if (clawPosition == CLAW_NEUTRAL) {
                 state = DEFAULT_STATE;
                 Controller.Screen.print(fmt, "DEFAULT_STATE");
-            } else if (isClosing && 
-                       //fabs(delta) < CLAW_ANGLE_CHANGE_THRESHOLD_DEGREES && 
+            } else if (isClosing &&
+                       fabs(delta) < CLAW_ANGLE_CHANGE_THRESHOLD_DEGREES &&
                        Brain.timer(msec) - startTimeMilliseconds > MINIMUM_TIME_BEFORE_SUSTAIN_MILLISECONDS) {
+                // We've closed long enough, and the angle isn't changing.  Go
+                // into a holding pattern!
                 state = CLOSING_SUSTAINED;
                 Controller.Screen.print(fmt, "CLOSING_SUSTAINED");
             }
             break;
 
         case CLOSING_SUSTAINED:
-            clawMotor.spin(directionType::fwd, CLAW_SPEED_CLOSING_SUSTAINED_PCT, percentUnits::pct);
+            clawMotor.setPosition(recordedClawAngleDegrees, rotationUnits::deg);
             if (clawPosition == CLAW_NEUTRAL) {
                 state = DEFAULT_STATE;
                 Controller.Screen.print(fmt, "DEFAULT_STATE");
             } else if (clawPosition == CLAW_OPEN) {
-                state = OPENING;
-                startTimeMilliseconds = Brain.timer(msec);
+                state                    = OPENING;
+                recordedClawAngleDegrees = clawMotor.position(rotationUnits::deg);
+                startTimeMilliseconds    = Brain.timer(msec);
                 Controller.Screen.print(fmt, "OPENING");
             }
             break;
     };
 
     Controller.Screen.setCursor(2, 1);
-    Controller.Screen.print("Pos: %-12s", 
-        (clawPosition == CLAW_NEUTRAL ? "CLAW_NEUTRAL" : 
+    Controller.Screen.print("Pos: %-12s",
+        (clawPosition == CLAW_NEUTRAL ? "CLAW_NEUTRAL" :
             (clawPosition == CLAW_OPEN ? "CLAW_OPEN" : "CLAW_CLOSE")));
     Controller.Screen.setCursor(3, 1);
-    Controller.Screen.print("Power: %.2fW  ", clawMotor.power(watt));    
+    Controller.Screen.print("Power: %.2fW  ", clawMotor.power(watt));
 
     lastClawAngleDegrees = clawMotor.position(rotationUnits::deg);
 }
