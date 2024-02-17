@@ -146,13 +146,15 @@ void moveArm(double armSpeedPercent,
                 // We've opened long enough, and the angle isn't changing.  Go
                 // into a holding pattern!
                 state                    = OPENING_SUSTAINED;
-                recordedClawAngleDegrees = clawMotor.position(rotationUnits::deg);
+                recordedClawAngleDegrees = clawMotor.position(rotationUnits::deg)
+                clawMotor.stop();
+                clawMotor.setPosition(recordedClawAngleDegrees,
+                                      rotationUnits::deg);
                 Controller.Screen.print(fmt, "OPENING_SUSTAINED");
             }
             break;
 
         case OPENING_SUSTAINED:
-            clawMotor.setPosition(recordedClawAngleDegrees, rotationUnits::deg);
             if (clawPosition == CLAW_NEUTRAL) {
                 state = DEFAULT_STATE;
                 Controller.Screen.print(fmt, "DEFAULT_STATE");
@@ -174,13 +176,15 @@ void moveArm(double armSpeedPercent,
                 // We've closed long enough, and the angle isn't changing.  Go
                 // into a holding pattern!
                 state                    = CLOSING_SUSTAINED;
-                recordedClawAngleDegrees = clawMotor.position(rotationUnits::deg);
+                recordedClawAngleDegrees = clawMotor.position(rotationUnits::deg)
+                clawMotor.stop();
+                clawMotor.setPosition(recordedClawAngleDegrees,
+                                      rotationUnits::deg);
                 Controller.Screen.print(fmt, "CLOSING_SUSTAINED");
             }
             break;
 
         case CLOSING_SUSTAINED:
-            clawMotor.setPosition(recordedClawAngleDegrees, rotationUnits::deg);
             if (clawPosition == CLAW_NEUTRAL) {
                 state = DEFAULT_STATE;
                 Controller.Screen.print(fmt, "DEFAULT_STATE");
