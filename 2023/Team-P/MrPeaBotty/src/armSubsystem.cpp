@@ -123,22 +123,24 @@ void moveArm(double armSpeedPercent,
             if (clawPosition == CLAW_CLOSE) {
                 state = CLOSING;
                 startTimeMilliseconds = Brain.timer(msec);
+                clawMotor.spin(directionType::fwd, CLAW_SPEED_PCT, percentUnits::pct);
                 Controller.Screen.print(fmt, "CLOSING");
             } else if (clawPosition == CLAW_OPEN) {
                 state = OPENING;
                 startTimeMilliseconds = Brain.timer(msec);
+                clawMotor.spin(directionType::rev, CLAW_SPEED_PCT, percentUnits::pct);
                 Controller.Screen.print(fmt, "OPENING");
             }
             break;
 
         case OPENING:
-            clawMotor.spin(directionType::rev, CLAW_SPEED_PCT, percentUnits::pct);
             if (clawPosition == CLAW_NEUTRAL) {
                 state = DEFAULT_STATE;
                 Controller.Screen.print(fmt, "DEFAULT_STATE");
             } else if (clawPosition == CLAW_CLOSE) {
                 state = CLOSING;
                 startTimeMilliseconds = Brain.timer(msec);
+                clawMotor.spin(directionType::fwd, CLAW_SPEED_PCT, percentUnits::pct);
                 Controller.Screen.print(fmt, "CLOSING");
             } else if (isOpening &&
                        fabs(delta) < CLAW_ANGLE_CHANGE_THRESHOLD_DEGREES &&
@@ -161,15 +163,20 @@ void moveArm(double armSpeedPercent,
             } else if (clawPosition == CLAW_CLOSE) {
                 state = CLOSING;
                 startTimeMilliseconds = Brain.timer(msec);
+                clawMotor.spin(directionType::fwd, CLAW_SPEED_PCT, percentUnits::pct);
                 Controller.Screen.print(fmt, "CLOSING");
             }
             break;
 
         case CLOSING:
-            clawMotor.spin(directionType::fwd, CLAW_SPEED_PCT, percentUnits::pct);
             if (clawPosition == CLAW_NEUTRAL) {
                 state = DEFAULT_STATE;
                 Controller.Screen.print(fmt, "DEFAULT_STATE");
+            } else if (clawPosition == CLAW_OPEN) {
+                state = OPENING;
+                startTimeMilliseconds = Brain.timer(msec);
+                clawMotor.spin(directionType::rev, CLAW_SPEED_PCT, percentUnits::pct);
+                Controller.Screen.print(fmt, "OPENING");
             } else if (isClosing &&
                        fabs(delta) < CLAW_ANGLE_CHANGE_THRESHOLD_DEGREES &&
                        Brain.timer(msec) - startTimeMilliseconds > MINIMUM_TIME_BEFORE_SUSTAIN_MILLISECONDS) {
@@ -191,6 +198,7 @@ void moveArm(double armSpeedPercent,
             } else if (clawPosition == CLAW_OPEN) {
                 state = OPENING;
                 startTimeMilliseconds = Brain.timer(msec);
+                clawMotor.spin(directionType::rev, CLAW_SPEED_PCT, percentUnits::pct);
                 Controller.Screen.print(fmt, "OPENING");
             }
             break;
