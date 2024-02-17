@@ -197,7 +197,7 @@ void moveArm(double armSpeedPercent,
         (clawPosition == CLAW_NEUTRAL ? "CLAW_NEUTRAL" :
             (clawPosition == CLAW_OPEN ? "CLAW_OPEN" : "CLAW_CLOSE")));
     Controller.Screen.setCursor(3, 1);
-    Controller.Screen.print("Power: %.2fW  ", clawMotor.power(watt));
+    Controller.Screen.print("Sustain angle: %.2fW  ", recordedClawAngleDegrees);
 
     lastClawAngleDegrees = clawMotor.position(rotationUnits::deg);
 }
