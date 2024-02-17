@@ -11,7 +11,7 @@ enum ClawPosition {
 };
 
 // How quickly the claw closes/opens in the CLOSING and OPENING states.
-const double CLAW_SPEED_PCT = 80;
+const double CLAW_SPEED_PCT = 70;
 
 // As long as the claw angle is changing in the correct direction (positive
 // for opening and negative for closing), then this variable controls how big
@@ -28,7 +28,7 @@ const double CLAW_ANGLE_CHANGE_THRESHOLD_DEGREES = 0.05;
 // Don't make this value 0 for that reason.  Also, avoid making it too long so
 // that the motor doesn't strain.  More than 500 milliseconds is probably
 // excessive.
-const double MINIMUM_TIME_BEFORE_SUSTAIN_MILLISECONDS = 100;
+const double MINIMUM_TIME_BEFORE_SUSTAIN_MILLISECONDS = 500;
 
 // when the button is pressed the code thats moves the arm and claw keeps
 // repeating the same code until the claw reaches its fully open state. it then
