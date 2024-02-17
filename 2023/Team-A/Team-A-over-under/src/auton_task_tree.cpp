@@ -176,6 +176,7 @@ std::shared_ptr<Task> get_auton(AUTON_TYPE type) {
   auto secondWait5 = shared_ptr<Task>(new WaitMillisecondsTask(1000));
   auto secondWait6 = shared_ptr<Task>(new WaitMillisecondsTask(1000));
   auto secondWait7 = shared_ptr<Task>(new WaitMillisecondsTask(1000));
+  auto secondWait8 = shared_ptr<Task>(new WaitMillisecondsTask(1000));
   
   auto driveSlight = std::shared_ptr<Task>(new DriveStraightTask(leftMotors, rightMotors, 2.5, 25)); 
   auto turnToGoalMatchLoad = std::shared_ptr<Task>(new TurnTask(leftMotors, rightMotors, 30.0));
@@ -183,20 +184,26 @@ std::shared_ptr<Task> get_auton(AUTON_TYPE type) {
   auto driveBack = shared_ptr<Task>(new DriveStraightTask(leftMotors, rightMotors, -18.0, 25));
   auto extendWingForTriball = std::shared_ptr<Task>(new PneumaticTask(winglet, false));
   auto pushTriballOut = std::shared_ptr<Task>(new TurnTask(leftMotors, rightMotors, -90.0));
+  auto turn45 = std::shared_ptr<Task>(new TurnTask(leftMotors, rightMotors, -45.0));
+  auto driveToPoleMatchLoad = std::shared_ptr<Task>(new DriveStraightTask(leftMotors, rightMotors, 17.5, 25)); 
+  auto turnToPoleMatchLoad = std::shared_ptr<Task>(new TurnTask(leftMotors, rightMotors, -60.0));
 
   // auto driveToGoal = std::shared_ptr<Task>(new DriveStraightTask(leftMotors, rightMotors, 20.0, 25));
   // auto driveAwayFromGoal = std::shared_ptr<Task>(new DriveStraightTask(leftMotors, rightMotors, -18.0, 25));
   // auto driveToClimbPole = std::shared_ptr<Task>(new DriveStraightTask(leftMotors, rightMotors, 20.0, 25));
 
-  auto driveMatchLoadBar = std::shared_ptr<Task>(new DriveStraightTask(leftMotors, rightMotors, 9.5, 15));
-  auto driveToGoal = std::shared_ptr<Task>(new DriveStraightTask(leftMotors, rightMotors, 10.5, 75));
-  auto driveFromGoal = std::shared_ptr<Task>(new DriveStraightTask(leftMotors, rightMotors, -6.5, 25));
+  // auto driveMatchLoadBar = std::shared_ptr<Task>(new DriveStraightTask(leftMotors, rightMotors, 9.5, 15));
+  // auto driveToGoal = std::shared_ptr<Task>(new DriveStraightTask(leftMotors, rightMotors, 10.5, 75));
+  // auto driveFromGoal = std::shared_ptr<Task>(new DriveStraightTask(leftMotors, rightMotors, -6.5, 25));
   auto driveTowardPole = std::shared_ptr<Task>(new DriveStraightTask(leftMotors, rightMotors, 25.0, 25));
   auto driveToPole = std::shared_ptr<Task>(new DriveStraightTask(leftMotors, rightMotors, 25.0, 25));
 
-  auto turnToGoalTriball = std::shared_ptr<Task>(new TurnTask(leftMotors, rightMotors, 55.0));
-  auto turnFromGoal = std::shared_ptr<Task>(new TurnTask(leftMotors, rightMotors, 90.0));
-  auto turnToPole = std::shared_ptr<Task>(new TurnTask(leftMotors, rightMotors, -30.0));
+  // auto turnToGoalTriball = std::shared_ptr<Task>(new TurnTask(leftMotors, rightMotors, 50.0));
+  auto turnFromGoal = std::shared_ptr<Task>(new TurnTask(leftMotors, rightMotors, 110.0));
+  auto turnToPole = std::shared_ptr<Task>(new TurnTask(leftMotors, rightMotors, -60.0));
+
+  auto turnToGoalAllianceTriball = std::shared_ptr<Task>(new TurnTask(leftMotors, rightMotors, -30.0));
+  auto driveBackAllianceTriball = shared_ptr<Task>(new DriveStraightTask(leftMotors, rightMotors, -6.5, 25));
 
   auto extendHook = std::shared_ptr<Task>(new PneumaticTask(climbingHook, false));
   auto retractHook = std::shared_ptr<Task>(new PneumaticTask(climbingHook, true));
@@ -213,40 +220,50 @@ std::shared_ptr<Task> get_auton(AUTON_TYPE type) {
       addTask(initialWait, turn90);
       break;
     case ALLIANCE_TRIBALL:
-      // addTask(initialWait, driveToGoal);
-      // addTask(driveToGoal, secondWait1);
-      // addTask(secondWait1, driveAwayFromGoal);
-      // addTask(driveAwayFromGoal, secondWait2);
-      // addTask(secondWait2, driveSlight);
-      // addTask(driveSlight, secondWait3);
-      // addTask(secondWait3, turnToPole);
-      // addTask(turnToPole, secondWait4);
-      // addTask(secondWait4, driveToClimbPole);
-      addTask(initialWait, driveMatchLoadBar);
-      addTask(driveMatchLoadBar, secondWait1);
-      addTask(secondWait1, turnToGoalTriball);
-      // addTask(turnToGoal, extendHook);
-      addTask(turnToGoalTriball, secondWait2);
-      addTask(secondWait2, driveToGoal);
-      addTask(driveToGoal, secondWait3);
-      addTask(secondWait3, driveFromGoal);
-      // addTask(driveFromGoal, retractHook);
-      addTask(driveFromGoal, secondWait4);
+      // addTask(initialWait, driveMatchLoadBar);
+      // addTask(driveMatchLoadBar, secondWait1);
+      // addTask(secondWait1, turnToGoalTriball);
+      // addTask(turnToGoalTriball, secondWait2);
+      // addTask(secondWait2, driveToGoal);
+      // addTask(driveToGoal, secondWait3);
+      // addTask(secondWait3, driveFromGoal);
+      // addTask(driveFromGoal, secondWait4);
+
+      addTask(initialWait, driveSlight);
+      addTask(driveSlight, secondWait1);
+      addTask(secondWait1, turnToGoalAllianceTriball);
+      addTask(turnToGoalAllianceTriball, secondWait2);
+      addTask(secondWait2, pushTriballIn);
+      addTask(pushTriballIn, secondWait3);
+      addTask(secondWait3, driveBackAllianceTriball);
+      addTask(driveBackAllianceTriball, secondWait4);
+
       addTask(secondWait4, turnFromGoal);
       addTask(turnFromGoal, secondWait5);
       addTask(secondWait5, driveTowardPole);
       addTask(driveTowardPole, extendWingForPole);
       addTask(extendWingForPole, secondWait6);
       addTask(secondWait6, turnToPole);
-      // addTask(turnToPole, secondWait7);
-      // addTask(secondWait7, driveToPole);
+      break;
     case MATCH_LOAD_ZONE:
       addTask(initialWait, driveSlight);
-      addTask(driveSlight, turnToGoalMatchLoad);
-      addTask(turnToGoalMatchLoad, pushTriballIn);
-      addTask(pushTriballIn, driveBack);
-      addTask(driveBack, extendWingForTriball);
-      addTask(driveBack, pushTriballOut);
+      addTask(driveSlight, secondWait1);
+      addTask(secondWait1, turnToGoalMatchLoad);
+      addTask(turnToGoalMatchLoad, secondWait2);
+      addTask(secondWait2, pushTriballIn);
+      addTask(pushTriballIn, secondWait3);
+      addTask(secondWait3, driveBack);
+      addTask(driveBack, secondWait4);
+      addTask(secondWait4, extendWingForTriball);
+      addTask(extendWingForTriball, secondWait5);
+      addTask(secondWait5, pushTriballOut);
+      addTask(pushTriballOut, secondWait6);
+      addTask(secondWait6, turn45);
+      addTask(turn45, secondWait7);
+      addTask(secondWait7, driveToPoleMatchLoad);
+      addTask(driveToPoleMatchLoad, secondWait8);
+      addTask(secondWait8, turnToPoleMatchLoad);
+      break;
   }
 
   return initialWait;

@@ -67,6 +67,9 @@ enum FlywheelDirection {
   BACKWARD
 };
 
+bool liftUpHalf = false;
+bool liftMovingAuto = false;
+
 // define your global instances of motors and other devices here
 
 /*---------------------------------------------------------------------------*/
@@ -102,7 +105,7 @@ void autonomous(void) {
   // Insert autonomous user code here.
   // ..........................................................................
 
-  auto root_task = get_auton(MATCH_LOAD_ZONE);
+  auto root_task = get_auton(ALLIANCE_TRIBALL);
   execute(root_task);
 }
 
@@ -115,6 +118,18 @@ void autonomous(void) {
 /*                                                                           */
 /*  You must modify the code to add your own robot specific commands here.   */
 /*---------------------------------------------------------------------------*/
+void moveLiftUpHalf() {
+  liftMotor.stop();
+  liftUpHalf = !liftUpHalf;
+  Brain.Screen.setCursor(4, 1);
+  if (liftUpHalf) {
+    Brain.Screen.print("Lift up halfway toggled");
+    liftMotor.spinToPosition(DEGREES_FOR_LIFT_UP + 15, degrees, false);
+  } else {
+    Brain.Screen.print("Lift down toggled:     ");
+    liftMotor.spinToPosition(0, degrees, false);
+  }
+}
 
 void usercontrol(void) {
   // User control code here, inside the loop
@@ -135,6 +150,7 @@ void usercontrol(void) {
 
   liftMotor.setBrake(hold);
 
+  Controller.ButtonA.pressed(moveLiftUpHalf);
 
   while (true) {
     // This is the main execution loop for the user control program.
@@ -291,11 +307,17 @@ void usercontrol(void) {
         break;
     }
 
+    if (liftMotor.isDone()) {
+      liftMovingAuto = false;
+    } else {
+      liftMovingAuto = true;
+    }
+
     if (Controller.ButtonL1.pressing() && !Controller.ButtonL2.pressing()) {
       liftMotor.spin(forward);
     } else if (Controller.ButtonL2.pressing() && !Controller.ButtonL1.pressing()) {
       liftMotor.spin(reverse);
-    } else {
+    } else if (!Controller.ButtonL2.pressing() && !Controller.ButtonL1.pressing() && !liftMovingAuto) {
       liftMotor.stop();
     }
 
