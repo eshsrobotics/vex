@@ -148,7 +148,7 @@ void moveArm(double armSpeedPercent,
                 // We've opened long enough, and the angle isn't changing.  Go
                 // into a holding pattern!
                 state                    = OPENING_SUSTAINED;
-                recordedClawAngleDegrees = clawMotor.position(rotationUnits::deg)
+                recordedClawAngleDegrees = clawMotor.position(rotationUnits::deg);
                 clawMotor.stop();
                 clawMotor.setPosition(recordedClawAngleDegrees,
                                       rotationUnits::deg);
@@ -183,7 +183,7 @@ void moveArm(double armSpeedPercent,
                 // We've closed long enough, and the angle isn't changing.  Go
                 // into a holding pattern!
                 state                    = CLOSING_SUSTAINED;
-                recordedClawAngleDegrees = clawMotor.position(rotationUnits::deg)
+                recordedClawAngleDegrees = clawMotor.position(rotationUnits::deg);
                 clawMotor.stop();
                 clawMotor.setPosition(recordedClawAngleDegrees,
                                       rotationUnits::deg);
