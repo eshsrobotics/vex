@@ -1,0 +1,19 @@
+{
+	"extension": {
+		"version": "0.5.0",
+		"json": 2
+	},
+	"project": {
+		"name": "MatthewSwerveDrive",
+		"description": "",
+		"creationDate": "2/23/2024, 6:45:31 PM",
+		"platform": "V5",
+		"language": "cpp",
+		"slot": 2,
+		"sdkVersion": "V5_20220726_10_00_00",
+		"cpp": {
+			"includePath": [],
+			"printf_float": true
+		}
+	}
+}

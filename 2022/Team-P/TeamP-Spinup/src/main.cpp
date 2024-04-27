@@ -112,10 +112,10 @@ using namespace vex;
 // would spin port 5. We added the -1s so it would activate the correct ports.
 // We do not know why this is happening.
 
-const int FRONT_LEFT_PORT = 4 - 1;  // we want port 4 to spin
-const int FRONT_RIGHT_PORT = 3 - 1; // we want port 3 to spin
-const int BACK_RIGHT_PORT = 6 - 1;  // we want port 6 to spin
-const int BACK_LEFT_PORT = 5 - 1;   // we want port 5 to spin
+const int FRONT_LEFT_PORT = 8 - 1;  // we want port 4 to spin
+const int FRONT_RIGHT_PORT = 9 - 1; // we want port 3 to spin
+const int BACK_RIGHT_PORT = 3 - 1;  // we want port 6 to spin
+const int BACK_LEFT_PORT = 2 - 1;   // we want port 5 to spin
 const int FLYWHEEL_MAX_SPEED = 80;  // 100 pct power is too much for the field.
 const int INTAKE_MAX_SPEED = 100;
 const int ROLLER_MAX_SPEED = 100;
