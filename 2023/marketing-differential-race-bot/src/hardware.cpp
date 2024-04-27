@@ -11,57 +11,26 @@ drivetrain drive = drivetrain(leftMotor, rightMotor, WHEEL_TRAVEL, TRACK_WIDTH, 
 
 bool leftStop = true;
 bool rightStop = true;
-
-int tank_drive() {
-    while (true) {
-        int leftSpeed = Controller.Axis3.position();
-        int rightSpeed = Controller.Axis2.position();
-        Controller.Screen.setCursor(1,1);
-        Controller.Screen.print(leftSpeed);
-        Controller.Screen.setCursor(2,1);
-        Controller.Screen.print(rightSpeed);
-        Controller.Screen.clearScreen();
-
-
-        if (leftSpeed < 5 && leftSpeed > -5 && leftStop) {
-            leftMotor.stop();
-            leftStop = false;
-        } else {
-            leftStop = true;
-        }
-        if (rightSpeed < 5 && rightSpeed > -5 && rightStop) {
-            rightMotor.stop();
-            rightStop = false;
-        } else {
-            rightStop = true;
-        }
-
-        if (leftStop) {
-            leftMotor.setVelocity(leftSpeed, percent);
-            leftMotor.spin(forward);
-        }
-        if (rightStop) {
-            rightMotor.setVelocity(rightSpeed, percent);
-            rightMotor.spin(forward);
-        }
-
-        wait(20, msec);
-    }
-    return 0;
-}
+const int DEADZONE = 15;
 
 int arcade_drive() {
     while (true) {
         int straightSpeed = Controller.Axis2.position();
-        int turnSpeed = -Controller.Axis1.position();
+        int turnSpeed = Controller.Axis1.position();
         Controller.Screen.setCursor(1,1);
         Controller.Screen.print(straightSpeed);
         Controller.Screen.setCursor(2,1);
         Controller.Screen.print(turnSpeed);
         Controller.Screen.clearScreen();
 
+        if (abs(straightSpeed) < DEADZONE) {
+            straightSpeed = 0;
+        }
 
-        if ((straightSpeed < 5 || straightSpeed > -5) || (turnSpeed < 5 || turnSpeed > -5)) {
+        if (abs(turnSpeed) < DEADZONE) {
+            turnSpeed = 0;
+        }
+        if (straightSpeed != 0 || turnSpeed != 0) {
             leftMotor.setVelocity(-(straightSpeed + turnSpeed), percent);
             rightMotor.setVelocity(-(straightSpeed - turnSpeed), percent);
             leftMotor.spin(forward);
