@@ -9,13 +9,13 @@
 #include "vex.h"
 
 using namespace vex;
+
+// We really oughtta start not making that port numbering mistake (the port numbers were all one too high thanks to Vex design)...
 const int FRONT_LEFT_PORT = 5 - 1;
-const int FRONT_RIGHT_PORT = 2 - 1;
+const int FRONT_RIGHT_PORT = 10 - 1;
 const int BACK_LEFT_PORT = 3 - 1;
 const int BACK_RIGHT_PORT = 6 - 1;
 
-
-//We really oughtta start not making that port numbering mistake (the port numbers were all one too high thanks to Vex design)...
 
 //When the robot is oriented so the brain is on the left side, the robot is facing forward
 
