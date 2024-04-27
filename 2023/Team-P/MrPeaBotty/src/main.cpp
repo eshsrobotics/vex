@@ -80,7 +80,7 @@ void usercontrol(void) {
     // update your motors, etc.
     // ........................................................................
 
-    ControlMapping controlMap = getControlMapping(LEO_DRIVE_SCHEME);
+    ControlMapping controlMap = getControlMapping(DEFAULT_DRIVE_SCHEME);
 
     const double SLOWDOWN_FACTOR = 0.6;
 
