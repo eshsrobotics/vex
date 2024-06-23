@@ -25,6 +25,9 @@ vex::bumper& getBumper();
 // On the Brain given to us by 6526, the following ports are marked as dead:
 // 6, 7?, 9, 10, 16, 17, 20?
 // These ports seem loose: 2, 3, 13, 18
+// In temrs of software, the ports start from 0, 1, 2 ...
+// In terms of hardware, the ports start from 1, 2, 3 ...
+// For example, 11 - 1 means port 11 physically while port 10 in terms of hardware.
 const int LEFT_MOTOR_PORT_FRONT = 11 - 1;
 const int LEFT_MOTOR_PORT_BACK = 12 - 1; // OK
 const int RIGHT_MOTOR_PORT_FRONT = 13 - 1;
