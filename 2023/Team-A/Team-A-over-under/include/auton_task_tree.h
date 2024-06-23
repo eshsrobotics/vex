@@ -8,8 +8,8 @@
 
 
 /*--------------------------------------------------------------------------*/
-/*     The struct task is how our whole autonomouis code runs, each task    */
-/* has one function that it runs for sutonomous, and each task has children */
+/*     The struct task is how our whole autonomous code runs, each task    */
+/* has one function that it runs for autonomous, and each task has children */
 /*               and parents which run before and after it.                 */
 /*--------------------------------------------------------------------------*/
 struct Task {
@@ -118,7 +118,7 @@ struct TurnTask : public Task {
   //
   // Unfortunatly some drives don't turn the correct number of degrees when asked to do so.
   // (Note that drive that uses a gyro WILL turn correct numbeer of degrees.)
-  // For drives that don't turn correctly, you may pass in a correction function that maps an input 
+  // For drives that don't turn correctly, you may pass in a correction function that maps an input
   // to a number that will casuse a drive to turn correctly.
   // The defualt correction function is just the identity function.
   TurnTask(vex::motor_group &motor_group1, vex::motor_group &motor_group2, double rotationAmountDegrees);
@@ -130,7 +130,7 @@ struct TurnTask : public Task {
 // These are the different types of autonomous trajectories we will support.
 enum AUTON_TYPE {
 
-  // This is the autonomous routine for when the robot starts at the 
+  // This is the autonomous routine for when the robot starts at the
   // side of the ramp that is down, and when we also want the win point.
   TEST_AUTON
 };

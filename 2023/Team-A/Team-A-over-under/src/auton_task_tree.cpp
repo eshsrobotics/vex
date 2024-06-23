@@ -114,8 +114,8 @@ void WaitMillisecondsTask::start() {
 /*                   Driving Methods                      */
 /*--------------------------------------------------------*/
 
-DriveStraightTask::DriveStraightTask(vex::motor_group &left_motor_group, 
-                                     vex::motor_group &right_motor_group, 
+DriveStraightTask::DriveStraightTask(vex::motor_group &left_motor_group,
+                                     vex::motor_group &right_motor_group,
                                      double distanceInches,
                                      int speed,
                                      std::function<double(double)> translateFunction)
@@ -139,7 +139,7 @@ void DriveStraightTask::start() {
 }
 
 // For TurnTask, positive is counterclockwise, negative is clockwise
-TurnTask::TurnTask(vex::motor_group &left_motor_group, 
+TurnTask::TurnTask(vex::motor_group &left_motor_group,
                    vex::motor_group &right_motor_group,
                    double rotationAmountDegrees)
     : Task("Turn task"), left_motor_group(left_motor_group), right_motor_group(right_motor_group),
@@ -160,7 +160,7 @@ std::shared_ptr<Task> get_auton(AUTON_TYPE type) {
   auto driveBack = std::shared_ptr<Task>(new DriveStraightTask(leftMotors, rightMotors, -18.0, 90));
   auto turn90 = std::shared_ptr<Task>(new TurnTask(leftMotors, rightMotors, 90.0));
   auto turn180 = std::shared_ptr<Task>(new TurnTask(leftMotors, rightMotors, 180.0));
-  
+
   // The root task always needs to be initialWait
 
   switch(type) {
@@ -172,4 +172,4 @@ std::shared_ptr<Task> get_auton(AUTON_TYPE type) {
   }
 
   return initialWait;
-}              
+}
