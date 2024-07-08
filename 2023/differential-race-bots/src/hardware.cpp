@@ -5,8 +5,8 @@ brain Brain;
 controller Controller = controller(primary);
 // motor format: motor(port, reversed) where port is an integer for the port
 // number and reverse is a boolean for if the motor needs to be reversed or not
-motor leftMotor = motor(LEFT_MOTOR_PORT, false);
-motor rightMotor = motor(RIGHT_MOTOR_PORT, true);
+motor leftMotor = motor(LEFT_MOTOR_PORT, true);
+motor rightMotor = motor(RIGHT_MOTOR_PORT, false);
 drivetrain drive = drivetrain(leftMotor, rightMotor, WHEEL_TRAVEL, TRACK_WIDTH, WHEEL_BASE, mm, WHEEL_GEAR_RATIO);
 
 bool leftStop = true;

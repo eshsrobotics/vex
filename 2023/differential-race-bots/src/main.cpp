@@ -63,7 +63,7 @@ void autonomous(void) {
 void reverse_drive() {
   bool done = false;
 
-  double start_time = Brain.timer
+  double start_time = Brain.timer(msec);
 
   while (!done) {
     leftMotor.spin(directionType::fwd);
@@ -73,7 +73,7 @@ void reverse_drive() {
 
 void usercontrol(void) {
   // User control code here, inside the loop
-  while (1) {
+  while (true) {
     // This is the main execution loop for the user control program.
     // Each time through the loop your program should update motor + servo
     // values based on feedback from the joysticks.
