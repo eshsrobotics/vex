@@ -3,6 +3,11 @@ using namespace vex;
 extern brain Brain;
 
 // VEXcode devices
+
+// The drivetrain is a class with useful member functions. For example, we can
+// give the member function drivetrain() gear ratios as one of the arguments,
+// which will give the code dead reckoning ability to predict how much the robot
+// will move.
 extern drivetrain Drivetrain;
 extern motor intake_roller_motor;
 
@@ -21,7 +26,7 @@ const double experiment_duration_ms = 5000;
 
 /**
  * Used to initialize code/tasks/devices added using tools in VEXcode Text.
- * 
+ *
  * This should be called at the start of your int main function.
  */
 void  vexcodeInit(void);

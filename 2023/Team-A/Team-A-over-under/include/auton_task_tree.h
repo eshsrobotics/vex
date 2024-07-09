@@ -8,8 +8,8 @@
 
 
 /*--------------------------------------------------------------------------*/
-/*     The struct task is how our whole autonomouis code runs, each task    */
-/* has one function that it runs for sutonomous, and each task has children */
+/*     The struct task is how our whole autonomous code runs, each task    */
+/* has one function that it runs for autonomous, and each task has children */
 /*               and parents which run before and after it.                 */
 /*--------------------------------------------------------------------------*/
 struct Task {
@@ -118,7 +118,7 @@ struct TurnTask : public Task {
   //
   // Unfortunately some drives don't turn the correct number of degrees when asked to do so.
   // (Note that drive that uses a gyro WILL turn correct number of degrees.)
-  // For drives that don't turn correctly, you may pass in a correction function that maps an input 
+  // For drives that don't turn correctly, you may pass in a correction function that maps an input
   // to a number that will cause a drive to turn correctly.
   // The default correction function is just the identity function.
   TurnTask(vex::motor_group &motor_group1, vex::motor_group &motor_group2, double rotationAmountDegrees);
