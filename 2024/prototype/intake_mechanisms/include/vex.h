@@ -1,3 +1,6 @@
+#ifndef __VEX_H_INCLUDED__
+#define __VEX_H_INCLUDED__
+
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /*    Module:       vex.h                                                     */
@@ -24,3 +27,5 @@
 
 #define repeat(iterations)                                                     \
   for (int iterator = 0; iterator < iterations; iterator++)
+
+#endif //  (ifndef __VEX_H_INCLUDED__)

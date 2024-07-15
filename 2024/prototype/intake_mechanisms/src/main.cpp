@@ -22,9 +22,23 @@
 
 using namespace vex;
 
-int main() {
-  // Initializing Robot Configuration. DO NOT REMOVE!
-  vexcodeInit();
+competition Competition;
+
+/**
+ * This code block runs before autonomous AND teleop. This code initializes all
+ * of the robot's actuators and sensors. We cannot actuate anything as the
+ * competition control system blocks us from doing so.
+ */
+void pre_auton() {
+
+}
+
+/**
+ * The autonomous routine runs during the first fifteen seconds of the
+ * competition.
+ */
+void autonomous() {
+  
   intake_roller_motor.spin(vex::directionType::fwd,
                            autonomous_intake_speed_pct,
                            vex::percentUnits::pct);
@@ -35,7 +49,7 @@ int main() {
   // robot would drive forever.
   Drivetrain.drive(vex::directionType::fwd);
 
-  const double start_time_milliseconds = Brain.timer(msec);
+  const double start_time_milliseconds = Brain.timer(msec); 
 
   while (true) {
     double elapsed_time_msec = Brain.timer(msec) - start_time_milliseconds;
@@ -43,8 +57,27 @@ int main() {
         Drivetrain.stop();
         intake_roller_motor.stop();
     }
+  }
+}
 
+/** 
+  * The user control section. The code that runs when the driver is in control
+  * for remaining 1:45 minutes of the competition.
+*/
+void teleop() {
+  
+  
+}
 
+int main() {
+  // Initializing Robot Configuration. DO NOT REMOVE!
+  vexcodeInit();
+
+  // Register our autonomous and teleop(user control) routines.
+  Competition.autonomous(autonomous);
+  Competition.drivercontrol(teleop);
+
+  while (true) {
     vex::wait(50, msec);
   }
 }

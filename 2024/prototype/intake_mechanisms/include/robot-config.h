@@ -1,3 +1,8 @@
+#ifndef __ROBOT_CONFIG_INCLUDED__
+#define __ROBOT_CONFIG_INCLUDED__
+
+#include "vex.h"
+
 using namespace vex;
 
 extern brain Brain;
@@ -30,3 +35,5 @@ const double experiment_duration_ms = 5000;
  * This should be called at the start of your int main function.
  */
 void  vexcodeInit(void);
+
+#endif // (ifndef __ROBOT_CONFIG_INCLUDED__)
