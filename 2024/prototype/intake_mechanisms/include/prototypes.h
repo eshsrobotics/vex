@@ -36,16 +36,14 @@ class PivotRampPrototype : public Idrive, Iintake, Ilift {
          *               moving the lift. The position passed into the lift
          *               function is a value between 0 and 1 that represents a
          *               percentage of the lift's maximum extension.
-         * @param gearRatio The ratio of the output gear's teeth -- connected to
-         *                  the lift -- to the input gear's teeth -- connected
-         *                  to the lift motor. For instance, a 24-tooth input
-         *                  gear on the lift motor driving a 48-tooth output
-         *                  gear on the lift would have a gear ratio of 48:24 ==
-         *                  2:1 (gearRatio == 2.0).
+         * @param rotationsToTop The number of rotations that the lift's input
+         *               motor has to make for the lift to extend.  This value
+         *               must be determined experimentally (please see
+         *               setLiftRotationsDebug().)
          */
         PivotRampPrototype(vex::motor_group& left, vex::motor_group& right,
                            vex::motor_group& intake, vex::motor_group& lift,
-                           double gearRatio = 1.0);
+                           double rotationsToTop);
 
         /**
          * Drive the robot at the given speeds.
@@ -75,13 +73,28 @@ class PivotRampPrototype : public Idrive, Iintake, Ilift {
          */
         void lift(double position);
 
+        /**
+         * To determine experimentally, how many times the lift motor needs to
+         * rotate in order for the lift to get all the way up, you can call this
+         * function and pass in a desired number of rotations.  WE will rotate
+         * the lift motors as many times as you specify, and report in the
+         * Brain's display the encoder position of the lift motors in
+         * RotationalUnits::rev (revolutions.)
+         *
+         * Use this value to determine the rotationsToTop parameter for the
+         * constructor.
+         *
+         * This function is NOT meant to be used during teleop; please call
+         * lift(double) for that purpose.
+         */
+        void setLiftRotationsDebug(double liftRotations);
+
     private:
         vex::motor_group& left;
         vex::motor_group& right;
         vex::motor_group& intake_group;
         vex::motor_group& lift_group;
-        double gearRatio;
-
+        double rotationsToTop;
 };
 
 #endif // (ifndef __PROTOTYPE_H_INCLUDED__)

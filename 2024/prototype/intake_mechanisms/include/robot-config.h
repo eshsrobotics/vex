@@ -6,6 +6,7 @@
 using namespace vex;
 
 extern brain Brain;
+extern controller Controller;
 
 // VEXcode devices
 
@@ -28,6 +29,10 @@ const auto gearbox_ratio = ratio6_1;
 const double autonomous_speed_pct = 15.0;
 const double autonomous_intake_speed_pct = 100;
 const double experiment_duration_ms = 5000;
+
+// How quickly to raise or lower the lift mechanism, in percent units between 0
+// and 100.
+const double LIFT_VELOCITY_PERCENT = 50.0;
 
 /**
  * Used to initialize code/tasks/devices added using tools in VEXcode Text.

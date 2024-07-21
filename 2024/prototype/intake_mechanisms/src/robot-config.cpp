@@ -8,6 +8,9 @@ using code = vision::code;
 // A global instance of brain used for printing to the V5 Brain screen
 brain Brain;
 
+//A global instance of controller used for controlling the robot during teleop
+controller Controller;
+
 // VEXcode device constructors
 motor leftMotorA = motor(front_left_motor_port, gearbox_ratio, false);
 motor leftMotorB = motor(center_left_motor_port, gearbox_ratio, false);
