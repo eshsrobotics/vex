@@ -11,8 +11,8 @@ using std::stringstream;
 using std::setprecision;
 using namespace vex;
 
-PivotRampPrototype::PivotRampPrototype(motor_group& left_, motor_group& right_,
-                                       motor_group& intake_, motor_group& lift_,
+PivotRampPrototype::PivotRampPrototype(const motor_group& left_, const motor_group& right_,
+                                       const motor_group& intake_, const motor_group& lift_,
                                        double rotToTop)
     : left(left_), right(right_), intake_group(intake_), lift_group(lift_), 
       rotationsToTop(rotToTop) {

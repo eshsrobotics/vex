@@ -30,7 +30,7 @@ using std::max;
 
 competition Competition;
 
-PivotRampPrototype&& makePivotRampPrototype() {
+PivotRampPrototype makePivotRampPrototype() {
   const int LEFT_MOTOR_PORT_A = 2 - 1;
   const int LEFT_MOTOR_PORT_B = 3 - 1;
   const int LEFT_MOTOR_PORT_C = 4 - 1 ;
@@ -57,18 +57,12 @@ PivotRampPrototype&& makePivotRampPrototype() {
 
   const double rotationsToTop = 0.5; // TODO: Must be determined experimentally.
 
-  PivotRampPrototype p(leftMotorGroup,
-                       rightMotorGroup, 
-                       intakeMotorGroup, 
-                       liftMotorGroup, 
-                       rotationsToTop);
-  return move(p);
-}
-
-// Return a lazy-initialized PivotRampPrototype object.
-PivotRampPrototype& getPivotRampPrototype() {
-  static PivotRampPrototype p = makePivotRampPrototype();
-  return p;
+  PivotRampPrototype pivotRampPrototypeObject(leftMotorGroup,
+                                              rightMotorGroup, 
+                                              intakeMotorGroup, 
+                                              liftMotorGroup, 
+                                              rotationsToTop);
+  return pivotRampPrototypeObject;
 }
 
 /**
@@ -115,7 +109,7 @@ void autonomous() {
 void teleop() { 
   double liftRotations = 0.0;
   while (true) {
-    auto& prototype = getPivotRampPrototype();
+    auto prototype = makePivotRampPrototype();
     prototype.drive(Controller.Axis3.position(percentUnits::pct) / 100, 
                     Controller.Axis4.position(percentUnits::pct) / 100);
 

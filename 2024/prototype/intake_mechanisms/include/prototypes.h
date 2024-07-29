@@ -41,8 +41,8 @@ class PivotRampPrototype : public Idrive, Iintake, Ilift {
          *               must be determined experimentally (please see
          *               setLiftRotationsDebug().)
          */
-        PivotRampPrototype(vex::motor_group& left, vex::motor_group& right,
-                           vex::motor_group& intake, vex::motor_group& lift,
+        PivotRampPrototype(const vex::motor_group& left, const vex::motor_group& right,
+                           const vex::motor_group& intake, const vex::motor_group& lift,
                            double rotationsToTop);
 
         /**
@@ -90,10 +90,10 @@ class PivotRampPrototype : public Idrive, Iintake, Ilift {
         void setLiftRotationsDebug(double liftRotations);
 
     private:
-        vex::motor_group& left;
-        vex::motor_group& right;
-        vex::motor_group& intake_group;
-        vex::motor_group& lift_group;
+        vex::motor_group left;
+        vex::motor_group right;
+        vex::motor_group intake_group;
+        vex::motor_group lift_group;
         double rotationsToTop;
 };
 
