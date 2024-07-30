@@ -27,6 +27,34 @@ using namespace vex;
 using std::min;
 using std::max;
 
+enum PrototypeIntakeState {
+
+  // Initial state of the state machine
+  // - transitions: default (unconditional)
+  START,
+
+  // The state when the prototype is not moving: the default state.
+  // - transitions:
+  //   * R1.pressed() == true: INTAKING
+  //   * R2.pressed() == true: OUTTAKING
+  //   * else: STOPPED
+  STOPPED,
+
+  // The state when the prototype is intaking.
+  // - transitions:
+  //   * R1.pressed() == false: STOPPED
+  INTAKING,
+
+  // The state when the prototype is outaking.
+  // - transitions:
+  //   * R2.pressed() == false: OUTTAKING
+  OUTTAKING,
+
+};
+void updateIntakeState(bool intakeButton, bool outtakeButton, Iintake& robotWithIntake,
+                       PrototypeIntakeState& currentState);
+
+
 competition Competition;
 
 PivotRampPrototype makePivotRampPrototype() {
@@ -138,6 +166,7 @@ void autonomous() {
  */
 void teleop() {
   double liftRotations = 0.0;
+  PrototypeIntakeState currentState = START;
   while (true) {
     auto prototype = makePivotRampPrototype();
     prototype.drive(Controller.Axis3.position(percentUnits::pct) / 100,
@@ -147,7 +176,55 @@ void teleop() {
     liftRotations += SCALE_FACTOR * Controller.Axis2.position(percentUnits::pct) / 100.0;
     liftRotations = max(0.0, min(liftRotations, 1.0));
     prototype.setLiftRotationsDebug(liftRotations);
+
+    // Allow the driver to control the direction of any prototype intake.
+    updateIntakeState(Controller.ButtonR1.pressing(),
+                      Controller.ButtonR2.pressing(),
+                      prototype,
+                      currentState);
   }
+}
+void updateIntakeState(bool intakeButton, bool outtakeButton, Iintake& robotWithIntake,
+                       PrototypeIntakeState& currentState) {
+  // Establishes the control system for any arbitrary prototype intake.
+  Brain.Screen.setCursor(3, 10);
+  switch (currentState) {
+    case START:
+      robotWithIntake.intake(0);
+      currentState = STOPPED;
+      Brain.Screen.print("START");
+      break;
+
+    case STOPPED:
+      if (intakeButton && !outtakeButton) {
+        currentState = INTAKING;
+        robotWithIntake.intake(1);
+        Brain.Screen.print("INTAKING");
+      } else if (!intakeButton && outtakeButton) {
+        currentState = OUTTAKING;
+        robotWithIntake.intake(-1);
+        Brain.Screen.print("OUTTAKING");
+      }
+      break;
+
+    case INTAKING:
+      if (!intakeButton) {
+        currentState = STOPPED;
+        robotWithIntake.intake(0);
+        Brain.Screen.print("STOPPED");
+      }
+      break;
+
+    case OUTTAKING:
+      if (!outtakeButton) {
+        currentState = STOPPED;
+        robotWithIntake.intake(0);
+        Brain.Screen.print("STOPPED");
+      }
+      break;
+
+  };
+
 }
 
 int main() {

@@ -72,7 +72,7 @@ class FlywheelPrototype : public Idrive, Iintake {
 /**
  *
  */
-class PivotRampPrototype : public Idrive, Iintake, Ilift {
+class PivotRampPrototype : public Idrive, public Iintake, public Ilift {
     public:
         /**
          * Construct a pivot ramp prototype robot.

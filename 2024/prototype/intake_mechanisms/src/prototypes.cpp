@@ -22,10 +22,10 @@ void arcade_drive(double straightSpeed, double turnSpeed, motor_group& left,
                   motor_group& right) {
 
     // We do not want any minor mis-inputs to throw the robot off-course.
-    if (abs(straightSpeed) < DEADZONE) {
+    if (fabs(straightSpeed) < DEADZONE) {
         straightSpeed = 0;
     }
-    if (abs(turnSpeed) < DEADZONE) {
+    if (fabs(turnSpeed) < DEADZONE) {
         turnSpeed = 0;
     }
 
@@ -71,7 +71,7 @@ void FlywheelPrototype::intake(double intakeSpeed) {
     // opposite direction. There is no further work on our part needed to make
     // that happen.
 
-    if (abs(intakeSpeed) < DEADZONE) {
+    if (fabs(intakeSpeed) < DEADZONE) {
         intake_group.stop();
     } else {
         intake_group.spin(forward, intakeSpeed * 100, pct);
