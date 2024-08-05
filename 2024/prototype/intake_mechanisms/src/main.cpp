@@ -30,7 +30,7 @@ using std::max;
 enum class PrototypeLiftState {
 
   // Initial state of the state machine
-  // - transitions: default (unconditional)
+  // - transitions: unconditional: DEFAULT_LOWEST_HEIGHT
   START,
 
   // There are some prototypes where the lowest height is the mobile goal height
@@ -43,7 +43,7 @@ enum class PrototypeLiftState {
   DEFAULT_LOWEST_HEIGHT,
 
   // This supports a transition to the lowest height supported by the lift.
-  // When transitioning into this state, run the lift in reverse.
+  // When transitioning into this state, run the lift in the appropriate direction.
   // - transitions:
   //   * X.pressed(): ALLIANCE_STAKE_TRANSITION
   //   * Y.pressed(): WALL_STAKE_TRANSITION
@@ -51,25 +51,61 @@ enum class PrototypeLiftState {
   //   * lift position = default height: DEFAULT_LOWEST_HEIGHT
   DEFAULT_TRANSITION,
 
+  // This supports a transition to a mobile goal lift height. When transitioning
+  // into this state, run the lift in the appropriate direction to reach the
+  // desired height.
+  // - transitions:
+  //   * X.pressed(): ALLIANCE_STAKE_TRANSITION
+  //   * Y.pressed(): WALL_STAKE_TRANSITION
+  //   * B.pressed(): DEFAULT_TRANSITION
+  //   * lift position = mobile goal height: MOBILE_GOAL
   MOBILE_GOAL_TRANSITION,
 
+  // The state where the appropriate lift height for mobile goals is reached.
+  // When transitioning into this state, the appropriate height has been
+  // reached.
+  // - transitions:
+  //   * X.pressed(): ALLIANCE_STAKE_TRANSITION
+  //   * Y.pressed(): WALL_STAKE_TRANSITION
+  //   * B.pressed(): DEFAULT_TRANSITION
   MOBILE_GOAL,
 
+  // The state where the lift is moving in the appropriate direction to reach a
+  // height for wall stake intaking. When transitioning into this state, the
+  // lift motors will spin in the appropriate direction to reach wall stake height.
+  // - transitions:
+  //   * X.pressed(): ALLIANCE_STAKE_TRANSITION
+  //   * B.pressed(): DEFAULT_TRANSITION
+  //   * A.pressed(): MOBILE_GOAL_TRANSITION
+  //   * lift position = wall stake height: WALL_STAKE
   WALL_STAKE_TRANSITION,
 
+  // The state after we have reached the appropriate lift height for wall
+  // stakes. When transitioning into this state, the WALL_STAKE height has been reached.
+  // - transitions:
+  //   * X.pressed(): ALLIANCE_STAKE_TRANSITION
+  //   * B.pressed(): DEFAULT_TRANSITION
+  //   * A.pressed(): MOBILE_GOAL_TRANSITION
   WALL_STAKE,
 
+  // The state where we are transitioning into the appropriate lift height for
+  // alliance stakes. When transitioning into this state, the lift motors will
+  // spin in the appropriate direction to reach alliance stake height.
+  // - transitions:
+  //   * Y.pressed(): WALL_STAKE_TRANSITION
+  //   * A.pressed(): MOBILE_GOAL_TRANSITION
+  //   * B.pressed(): DEFAULT_TRANSITION
+  //   * lift position = alliance stake height: ALLIANCE_STAKE
   ALLIANCE_STAKE_TRANSITIONS,
 
+  // The state where we have reached the appropriate lift height for alliance
+  // stakes. When transitioning into this state, the appropriate alliance stake
+  // height has been reached.
+  // - transitions:
+  //   * A.pressed(): MOBILE_GOAL_TRANSITION
+  //   * B.pressed(): DEFAULT_TRANSITION
+  //   * Y.pressed(): WALL_STAKE_TRANSITION
   ALLIANCE_STAKE,
-
-
-
-
-
-
-
-
 };
 
 enum class PrototypeIntakeState {

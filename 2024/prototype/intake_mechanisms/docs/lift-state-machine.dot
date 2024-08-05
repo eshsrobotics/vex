@@ -21,6 +21,7 @@ digraph G {
     DefaultTransition -> WallStakeTransition [label="Y button pressed", fontcolor="lime", color="lime"];
     DefaultTransition -> AllianceStakeTransition [label="X button pressed", fontcolor="red", color="red"];
     DefaultTransition -> MobileGoalTransition [label="A button pressed", fontcolor="purple", color="purple"];
+
     Default -> MobileGoalTransition [label="A button pressed", fontcolor="purple", color="purple"];
     Default -> WallStakeTransition [label="Y button pressed", fontcolor="lime", color="lime"];
     Default -> AllianceStakeTransition [label="X button pressed", fontcolor="red", color="red"];
@@ -30,6 +31,7 @@ digraph G {
     MobileGoalTransition -> AllianceStakeTransition [label="X button pressed", fontcolor="red", color="red"];
     MobileGoalTransition -> WallStakeTransition [label="Y button pressed", fontcolor="lime", color="lime"];
     MobileGoalTransition -> DefaultTransition [label="B button pressed", color="blue"];
+
     MobileGoal -> AllianceStakeTransition [label="X button pressed", fontcolor="red", color="red"];
     MobileGoal -> WallStakeTransition [label="Y button pressed", fontcolor="lime", color="lime"];
     MobileGoal -> DefaultTransition [label="B button pressed", color="blue"];
@@ -39,6 +41,8 @@ digraph G {
     AllianceStakeTransition -> AllianceStake [label="Lift position == alliance stake height"];
     AllianceStakeTransition -> WallStakeTransition [label="Y button pressed", fontcolor="lime", color="lime"];
     AllianceStakeTransition -> AllianceStakeTransition [label="Lift position != alliance stake height"];
+    AllianceStakeTransition -> MobileGoalTransition [label="A button pressed", fontcolor="purple", color="purple"];
+
     AllianceStake -> DefaultTransition [label="B button pressed", color="blue"];
     AllianceStake -> MobileGoalTransition [label="A button pressed", fontcolor="purple", color="purple"];
     AllianceStake -> WallStakeTransition [label="Y button pressed", fontcolor="lime", color="lime"];
@@ -48,6 +52,7 @@ digraph G {
     WallStakeTransition -> WallStake [label="Lift position == wall goal height"];
     WallStakeTransition -> MobileGoalTransition [label="A button pressed", fontcolor="purple", color = "purple"];
     WallStakeTransition -> AllianceStakeTransition [label="X button pressed", fontcolor="red", color="red"];
+
     WallStake -> DefaultTransition [label="B button pressed", color = "blue"];
     WallStake -> MobileGoalTransition [label="A button pressed", fontcolor="purple", color="purple"]
     WallStake -> AllianceStakeTransition [label="X button pressed", fontcolor="red", color="red"];
