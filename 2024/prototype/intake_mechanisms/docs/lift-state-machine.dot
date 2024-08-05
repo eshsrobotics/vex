@@ -1,0 +1,36 @@
+// To convert this to an image, install Graphviz to your $PATH, then run:
+//
+//   dot -T png -o lift-state-machine.png lift-state-machine.dot
+digraph G {
+
+    node [shape=record, fontname="Georgia", style="solid"];
+
+    Start;
+    Default [label="Default\n(Lowest height)"];
+    DefaultTransition [label="Default transition"];
+    MobileGoalTransition [label="Mobile Goal Transition"];
+    MobileGoal [label="Mobile Goal"];
+    AllianceStakeTransition [label="Alliance Stake Transition"];
+    WallStakeTransition [label="Wall Stake Transition"];
+    AllianceStake [label="Alliance Stake"];
+    WallStake [label="Wall Stake"];
+
+    Start -> Default [label="(unconditional)"];
+    Default -> MobileGoalTransition [label="A button pressed"];
+    Default -> WallStakeTransition [label="Y button presssed"];
+    Default -> AllianceStakeTransition [label="X button pressed"];
+    Default -> Default [label="A, B, X, and Y not pressed"];
+    
+    MobileGoalTransition -> MobileGoal [label="Lift position == mobile goal height"];
+    MobileGoalTransition -> AllianceStakeTransition [label="X button pressed", color="red"];
+    MobileGoalTransition -> WallStakeTransition [label="Y button pressed", color="lime"];
+    MobileGoalTransition -> DefaultTransition [label="B button pressed", color="blue"];
+
+    AllianceStakeTransition -> DefaultTransition [label="B button pressed", color="blue"];
+    AllianceStakeTransition -> AllianceStake [label="Lift position == alliance stake height"];
+    AllianceStakeTransition -> WallStakeTransition [label="Y button pressed", color="lime"];
+    AllianceStakeTransition -> AllianceStakeTransition [label="Lift position != alliance stake height"];
+    AllianceStake -> DefaultTransition [label="B button pressed", color="blue"];    
+    AllianceStake -> MobileGoalTransition [label="A button pressed", color="magenta"];
+    AllianceStake -> WallStakeTransition [label="Y button pressed", color="lime"];
+}
