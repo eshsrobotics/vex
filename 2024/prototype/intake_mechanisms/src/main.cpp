@@ -27,7 +27,52 @@ using namespace vex;
 using std::min;
 using std::max;
 
-enum PrototypeIntakeState {
+enum class PrototypeLiftState {
+
+  // Initial state of the state machine
+  // - transitions: default (unconditional)
+  START,
+
+  // There are some prototypes where the lowest height is the mobile goal height
+  // while other robots will have a lower minimum height than the mobile goal
+  // level.
+  // - transitions:
+  //   * X.pressed(): ALLIANCE_STAKE_TRANSITION
+  //   * Y.pressed(): WALL_STAKE_TRANSITION
+  //   * A.button(): MOBILE_GOAL_TRANSITION
+  DEFAULT_LOWEST_HEIGHT,
+
+  // This supports a transition to the lowest height supported by the lift.
+  // When transitioning into this state, run the lift in reverse.
+  // - transitions:
+  //   * X.pressed(): ALLIANCE_STAKE_TRANSITION
+  //   * Y.pressed(): WALL_STAKE_TRANSITION
+  //   * A.button(): MOBILE_GOAL_TRANSITION
+  //   * lift position = default height: DEFAULT_LOWEST_HEIGHT
+  DEFAULT_TRANSITION,
+
+  MOBILE_GOAL_TRANSITION,
+
+  MOBILE_GOAL,
+
+  WALL_STAKE_TRANSITION,
+
+  WALL_STAKE,
+
+  ALLIANCE_STAKE_TRANSITIONS,
+
+  ALLIANCE_STAKE,
+
+
+
+
+
+
+
+
+};
+
+enum class PrototypeIntakeState {
 
   // Initial state of the state machine
   // - transitions: default (unconditional)
@@ -166,7 +211,7 @@ void autonomous() {
  */
 void teleop() {
   double liftRotations = 0.0;
-  PrototypeIntakeState currentState = START;
+  PrototypeIntakeState currentState = PrototypeIntakeState::START;
   while (true) {
     auto prototype = makePivotRampPrototype();
     prototype.drive(Controller.Axis3.position(percentUnits::pct) / 100,
@@ -189,35 +234,35 @@ void updateIntakeState(bool intakeButton, bool outtakeButton, Iintake& robotWith
   // Establishes the control system for any arbitrary prototype intake.
   Brain.Screen.setCursor(3, 10);
   switch (currentState) {
-    case START:
+    case PrototypeIntakeState::START:
       robotWithIntake.intake(0);
-      currentState = STOPPED;
+      currentState = PrototypeIntakeState::STOPPED;
       Brain.Screen.print("START");
       break;
 
-    case STOPPED:
+    case PrototypeIntakeState::STOPPED:
       if (intakeButton && !outtakeButton) {
-        currentState = INTAKING;
+        currentState = PrototypeIntakeState::INTAKING;
         robotWithIntake.intake(1);
         Brain.Screen.print("INTAKING");
       } else if (!intakeButton && outtakeButton) {
-        currentState = OUTTAKING;
+        currentState = PrototypeIntakeState::OUTTAKING;
         robotWithIntake.intake(-1);
         Brain.Screen.print("OUTTAKING");
       }
       break;
 
-    case INTAKING:
+    case PrototypeIntakeState::INTAKING:
       if (!intakeButton) {
-        currentState = STOPPED;
+        currentState = PrototypeIntakeState::STOPPED;
         robotWithIntake.intake(0);
         Brain.Screen.print("STOPPED");
       }
       break;
 
-    case OUTTAKING:
+    case PrototypeIntakeState::OUTTAKING:
       if (!outtakeButton) {
-        currentState = STOPPED;
+        currentState = PrototypeIntakeState::STOPPED;
         robotWithIntake.intake(0);
         Brain.Screen.print("STOPPED");
       }

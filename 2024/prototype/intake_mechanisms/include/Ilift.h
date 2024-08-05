@@ -13,6 +13,9 @@ class Ilift {
      * maximum distance which the lift can raise up.
      */
     virtual void lift(double position) = 0;
+    virtual bool groundIntake() const {
+        return false;
+    }
 };
 
 
