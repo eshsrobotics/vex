@@ -18,38 +18,38 @@ digraph G {
     Start -> Default [label="(unconditional)"];
 
     DefaultTransition -> Default [label="Lift position == default height"];
-    DefaultTransition -> WallStakeTransition [label="Y button pressed", color="lime"];
-    DefaultTransition -> AllianceStakeTransition [label="X button pressed", color="red"];
+    DefaultTransition -> WallStakeTransition [label="Y button pressed", fontcolor="lime", color="lime"];
+    DefaultTransition -> AllianceStakeTransition [label="X button pressed", fontcolor="red", color="red"];
     DefaultTransition -> MobileGoalTransition [label="A button pressed", fontcolor="purple", color="purple"];
     Default -> MobileGoalTransition [label="A button pressed", fontcolor="purple", color="purple"];
-    Default -> WallStakeTransition [label="Y button pressed", color="lime"];
-    Default -> AllianceStakeTransition [label="X button pressed", color="red"];
+    Default -> WallStakeTransition [label="Y button pressed", fontcolor="lime", color="lime"];
+    Default -> AllianceStakeTransition [label="X button pressed", fontcolor="red", color="red"];
     Default -> Default [label="A, B, X, and Y not pressed"];
 
     MobileGoalTransition -> MobileGoal [label="Lift position == mobile goal height"];
-    MobileGoalTransition -> AllianceStakeTransition [label="X button pressed", color="red"];
-    MobileGoalTransition -> WallStakeTransition [label="Y button pressed", color="lime"];
+    MobileGoalTransition -> AllianceStakeTransition [label="X button pressed", fontcolor="red", color="red"];
+    MobileGoalTransition -> WallStakeTransition [label="Y button pressed", fontcolor="lime", color="lime"];
     MobileGoalTransition -> DefaultTransition [label="B button pressed", color="blue"];
-    MobileGoal -> AllianceStakeTransition [label="X button pressed", color="red"];
-    MobileGoal -> WallStakeTransition [label="Y button pressed", color="lime"];
+    MobileGoal -> AllianceStakeTransition [label="X button pressed", fontcolor="red", color="red"];
+    MobileGoal -> WallStakeTransition [label="Y button pressed", fontcolor="lime", color="lime"];
     MobileGoal -> DefaultTransition [label="B button pressed", color="blue"];
     MobileGoal -> MobileGoal [label="B, X, and Y not pressed"];
 
     AllianceStakeTransition -> DefaultTransition [label="B button pressed", color="blue"];
     AllianceStakeTransition -> AllianceStake [label="Lift position == alliance stake height"];
-    AllianceStakeTransition -> WallStakeTransition [label="Y button pressed", color="lime"];
+    AllianceStakeTransition -> WallStakeTransition [label="Y button pressed", fontcolor="lime", color="lime"];
     AllianceStakeTransition -> AllianceStakeTransition [label="Lift position != alliance stake height"];
     AllianceStake -> DefaultTransition [label="B button pressed", color="blue"];
     AllianceStake -> MobileGoalTransition [label="A button pressed", fontcolor="purple", color="purple"];
-    AllianceStake -> WallStakeTransition [label="Y button pressed", color="lime"];
+    AllianceStake -> WallStakeTransition [label="Y button pressed", fontcolor="lime", color="lime"];
     AllianceStake -> AllianceStake [label="A, B, and Y not pressed"];
 
     WallStakeTransition -> DefaultTransition [label="B button pressed", color = "blue"];
     WallStakeTransition -> WallStake [label="Lift position == wall goal height"];
     WallStakeTransition -> MobileGoalTransition [label="A button pressed", fontcolor="purple", color = "purple"];
-    WallStakeTransition -> AllianceStakeTransition [label="X button pressed", color = "red"];
+    WallStakeTransition -> AllianceStakeTransition [label="X button pressed", fontcolor="red", color="red"];
     WallStake -> DefaultTransition [label="B button pressed", color = "blue"];
     WallStake -> MobileGoalTransition [label="A button pressed", fontcolor="purple", color="purple"]
-    WallStake -> AllianceStakeTransition [label="X button pressed", color = "red"];
+    WallStake -> AllianceStakeTransition [label="X button pressed", fontcolor="red", color="red"];
     WallStake -> WallStake [label="A, B, and X not pressed"];
 }
