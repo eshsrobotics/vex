@@ -13,9 +13,17 @@ class Ilift {
      * maximum distance which the lift can raise up.
      */
     virtual void lift(double position) = 0;
-    virtual bool groundIntake() const {
-        return false;
-    }
+
+    /**
+     * Query the lift's position.
+     * @return returns a number between 0 and 1. 0 is lift's lowest position
+     * while 1 is the lift's highest position. The values are determined
+     * experimentally.
+     */
+    virtual double lift() const = 0;
+
+    // Returns true if the lift can go all the way to the ground.
+    virtual bool canReachGround() const { return false; }
 };
 
 

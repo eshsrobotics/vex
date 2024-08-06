@@ -137,6 +137,11 @@ class PivotRampPrototype : public Idrive, public Iintake, public Ilift {
         void lift(double position);
 
         /**
+         * Returns the pivotramp lift's position. 0 is the lowest; 1 is the highest.
+         */
+        double lift() const;
+
+        /**
          * To determine experimentally, how many times the lift motor needs to
          * rotate in order for the lift to get all the way up, you can call this
          * function and pass in a desired number of rotations.  WE will rotate

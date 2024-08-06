@@ -86,7 +86,6 @@ double FlywheelPrototype::intake_speed() {
     return result;
 }
 
-
 PivotRampPrototype::PivotRampPrototype(const motor_group& left_, const motor_group& right_,
                                        const motor_group& intake_, const motor_group& lift_,
                                        double rotToTop)
@@ -118,6 +117,13 @@ void PivotRampPrototype::lift(double desiredLiftPosition) {
     this->lift_group.spinToPosition(desiredRotations, rev,
                                     LIFT_VELOCITY_PERCENT, velocityUnits::pct,
                                     waitForCompletion);
+}
+
+double PivotRampPrototype::lift() const {
+    motor_group lift_gr = this->lift_group;
+    double rotations = lift_gr.position(vex::rotationUnits::rev);
+
+    return rotations/rotationsToTop;
 }
 
 void PivotRampPrototype::setLiftRotationsDebug(double liftRotations) {
