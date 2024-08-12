@@ -1,6 +1,8 @@
 #ifndef __ILIFT_H_INCLUDED__
 #define __ILIFT_H_INCLUDED__
 
+#include <string>
+
 class Ilift {
     public:
 
@@ -25,6 +27,5 @@ class Ilift {
     // Returns true if the lift can go all the way to the ground.
     virtual bool canReachGround() const { return false; }
 };
-
 
 #endif // __ILIFT_H_INCLUDED__

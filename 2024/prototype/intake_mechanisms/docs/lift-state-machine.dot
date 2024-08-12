@@ -4,57 +4,55 @@
 digraph G {
 
     node [shape=record, fontname="Georgia", style="solid"];
+    graph [rankdir="TB", nodesep=".25"];
 
     Start;
     Default [label="Default\n(Lowest height)"];
-    DefaultTransition [label="Default transition"];
-    MobileGoalTransition [label="Mobile Goal Transition"];
+    DefaultUp [label="Default Up"];
+    MobileGoalDown [label="Mobile Goal Down"];
     MobileGoal [label="Mobile Goal"];
-    AllianceStakeTransition [label="Alliance Stake Transition"];
-    WallStakeTransition [label="Wall Stake Transition"];
+    MobileGoalUp [label="Mobile Goal Up"];
+    AllianceStakeDown [label="Alliance Stake Down"];
     AllianceStake [label="Alliance Stake"];
+    AllianceStakeUp [label="Alliance Stake Up"];
+    WallStakeDown [label="Wall Stake Down"];
     WallStake [label="Wall Stake"];
 
     Start -> Default [label="(unconditional)"];
 
-    DefaultTransition -> Default [label="Lift position == default height"];
-    DefaultTransition -> WallStakeTransition [label="Y button pressed", fontcolor="lime", color="lime"];
-    DefaultTransition -> AllianceStakeTransition [label="X button pressed", fontcolor="red", color="red"];
-    DefaultTransition -> MobileGoalTransition [label="A button pressed", fontcolor="purple", color="purple"];
+    Default -> DefaultUp [label="L1 held down", fontcolor="red", color="red"];
+    Default -> Default [label="L1 released\nL2 released"];
 
-    Default -> MobileGoalTransition [label="A button pressed", fontcolor="purple", color="purple"];
-    Default -> WallStakeTransition [label="Y button pressed", fontcolor="lime", color="lime"];
-    Default -> AllianceStakeTransition [label="X button pressed", fontcolor="red", color="red"];
-    Default -> Default [label="A, B, X, and Y not pressed"];
+    DefaultUp -> MobileGoal [label="L1 released", fontcolor="orange", color="orange"];
+    DefaultUp -> DefaultUp [label="L1 held down", fontcolor="red", color="red"];
 
-    MobileGoalTransition -> MobileGoal [label="Lift position == mobile goal height"];
-    MobileGoalTransition -> AllianceStakeTransition [label="X button pressed", fontcolor="red", color="red"];
-    MobileGoalTransition -> WallStakeTransition [label="Y button pressed", fontcolor="lime", color="lime"];
-    MobileGoalTransition -> DefaultTransition [label="B button pressed", color="blue"];
+    MobileGoal -> MobileGoalDown [label="L2 held down", fontcolor="blue", color="blue"];
+    MobileGoal -> MobileGoal [label="L1 released\nL2 released"];
+    MobileGoal -> MobileGoalUp [label="L1 held down", fontcolor="red", color="red"];
 
-    MobileGoal -> AllianceStakeTransition [label="X button pressed", fontcolor="red", color="red"];
-    MobileGoal -> WallStakeTransition [label="Y button pressed", fontcolor="lime", color="lime"];
-    MobileGoal -> DefaultTransition [label="B button pressed", color="blue"];
-    MobileGoal -> MobileGoal [label="B, X, and Y not pressed"];
+    MobileGoalDown -> Default [label="L2 released", fontcolor="lime", color="lime"];
+    MobileGoalDown -> MobileGoalDown [label="L2 held down", fontcolor="blue", color="blue"];
 
-    AllianceStakeTransition -> DefaultTransition [label="B button pressed", color="blue"];
-    AllianceStakeTransition -> AllianceStake [label="Lift position == alliance stake height"];
-    AllianceStakeTransition -> WallStakeTransition [label="Y button pressed", fontcolor="lime", color="lime"];
-    AllianceStakeTransition -> AllianceStakeTransition [label="Lift position != alliance stake height"];
-    AllianceStakeTransition -> MobileGoalTransition [label="A button pressed", fontcolor="purple", color="purple"];
+    MobileGoalUp -> AllianceStake [label="L1 released", fontcolor="orange", color="orange"];
+    MobileGoalUp -> MobileGoalUp [label="L1 held down", fontcolor="red", color="red"];
 
-    AllianceStake -> DefaultTransition [label="B button pressed", color="blue"];
-    AllianceStake -> MobileGoalTransition [label="A button pressed", fontcolor="purple", color="purple"];
-    AllianceStake -> WallStakeTransition [label="Y button pressed", fontcolor="lime", color="lime"];
-    AllianceStake -> AllianceStake [label="A, B, and Y not pressed"];
+    AllianceStake -> AllianceStakeDown [label="L2 held down", fontcolor="blue", color="blue"];
+    AllianceStake -> AllianceStake [label="L1 released\nL2 released"];
+    AllianceStake -> AllianceStakeUp [label="L1 held down", fontcolor="red", color="red"];
 
-    WallStakeTransition -> DefaultTransition [label="B button pressed", color = "blue"];
-    WallStakeTransition -> WallStake [label="Lift position == wall goal height"];
-    WallStakeTransition -> MobileGoalTransition [label="A button pressed", fontcolor="purple", color = "purple"];
-    WallStakeTransition -> AllianceStakeTransition [label="X button pressed", fontcolor="red", color="red"];
+    AllianceStakeDown -> AllianceStakeDown [label="L2 held down", fontcolor="blue", color="blue"];
+    AllianceStakeDown -> MobileGoal [label="L2 released", fontcolor="lime", color="lime"];
 
-    WallStake -> DefaultTransition [label="B button pressed", color = "blue"];
-    WallStake -> MobileGoalTransition [label="A button pressed", fontcolor="purple", color="purple"]
-    WallStake -> AllianceStakeTransition [label="X button pressed", fontcolor="red", color="red"];
-    WallStake -> WallStake [label="A, B, and X not pressed"];
+    AllianceStakeUp -> WallStake [label="L1 released", fontcolor="orange", color="orange"];
+    AllianceStakeUp -> AllianceStakeUp [label="L1 held down", fontcolor="red", color="red"];
+
+    WallStake -> WallStakeDown [label="L2 held down", fontcolor="blue", color="blue"];
+    WallStake -> WallStake [label="L1 released\nL2 released"];
+
+    WallStakeDown -> AllianceStake [label="L2 released", fontcolor="lime", color="lime"];
+    WallStakeDown -> WallStakeDown [label="L2 held down", fontcolor="blue", color="blue"];
+
+
+
+
 }

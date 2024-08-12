@@ -27,87 +27,6 @@ using namespace vex;
 using std::min;
 using std::max;
 
-enum class PrototypeLiftState {
-
-  // Initial state of the state machine
-  // - transitions: unconditional: DEFAULT_LOWEST_HEIGHT
-  START,
-
-  // There are some prototypes where the lowest height is the mobile goal height
-  // while other robots will have a lower minimum height than the mobile goal
-  // level.
-  // - transitions:
-  //   * X.pressed(): ALLIANCE_STAKE_TRANSITION
-  //   * Y.pressed(): WALL_STAKE_TRANSITION
-  //   * A.button(): MOBILE_GOAL_TRANSITION
-  DEFAULT_LOWEST_HEIGHT,
-
-  // This supports a transition to the lowest height supported by the lift.
-  // When transitioning into this state, run the lift in the appropriate direction.
-  // - transitions:
-  //   * X.pressed(): ALLIANCE_STAKE_TRANSITION
-  //   * Y.pressed(): WALL_STAKE_TRANSITION
-  //   * A.button(): MOBILE_GOAL_TRANSITION
-  //   * lift position = default height: DEFAULT_LOWEST_HEIGHT
-  DEFAULT_TRANSITION,
-
-  // This supports a transition to a mobile goal lift height. When transitioning
-  // into this state, run the lift in the appropriate direction to reach the
-  // desired height.
-  // - transitions:
-  //   * X.pressed(): ALLIANCE_STAKE_TRANSITION
-  //   * Y.pressed(): WALL_STAKE_TRANSITION
-  //   * B.pressed(): DEFAULT_TRANSITION
-  //   * lift position = mobile goal height: MOBILE_GOAL
-  MOBILE_GOAL_TRANSITION,
-
-  // The state where the appropriate lift height for mobile goals is reached.
-  // When transitioning into this state, the appropriate height has been
-  // reached.
-  // - transitions:
-  //   * X.pressed(): ALLIANCE_STAKE_TRANSITION
-  //   * Y.pressed(): WALL_STAKE_TRANSITION
-  //   * B.pressed(): DEFAULT_TRANSITION
-  MOBILE_GOAL,
-
-  // The state where the lift is moving in the appropriate direction to reach a
-  // height for wall stake intaking. When transitioning into this state, the
-  // lift motors will spin in the appropriate direction to reach wall stake height.
-  // - transitions:
-  //   * X.pressed(): ALLIANCE_STAKE_TRANSITION
-  //   * B.pressed(): DEFAULT_TRANSITION
-  //   * A.pressed(): MOBILE_GOAL_TRANSITION
-  //   * lift position = wall stake height: WALL_STAKE
-  WALL_STAKE_TRANSITION,
-
-  // The state after we have reached the appropriate lift height for wall
-  // stakes. When transitioning into this state, the WALL_STAKE height has been reached.
-  // - transitions:
-  //   * X.pressed(): ALLIANCE_STAKE_TRANSITION
-  //   * B.pressed(): DEFAULT_TRANSITION
-  //   * A.pressed(): MOBILE_GOAL_TRANSITION
-  WALL_STAKE,
-
-  // The state where we are transitioning into the appropriate lift height for
-  // alliance stakes. When transitioning into this state, the lift motors will
-  // spin in the appropriate direction to reach alliance stake height.
-  // - transitions:
-  //   * Y.pressed(): WALL_STAKE_TRANSITION
-  //   * A.pressed(): MOBILE_GOAL_TRANSITION
-  //   * B.pressed(): DEFAULT_TRANSITION
-  //   * lift position = alliance stake height: ALLIANCE_STAKE
-  ALLIANCE_STAKE_TRANSITIONS,
-
-  // The state where we have reached the appropriate lift height for alliance
-  // stakes. When transitioning into this state, the appropriate alliance stake
-  // height has been reached.
-  // - transitions:
-  //   * A.pressed(): MOBILE_GOAL_TRANSITION
-  //   * B.pressed(): DEFAULT_TRANSITION
-  //   * Y.pressed(): WALL_STAKE_TRANSITION
-  ALLIANCE_STAKE,
-};
-
 enum class PrototypeIntakeState {
 
   // Initial state of the state machine
@@ -133,7 +52,7 @@ enum class PrototypeIntakeState {
 
 };
 void updateIntakeState(bool intakeButton, bool outtakeButton, Iintake& robotWithIntake,
-                       PrototypeIntakeState& currentState);
+                       PrototypeIntakeState& state);
 
 
 competition Competition;
@@ -247,7 +166,7 @@ void autonomous() {
  */
 void teleop() {
   double liftRotations = 0.0;
-  PrototypeIntakeState currentState = PrototypeIntakeState::START;
+  PrototypeIntakeState state = PrototypeIntakeState::START;
   while (true) {
     auto prototype = makePivotRampPrototype();
     prototype.drive(Controller.Axis3.position(percentUnits::pct) / 100,
@@ -262,27 +181,41 @@ void teleop() {
     updateIntakeState(Controller.ButtonR1.pressing(),
                       Controller.ButtonR2.pressing(),
                       prototype,
-                      currentState);
+                      state);
   }
 }
+
+/**
+ * We have three states for our state machine: STOPPED, INTAKING, and OUTAKING.
+ * This helper handles that for us. Call it once per frame and it will set the
+ * state.
+ *
+ * @param intakeButton true if the caller wants to intake and false if they do
+ * not.
+ * @param outtakeButton true if the caller wants to outtake and false if they do
+ *                      not. If both are of the same value, it is ignored.
+ * @param robotWithIntake a prototype that we can instruct it to intake
+ * @param state[out] Whenever we change states in our state machine, we
+ * override the previous value of state. We do not own state.
+ */
 void updateIntakeState(bool intakeButton, bool outtakeButton, Iintake& robotWithIntake,
-                       PrototypeIntakeState& currentState) {
+                       PrototypeIntakeState& state) {
   // Establishes the control system for any arbitrary prototype intake.
   Brain.Screen.setCursor(3, 10);
-  switch (currentState) {
+  switch (state) {
     case PrototypeIntakeState::START:
       robotWithIntake.intake(0);
-      currentState = PrototypeIntakeState::STOPPED;
+      state = PrototypeIntakeState::STOPPED;
       Brain.Screen.print("START");
       break;
 
     case PrototypeIntakeState::STOPPED:
       if (intakeButton && !outtakeButton) {
-        currentState = PrototypeIntakeState::INTAKING;
+        state = PrototypeIntakeState::INTAKING;
         robotWithIntake.intake(1);
         Brain.Screen.print("INTAKING");
       } else if (!intakeButton && outtakeButton) {
-        currentState = PrototypeIntakeState::OUTTAKING;
+        state = PrototypeIntakeState::OUTTAKING;
         robotWithIntake.intake(-1);
         Brain.Screen.print("OUTTAKING");
       }
@@ -290,7 +223,7 @@ void updateIntakeState(bool intakeButton, bool outtakeButton, Iintake& robotWith
 
     case PrototypeIntakeState::INTAKING:
       if (!intakeButton) {
-        currentState = PrototypeIntakeState::STOPPED;
+        state = PrototypeIntakeState::STOPPED;
         robotWithIntake.intake(0);
         Brain.Screen.print("STOPPED");
       }
@@ -298,21 +231,22 @@ void updateIntakeState(bool intakeButton, bool outtakeButton, Iintake& robotWith
 
     case PrototypeIntakeState::OUTTAKING:
       if (!outtakeButton) {
-        currentState = PrototypeIntakeState::STOPPED;
+        state = PrototypeIntakeState::STOPPED;
         robotWithIntake.intake(0);
         Brain.Screen.print("STOPPED");
       }
       break;
-
   };
-
 }
+
 
 int main() {
   // Initializing Robot Configuration. DO NOT REMOVE!
   vexcodeInit();
 
-  // Register our autonomous and teleop(user control) routines.
+  // Register our autonomous and teleop(user control) routines. The Competition
+  // functions are O1 do not actually run autonomous or teleop. That
+  // responsibility lies somewhere else.
   Competition.autonomous(autonomous);
   Competition.drivercontrol(teleop);
 
