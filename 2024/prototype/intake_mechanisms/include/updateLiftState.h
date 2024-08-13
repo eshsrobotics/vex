@@ -4,6 +4,11 @@
 #include "Ilift.h"
 
 enum class LiftState;
+
+/**
+ * The value that must be initially passed into updateLiftState() to start the
+ * state machine.
+ */
 extern LiftState INITIAL_LIFT_STATE;
 
 /**

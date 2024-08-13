@@ -139,7 +139,7 @@ class PivotRampPrototype : public Idrive, public Iintake, public Ilift {
         /**
          * Returns the pivotramp lift's position. 0 is the lowest; 1 is the highest.
          */
-        double lift() const;
+        double liftPosition() const;
 
         /**
          * To determine experimentally, how many times the lift motor needs to

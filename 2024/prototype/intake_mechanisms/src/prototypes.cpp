@@ -119,7 +119,7 @@ void PivotRampPrototype::lift(double desiredLiftPosition) {
                                     waitForCompletion);
 }
 
-double PivotRampPrototype::lift() const {
+double PivotRampPrototype::liftPosition() const {
     motor_group lift_gr = this->lift_group;
     double rotations = lift_gr.position(vex::rotationUnits::rev);
 

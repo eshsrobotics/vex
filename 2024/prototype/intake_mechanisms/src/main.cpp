@@ -22,6 +22,7 @@
 #include "vex.h"
 
 #include <algorithm> // std::min, std::max
+#include "updateLiftState.h"
 
 using namespace vex;
 using std::min;
@@ -166,7 +167,8 @@ void autonomous() {
  */
 void teleop() {
   double liftRotations = 0.0;
-  PrototypeIntakeState state = PrototypeIntakeState::START;
+  PrototypeIntakeState intakeState = PrototypeIntakeState::START;
+  LiftState liftState = INITIAL_LIFT_STATE;
   while (true) {
     auto prototype = makePivotRampPrototype();
     prototype.drive(Controller.Axis3.position(percentUnits::pct) / 100,
@@ -181,7 +183,13 @@ void teleop() {
     updateIntakeState(Controller.ButtonR1.pressing(),
                       Controller.ButtonR2.pressing(),
                       prototype,
-                      state);
+                      intakeState);
+
+    // Allow the driver to control the lift position.
+    updateLiftState(Controller.ButtonL1.pressing(),
+                    Controller.ButtonL2.pressing(),
+                    prototype,
+                    liftState);
   }
 }
 
