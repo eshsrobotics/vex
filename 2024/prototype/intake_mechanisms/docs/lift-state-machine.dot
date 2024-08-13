@@ -20,37 +20,37 @@ digraph G {
 
     Start -> Default [label="(unconditional)"];
 
-    Default -> DefaultUp [label="L1 held down", fontcolor="red", color="red"];
-    Default -> Default [label="L1 released\nL2 released"];
+    Default -> DefaultUp [label="L1 pressed", fontcolor="red", color="red"];
+    Default -> Default [label="L1 released\n AND L2 released"];
 
-    DefaultUp -> MobileGoal [label="L1 released", fontcolor="orange", color="orange"];
-    DefaultUp -> DefaultUp [label="L1 held down", fontcolor="red", color="red"];
+    DefaultUp -> MobileGoal [label="Mobile goal height reached\n AND L1 released", fontcolor="orange", color="orange"];
+    DefaultUp -> DefaultUp [label="mobile goal height not reached\n OR L1 pressed", fontcolor="red", color="red"];
 
-    MobileGoal -> MobileGoalDown [label="L2 held down", fontcolor="blue", color="blue"];
-    MobileGoal -> MobileGoal [label="L1 released\nL2 released"];
-    MobileGoal -> MobileGoalUp [label="L1 held down", fontcolor="red", color="red"];
+    MobileGoal -> MobileGoalDown [label="L2 pressed", fontcolor="blue", color="blue"];
+    MobileGoal -> MobileGoal [label="L1 released\n AND L2 released"];
+    MobileGoal -> MobileGoalUp [label="L1 pressed", fontcolor="red", color="red"];
 
-    MobileGoalDown -> Default [label="L2 released", fontcolor="lime", color="lime"];
-    MobileGoalDown -> MobileGoalDown [label="L2 held down", fontcolor="blue", color="blue"];
+    MobileGoalDown -> Default [label="Default height reached\n AND L2 released", fontcolor="lime", color="lime"];
+    MobileGoalDown -> MobileGoalDown [label="Default height not reached\n OR L2 pressed", fontcolor="blue", color="blue"];
 
-    MobileGoalUp -> AllianceStake [label="L1 released", fontcolor="orange", color="orange"];
-    MobileGoalUp -> MobileGoalUp [label="L1 held down", fontcolor="red", color="red"];
+    MobileGoalUp -> AllianceStake [label="alliance stake height reached\n AND L1 released", fontcolor="orange", color="orange"];
+    MobileGoalUp -> MobileGoalUp [label="alliance stake height not reached\n OR L1 pressed", fontcolor="red", color="red"];
 
-    AllianceStake -> AllianceStakeDown [label="L2 held down", fontcolor="blue", color="blue"];
-    AllianceStake -> AllianceStake [label="L1 released\nL2 released"];
-    AllianceStake -> AllianceStakeUp [label="L1 held down", fontcolor="red", color="red"];
+    AllianceStake -> AllianceStakeDown [label="L2 pressed", fontcolor="blue", color="blue"];
+    AllianceStake -> AllianceStake [label="L1 released\n AND L2 released"];
+    AllianceStake -> AllianceStakeUp [label="L1 pressed", fontcolor="red", color="red"];
 
-    AllianceStakeDown -> AllianceStakeDown [label="L2 held down", fontcolor="blue", color="blue"];
-    AllianceStakeDown -> MobileGoal [label="L2 released", fontcolor="lime", color="lime"];
+    AllianceStakeDown -> AllianceStakeDown [label="mobile height not reached\n OR L2 pressed", fontcolor="blue", color="blue"];
+    AllianceStakeDown -> MobileGoal [label="mobile goal height reached\n AND L2 released", fontcolor="lime", color="lime"];
 
-    AllianceStakeUp -> WallStake [label="L1 released", fontcolor="orange", color="orange"];
-    AllianceStakeUp -> AllianceStakeUp [label="L1 held down", fontcolor="red", color="red"];
+    AllianceStakeUp -> WallStake [label="wall stake height reached\n AND L1 reached", fontcolor="orange", color="orange"];
+    AllianceStakeUp -> AllianceStakeUp [label="wall stake height not released\n OR L1 pressed", fontcolor="red", color="red"];
 
-    WallStake -> WallStakeDown [label="L2 held down", fontcolor="blue", color="blue"];
-    WallStake -> WallStake [label="L1 released\nL2 released"];
+    WallStake -> WallStakeDown [label="L2 pressed", fontcolor="blue", color="blue"];
+    WallStake -> WallStake [label="L1 released\n AND L2 released"];
 
-    WallStakeDown -> AllianceStake [label="L2 released", fontcolor="lime", color="lime"];
-    WallStakeDown -> WallStakeDown [label="L2 held down", fontcolor="blue", color="blue"];
+    WallStakeDown -> AllianceStake [label="alliance stake height reached\n AND L2 released", fontcolor="lime", color="lime"];
+    WallStakeDown -> WallStakeDown [label="alliance stake height not reached\n OR L2 pressed", fontcolor="blue", color="blue"];
 
 
 
