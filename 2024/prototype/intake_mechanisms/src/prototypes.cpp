@@ -11,9 +11,7 @@ using std::stringstream;
 using std::setprecision;
 using namespace vex;
 
-// This is the maximum controller joystick input threshold that has to be
-// overcome for inputs to be registered.
-const double DEADZONE = 0.1;
+
 
 /**
  * Internal helper function for differential driving with arcade-style controls.
@@ -117,6 +115,9 @@ void PivotRampPrototype::setLiftPosition(double desiredLiftPosition) {
     this->lift_group.spinToPosition(desiredRotations, rev,
                                     LIFT_VELOCITY_PERCENT, velocityUnits::pct,
                                     waitForCompletion);
+
+    Controller.Screen.setCursor(CONTROLLER_LIFT_POSITION_ROW, 1);
+    Controller.Screen.print("Lift=%.2f%, target=%.2f%  ", getliftPosition() * 100, desiredLiftPosition * 100);
 }
 
 double PivotRampPrototype::getliftPosition() const {
@@ -126,24 +127,15 @@ double PivotRampPrototype::getliftPosition() const {
     return rotations/rotationsToTop;
 }
 
-void PivotRampPrototype::setLiftRotationsDebug(double liftRotations) {
-
-    // Non-blocking spinToPosition call
-    const bool waitForCompletion = false;
-    this->lift_group.spinToPosition(liftRotations, rev, LIFT_VELOCITY_PERCENT,
-                                    velocityUnits::pct,
-                                    waitForCompletion);
-    Controller.Screen.setCursor(2, 1);
-    Controller.Screen.print("Lift at %.2f (target: %.2f)  ",
-                       lift_group.position(rev),
-                       liftRotations);
-}
-
 void PivotRampPrototype::moveLiftDirect(double rotations) {
     if (fabs(rotations) < DEADZONE) {
         this->lift_group.stop();
     } else {
         const bool waitForCompletion = false;
         this->lift_group.spinFor(rotations, vex::rotationUnits::rev, waitForCompletion);
+
+        Controller.Screen.setCursor(CONTROLLER_LIFT_POSITION_ROW, 1);
+        Controller.Screen.print("Lift at %.2f revs ",
+                                lift_group.position(rev));
     }
 }

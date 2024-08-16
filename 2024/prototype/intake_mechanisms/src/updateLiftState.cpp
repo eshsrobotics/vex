@@ -161,6 +161,6 @@ void updateLiftState(bool upButton, bool downButton,
             break;
     }
 
-    Controller.Screen.setCursor(1, 1);
+    Controller.Screen.setCursor(CONTROLLER_LIFT_STATE_ROW, 1);
     Controller.Screen.print(format, label);
 }

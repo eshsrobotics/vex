@@ -17,13 +17,6 @@ extern controller Controller;
 extern drivetrain Drivetrain;
 extern motor intake_roller_motor;
 
-const int front_left_motor_port = 2 - 1;
-const int center_left_motor_port = 3 - 1;
-const int back_left_motor_port = 4 - 1;
-const int front_right_motor_port = 5 - 1;
-const int center_right_motor_port = 6 - 1;
-const int back_right_motor_port = 7 - 1;
-const int intake_roller_motor_port = 8 - 1;
 const auto gearbox_ratio = ratio6_1;
 
 const double autonomous_speed_pct = 15.0;
@@ -33,6 +26,14 @@ const double experiment_duration_ms = 5000;
 // How quickly to raise or lower the lift mechanism, in percent units between 0
 // and 100.
 const double LIFT_VELOCITY_PERCENT = 50.0;
+
+// For all inputs in the range [-1, 1], the threshold that has to be overcome
+// for the inputs to be considered non-zero. This currently applies to lift
+// speeds, intake speeds, and driving.
+const double DEADZONE = 0.1;
+
+const int CONTROLLER_LIFT_STATE_ROW = 1;
+const int CONTROLLER_LIFT_POSITION_ROW = 2;
 
 /**
  * Used to initialize code/tasks/devices added using tools in VEXcode Text.

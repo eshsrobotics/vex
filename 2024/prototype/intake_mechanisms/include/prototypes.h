@@ -128,11 +128,11 @@ class PivotRampPrototype : public Idrive, public Iintake, public Ilift {
         /**
          * Move the lift to a certain position.
          *
-         * A parameter of 1.0 will extend the lift to its fullest. 0 will
-         * compress the lift as much as possible.
-         *
          * Warning: Different types of lifts will permit different ranges for
          * this number.
+         *
+         * @param position a position in the closed interval [0, 1]. 0 is the
+         * lift's bottom while 1 is maximum height.
          */
         void setLiftPosition(double position);
 
@@ -143,25 +143,9 @@ class PivotRampPrototype : public Idrive, public Iintake, public Ilift {
 
         /**
          * Moves the lift directly by the given number of rotations.
+         * @param rotations the number of revolutions to rotate the lift_motor group
          */
         void moveLiftDirect(double rotations);
-
-        /**
-         * To determine experimentally, how many times the lift motor needs to
-         * rotate in order for the lift to get all the way up, you can call this
-         * function and pass in a desired number of rotations.  WE will rotate
-         * the lift motors as many times as you specify, and report in the
-         * Brain's display the encoder position of the lift motors in
-         * RotationalUnits::rev (revolutions.)
-         *
-         * Use this value to determine the rotationsToTop parameter for the
-         * constructor.
-         *
-         * This function is NOT meant to be used during teleop; please call
-         * lift(double) for that purpose.
-         */
-        void setLiftRotationsDebug(double liftRotations);
-
 
     private:
         vex::motor_group left;

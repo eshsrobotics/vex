@@ -55,8 +55,14 @@ enum class PrototypeIntakeState {
 void updateIntakeState(bool intakeButton, bool outtakeButton, Iintake& robotWithIntake,
                        PrototypeIntakeState& state);
 
-
-void moveLiftDebug(bool buttonUp, bool buttonDown, Ilift& robotWithLift) {
+/**
+ * Moves the lift directly to determine rotationsToTop.
+ * @param buttonUp button for making the lift go up
+ * @param buttonDown button for making the lift go down
+ * @param robotWithLift a robot inheriting from Ilift
+ * @param rotationsPerButton the number of rotations the motor makes
+ */
+void moveLiftRotationsToTopDebug(bool buttonUp, bool buttonDown, Ilift& robotWithLift) {
   const double rotationsPerButton = 0.5;
   if (buttonUp) {
       robotWithLift.moveLiftDirect(rotationsPerButton);
@@ -65,6 +71,19 @@ void moveLiftDebug(bool buttonUp, bool buttonDown, Ilift& robotWithLift) {
   } else {
     robotWithLift.moveLiftDirect(0);
   }
+}
+
+
+void moveLiftGatherHeightsDebug(bool buttonUp, bool buttonDown, Ilift& robotWithLift) {
+  const double incrementPerButton = 0.05;
+  // There is no else as the setLiftPosition() call moves the lift to the
+  // desired position until reached, then stops.
+  if (buttonUp) {
+    robotWithLift.setLiftPosition(robotWithLift.getliftPosition() + incrementPerButton);
+  } else if (buttonDown) {
+    robotWithLift.setLiftPosition(robotWithLift.getliftPosition() - incrementPerButton);
+  }
+
 }
 
 competition Competition;
@@ -185,26 +204,27 @@ void teleop() {
     prototype.drive(Controller.Axis3.position(percentUnits::pct) / 100,
                     Controller.Axis4.position(percentUnits::pct) / 100);
 
-    const double SCALE_FACTOR = 0.05;
-    liftRotations += SCALE_FACTOR * Controller.Axis2.position(percentUnits::pct) / 100.0;
-    liftRotations = max(0.0, min(liftRotations, 1.0));
-    prototype.setLiftRotationsDebug(liftRotations);
-
     // Allow the driver to control the direction of any prototype intake.
     updateIntakeState(Controller.ButtonR1.pressing(),
                       Controller.ButtonR2.pressing(),
                       prototype,
                       intakeState);
 
-    // Allow the driver to control the lift position.
+    // Allow the driver to control the lift positi-on.
     bool buttonUp = Controller.ButtonL1.pressing();
     bool buttonDown = Controller.ButtonL2.pressing();
 
-    // updateLiftState() and moveLiftDebug() are mutually exclusive. We have two
-    // ways of moving the lift, one directly and one direction. Uncomment and
-    // comment the functions as necessary.
-    // updateLiftState(buttonUp, buttonDown, prototype, liftState); // move lift by state machine.
-    moveLiftDebug(buttonUp, buttonDown, prototype); // move lift directly (for determining rotationsToTop)
+    // The functions below are mutually exclusive. We have two ways of moving
+    // the lift, one directly and one direction.
+    //
+    // * The first function moves the lift directly to determine rotationsToTop.
+    // * The second function moves the lift directly to determine the other
+    //   heights after having determined the rotationsToTop.
+    // * The third function calls the production state machine functions but
+    //   requires all the heights identified.
+    moveLiftRotationsToTopDebug(buttonUp, buttonDown, prototype); // move lift directly (rotationsToTop)
+    // moveLiftGatherHeightsDebug(buttonUp, buttonDown, prototype); // move lift directly (relative heights)
+    // updateLiftState(buttonUp, buttonDown, prototype, liftState); // move lift by state machine (final)
   }
 }
 
