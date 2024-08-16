@@ -120,6 +120,13 @@ PivotRampPrototype makePivotRampPrototype() {
                                               intakeMotorGroup,
                                               liftMotorGroup,
                                               rotationsToTop);
+  pivotRampPrototypeObject.setLiftHeights({
+    // Update these values once rotationsToTop has been determined.
+    .defaultHeight=0,
+    .mobileGoalHeight=0,
+    .allianceStakeHeight=0,
+    .wallStakeHeight=0
+  });
   return pivotRampPrototypeObject;
 }
 
@@ -196,7 +203,6 @@ void autonomous() {
  * for remaining 1:45 minutes of the competition.
  */
 void teleop() {
-  double liftRotations = 0.0;
   PrototypeIntakeState intakeState = PrototypeIntakeState::START;
   LiftState liftState = INITIAL_LIFT_STATE;
   while (true) {
@@ -223,8 +229,8 @@ void teleop() {
     // * The third function calls the production state machine functions but
     //   requires all the heights identified.
     moveLiftRotationsToTopDebug(buttonUp, buttonDown, prototype); // move lift directly (rotationsToTop)
-    // moveLiftGatherHeightsDebug(buttonUp, buttonDown, prototype); // move lift directly (relative heights)
-    // updateLiftState(buttonUp, buttonDown, prototype, liftState); // move lift by state machine (final)
+    moveLiftGatherHeightsDebug(buttonUp, buttonDown, prototype); // move lift directly (relative heights)
+    updateLiftState(buttonUp, buttonDown, prototype, liftState); // move lift by state machine (final)
   }
 }
 

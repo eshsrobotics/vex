@@ -139,3 +139,7 @@ void PivotRampPrototype::moveLiftDirect(double rotations) {
                                 lift_group.position(rev));
     }
 }
+
+void PivotRampPrototype::setLiftHeights(LiftHeights liftHeights) {
+    liftHeights_ = liftHeights;
+}

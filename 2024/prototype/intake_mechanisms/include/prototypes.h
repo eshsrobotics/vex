@@ -147,12 +147,20 @@ class PivotRampPrototype : public Idrive, public Iintake, public Ilift {
          */
         void moveLiftDirect(double rotations);
 
+        LiftHeights liftHeights() const {
+            return liftHeights_;
+        }
+
+        void setLiftHeights(LiftHeights liftHeights);
+
     private:
         vex::motor_group left;
         vex::motor_group right;
         vex::motor_group intake_group;
         vex::motor_group lift_group;
         double rotationsToTop;
+
+        LiftHeights liftHeights_;
 };
 
 #endif // (ifndef __PROTOTYPE_H_INCLUDED__)

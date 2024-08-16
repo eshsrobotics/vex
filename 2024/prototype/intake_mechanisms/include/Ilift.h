@@ -80,9 +80,9 @@ class Ilift {
         virtual LiftHeights liftHeights() const {
             return LiftHeights {
                 .defaultHeight=0,
-                .mobileGoalHeight=0.2,
-                .allianceStakeHeight=0.4,
-                .wallStakeHeight=0.6,
+                .mobileGoalHeight=0,
+                .allianceStakeHeight=0,
+                .wallStakeHeight=0,
             };
         }
 };
