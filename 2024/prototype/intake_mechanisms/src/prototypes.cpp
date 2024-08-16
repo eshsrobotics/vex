@@ -92,9 +92,9 @@ PivotRampPrototype::PivotRampPrototype(const motor_group& left_, const motor_gro
     : left(left_), right(right_), intake_group(intake_), lift_group(lift_),
       rotationsToTop(rotToTop) {
 
-        // Where we are right now -- the initialLiftPosition -- will now
-        // correspond to an encoder value of zero.
-        lift_group.resetPosition();
+    // Where we are right now -- the initialLiftPosition -- will now
+    // correspond to an encoder value of zero.
+    lift_group.resetPosition();
 }
 
 void PivotRampPrototype::drive(double straightSpeed, double turnSpeed) {
@@ -105,7 +105,7 @@ void PivotRampPrototype::intake(double intakeSpeed) {
     this->intake_group.setVelocity(intakeSpeed * 100, percent);
 }
 
-void PivotRampPrototype::lift(double desiredLiftPosition) {
+void PivotRampPrototype::setLiftPosition(double desiredLiftPosition) {
     // Clamp the parameter of interpolation to the interval [0, 1].
     double u = max(0.0, min(desiredLiftPosition, 1.0));
 
@@ -119,7 +119,7 @@ void PivotRampPrototype::lift(double desiredLiftPosition) {
                                     waitForCompletion);
 }
 
-double PivotRampPrototype::liftPosition() const {
+double PivotRampPrototype::getliftPosition() const {
     motor_group lift_gr = this->lift_group;
     double rotations = lift_gr.position(vex::rotationUnits::rev);
 
@@ -127,10 +127,23 @@ double PivotRampPrototype::liftPosition() const {
 }
 
 void PivotRampPrototype::setLiftRotationsDebug(double liftRotations) {
+
+    // Non-blocking spinToPosition call
     const bool waitForCompletion = false;
     this->lift_group.spinToPosition(liftRotations, rev, LIFT_VELOCITY_PERCENT,
                                     velocityUnits::pct,
                                     waitForCompletion);
-    Brain.Screen.setCursor(1, 1);
-    Brain.Screen.print("Lift at %.2f (target: %d)  ", lift_group.position(rev), liftRotations);
+    Controller.Screen.setCursor(2, 1);
+    Controller.Screen.print("Lift at %.2f (target: %.2f)  ",
+                       lift_group.position(rev),
+                       liftRotations);
+}
+
+void PivotRampPrototype::moveLiftDirect(double rotations) {
+    if (fabs(rotations) < DEADZONE) {
+        this->lift_group.stop();
+    } else {
+        const bool waitForCompletion = false;
+        this->lift_group.spinFor(rotations, vex::rotationUnits::rev, waitForCompletion);
+    }
 }

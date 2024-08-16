@@ -56,6 +56,17 @@ void updateIntakeState(bool intakeButton, bool outtakeButton, Iintake& robotWith
                        PrototypeIntakeState& state);
 
 
+void moveLiftDebug(bool buttonUp, bool buttonDown, Ilift& robotWithLift) {
+  const double rotationsPerButton = 0.5;
+  if (buttonUp) {
+      robotWithLift.moveLiftDirect(rotationsPerButton);
+  } else if (buttonDown) {
+      robotWithLift.moveLiftDirect(-rotationsPerButton);
+  } else {
+    robotWithLift.moveLiftDirect(0);
+  }
+}
+
 competition Competition;
 
 PivotRampPrototype makePivotRampPrototype() {
@@ -186,10 +197,14 @@ void teleop() {
                       intakeState);
 
     // Allow the driver to control the lift position.
-    updateLiftState(Controller.ButtonL1.pressing(),
-                    Controller.ButtonL2.pressing(),
-                    prototype,
-                    liftState);
+    bool buttonUp = Controller.ButtonL1.pressing();
+    bool buttonDown = Controller.ButtonL2.pressing();
+
+    // updateLiftState() and moveLiftDebug() are mutually exclusive. We have two
+    // ways of moving the lift, one directly and one direction. Uncomment and
+    // comment the functions as necessary.
+    // updateLiftState(buttonUp, buttonDown, prototype, liftState); // move lift by state machine.
+    moveLiftDebug(buttonUp, buttonDown, prototype); // move lift directly (for determining rotationsToTop)
   }
 }
 

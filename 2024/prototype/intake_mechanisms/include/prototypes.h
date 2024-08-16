@@ -134,12 +134,17 @@ class PivotRampPrototype : public Idrive, public Iintake, public Ilift {
          * Warning: Different types of lifts will permit different ranges for
          * this number.
          */
-        void lift(double position);
+        void setLiftPosition(double position);
 
         /**
          * Returns the pivotramp lift's position. 0 is the lowest; 1 is the highest.
          */
-        double liftPosition() const;
+        double getliftPosition() const;
+
+        /**
+         * Moves the lift directly by the given number of rotations.
+         */
+        void moveLiftDirect(double rotations);
 
         /**
          * To determine experimentally, how many times the lift motor needs to
@@ -156,6 +161,7 @@ class PivotRampPrototype : public Idrive, public Iintake, public Ilift {
          * lift(double) for that purpose.
          */
         void setLiftRotationsDebug(double liftRotations);
+
 
     private:
         vex::motor_group left;

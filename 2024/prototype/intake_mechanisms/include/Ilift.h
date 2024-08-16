@@ -12,7 +12,7 @@ class Ilift {
          * values for these.
          *
          * All values should range from 0.0 to 1.0 (which is the same range
-         * returned by this->lift().)
+         * returned by this->getLiftPosition().)
          */
          struct LiftHeights {
             // The lowest, or ground height. May be equal to mobileGoalHeight on
@@ -47,7 +47,7 @@ class Ilift {
          * @param position position will be a value between 0 and 1. 1 will be the
          * maximum distance which the lift can raise up.
          */
-        virtual void lift(double position) = 0;
+        virtual void setLiftPosition(double position) = 0;
 
         /**
          * Query the lift's position.
@@ -55,10 +55,22 @@ class Ilift {
          * while 1 is the lift's highest position. The values are determined
          * experimentally.
          */
-        virtual double liftPosition() const = 0;
+        virtual double getliftPosition() const = 0;
 
-        // Returns true if the lift can go all the way to the ground.
+        /** Returns true if the lift can go all the way to the ground. */
         virtual bool canReachGround() const { return false; }
+
+        /**
+         * Moves the lift directly by the given number of rotations.
+         * Unlike setLiftPosition, this method does not rely rotationsToTop
+         * already being calculated, making it suitable to determine
+         * rotationsToTop.
+         *
+         * @param rotations How many times to rotate the lift_motor group.
+         * Positive values will move the lift up while negative would move it
+         * down. 0 stops the lift.
+         */
+        virtual void moveLiftDirect(double rotations) = 0;
 
         /**
          * Returns the default height value constants. However, each robot will
