@@ -1,18 +1,20 @@
 // PROTOTYPES.CPP -- Implementation file for PROTOTYPE.H
 #include <algorithm>    // min, max
+#include <utility>      // move
 #include <sstream>      // stringstream
 #include <iomanip>      // setprecision
 #include "prototypes.h"
 #include "robot-config.h"
 
+using std::move;
 using std::min;
 using std::max;
 using std::stringstream;
 using std::setprecision;
 using namespace vex;
 
-PivotRampPrototype::PivotRampPrototype(motor_group& left_, motor_group& right_,
-                                       motor_group& intake_, motor_group& lift_,
+PivotRampPrototype::PivotRampPrototype(motor_group&& left_, motor_group&& right_,
+                                       motor_group&& intake_, motor_group&& lift_,
                                        double rotToTop)
     : left(left_), right(right_), intake_group(intake_), lift_group(lift_), 
       rotationsToTop(rotToTop) {
@@ -34,10 +36,15 @@ void PivotRampPrototype::drive(double straightSpeed, double turnSpeed) {
     difference = max(-1.0, min(difference, 1.0));
 
     this->left.setVelocity(-(sum) * 100, percent);
-    this->right.setVelocity(-(difference) * 100, percent);
-    left.spin(forward);
-    right.spin(forward);
+    // this->right.setVelocity(-(difference) * 100, percent);
+    // left.spin(forward);
+    // right.spin(forward);
 
+    // stringstream out;
+    // out << "fwd: " << setprecision(2) << straightSpeed
+    //     << " turn: " << turnSpeed << "  ";
+    // Brain.Screen.setCursor(1, 1);
+    // // Brain.Screen.print(out.str().c_str());
 }
 
 void PivotRampPrototype::intake(double intakeSpeed) {
@@ -69,4 +76,5 @@ void PivotRampPrototype::setLiftRotationsDebug(double liftRotations) {
     out << "Lift at " << setprecision(2) << lift_group.position(rev)
         << " (target: " << liftRotations << ")  ";
     Brain.Screen.setCursor(1, 1);
+    //Brain.Screen.print(out.str().c_str());
 }
