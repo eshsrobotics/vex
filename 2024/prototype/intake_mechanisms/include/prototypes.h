@@ -3,6 +3,7 @@
 #define __PROTOTYPE_H_INCLUDED__
 
 #include "vex.h"
+#include <vector>
 
 #include "Idrive.h"
 #include "Iintake.h"
@@ -108,6 +109,10 @@ class PivotRampPrototype : public Idrive, public Iintake, public Ilift {
                            const vex::motor_group& intake, const vex::motor_group& lift,
                            double rotationsToTop);
 
+        PivotRampPrototype(const std::vector<vex::motor>& left_motors_,
+                           const std::vector<vex::motor>& right_motors_,
+                           const vex::motor_group& intake, const vex::motor_group& lift,
+                           double rotationsToTop);
         /**
          * Drive the robot at the given speeds.
          *
@@ -154,8 +159,10 @@ class PivotRampPrototype : public Idrive, public Iintake, public Ilift {
         void setLiftHeights(LiftHeights liftHeights);
 
     private:
-        vex::motor_group left;
-        vex::motor_group right;
+        std::vector<vex::motor> left_motors;
+        std::vector<vex::motor> right_motors;
+        // vex::motor_group left;
+        // vex::motor_group right;
         vex::motor_group intake_group;
         vex::motor_group lift_group;
         double rotationsToTop;
