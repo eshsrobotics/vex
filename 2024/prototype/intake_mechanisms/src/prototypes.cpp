@@ -45,21 +45,14 @@ void arcade_drive(double straightSpeed, double turnSpeed, vector<motor>& left,
     Controller.Screen.print("Vel: l=%.2f, r=%.2f  ", leftVelocity, rightVelocity);
 
     if (rightVelocity != 0) {
-        int index = 0;
         for_each(right.begin(), right.end(), [&](motor& m) {
-            if (index >= 0) {
-                m.setVelocity(rightVelocity * 100, percent);
-                m.spin(forward);
-            }
-            index++;
-        });        
-        // right.setVelocity(rightVelocity * 100, percent);
-        // right.spin(forward);
+            m.setVelocity(rightVelocity * 100, percent);
+            m.spin(forward);
+        });
     } else {
         for_each(right.begin(), right.end(), [&](motor& m) {
             m.stop();
         });
-        // right.stop();
     }
 
     if (leftVelocity != 0) {
@@ -67,13 +60,10 @@ void arcade_drive(double straightSpeed, double turnSpeed, vector<motor>& left,
             m.setVelocity(leftVelocity * 100, percent);
             m.spin(forward);
         });
-        // left.setVelocity(leftVelocity * 100, percent);
-        //left.spin(forward);
     } else {
         for_each(left.begin(), left.end(), [&](motor& m) {
             m.stop();
-        }); 
-        // left.stop();               
+        });
     }
 }
 
@@ -107,27 +97,17 @@ double FlywheelPrototype::intake_speed() {
     return result;
 }
 
-PivotRampPrototype::PivotRampPrototype(const motor_group& left_, const motor_group& right_,
-                                       const motor_group& intake_, const motor_group& lift_,
-                                       double rotToTop)
-    : intake_group(intake_), lift_group(lift_),
-      rotationsToTop(rotToTop) {
-
-    // Where we are right now -- the initialLiftPosition -- will now
-    // correspond to an encoder value of zero.
-    lift_group.resetPosition();
-}
-
 PivotRampPrototype::PivotRampPrototype(const std::vector<vex::motor>& left_motors_,
                                        const std::vector<vex::motor>& right_motors_,
                                        const vex::motor_group& intake_, const vex::motor_group& lift_,
-                                       double rotToTop) 
+                                       double rotToTop)
     : left_motors(left_motors_), right_motors(right_motors_),
       intake_group(intake_), lift_group(lift_), rotationsToTop(rotToTop) {
     // Where we are right now -- the initialLiftPosition -- will now
     // correspond to an encoder value of zero.
     lift_group.resetPosition();
 }
+
 
 void PivotRampPrototype::drive(double straightSpeed, double turnSpeed) {
     arcade_drive(straightSpeed, turnSpeed, left_motors, right_motors);

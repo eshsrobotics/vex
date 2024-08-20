@@ -84,12 +84,12 @@ class PivotRampPrototype : public Idrive, public Iintake, public Ilift {
          * setReverse() as needed) so that nothing is damaged when the motor
          * group's velocity is set.
          *
-         * @param left   The motor group handling all motors on the left side of
-         *               the drive.  Setting its velocity to a positive value
+         * @param left   The list of all motors on the left side of the drive.
+         *               Setting each motor's velocity to a positive value
          *               should cause the left side of the robot to drive
          *               forward.
-         * @param right  The motor group handling all motors on the right side
-         *               of the drive.  Setting its velocity to a positive value
+         * @param right  The list of all motors on the right side of the drive.
+         *               Setting each motor's velocity to a positive value
          *               should cause the right side of the robot to drive
          *               forward.
          * @param intake The motor group handling all motors responsible for
@@ -103,12 +103,8 @@ class PivotRampPrototype : public Idrive, public Iintake, public Ilift {
          * @param rotationsToTop The number of rotations that the lift's input
          *               motor has to make for the lift to extend.  This value
          *               must be determined experimentally (please see
-         *               setLiftRotationsDebug().)
+         *               setLiftRotationsDebug()).
          */
-        PivotRampPrototype(const vex::motor_group& left, const vex::motor_group& right,
-                           const vex::motor_group& intake, const vex::motor_group& lift,
-                           double rotationsToTop);
-
         PivotRampPrototype(const std::vector<vex::motor>& left_motors_,
                            const std::vector<vex::motor>& right_motors_,
                            const vex::motor_group& intake, const vex::motor_group& lift,
