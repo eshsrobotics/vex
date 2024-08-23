@@ -67,10 +67,10 @@ void arcade_drive(double straightSpeed, double turnSpeed, vector<motor>& left,
     }
 }
 
-FlywheelPrototype::FlywheelPrototype(const motor_group& left_,
-                                     const motor_group& right_,
+FlywheelPrototype::FlywheelPrototype(const std::vector<vex::motor>& left_,
+                                     const std::vector<vex::motor>& right_,
                                      const motor_group& intake_)
-    : left(left_), right(right_), intake_group(intake_) { }
+    : left_motors(left_), right_motors(right_), intake_group(intake_) { }
 
 void FlywheelPrototype::drive(double straightSpeed, double turnSpeed) {
     // arcade_drive(straightSpeed, turnSpeed, left_motors, right_motors);

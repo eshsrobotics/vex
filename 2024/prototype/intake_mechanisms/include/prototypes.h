@@ -33,7 +33,8 @@ class FlywheelPrototype : public Idrive, Iintake {
          *               outtaking. The two motors must spin in opposite directions for the
          *               game piece to go up. This will be achieved through specific wiring.
          */
-        FlywheelPrototype(const vex::motor_group& left, const vex::motor_group& right,
+        FlywheelPrototype(const std::vector<vex::motor>& left,
+                          const std::vector<vex::motor>& right,
                           const vex::motor_group& intake_group);
 
         /**
@@ -65,8 +66,8 @@ class FlywheelPrototype : public Idrive, Iintake {
         double intake_speed();
 
     private:
-        vex::motor_group left;
-        vex::motor_group right;
+        std::vector<vex::motor> left_motors;
+        std::vector<vex::motor> right_motors;
         vex::motor_group intake_group;
 };
 
@@ -157,8 +158,6 @@ class PivotRampPrototype : public Idrive, public Iintake, public Ilift {
     private:
         std::vector<vex::motor> left_motors;
         std::vector<vex::motor> right_motors;
-        // vex::motor_group left;
-        // vex::motor_group right;
         vex::motor_group intake_group;
         vex::motor_group lift_group;
         double rotationsToTop;

@@ -40,6 +40,9 @@
         "type_traits": "cpp",
         "utility": "cpp",
         "typeinfo": "cpp",
-        "string": "cpp"
+        "string": "cpp",
+        "cstring": "cpp",
+        "list": "cpp",
+        "iostream": "cpp"
     }
 }

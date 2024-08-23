@@ -100,11 +100,11 @@ PivotRampPrototype makePivotRampPrototype() {
   const int RIGHT_MOTOR_PORT_C = 7 - 1; // right_back_motor
   const int INTAKE_MOTOR_PORT = 1 - 1;
   const int LIFT_MOTOR_PORT = 9 - 1;
-  
+
   vex::motor leftMotor1(LEFT_MOTOR_PORT_A);
   vex::motor leftMotor2(LEFT_MOTOR_PORT_B);
   vex::motor leftMotor3(LEFT_MOTOR_PORT_C);
-  vector<motor> leftMotors = {leftMotor1, leftMotor2, leftMotor3};  
+  vector<motor> leftMotors = {leftMotor1, leftMotor2, leftMotor3};
 
   vex::motor rightMotor1(RIGHT_MOTOR_PORT_A, true);
   vex::motor rightMotor2(RIGHT_MOTOR_PORT_B, true);
@@ -150,12 +150,12 @@ FlywheelPrototype makeFlywheelPrototype() {
   vex::motor leftMotor1(LEFT_MOTOR_PORT_A);
   vex::motor leftMotor2(LEFT_MOTOR_PORT_B);
   vex::motor leftMotor3(LEFT_MOTOR_PORT_C);
-  vex::motor_group leftMotorGroup(leftMotor1, leftMotor2, leftMotor3);
+  vector<motor> leftMotors = {leftMotor1, leftMotor2, leftMotor3};
 
   vex::motor rightMotor1(RIGHT_MOTOR_PORT_A);
   vex::motor rightMotor2(RIGHT_MOTOR_PORT_B);
   vex::motor rightMotor3(RIGHT_MOTOR_PORT_C);
-  vex::motor_group rightMotorGroup(rightMotor1, rightMotor2, rightMotor3);
+  vector<motor> rightMotors {rightMotor1, rightMotor2, rightMotor3};
 
   // TODO: Make sure the left and the right flywheel motors are spinning in
   // opposite directions.
@@ -163,7 +163,7 @@ FlywheelPrototype makeFlywheelPrototype() {
   vex::motor rightFlywheelMotor(RIGHT_FLYWHEEL_PORT);
   vex::motor_group intakeMotorGroup(leftFlywheelMotor, rightFlywheelMotor);
 
-  return FlywheelPrototype(leftMotorGroup, rightMotorGroup, intakeMotorGroup);
+  return FlywheelPrototype(leftMotors, rightMotors, intakeMotorGroup);
 }
 
 /**
@@ -297,7 +297,7 @@ void updateIntakeState(bool intakeButton, bool outtakeButton, Iintake& robotWith
       }
       break;
   };
-    
+
   if (strlen(label) > 0) {
     Controller.Screen.setCursor(1, 1);
     Controller.Screen.print(format, label);
