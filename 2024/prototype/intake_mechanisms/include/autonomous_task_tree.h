@@ -56,4 +56,24 @@ extern void addTask(std::shared_ptr<Task> parentTask,
 
 extern void execute(std::shared_ptr<Task> rootTask);
 
+
+/*****************************************************
+ * A TASK THAT WAITS FOR A SPECIFIED PERIOD OF TIME. *
+ *****************************************************/
+class WaitMillisecondsTask : public Task {
+  public: 
+    WaitMillisecondsTask(double timeToWaitMilliseconds);
+    bool done() const;
+    void start();
+  private:
+    // The time at which start() was called.
+    double startTimeMilliseconds;
+    
+    // The number of milliseconds to wait.
+    double waitTimeMilliseconds;
+};
+
+// WaitMillisecondsTask w(500);
+// WaitMillisecondsTask w2(1500);
+
 #endif // (ifndef __AUTONOMOUS_TASK_TREE_H_INCLUDED__)

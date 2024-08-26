@@ -6,9 +6,9 @@
 #include "autonomous_task_tree.h"
 #include "vex.h"
 #include <cstring> // std::snprintf()
+#include <sstream> // std::stringstream;
 #include <list>
 #include <string>
-
 
 using namespace vex;
 using namespace std;
@@ -20,13 +20,10 @@ using namespace std;
 Task::Task(const string &name) : name(name) {
   static int counter = 0;
   task_id = ++counter;
-
-  // Append the (unique) task ID to the name of the task.
-  const size_t MAX_DIGITS = 10;
-  char buffer[MAX_DIGITS];
-  snprintf(buffer, sizeof(buffer), "%d", task_id);
+  ostringstream out;
+  out << task_id;
   this->name += "#";
-  this->name += buffer;
+  this->name += out.str();
 }
 
 
@@ -89,4 +86,25 @@ void execute(std::shared_ptr<Task> rootTask) {
 
     wait(15, msec);
   } // end (while there are still active tasks)
+}
+
+WaitMillisecondsTask::WaitMillisecondsTask(double timeToWaitMilliseconds) : Task("w") {
+  // User passes in: 6000 (timeToWaitMilliseconds == 6000)
+  // We currently have: 0 (waitTimeMilliseconds is default-initialized to 0)
+  // Your code on the next line overwrites the 6000 with 0.  Is that what you want?  
+  waitTimeMilliseconds = timeToWaitMilliseconds;
+}
+
+bool WaitMillisecondsTask::done() const {
+  // If the number of ms since start() was called is too small compared to 
+  // timeToWaitMilliseconds, return false.
+  if(Brain.timer(msec) - startTimeMilliseconds < waitTimeMilliseconds) {
+    return false;
+  } else {
+    return true;
+  }
+}
+
+void WaitMillisecondsTask::start() {
+   startTimeMilliseconds = Brain.timer(msec);
 }
