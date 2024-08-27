@@ -88,6 +88,10 @@ void execute(std::shared_ptr<Task> rootTask) {
   } // end (while there are still active tasks)
 }
 
+/*********************************************
+ * Definitions for the WaitMillisecondsTask. *
+ *********************************************/
+
 WaitMillisecondsTask::WaitMillisecondsTask(double timeToWaitMilliseconds) : Task("w") {
   // User passes in: 6000 (timeToWaitMilliseconds == 6000)
   // We currently have: 0 (waitTimeMilliseconds is default-initialized to 0)
@@ -107,4 +111,21 @@ bool WaitMillisecondsTask::done() const {
 
 void WaitMillisecondsTask::start() {
    startTimeMilliseconds = Brain.timer(msec);
+}
+
+/******************************************
+ * Definitions for the DriveStraightTask. *
+ ******************************************/
+
+DriveStraightTask::DriveStraightTask(double distanceCentimeters, Idrive& drive) 
+  : Task("l") {
+  
+}
+
+bool DriveStraightTask::done() const {
+  return true;
+}
+
+bool DriveStraightTask::start() {
+  
 }

@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 #include "vex.h"
+#include "Idrive.h"
 
 struct Task {
   // Generates the unique task ID
@@ -56,7 +57,6 @@ extern void addTask(std::shared_ptr<Task> parentTask,
 
 extern void execute(std::shared_ptr<Task> rootTask);
 
-
 /*****************************************************
  * A TASK THAT WAITS FOR A SPECIFIED PERIOD OF TIME. *
  *****************************************************/
@@ -73,7 +73,27 @@ class WaitMillisecondsTask : public Task {
     double waitTimeMilliseconds;
 };
 
-// WaitMillisecondsTask w(500);
-// WaitMillisecondsTask w2(1500);
+/********************************************************
+ * A task that drives forward for a specified distance. *
+ ********************************************************/
+class DriveStraightTask : public Task {
+  public:
+    DriveStraightTask(double distanceCentimeters, Idrive& drive);
+    bool done() const;
+    void start();
+  private:  
+    // Idrive& drive;
+};
+
+ // NEEDS TO BE WORKED ON BEFORE DRIVESTRAIGHTTASK
+ //
+ // class TestDriveTask : public Task {
+ //   public:
+ //     TestDriveTask(double targetRotations);
+ //     // Prints number of rotations on controller.  Returns true if target reached,
+ //     // false otherwise.
+ //     bool done() const; 
+ // }
+
 
 #endif // (ifndef __AUTONOMOUS_TASK_TREE_H_INCLUDED__)
