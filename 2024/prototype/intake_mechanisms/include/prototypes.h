@@ -120,6 +120,24 @@ class PivotRampPrototype : public Idrive, public Iintake, public Ilift {
         void drive(double fwd, double turn);
 
         /**
+         * The number of times a specific motor in our drive train has rotated.
+         *
+         * "What?", you ask. "A specific motor?  Why just one?  Why not average
+         * them?" Because, it doesn't really matter.  We only need
+         * this code in specific contexts, such as measuring the number of
+         * rotations needed to make a given drive go forward X meters.  In that
+         * case, one wheel is good as any other.
+         *
+         * @return A rotation value that could be positive or negative.
+         */
+        virtual double getRotations() const;
+
+        /**
+         * @brief Resets the encoders to 0.
+         * 
+         */
+        virtual void resetEncoders();
+        /**
          * Turn on the intake_group at a specific speed.
          *
          * A parameter of +1.0 means the intake_group sucks in at full speed. -1.0

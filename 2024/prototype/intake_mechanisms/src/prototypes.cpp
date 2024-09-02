@@ -97,6 +97,13 @@ double FlywheelPrototype::intake_speed() {
     return result;
 }
 
+/****************************************************************************
+ * Definitions for the Pivot Ramp Prototype.                                *
+ *                                                                          *
+ * As it turns out, a lot of robots that have an Idrive, an Ilift, *and* an *
+ * Iintake will look a whole lot like PivotRampPrototype.                   *
+ ****************************************************************************/
+
 PivotRampPrototype::PivotRampPrototype(const std::vector<vex::motor>& left_motors_,
                                        const std::vector<vex::motor>& right_motors_,
                                        const vex::motor_group& intake_, const vex::motor_group& lift_,
@@ -111,6 +118,28 @@ PivotRampPrototype::PivotRampPrototype(const std::vector<vex::motor>& left_motor
 
 void PivotRampPrototype::drive(double straightSpeed, double turnSpeed) {
     arcade_drive(straightSpeed, turnSpeed, left_motors, right_motors);
+}
+
+void PivotRampPrototype::resetEncoders() {
+    for (unsigned int i = 0; i < left_motors.size(); i++) {
+        this->left_motors[i].resetPosition();
+    }
+    for (unsigned int i = 0; i < right_motors.size(); i++) {
+        this->right_motors[i].resetPosition();
+    }
+}
+
+double PivotRampPrototype::getRotations() const {
+    // We are "cheating" here. The previous version of the code we had looked
+    // like this:
+    //
+    //   return this->left_motors[0].position(vex::rotationUnits::rev);
+    //
+    // but it didn't work because _unfortunately_, vex::motor::position() is a
+    // non-const function.  (Why, VEX?  Why?)  Since we *know* it's not going to
+    // actually change anything, we know it's safe to call even here in a const
+    // method.  So we essentially tell the compiler to shove off.
+    return const_cast<PivotRampPrototype*>(this)->left_motors[0].position(vex::rotationUnits::rev);
 }
 
 void PivotRampPrototype::intake(double intakeSpeed) {

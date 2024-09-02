@@ -126,6 +126,44 @@ bool DriveStraightTask::done() const {
   return true;
 }
 
-bool DriveStraightTask::start() {
+void DriveStraightTask::start() {
+}
+
+/********************************************
+ * Definitions for the TestDriveTask class. *
+ ********************************************/
+
+TestDriveTask::TestDriveTask(double targetRotations_, Idrive& drivingRobot) 
+  : Task("t"), driveObject{drivingRobot}, targetRotations{targetRotations_} {
   
+}
+
+bool TestDriveTask::done() const {
+  // One the change in rotations pet frame is less than this value, we've come
+  // to a stop.  At least, it's a good enough definition of "stopped."
+  const double DEADZONE = 0.1;
+  
+  currentRotationNumber = driveObject.getRotations();
+  if (currentRotationNumber - previousRotationNumber <= DEADZONE){
+    return true;
+  } else {
+    previousRotationNumber = currentRotationNumber;
+    return false;
+  }
+  // if (driveObject.getRotations() >= targetRotations) {
+  //   return true;
+  // } else {
+  //   driveObject.drive(0.0, 0.0);
+  //   return false;
+  // }
+
+  // Check the delta for encoderRotations between previousTimeChecking and now.  If the delta is
+  // beneath DEADZONE, then we're pretty much stopped.
+  
+}
+
+void TestDriveTask::start() {
+  
+  driveObject.drive(1.0, 0.0);
+  previousRotationNumber = driveObject.getRotations();
 }
