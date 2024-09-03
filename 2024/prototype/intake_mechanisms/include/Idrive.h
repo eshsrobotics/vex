@@ -27,23 +27,25 @@ class Idrive {
         /*************************************
          * Encoder distance utility methods. *
          *************************************/
-
-        /// Gets number of rotations (of an arbitrary wheel) since last reset or
-        /// since construction.
-        ///
-        /// Virtual because only derived Idrive classes have access to motors
-        /// and motor groups.   We don't!
+        /**
+         * Gets number of rotations (of an arbitrary wheel) since last reset or
+         * since construction.
+         *
+         * Virtual because only derived Idrive classes have access to motors
+         * and motor groups.   We don't!
+         */
         virtual double getRotations() const = 0;
-
-        /// Resets the encoders to 0. 
-        ///
-        /// When testing, we need to make sure that our initial encoder values
-        /// are 0. The testing team will probably move the robot backward after
-        /// a test round for a particular number of rotations is completed. The
-        /// robot will move forward from a taped location. Then the team will
-        /// measure the distance the robot has traveled. The testing team will
-        /// then place the robot back on the tape. We need to ensure that the
-        /// encoder values are 0.
+        /**
+         * Resets the encoders to 0.
+         *
+         * When testing, we need to make sure that our initial encoder values
+         * are 0. The testing team will probably move the robot backward after
+         * a test round for a particular number of rotations is completed. The
+         * robot will move forward from a taped location. Then the team will
+         * measure the distance the robot has traveled. The testing team will
+         * then place the robot back on the tape. We need to ensure that the
+         * encoder values are 0.
+         */
         virtual void resetEncoders() = 0;
 };
 

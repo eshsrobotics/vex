@@ -47,6 +47,16 @@ class FlywheelPrototype : public Idrive, Iintake {
         void drive(double fwd, double turn);
 
         /**
+         * @see PivotRampPrototype::getEncoders
+         */
+        virtual double getRotations() const;
+
+        /**
+         * @see PivotRampPrototype::resetEncoders
+         */
+        virtual void resetEncoders();
+
+        /**
          * Turn on the intake_group at a specific speed.
          *
          * A parameter of +1.0 means the intake_group sucks in at full speed. -1.0
@@ -133,8 +143,8 @@ class PivotRampPrototype : public Idrive, public Iintake, public Ilift {
         virtual double getRotations() const;
 
         /**
-         * @brief Resets the encoders to 0.
-         * 
+         * Resets the encoders to 0.
+         *
          */
         virtual void resetEncoders();
         /**

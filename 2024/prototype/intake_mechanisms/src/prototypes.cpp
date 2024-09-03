@@ -13,17 +13,25 @@ using std::stringstream;
 using std::setprecision;
 using namespace vex;
 
+void intake(double intakeSpeed, motor_group& intake_group) {
+    if (fabs(intakeSpeed) < INTAKE_SPEED_DEADZONE) {
+        intake_group.stop();
+    } else {
+        intake_group.spin(forward, intakeSpeed * 100, pct);
+    }
+}
+
 /**
  * Internal helper function for differential driving with arcade-style controls.
  */
 void arcade_drive(double straightSpeed, double turnSpeed, vector<motor>& left,
                   vector<motor>& right) {
-
+    double JOYSTICK_DEADZONE = 0.05;
     // We do not want any minor mis-inputs to throw the robot off-course.
-    if (fabs(straightSpeed) < DEADZONE) {
+    if (fabs(straightSpeed) < JOYSTICK_DEADZONE) {
         straightSpeed = 0;
     }
-    if (fabs(turnSpeed) < DEADZONE) {
+    if (fabs(turnSpeed) < JOYSTICK_DEADZONE) {
         turnSpeed = 0;
     }
 
@@ -76,17 +84,33 @@ void FlywheelPrototype::drive(double straightSpeed, double turnSpeed) {
     // arcade_drive(straightSpeed, turnSpeed, left_motors, right_motors);
 }
 
+// This is a copy of the the PivotRampPrototype:getRotations() We copied the
+// code, but we have only repeated ourselves twice. If we were to repeat this
+// another time, we will refactor.
+double FlywheelPrototype::getRotations() const {
+    return const_cast<FlywheelPrototype*>(this)->left_motors[0].position(vex::rotationUnits::rev);
+}
+
+// This is a copy of the the PivotRampPrototype:resetEncoders() We copied the
+// code, but we have only repeated ourselves twice. If we were to repeat this
+// another time, we will refactor.
+void FlywheelPrototype::resetEncoders() {
+    for (unsigned int i = 0; i < left_motors.size(); i++) {
+        this->left_motors[i].resetPosition();
+    }
+    for (unsigned int i = 0; i < right_motors.size(); i++) {
+        this->right_motors[i].resetPosition();
+    }
+}
+
 void FlywheelPrototype::intake(double intakeSpeed) {
+
     // Remember that the caller of our constructor has already guaranteed that,
     // when intake_group is set spinning, both flywheels are rotating in the
     // opposite direction. There is no further work on our part needed to make
     // that happen.
 
-    if (fabs(intakeSpeed) < DEADZONE) {
-        intake_group.stop();
-    } else {
-        intake_group.spin(forward, intakeSpeed * 100, pct);
-    }
+    ::intake(intakeSpeed, intake_group);
 
 }
 
@@ -143,8 +167,7 @@ double PivotRampPrototype::getRotations() const {
 }
 
 void PivotRampPrototype::intake(double intakeSpeed) {
-    this->intake_group.setVelocity(intakeSpeed * 100, percent);
-    this->intake_group.spin(forward);
+    ::intake(intakeSpeed, intake_group);
 }
 
 void PivotRampPrototype::setLiftPosition(double desiredLiftPosition) {
@@ -172,6 +195,11 @@ double PivotRampPrototype::getliftPosition() const {
 }
 
 void PivotRampPrototype::moveLiftDirect(double rotations) {
+
+    // The deadzone for moving the lift without the abstraction paradigm, in
+    // other words, directly. If the rotation argument is less than the
+    // DEADZONE, then we won't spin at all.
+    const double DEADZONE = 0.1;
     if (fabs(rotations) < DEADZONE) {
         this->lift_group.stop();
     } else {

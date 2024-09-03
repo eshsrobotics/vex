@@ -95,12 +95,12 @@ void execute(std::shared_ptr<Task> rootTask) {
 WaitMillisecondsTask::WaitMillisecondsTask(double timeToWaitMilliseconds) : Task("w") {
   // User passes in: 6000 (timeToWaitMilliseconds == 6000)
   // We currently have: 0 (waitTimeMilliseconds is default-initialized to 0)
-  // Your code on the next line overwrites the 6000 with 0.  Is that what you want?  
+  // Your code on the next line overwrites the 6000 with 0.  Is that what you want?
   waitTimeMilliseconds = timeToWaitMilliseconds;
 }
 
 bool WaitMillisecondsTask::done() const {
-  // If the number of ms since start() was called is too small compared to 
+  // If the number of ms since start() was called is too small compared to
   // timeToWaitMilliseconds, return false.
   if(Brain.timer(msec) - startTimeMilliseconds < waitTimeMilliseconds) {
     return false;
@@ -117,9 +117,9 @@ void WaitMillisecondsTask::start() {
  * Definitions for the DriveStraightTask. *
  ******************************************/
 
-DriveStraightTask::DriveStraightTask(double distanceCentimeters, Idrive& drive) 
+DriveStraightTask::DriveStraightTask(double distanceCentimeters, Idrive& drive)
   : Task("l") {
-  
+
 }
 
 bool DriveStraightTask::done() const {
@@ -133,37 +133,31 @@ void DriveStraightTask::start() {
  * Definitions for the TestDriveTask class. *
  ********************************************/
 
-TestDriveTask::TestDriveTask(double targetRotations_, Idrive& drivingRobot) 
-  : Task("t"), driveObject{drivingRobot}, targetRotations{targetRotations_} {
-  
-}
+TestDriveTask::TestDriveTask(double targetRotations_, Idrive& drivingRobot)
+  : Task("t"), driveObject{drivingRobot}, targetRotations{targetRotations_} {}
 
 bool TestDriveTask::done() const {
   // One the change in rotations pet frame is less than this value, we've come
   // to a stop.  At least, it's a good enough definition of "stopped."
-  const double DEADZONE = 0.1;
-  
-  currentRotationNumber = driveObject.getRotations();
-  if (currentRotationNumber - previousRotationNumber <= DEADZONE){
+  const double DEADZONE = 0.001;
+
+  double& currentRotations = const_cast<TestDriveTask*>(this)->currentRotationNumber;
+  double& previousRotations = const_cast<TestDriveTask*>(this)->previousRotationNumber;
+
+  currentRotations = driveObject.getRotations();
+  if (currentRotations - previousRotationNumber <= DEADZONE){
+    Brain.Screen.setCursor(CONTROLLER_ROBOT_STOPPED_ROW, 1);
+    Brain.Screen.print("STOPPED");
+    Brain.Screen.print(this->name);
     return true;
   } else {
-    previousRotationNumber = currentRotationNumber;
+    previousRotations = currentRotations;
     return false;
   }
-  // if (driveObject.getRotations() >= targetRotations) {
-  //   return true;
-  // } else {
-  //   driveObject.drive(0.0, 0.0);
-  //   return false;
-  // }
-
-  // Check the delta for encoderRotations between previousTimeChecking and now.  If the delta is
-  // beneath DEADZONE, then we're pretty much stopped.
-  
 }
 
 void TestDriveTask::start() {
-  
   driveObject.drive(1.0, 0.0);
+  currentRotationNumber = 0;
   previousRotationNumber = driveObject.getRotations();
 }

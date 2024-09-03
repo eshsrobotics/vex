@@ -27,19 +27,34 @@ const double experiment_duration_ms = 5000;
 // and 100.
 const double LIFT_VELOCITY_PERCENT = 50.0;
 
-// For all inputs in the range [-1, 1], the threshold that has to be overcome
-// for the inputs to be considered non-zero. This currently applies to lift
-// speeds, intake speeds, and driving.
-const double DEADZONE = 0.1;
+/**
+* For all inputs in the range [-1, 1], the threshold that has to be overcome
+* for the inputs to be considered non-zero. This currently applies to lift
+* speeds, intake speeds, and driving.
 
+*/
 const int CONTROLLER_LIFT_STATE_ROW = 1;
 const int CONTROLLER_LIFT_POSITION_ROW = 2;
+const int CONTROLLER_ROBOT_STOPPED_ROW = 3;
+
+/**
+ * Deadzones the intake speed velocities, meaning if they are below a certain
+ * threshold, we treat it as if it were 0.
+ *
+ * Velocities range from [-1, 1]. Intake deadzoning is sign-independent.
+ *
+ * The values is arbitrarily set to 0.05 now. The value may need to be changed.
+ */
+const double INTAKE_SPEED_DEADZONE = 0.05;
+
+
+// double LIFT_POSITION_DEADZONE = 0.05;
 
 /**
  * Used to initialize code/tasks/devices added using tools in VEXcode Text.
  *
  * This should be called at the start of your int main function.
  */
-void  vexcodeInit(void);
+void vexcodeInit(void);
 
 #endif // (ifndef __ROBOT_CONFIG_INCLUDED__)
