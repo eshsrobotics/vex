@@ -117,16 +117,30 @@ void WaitMillisecondsTask::start() {
  * Definitions for the DriveStraightTask. *
  ******************************************/
 
-DriveStraightTask::DriveStraightTask(double distanceCentimeters, Idrive& drive)
-  : Task("l") {
-
-}
+DriveStraightTask::DriveStraightTask(double desiredDistanceCentimeters, 
+                                     Idrive& driveObject)
+  : Task("l"), 
+    predictedDistanceCm([](double rotations) { return 2 * rotations + 1; }), 
+    distanceToDriveCm{desiredDistanceCentimeters}, drive{driveObject} {} 
 
 bool DriveStraightTask::done() const {
-  return true;
+
+  // Predict the distance our bot has traveled given the *actual* number of
+  // rotations since start() was called. 
+  const double currentRotations = drive.getRotations() - startingRotations;
+  const double predictedDistanceDriven = predictedDistanceCm(currentRotations);
+
+  if (predictedDistanceDriven >= distanceToDriveCm) {
+    drive.drive(0.0, 0.0);
+    return true;
+  } else {
+    return false;
+  }
 }
 
 void DriveStraightTask::start() {
+  startingRotations = drive.getRotations();
+  drive.drive(1.0, 0.0);
 }
 
 /********************************************
@@ -140,15 +154,30 @@ bool TestDriveTask::done() const {
   // One the change in rotations pet frame is less than this value, we've come
   // to a stop.  At least, it's a good enough definition of "stopped."
   const double DEADZONE = 0.001;
+  
+  // We want to wait a particular amount before checking whether the motor is
+  // stopped as the motor might be accelerating slowly instead -- it would be
+  // tragic if we cut the motor off early because we were too impatient!
+  const double MINIMUM_WAIT_TIME_MSEC = 300;
 
+  // We want to edit these values but they are coming from a const function, we
+  // const_cast to allow modification.
   double& currentRotations = const_cast<TestDriveTask*>(this)->currentRotationNumber;
   double& previousRotations = const_cast<TestDriveTask*>(this)->previousRotationNumber;
 
   currentRotations = driveObject.getRotations();
-  if (currentRotations - previousRotationNumber <= DEADZONE){
-    Brain.Screen.setCursor(CONTROLLER_ROBOT_STOPPED_ROW, 1);
-    Brain.Screen.print("STOPPED");
-    Brain.Screen.print(this->name);
+  
+  // Just checking if the velocity is 0 is not sufficient. The robot may drift
+  // farther even if the motors are stopped. This is a much more precise way of
+  // making sure the motors are stopped by checking if the change in motor
+  // rotation is small enough.
+
+  if (currentRotations - previousRotationNumber <= DEADZONE &&
+      Brain.timer(msec) - startTimeMsec >= MINIMUM_WAIT_TIME_MSEC) {
+    Controller.Screen.setCursor(CONTROLLER_ROBOT_STOPPED_ROW, 1);
+    Controller.Screen.print("STOPPED ");
+    Controller.Screen.print("%.2f", currentRotations);
+    driveObject.drive(0.0, 0.0);
     return true;
   } else {
     previousRotations = currentRotations;
@@ -160,4 +189,5 @@ void TestDriveTask::start() {
   driveObject.drive(1.0, 0.0);
   currentRotationNumber = 0;
   previousRotationNumber = driveObject.getRotations();
+  startTimeMsec = Brain.timer(vex::timeUnits::msec);
 }

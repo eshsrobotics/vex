@@ -1,8 +1,9 @@
 #ifndef __AUTONOMOUS_TASK_TREE_H_INCLUDED__
 #define __AUTONOMOUS_TASK_TREE_H_INCLUDED__
 
-#include <functional>
-#include <memory> // shared_ptr<T>
+
+#include <functional> // function<T, ...>
+#include <memory>     // shared_ptr<T>
 #include <string>
 #include <vector>
 #include "vex.h"
@@ -82,37 +83,40 @@ class DriveStraightTask : public Task {
     bool done() const;
     void start();
   private:  
-    // Idrive& drive;
+    std::function<double(double)> predictedDistanceCm;
+    double distanceToDriveCm;
+    Idrive& drive;
+    
+    double startingRotations;
 };
 
- //NEEDS TO BE WORKED ON BEFORE DRIVESTRAIGHTTASK
- 
- /// We will use this task to get the number of rotations for driving straight.
- /// We will later divide this value by the distance drove to get the conversion factor.
- /// The conversion factor needs to be determined before implementing the drivestraighttask.
- class TestDriveTask : public Task {
-   public:
+/// We will use this task to get the number of rotations for driving straight.
+/// We will later divide this value by the distance drove to get the conversion factor.
+/// The conversion factor needs to be determined before implementing the drivestraighttask.
+class TestDriveTask : public Task {
+  public:
 
-     /// Constructs an instance of this class.
-     ///
-     /// @param targetRotations number of rotations to tell the motors to drive
-     TestDriveTask(double targetRotations, Idrive& drivingRobot);
+    /// Constructs an instance of this class.
+    ///
+    /// @param targetRotations number of rotations to tell the motors to drive
+    TestDriveTask(double targetRotations, Idrive& drivingRobot);
 
-     // Prints number of rotations on controller. Returns true if target reached,
-     // false otherwise.
-     bool done() const; 
+    // Prints number of rotations on controller. Returns true if target reached,
+    // false otherwise.
+    bool done() const; 
 
-     /// Starts driving for as many drive motor revolutions as specified in target
-     void start();
-     
-  private:
-  
-     // Reference to Idrive to allow the robot to actually move
-     Idrive& driveObject;
-     double targetRotations;
-     double currentRotationNumber;
-     double previousRotationNumber;
- };
+    /// Starts driving for as many drive motor revolutions as specified in target
+    void start();
+    
+private:
+
+    // Reference to Idrive to allow the robot to actually move
+    Idrive& driveObject;
+    double targetRotations;
+    double currentRotationNumber;
+    double previousRotationNumber;
+    double startTimeMsec;
+};
 
 
 #endif // (ifndef __AUTONOMOUS_TASK_TREE_H_INCLUDED__)
