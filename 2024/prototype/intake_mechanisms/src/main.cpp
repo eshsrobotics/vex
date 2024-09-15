@@ -19,17 +19,19 @@
 
 #include <algorithm> // std::min, std::max
 #include <vector>
+#include <string>
 
 #include "robot-config.h"
 #include "prototypes.h"
 #include "vex.h"
 #include "updateLiftState.h"
-#include <string>
+#include "autonomous_task_tree.h"
 
 using namespace vex;
 using std::min;
 using std::max;
 using std::vector;
+using std::make_shared;
 
 enum class PrototypeIntakeState {
 
@@ -181,6 +183,13 @@ void pre_auton() {
  * competition.
  */
 void autonomous() {
+
+  WaitMillisecondsTask foo(6000); // Problematic...when is this destroyed?  
+  auto prototype = makePivotRampPrototype();
+  auto rootTask = make_shared<WaitMillisecondsTask>(0);
+  auto testDriveTask = make_shared<TestDriveTask>(5, prototype);
+  addTask(rootTask, testDriveTask);
+  execute(rootTask);
 
   // intake_roller_motor.spin(vex::directionType::fwd,
   //                          autonomous_intake_speed_pct,

@@ -41,21 +41,25 @@ struct Task {
   virtual void start() = 0;
 
   /*--------------------------------------------------------*/
-  /*                  Public Functions                      */
+  /*                 Friend Declarations                    */
   /*--------------------------------------------------------*/
-
-  // Add a new or existing task as a child of the current task
+  
   friend void addTask(std::shared_ptr<Task> parentTask,
                       std::shared_ptr<Task> childTask);
 
-  // Executes this task, all of its children, and so on, some tasks may run in
-  // parallel
   friend void execute(std::shared_ptr<Task> rootTask);
 };
 
+/*----------------------------------------------------------*/
+/*                 Stand-alone Functions                    */
+/*----------------------------------------------------------*/
+
+// Add a new or existing task as a child of the parent task
 extern void addTask(std::shared_ptr<Task> parentTask,
                     std::shared_ptr<Task> childTask);
 
+// Executes this task, all of its children, and so on, some tasks may run in
+// parallel
 extern void execute(std::shared_ptr<Task> rootTask);
 
 /*****************************************************
@@ -88,7 +92,17 @@ class DriveStraightTask : public Task {
     Idrive& drive;
     
     double startingRotations;
+
+    // TODO: Use Desmos to perform a linear regression after calculating
+    // distance traveled for several rotation values.  Replace the variables
+    // below with the SLOPE and Y-INTERCEPT that Desmos has calculated.
+    //
+    // This will alow us to roughly predict how many rotations will get us to a
+    // given distance.
+    const double SLOPE = 0;
+    const double Y_INTERCEPT = 0;
 };
+
 
 /// We will use this task to get the number of rotations for driving straight.
 /// We will later divide this value by the distance drove to get the conversion factor.
@@ -118,5 +132,26 @@ private:
     double startTimeMsec;
 };
 
+/**
+ * The DriveStraightTask cannot make the robot turn. We do not have a logic in
+ * the DriveStraightTask that translates how many rotations result in how many
+ * degrees of the robot turning. We are creating a new task that will have the
+ * logic for turning the robot.
+ */
+class TurnTask : public Task {
+  public:
+    TurnTask(double angleDegrees, vex::gyro gyro_, Idrive& drive);
+    
+    bool done() const;
+
+    void start();
+  
+  private:
+    double startAngle;
+    double angleDegrees;
+    gyro gyro_;
+    Idrive& drive;
+
+};
 
 #endif // (ifndef __AUTONOMOUS_TASK_TREE_H_INCLUDED__)

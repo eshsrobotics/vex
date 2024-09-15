@@ -32,7 +32,7 @@ class Idrive {
          * since construction.
          *
          * Virtual because only derived Idrive classes have access to motors
-         * and motor groups.   We don't!
+         * and motor groups. We don't!
          */
         virtual double getRotations() const = 0;
         /**

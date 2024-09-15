@@ -102,7 +102,7 @@ WaitMillisecondsTask::WaitMillisecondsTask(double timeToWaitMilliseconds) : Task
 bool WaitMillisecondsTask::done() const {
   // If the number of ms since start() was called is too small compared to
   // timeToWaitMilliseconds, return false.
-  if(Brain.timer(msec) - startTimeMilliseconds < waitTimeMilliseconds) {
+  if (Brain.timer(msec) - startTimeMilliseconds < waitTimeMilliseconds) {
     return false;
   } else {
     return true;
@@ -119,8 +119,8 @@ void WaitMillisecondsTask::start() {
 
 DriveStraightTask::DriveStraightTask(double desiredDistanceCentimeters, 
                                      Idrive& driveObject)
-  : Task("l"), 
-    predictedDistanceCm([](double rotations) { return 2 * rotations + 1; }), 
+  : Task("l"),
+    predictedDistanceCm([=](double rotations) { return SLOPE * rotations + Y_INTERCEPT; }),
     distanceToDriveCm{desiredDistanceCentimeters}, drive{driveObject} {} 
 
 bool DriveStraightTask::done() const {
@@ -190,4 +190,21 @@ void TestDriveTask::start() {
   currentRotationNumber = 0;
   previousRotationNumber = driveObject.getRotations();
   startTimeMsec = Brain.timer(vex::timeUnits::msec);
+}
+
+/*********************************
+ * Definitions for the TurnTask. *
+ *********************************/
+
+TurnTask::TurnTask(double desiredAngle, vex::gyro gyroscope, Idrive& driveObject)
+  : Task ("r"), angleDegrees{desiredAngle}, gyro_{gyroscope}, drive{driveObject} {}
+
+
+void TurnTask::start() {
+  startAngle = gyro_.angle();
+}
+
+bool TurnTask::done() const {
+
+  return true;
 }
