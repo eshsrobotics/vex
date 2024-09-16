@@ -2,84 +2,12 @@
 #ifndef __PROTOTYPE_H_INCLUDED__
 #define __PROTOTYPE_H_INCLUDED__
 
-#include "vex.h"
 #include <vector>
 
+#include "vex.h"
 #include "Idrive.h"
 #include "Iintake.h"
 #include "Ilift.h"
-
-class FlywheelPrototype : public Idrive, Iintake {
-    public:
-        /**
-         * Construct a flywheel prototype robot.
-         *
-         * The motor groups passed into this constructor require careful
-         * consideration.  It is up to the caller -- to YOU -- to ensure that
-         * all the motors turn in the correct direction (including calling
-         * setReverse() as needed) so that nothing is damaged when the motor
-         * group's velocity is set.
-         *
-         * @param left   The motor group handling all motors on the left side of
-         *               the drive.  Setting its velocity to a positive value
-         *               should cause the left side of the robot to drive
-         *               forward.
-         * @param right  The motor group handling all motors on the right side
-         *               of the drive.  Setting its velocity to a positive value
-         *               should cause the right side of the robot to drive
-         *               forward.
-         * @param intake_group The flywheel motors. A positive velocity means that the
-         *               wheels are intaking. A negative velocity means that the wheels are
-         *               outtaking. The two motors must spin in opposite directions for the
-         *               game piece to go up. This will be achieved through specific wiring.
-         */
-        FlywheelPrototype(const std::vector<vex::motor>& left,
-                          const std::vector<vex::motor>& right,
-                          const vex::motor_group& intake_group);
-
-        /**
-         * Drive the robot at the given speeds.
-         *
-         * A fwd parameter of +1.0 means full speed forward.  -1.0 is full speed reverse.
-         * A turn parameters of +1.0 turns full speed clockwise.  -1.0 is full speed counterclockwise.
-         * drive = 0, turn = 0 stops the drive.
-         */
-        void drive(double fwd, double turn);
-
-        /**
-         * @see PivotRampPrototype::getEncoders
-         */
-        virtual double getRotations() const;
-
-        /**
-         * @see PivotRampPrototype::resetEncoders
-         */
-        virtual void resetEncoders();
-
-        /**
-         * Turn on the intake_group at a specific speed.
-         *
-         * A parameter of +1.0 means the intake_group sucks in at full speed. -1.0
-         * means full speed outtaking.
-         *
-         * The motors need to spin in the opposite directions.
-         */
-        void intake(double intake_speed);
-
-        /**
-         * Returns the velocity of the first motor.
-         *
-         * @return A number ranging from -1.0 for full speed outaking to 1.0 for
-         *        full speed intaking. A value of 0.0 means that the flywheels
-         *        are idle.
-         */
-        double intake_speed();
-
-    private:
-        std::vector<vex::motor> left_motors;
-        std::vector<vex::motor> right_motors;
-        vex::motor_group intake_group;
-};
 
 /**
  *
@@ -120,6 +48,26 @@ class PivotRampPrototype : public Idrive, public Iintake, public Ilift {
                            const std::vector<vex::motor>& right_motors_,
                            const vex::motor_group& intake, const vex::motor_group& lift,
                            double rotationsToTop);
+        /**
+         * Constructs a PivotRampPrototype that does not use an Ilift. We are
+         * using this for prototypes not having lifts.
+         * 
+         * @param left   The list of all motors on the left side of the drive.
+         *               Setting each motor's velocity to a positive value
+         *               should cause the left side of the robot to drive
+         *               forward.
+         * @param right  The list of all motors on the right side of the drive.
+         *               Setting each motor's velocity to a positive value
+         *               should cause the right side of the robot to drive
+         *               forward.
+         * @param intake The motor group handling all motors responsible for
+         *               intaking. Setting the velocity +1 will be full power
+         *               intaking while -1 will be full power outaking. 0 will
+         *               be no motion.
+         */
+        PivotRampPrototype(const std::vector<vex::motor>& left_motors_,
+                           const std::vector<vex::motor>& right_motors_,
+                           const vex::motor_group& intake);
         /**
          * Drive the robot at the given speeds.
          *
@@ -176,6 +124,8 @@ class PivotRampPrototype : public Idrive, public Iintake, public Ilift {
          * @param rotations the number of revolutions to rotate the lift_motor group
          */
         void moveLiftDirect(double rotations);
+
+        bool isLiftAvailable() const;
 
         LiftHeights liftHeights() const {
             return liftHeights_;

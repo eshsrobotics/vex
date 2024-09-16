@@ -75,52 +75,6 @@ void arcade_drive(double straightSpeed, double turnSpeed, vector<motor>& left,
     }
 }
 
-FlywheelPrototype::FlywheelPrototype(const std::vector<vex::motor>& left_,
-                                     const std::vector<vex::motor>& right_,
-                                     const motor_group& intake_)
-    : left_motors(left_), right_motors(right_), intake_group(intake_) { }
-
-void FlywheelPrototype::drive(double straightSpeed, double turnSpeed) {
-    // arcade_drive(straightSpeed, turnSpeed, left_motors, right_motors);
-}
-
-// This is a copy of the the PivotRampPrototype:getRotations() We copied the
-// code, but we have only repeated ourselves twice. If we were to repeat this
-// another time, we will refactor.
-double FlywheelPrototype::getRotations() const {
-    return const_cast<FlywheelPrototype*>(this)->left_motors[0].position(vex::rotationUnits::rev);
-}
-
-// This is a copy of the the PivotRampPrototype:resetEncoders() We copied the
-// code, but we have only repeated ourselves twice. If we were to repeat this
-// another time, we will refactor.
-void FlywheelPrototype::resetEncoders() {
-    for (unsigned int i = 0; i < left_motors.size(); i++) {
-        this->left_motors[i].resetPosition();
-    }
-    for (unsigned int i = 0; i < right_motors.size(); i++) {
-        this->right_motors[i].resetPosition();
-    }
-}
-
-void FlywheelPrototype::intake(double intakeSpeed) {
-
-    // Remember that the caller of our constructor has already guaranteed that,
-    // when intake_group is set spinning, both flywheels are rotating in the
-    // opposite direction. There is no further work on our part needed to make
-    // that happen.
-
-    ::intake(intakeSpeed, intake_group);
-
-}
-
-double FlywheelPrototype::intake_speed() {
-    double result = this->intake_group.velocity(percent);
-    Brain.Screen.setCursor(1, 1);
-    Brain.Screen.print("First motor velocity is %.2f  ", result);
-    return result;
-}
-
 /****************************************************************************
  * Definitions for the Pivot Ramp Prototype.                                *
  *                                                                          *
@@ -134,6 +88,15 @@ PivotRampPrototype::PivotRampPrototype(const std::vector<vex::motor>& left_motor
                                        double rotToTop)
     : left_motors(left_motors_), right_motors(right_motors_),
       intake_group(intake_), lift_group(lift_), rotationsToTop(rotToTop) {
+    // Where we are right now -- the initialLiftPosition -- will now
+    // correspond to an encoder value of zero.
+    lift_group.resetPosition();
+}
+PivotRampPrototype::PivotRampPrototype(const std::vector<vex::motor>& left_motors_,
+                                       const std::vector<vex::motor>& right_motors_,
+                                       const vex::motor_group& intake_)
+    : left_motors(left_motors_), right_motors(right_motors_),
+      intake_group(intake_), lift_group(), rotationsToTop(0) {
     // Where we are right now -- the initialLiftPosition -- will now
     // correspond to an encoder value of zero.
     lift_group.resetPosition();
@@ -171,6 +134,9 @@ void PivotRampPrototype::intake(double intakeSpeed) {
 }
 
 void PivotRampPrototype::setLiftPosition(double desiredLiftPosition) {
+    if (!isLiftAvailable()) {
+        return;
+    }
     // Clamp the parameter of interpolation to the interval [0, 1].
     double u = max(0.0, min(desiredLiftPosition, 1.0));
 
@@ -188,6 +154,9 @@ void PivotRampPrototype::setLiftPosition(double desiredLiftPosition) {
 }
 
 double PivotRampPrototype::getliftPosition() const {
+    if (!isLiftAvailable()) {
+        return 0;
+    }
     motor_group lift_gr = this->lift_group;
     double rotations = lift_gr.position(vex::rotationUnits::rev);
 
@@ -195,7 +164,9 @@ double PivotRampPrototype::getliftPosition() const {
 }
 
 void PivotRampPrototype::moveLiftDirect(double rotations) {
-
+    if (!isLiftAvailable()) {
+        return;
+    }
     // The deadzone for moving the lift without the abstraction paradigm, in
     // other words, directly. If the rotation argument is less than the
     // DEADZONE, then we won't spin at all.
@@ -213,5 +184,16 @@ void PivotRampPrototype::moveLiftDirect(double rotations) {
 }
 
 void PivotRampPrototype::setLiftHeights(LiftHeights liftHeights) {
+    if (!isLiftAvailable()) {
+        return;
+    }
     liftHeights_ = liftHeights;
+}
+
+bool PivotRampPrototype::isLiftAvailable() const {
+    if (const_cast<vex::motor_group&>(lift_group).count() == 0) {
+        return false;
+    } else {
+        return true;
+    }
 }

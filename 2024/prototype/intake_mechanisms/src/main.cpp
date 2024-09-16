@@ -137,7 +137,8 @@ PivotRampPrototype makePivotRampPrototype() {
   return p;
 }
 
-FlywheelPrototype makeFlywheelPrototype() {
+
+PivotRampPrototype makeFlywheelPrototype() {
   // The ports are supposed to be changed when actually building. Different
   // prototypes will have different ports based on physical needs.
   const int LEFT_MOTOR_PORT_A = 2 - 1;
@@ -165,7 +166,7 @@ FlywheelPrototype makeFlywheelPrototype() {
   vex::motor rightFlywheelMotor(RIGHT_FLYWHEEL_PORT);
   vex::motor_group intakeMotorGroup(leftFlywheelMotor, rightFlywheelMotor);
 
-  return FlywheelPrototype(leftMotors, rightMotors, intakeMotorGroup);
+  return PivotRampPrototype(leftMotors, rightMotors, intakeMotorGroup);
 }
 
 /**
