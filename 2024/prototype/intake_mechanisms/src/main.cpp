@@ -137,7 +137,6 @@ PivotRampPrototype makePivotRampPrototype() {
   return p;
 }
 
-
 PivotRampPrototype makeFlywheelPrototype() {
   // The ports are supposed to be changed when actually building. Different
   // prototypes will have different ports based on physical needs.

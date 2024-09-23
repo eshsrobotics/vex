@@ -9,6 +9,7 @@
 #include <sstream> // std::stringstream;
 #include <list>
 #include <string>
+#include <cmath>
 
 using namespace vex;
 using namespace std;
@@ -197,14 +198,51 @@ void TestDriveTask::start() {
  *********************************/
 
 TurnTask::TurnTask(double desiredAngle, vex::gyro gyroscope, Idrive& driveObject)
-  : Task ("r"), angleDegrees{desiredAngle}, gyro_{gyroscope}, drive{driveObject} {}
+  : Task ("r"), desiredAngle_{desiredAngle}, gyro_{gyroscope}, drive{driveObject} {}
 
 
+// Scenario: Your robot's start angle is 45 degrees.
+// The desired angle is 40 degrees.
+// Proceed.
+
+// Question #1: Positive angle == clockwise or counterclockwise?
+//   * Confirmed: According to Idrive.h, it is clockwise.
+//
+// 45, 61, 92, 108, 117, 127, .........., 355, 10, 21, 36, 48, 59, ........ Never makes it to exactly 40.
+//
+// - We don't stop at the angle. [<---solved by PID.]
+//   * Start with P=1, I=0, D=0.
+//   * We need to calculate the ERROR every frame, which is the angle that
+//     goes from the current angle to the target angle 
+//     (= signed_delta of target angle and current angle.)
+//
+// - We're not rotating optimally [SOLVED by signed_delta().]
+//   * Your current angle is 5 degrees.
+//   * Your desired angle is 355 degrees (355 is -10 modulo 360.)
+//   * Better to rotate 10 degrees counterclockwise than 350 degrees clockwise.
+//
+ 
 void TurnTask::start() {
   startAngle = gyro_.angle();
+  drive.drive(0.0, 0.6);
+}
+
+// Right here.
+double signedDelta(double currentAngle, double desiredAngle) {
+  return std::fmod(desiredAngle - currentAngle + 180, 360) - 180;
 }
 
 bool TurnTask::done() const {
+  //This is a bang-bang controller.
+  double currentAngle = const_cast<TurnTask*>(this)->gyro_.angle();
 
-  return true;
+  if (currentAngle < desiredAngle_) {
+      drive.drive(0.0, 0.6);
+      return false;
+  } else if (currentAngle > desiredAngle_) {
+      drive.drive(0.0, -0.6);
+      return false;
+  } else {
+      return true;
+  }
 }

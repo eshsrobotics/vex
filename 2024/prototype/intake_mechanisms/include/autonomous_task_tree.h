@@ -147,8 +147,12 @@ class TurnTask : public Task {
     void start();
   
   private:
+    /**
+     * Where the robot's gyro was at the point the robot start()ed to rotate.
+     */
     double startAngle;
-    double angleDegrees;
+    
+    double desiredAngle_;
     gyro gyro_;
     Idrive& drive;
 
