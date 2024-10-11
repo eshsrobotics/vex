@@ -1,0 +1,19 @@
+{
+	"extension": {
+		"version": "0.6.0",
+		"json": 2
+	},
+	"project": {
+		"name": "code_for_testing",
+		"description": "Created on 2024-10-10 to test deploying code to an ad-hoc \"robot.\"  Just playing around.",
+		"creationDate": "10/10/2024, 4:14:02 PM",
+		"platform": "V5",
+		"language": "cpp",
+		"slot": 1,
+		"sdkVersion": "V5_20240223_11_00_00",
+		"cpp": {
+			"includePath": [],
+			"printf_float": true
+		}
+	}
+}

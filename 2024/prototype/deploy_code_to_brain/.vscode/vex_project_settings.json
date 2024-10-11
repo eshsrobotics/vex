@@ -1,0 +1,19 @@
+{
+	"extension": {
+		"version": "0.6.0",
+		"json": 2
+	},
+	"project": {
+		"name": "deploy_code_to_brain",
+		"description": "Created on 10/10/24 to deploy to a \"robot\". Just for testing purposes only.",
+		"creationDate": "10/10/2024, 4:22:01 PM",
+		"platform": "V5",
+		"language": "cpp",
+		"slot": 1,
+		"sdkVersion": "V5_20240223_11_00_00",
+		"cpp": {
+			"includePath": [],
+			"printf_float": true
+		}
+	}
+}
