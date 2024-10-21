@@ -45,7 +45,7 @@ void arcade_drive(double straightSpeed, double turnSpeed, vector<motor>& left,
     sum = max(-1.0, min(sum, 1.0));
     difference = max(-1.0, min(difference, 1.0));
     double leftVelocity = -(sum);
-    double rightVelocity =-(difference);
+    double rightVelocity = -(difference);
     leftVelocity *= 0.3;
     rightVelocity *= 0.3;
 

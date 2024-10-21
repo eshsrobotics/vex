@@ -246,3 +246,29 @@ bool TurnTask::done() const {
       return true;
   }
 }
+
+/*********************************
+ * Definitions for the DriveMillisecondsTask. *
+ *********************************/
+
+DriveMillisecondsTask::DriveMillisecondsTask(double milliseconds, Idrive& drive) 
+: Task ("s"), waitTimeMsec{milliseconds}, driveObject{drive} {
+
+}
+
+void DriveMillisecondsTask::start() {
+  startTimeMsec = Brain.timer(vex::timeUnits::msec);
+  driveObject.drive(1.0, 0.0);
+}
+
+bool DriveMillisecondsTask::done() const {
+  const double currentTimeMsec = Brain.timer(msec);
+  const double elapsedTimeMsec = currentTimeMsec - startTimeMsec;
+  if (elapsedTimeMsec >= waitTimeMsec) {
+    driveObject.drive(0, 0);
+    return true;
+  } else {
+    return false;
+  }
+}
+

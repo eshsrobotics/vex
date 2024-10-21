@@ -184,32 +184,11 @@ void pre_auton() {
  */
 void autonomous() {
 
-  WaitMillisecondsTask foo(6000); // Problematic...when is this destroyed?  
   auto prototype = makePivotRampPrototype();
   auto rootTask = make_shared<WaitMillisecondsTask>(0);
-  auto testDriveTask = make_shared<TestDriveTask>(5, prototype);
-  addTask(rootTask, testDriveTask);
+  auto driveMillisecondsTask = make_shared<DriveMillisecondsTask>(5000, prototype);
+  addTask(rootTask, driveMillisecondsTask);
   execute(rootTask);
-
-  // intake_roller_motor.spin(vex::directionType::fwd,
-  //                          autonomous_intake_speed_pct,
-  //                          vex::percentUnits::pct);
-  // Drivetrain.setDriveVelocity(autonomous_speed_pct, vex::percentUnits::pct);
-
-  // // We do not know whether drive is a blocking-call. If it turns out it is a
-  // // blocking call, we should use drivefor. The way we would know is that the
-  // // robot would drive forever.
-  // Drivetrain.drive(vex::directionType::fwd);
-
-  // const double start_time_milliseconds = Brain.timer(msec);
-
-  // while (true) {
-  //   double elapsed_time_msec = Brain.timer(msec) - start_time_milliseconds;
-  //   if (elapsed_time_msec > experiment_duration_ms) {
-  //       Drivetrain.stop();
-  //       intake_roller_motor.stop();
-  //   }
-  // }
 }
 
 /**

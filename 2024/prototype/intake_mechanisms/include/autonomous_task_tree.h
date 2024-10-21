@@ -158,4 +158,24 @@ class TurnTask : public Task {
 
 };
 
+/**
+ * Need to drive the robot for arbitrary seconds to implement the testing
+ * protocol for the prototypes. The experimental protocol will be done
+ * autonomously. This task will be ran for x amount of seconds that will remain
+ * the same for all prototypes.
+*/
+class DriveMillisecondsTask : public Task {
+  public: 
+    DriveMillisecondsTask(double milliseconds, Idrive& drive);
+
+    bool done() const;
+    
+    void start();
+  
+  private:
+    double waitTimeMsec;
+    double startTimeMsec;
+    Idrive& driveObject;
+};
+
 #endif // (ifndef __AUTONOMOUS_TASK_TREE_H_INCLUDED__)
