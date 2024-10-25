@@ -30,7 +30,7 @@ competition Competition;
 /*  not every time that the robot is disabled.                               */
 /*---------------------------------------------------------------------------*/
 
-void pre_auton(void) {
+// void pre_auton(void) {
 
   // All activities that occur before the competition starts
   // Example: clearing encoders, setting servo positions, ...
@@ -38,7 +38,7 @@ void pre_auton(void) {
   // Open the arm to trap-jaw position to keep the robot dimensions below 18x18
   // inches
   // moveArm(0, CLAW_OPEN, armMotorLeft, armMotorRight, clawMotor);
-}
+// }
 
 /*---------------------------------------------------------------------------*/
 /*                                                                           */
@@ -50,13 +50,7 @@ void pre_auton(void) {
 /*  You must modify the code to add your own robot specific commands here.   */
 /*---------------------------------------------------------------------------*/
 
-void autonomous(void) {
-  // ..........................................................................
-  // Insert autonomous user code here.
-  // ..........................................................................
-  calibrateClaw(clawMotor, getBumper());
-  executeAutonPlan(autonPlan);
-}
+void autonomous(void) { }
 
 /*---------------------------------------------------------------------------*/
 /*                                                                           */
@@ -120,11 +114,11 @@ void usercontrol(void) {
 //
 int main() {
   // Set up callbacks for autonomous and driver control periods.
-  Competition.autonomous(autonomous);
+//  Competition.autonomous(autonomous);
   Competition.drivercontrol(usercontrol);
 
   // Run the pre-autonomous function.
-  pre_auton();
+//  pre_auton();
 
   // Prevent main from exiting with an infinite loop.
   while (true) {
