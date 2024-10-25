@@ -1,0 +1,19 @@
+{
+	"extension": {
+		"version": "0.5.0",
+		"json": 2
+	},
+	"project": {
+		"name": "team-p3-otatoes",
+		"description": "",
+		"creationDate": "Fri, 12 Jan 2024 01:49:28 GMT",
+		"platform": "V5",
+		"language": "cpp",
+		"slot": 8,
+		"sdkVersion": "V5_20220726_10_00_00",
+		"cpp": {
+			"includePath": [],
+			"printf_float": true
+		}
+	}
+}
