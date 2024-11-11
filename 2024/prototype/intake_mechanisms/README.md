@@ -13,7 +13,9 @@ Warning: All code before 2024-08-18 is untested because there are no lab session
 * `R2`: Outtaking
 ![State machine for the prototypes' intake mechanism](./docs/prototype_intake_state_machine.svg "State Machine for the Prototypes")
 
-- Differential drive (arcade drive scheme)
+- Generic Lift Control Scheme
+* `L1`: R
+Differential drive (arcade drive scheme)
 * `Axis 3` (left joystick vertical axis) : Drives forward/backward
 * `Axis 4` (left joystick horizontal axis) : Turns left/right
 
