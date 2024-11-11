@@ -79,14 +79,19 @@ class WaitMillisecondsTask : public Task {
 };
 
 /********************************************************
- * A task that drives forward for a specified distance. *
+ * A TASK THAT DRIVES FORWARD FOR A SPECIFIED DISTANCE. *
  ********************************************************/
 class DriveStraightTask : public Task {
   public:
     DriveStraightTask(double distanceCentimeters, Idrive& drive);
     bool done() const;
     void start();
-  private:  
+  private:
+
+    // std::function is a thing a reference to a function. It works with
+    // functions, lambdas, functors, and function pointers. 
+
+    // A function 
     std::function<double(double)> predictedDistanceCm;
     double distanceToDriveCm;
     Idrive& drive;
@@ -94,7 +99,7 @@ class DriveStraightTask : public Task {
     double startingRotations;
 
     // TODO: Use Desmos to perform a linear regression after calculating
-    // distance traveled for several rotation values.  Replace the variables
+    // distance traveled for several rotation values. Replace the variables
     // below with the SLOPE and Y-INTERCEPT that Desmos has calculated.
     //
     // This will alow us to roughly predict how many rotations will get us to a
@@ -103,6 +108,10 @@ class DriveStraightTask : public Task {
     const double Y_INTERCEPT = 0;
 };
 
+//////////////////////////////////////////////////////////////////////////
+// A TASK TO DETERMINE THE CONVERSION FACTOR THAT CONVERTS THE NUMBER OF//
+// ROTATIONS DRIVEN TO CENTIMETERS.                                     //
+//////////////////////////////////////////////////////////////////////////
 
 /// We will use this task to get the number of rotations for driving straight.
 /// We will later divide this value by the distance drove to get the conversion factor.
@@ -176,6 +185,38 @@ class DriveMillisecondsTask : public Task {
     double waitTimeMsec;
     double startTimeMsec;
     Idrive& driveObject;
+};
+
+/**
+ * An intake task that will make the intake motors go vroom for a particular
+ * number of seconds at a particular number of seconds.
+*/
+class IntakeMillisecondsTask : public Task {
+  public:
+
+    /** 
+     * The constructor for the IntakeTaskSeconds task
+     *
+     * @param seconds the number of seconds that the intake motors will rotate
+     * @param intake_speed the speed of the intake motors. We will pass in a
+     * value between 1 and -1. 1 means intaking and -1 means outtaking.  
+     * Most likely, we will not need different velocities, only different
+     * directions.
+     *
+     * @param intake_bot a reference to an object that IS an Intake
+     */
+    IntakeMillisecondsTask(Iintake& intake_bot, double msec, double intake_speed = 1);
+
+    bool done() const;
+
+    void start();
+    
+  private:
+    double startTimeMsec;
+    double desiredIntakingTimeMsec;
+    double intake_speed_;
+    Iintake& intakeObject;
+  
 };
 
 #endif // (ifndef __AUTONOMOUS_TASK_TREE_H_INCLUDED__)

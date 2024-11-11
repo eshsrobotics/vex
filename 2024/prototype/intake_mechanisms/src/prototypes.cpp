@@ -82,6 +82,7 @@ void arcade_drive(double straightSpeed, double turnSpeed, vector<motor>& left,
  * Iintake will look a whole lot like PivotRampPrototype.                   *
  ****************************************************************************/
 
+
 PivotRampPrototype::PivotRampPrototype(const std::vector<vex::motor>& left_motors_,
                                        const std::vector<vex::motor>& right_motors_,
                                        const vex::motor_group& intake_, const vex::motor_group& lift_,

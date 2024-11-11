@@ -3,6 +3,7 @@
 
 #include "Ilift.h"
 
+
 enum class LiftState;
 
 /**
@@ -12,7 +13,7 @@ enum class LiftState;
 extern LiftState INITIAL_LIFT_STATE;
 
 /**
- * Moves the lift motor motors incrementally in response to button presses. This
+ * Moves the lift motors by levels in response to button presses. This
  * needs to be called inside a loop once per frame.
  * @param upButton the state of the button controlling upward movement
  * @param downButton the state of the button controlling downward movement
