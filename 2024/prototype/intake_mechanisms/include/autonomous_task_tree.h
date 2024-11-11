@@ -175,7 +175,7 @@ class TurnTask : public Task {
 */
 class DriveMillisecondsTask : public Task {
   public: 
-    DriveMillisecondsTask(double milliseconds, Idrive& drive);
+    DriveMillisecondsTask(Idrive& drive, double milliseconds, double driveVelocity = 1.0);
 
     bool done() const;
     
@@ -184,7 +184,9 @@ class DriveMillisecondsTask : public Task {
   private:
     double waitTimeMsec;
     double startTimeMsec;
+    double driveVelocity_;
     Idrive& driveObject;
+
 };
 
 /**

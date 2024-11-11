@@ -183,15 +183,15 @@ void pre_auton() {
  * competition.
  */
 void autonomous() {
-
+  const double autonomous_drive_speed = 1;
   const double autonomous_intake_speed = 1;
   const double experiment_duration_ms = 5000;
 
   auto prototype = makePivotRampPrototype();
   auto rootTask = make_shared<WaitMillisecondsTask>(0);
   auto driveMillisecondsTask = 
-    make_shared<DriveMillisecondsTask>(experiment_duration_ms,
-                                       prototype);
+    make_shared<DriveMillisecondsTask>(prototype, experiment_duration_ms, autonomous_drive_speed
+                                       );
   auto intakeMillisecondsTask = 
     make_shared<IntakeMillisecondsTask>(prototype, 
                                         experiment_duration_ms, 

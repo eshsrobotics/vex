@@ -252,14 +252,14 @@ bool TurnTask::done() const {
  * Definitions for the DriveMillisecondsTask. *
  *********************************/
 
-DriveMillisecondsTask::DriveMillisecondsTask(double milliseconds, Idrive& drive) 
-: Task ("s"), waitTimeMsec{milliseconds}, driveObject{drive} {
+DriveMillisecondsTask::DriveMillisecondsTask(Idrive& drive, double milliseconds, double driveVelocity) 
+: Task ("s"), driveObject{drive}, waitTimeMsec{milliseconds}, driveVelocity_{driveVelocity} {
 
 }
 
 void DriveMillisecondsTask::start() {
   startTimeMsec = Brain.timer(vex::timeUnits::msec);
-  driveObject.drive(1.0, 0.0);
+  driveObject.drive(driveVelocity_, 0.0);
 }
 
 bool DriveMillisecondsTask::done() const {
