@@ -13,11 +13,15 @@ using std::stringstream;
 using std::setprecision;
 using namespace vex;
 
-void intake(double intakeSpeed, motor_group& intake_group) {
+void intake(double intakeSpeed, vector<motor>& intake_motors) {
     if (fabs(intakeSpeed) < INTAKE_SPEED_DEADZONE) {
-        intake_group.stop();
+        for_each(intake_motors.begin(), intake_motors.end(), [](motor& intake_motor) {
+            intake_motor.stop();
+        });
     } else {
-        intake_group.spin(forward, intakeSpeed * 100, pct);
+        for_each(intake_motors.begin(), intake_motors.end(), [intakeSpeed](motor& intake_motor) {
+            intake_motor.spin(forward, intakeSpeed * 100, pct);
+        });
     }
 }
 
@@ -85,24 +89,14 @@ void arcade_drive(double straightSpeed, double turnSpeed, vector<motor>& left,
 
 PivotRampPrototype::PivotRampPrototype(const std::vector<vex::motor>& left_motors_,
                                        const std::vector<vex::motor>& right_motors_,
-                                       const vex::motor_group& intake_, const vex::motor_group& lift_,
+                                       const std::vector<vex::motor>& intake_, const vex::motor_group& lift_,
                                        double rotToTop)
     : left_motors(left_motors_), right_motors(right_motors_),
-      intake_group(intake_), lift_group(lift_), rotationsToTop(rotToTop) {
+      intake_motors(intake_), lift_group(lift_), rotationsToTop(rotToTop) {
     // Where we are right now -- the initialLiftPosition -- will now
     // correspond to an encoder value of zero.
     lift_group.resetPosition();
 }
-PivotRampPrototype::PivotRampPrototype(const std::vector<vex::motor>& left_motors_,
-                                       const std::vector<vex::motor>& right_motors_,
-                                       const vex::motor_group& intake_)
-    : left_motors(left_motors_), right_motors(right_motors_),
-      intake_group(intake_), lift_group(), rotationsToTop(0) {
-    // Where we are right now -- the initialLiftPosition -- will now
-    // correspond to an encoder value of zero.
-    lift_group.resetPosition();
-}
-
 
 void PivotRampPrototype::drive(double straightSpeed, double turnSpeed) {
     arcade_drive(straightSpeed, turnSpeed, left_motors, right_motors);
@@ -131,7 +125,7 @@ double PivotRampPrototype::getRotations() const {
 }
 
 void PivotRampPrototype::intake(double intakeSpeed) {
-    ::intake(intakeSpeed, intake_group);
+    ::intake(intakeSpeed, intake_motors);
 }
 
 void PivotRampPrototype::setLiftPosition(double desiredLiftPosition) {

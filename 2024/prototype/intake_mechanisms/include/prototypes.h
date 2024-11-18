@@ -31,10 +31,10 @@ class PivotRampPrototype : public Idrive, public Iintake, public Ilift {
          *               Setting each motor's velocity to a positive value
          *               should cause the right side of the robot to drive
          *               forward.
-         * @param intake The motor group handling all motors responsible for
-         *               intaking. Setting the velocity +1 will be full power
-         *               intaking while -1 will be full power outaking. 0 will
-         *               be no motion.
+         * @param intake The list of all motors responsible for intaking.
+         *               Setting the velocity +1 will be full power intaking
+         *               while -1 will be full power outaking. 0 will be no
+         *               motion.
          * @param lift   The motor group handling all motors responsible for
          *               moving the lift. The position passed into the lift
          *               function is a value between 0 and 1 that represents a
@@ -46,28 +46,9 @@ class PivotRampPrototype : public Idrive, public Iintake, public Ilift {
          */
         PivotRampPrototype(const std::vector<vex::motor>& left_motors_,
                            const std::vector<vex::motor>& right_motors_,
-                           const vex::motor_group& intake, const vex::motor_group& lift,
+                           const std::vector<vex::motor>& intake, const vex::motor_group& lift,
                            double rotationsToTop);
-        /**
-         * Constructs a PivotRampPrototype that does not use an Ilift. We are
-         * using this for prototypes not having lifts.
-         * 
-         * @param left   The list of all motors on the left side of the drive.
-         *               Setting each motor's velocity to a positive value
-         *               should cause the left side of the robot to drive
-         *               forward.
-         * @param right  The list of all motors on the right side of the drive.
-         *               Setting each motor's velocity to a positive value
-         *               should cause the right side of the robot to drive
-         *               forward.
-         * @param intake The motor group handling all motors responsible for
-         *               intaking. Setting the velocity +1 will be full power
-         *               intaking while -1 will be full power outaking. 0 will
-         *               be no motion.
-         */
-        PivotRampPrototype(const std::vector<vex::motor>& left_motors_,
-                           const std::vector<vex::motor>& right_motors_,
-                           const vex::motor_group& intake);
+                           
         /**
          * Drive the robot at the given speeds.
          *
@@ -136,7 +117,7 @@ class PivotRampPrototype : public Idrive, public Iintake, public Ilift {
     private:
         std::vector<vex::motor> left_motors;
         std::vector<vex::motor> right_motors;
-        vex::motor_group intake_group;
+        std::vector<vex::motor> intake_motors;
         vex::motor_group lift_group;
         double rotationsToTop;
 
