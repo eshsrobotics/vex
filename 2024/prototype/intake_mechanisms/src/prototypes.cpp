@@ -59,7 +59,7 @@ void arcade_drive(double straightSpeed, double turnSpeed, vector<motor>& left,
     if (rightVelocity != 0) {
         for_each(right.begin(), right.end(), [&](motor& m) {
             m.setVelocity(rightVelocity * 100, percent);
-            m.spin(forward);
+            m.spin(reverse);
         });
     } else {
         for_each(right.begin(), right.end(), [&](motor& m) {
