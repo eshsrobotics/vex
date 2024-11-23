@@ -20,8 +20,8 @@ extern motor intake_roller_motor;
 const auto gearbox_ratio = ratio6_1;
 
 const double autonomous_speed_pct = 15.0;
-const double autonomous_intake_speed_pct = 100;
-const double experiment_duration_ms = 5000;
+
+
 
 // How quickly to raise or lower the lift mechanism, in percent units between 0
 // and 100.
@@ -33,6 +33,8 @@ const double LIFT_VELOCITY_PERCENT = 50.0;
 * speeds, intake speeds, and driving.
 
 */
+
+
 const int CONTROLLER_LIFT_STATE_ROW = 1;
 const int CONTROLLER_LIFT_POSITION_ROW = 2;
 const int CONTROLLER_ROBOT_STOPPED_ROW = 3;

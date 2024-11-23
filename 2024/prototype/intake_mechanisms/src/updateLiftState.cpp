@@ -8,6 +8,10 @@
 using std::abs;
 using std::string;
 
+/**
+ * A list of all the states that the state machine for lifts will use. All of
+ * the states were documented in docs/lift-state-maching.png
+ */
 enum class LiftState {
 
     // Initial state of the state machine

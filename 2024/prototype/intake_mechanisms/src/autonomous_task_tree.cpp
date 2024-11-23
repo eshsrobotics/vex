@@ -124,6 +124,11 @@ DriveStraightTask::DriveStraightTask(double desiredDistanceCentimeters,
     predictedDistanceCm([=](double rotations) { return SLOPE * rotations + Y_INTERCEPT; }),
     distanceToDriveCm{desiredDistanceCentimeters}, drive{driveObject} {} 
 
+void DriveStraightTask::start() {
+  startingRotations = drive.getRotations();
+  drive.drive(1.0, 0.0);
+}
+
 bool DriveStraightTask::done() const {
 
   // Predict the distance our bot has traveled given the *actual* number of
@@ -137,11 +142,6 @@ bool DriveStraightTask::done() const {
   } else {
     return false;
   }
-}
-
-void DriveStraightTask::start() {
-  startingRotations = drive.getRotations();
-  drive.drive(1.0, 0.0);
 }
 
 /********************************************
@@ -227,8 +227,9 @@ void TurnTask::start() {
   drive.drive(0.0, 0.6);
 }
 
-// Right here.
+// This function returns the smallest number of degrees to rotate.
 double signedDelta(double currentAngle, double desiredAngle) {
+  
   return std::fmod(desiredAngle - currentAngle + 180, 360) - 180;
 }
 
@@ -244,5 +245,56 @@ bool TurnTask::done() const {
       return false;
   } else {
       return true;
+  }
+}
+
+/*********************************
+ * Definitions for the DriveMillisecondsTask. *
+ *********************************/
+
+DriveMillisecondsTask::DriveMillisecondsTask(Idrive& drive, double milliseconds, double driveVelocity) 
+: Task ("s"), driveObject{drive}, waitTimeMsec{milliseconds}, driveVelocity_{driveVelocity} {
+
+}
+
+void DriveMillisecondsTask::start() {
+  startTimeMsec = Brain.timer(vex::timeUnits::msec);
+  driveObject.drive(driveVelocity_, 0.0);
+}
+
+bool DriveMillisecondsTask::done() const {
+  const double currentTimeMsec = Brain.timer(msec);
+  const double elapsedTimeMsec = currentTimeMsec - startTimeMsec;
+  if (elapsedTimeMsec >= waitTimeMsec) {
+    driveObject.drive(0, 0);
+    return true;
+  } else {
+    return false;
+  }
+}
+
+////////////////////////////////
+// Definitions for IntakeTask //
+////////////////////////////////
+
+IntakeMillisecondsTask::IntakeMillisecondsTask(Iintake& intake_bot, double msec, 
+                                                             double intake_speed) 
+  : Task ("IntakeMsec"), intakeObject{intake_bot}, desiredIntakingTimeMsec{msec}, intake_speed_{intake_speed} {
+    
+}
+
+void IntakeMillisecondsTask::start() {
+  startTimeMsec = Brain.timer(vex::timeUnits::msec);
+  intakeObject.intake(intake_speed_);
+}
+
+bool IntakeMillisecondsTask::done() const {
+  const double currentTimeMsec = Brain.timer(msec);
+  const double elapsedTimeMsec = currentTimeMsec - startTimeMsec;
+  if (elapsedTimeMsec >= desiredIntakingTimeMsec) {
+    intakeObject.intake(0);
+    return true;
+  } else {
+    return false;
   }
 }

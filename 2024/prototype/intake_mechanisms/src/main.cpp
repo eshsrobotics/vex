@@ -94,27 +94,27 @@ void moveLiftGatherHeightsDebug(bool buttonUp, bool buttonDown, Ilift& robotWith
 competition Competition;
 
 PivotRampPrototype makePivotRampPrototype() {
-  const int LEFT_MOTOR_PORT_A = 2 - 1; // left_front_motor
-  const int LEFT_MOTOR_PORT_B = 3 - 1; // left_center_motor
-  const int LEFT_MOTOR_PORT_C = 4 - 1; // left_back_motor
-  const int RIGHT_MOTOR_PORT_A = 5 - 1; // right_front_motor
-  const int RIGHT_MOTOR_PORT_B = 20 - 1; // right_center_motor
-  const int RIGHT_MOTOR_PORT_C = 7 - 1; // right_back_motor
+  const int LEFT_MOTOR_PORT_A = 4 - 1; // left_front_motor
+  const int LEFT_MOTOR_PORT_B = 5 - 1; // left_center_motor
+  const int LEFT_MOTOR_PORT_C = 6 - 1; // left_back_motor
+  const int RIGHT_MOTOR_PORT_A = 1 - 1; // right_front_motor
+  const int RIGHT_MOTOR_PORT_B = 2 - 1; // right_center_motor
+  const int RIGHT_MOTOR_PORT_C = 3 - 1; // right_back_motor
   const int INTAKE_MOTOR_PORT = 1 - 1;
   const int LIFT_MOTOR_PORT = 9 - 1;
 
   vex::motor leftMotor1(LEFT_MOTOR_PORT_A);
-  vex::motor leftMotor2(LEFT_MOTOR_PORT_B);
-  vex::motor leftMotor3(LEFT_MOTOR_PORT_C);
+  vex::motor leftMotor2(LEFT_MOTOR_PORT_B, true);
+  vex::motor leftMotor3(LEFT_MOTOR_PORT_C, true);
   vector<motor> leftMotors = {leftMotor1, leftMotor2, leftMotor3};
 
-  vex::motor rightMotor1(RIGHT_MOTOR_PORT_A, true);
+  vex::motor rightMotor1(RIGHT_MOTOR_PORT_A);
   vex::motor rightMotor2(RIGHT_MOTOR_PORT_B, true);
   vex::motor rightMotor3(RIGHT_MOTOR_PORT_C, true);
   vector<motor> rightMotors = {rightMotor1, rightMotor2, rightMotor3};
 
   vex::motor intakeMotor1(INTAKE_MOTOR_PORT);
-  vex::motor_group intakeMotorGroup(intakeMotor1);
+  vector<motor> intakeMotors = {intakeMotor1};
 
   vex::motor liftMotor1(LIFT_MOTOR_PORT);
   vex::motor_group liftMotorGroup(liftMotor1);
@@ -124,7 +124,7 @@ PivotRampPrototype makePivotRampPrototype() {
 
   PivotRampPrototype p(leftMotors,
                        rightMotors,
-                       intakeMotorGroup,
+                       intakeMotors,
                        liftMotorGroup,
                        rotationsToTop);
   p.setLiftHeights({
@@ -135,37 +135,6 @@ PivotRampPrototype makePivotRampPrototype() {
     .wallStakeHeight=0
   });
   return p;
-}
-
-PivotRampPrototype makeFlywheelPrototype() {
-  // The ports are supposed to be changed when actually building. Different
-  // prototypes will have different ports based on physical needs.
-  const int LEFT_MOTOR_PORT_A = 2 - 1;
-  const int LEFT_MOTOR_PORT_B = 3 - 1;
-  const int LEFT_MOTOR_PORT_C = 4 - 1 ;
-  const int RIGHT_MOTOR_PORT_A = 5 - 1;
-  const int RIGHT_MOTOR_PORT_B = 6 - 1;
-  const int RIGHT_MOTOR_PORT_C = 7 - 1;
-  const int LEFT_FLYWHEEL_PORT = 8 - 1;
-  const int RIGHT_FLYWHEEL_PORT = 9 - 1;
-
-  vex::motor leftMotor1(LEFT_MOTOR_PORT_A);
-  vex::motor leftMotor2(LEFT_MOTOR_PORT_B);
-  vex::motor leftMotor3(LEFT_MOTOR_PORT_C);
-  vector<motor> leftMotors = {leftMotor1, leftMotor2, leftMotor3};
-
-  vex::motor rightMotor1(RIGHT_MOTOR_PORT_A);
-  vex::motor rightMotor2(RIGHT_MOTOR_PORT_B);
-  vex::motor rightMotor3(RIGHT_MOTOR_PORT_C);
-  vector<motor> rightMotors {rightMotor1, rightMotor2, rightMotor3};
-
-  // TODO: Make sure the left and the right flywheel motors are spinning in
-  // opposite directions.
-  vex::motor leftFlywheelMotor(LEFT_FLYWHEEL_PORT);
-  vex::motor rightFlywheelMotor(RIGHT_FLYWHEEL_PORT);
-  vex::motor_group intakeMotorGroup(leftFlywheelMotor, rightFlywheelMotor);
-
-  return PivotRampPrototype(leftMotors, rightMotors, intakeMotorGroup);
 }
 
 /**
@@ -183,33 +152,22 @@ void pre_auton() {
  * competition.
  */
 void autonomous() {
-
-  WaitMillisecondsTask foo(6000); // Problematic...when is this destroyed?  
   auto prototype = makePivotRampPrototype();
+  const double autonomous_drive_speed = 1;
+  const double autonomous_intake_speed = 1;
+  const double experiment_duration_ms = 5000;
+
   auto rootTask = make_shared<WaitMillisecondsTask>(0);
-  auto testDriveTask = make_shared<TestDriveTask>(5, prototype);
-  addTask(rootTask, testDriveTask);
+  auto driveMillisecondsTask = 
+    make_shared<DriveMillisecondsTask>(prototype, experiment_duration_ms, autonomous_drive_speed
+                                       );
+  auto intakeMillisecondsTask = 
+    make_shared<IntakeMillisecondsTask>(prototype, 
+                                        experiment_duration_ms, 
+                                        autonomous_intake_speed);
+  // auto testDriveTask = make_shared<TestDriveTask>(10, prototype);
+  // addTask(rootTask, testDriveTask);
   execute(rootTask);
-
-  // intake_roller_motor.spin(vex::directionType::fwd,
-  //                          autonomous_intake_speed_pct,
-  //                          vex::percentUnits::pct);
-  // Drivetrain.setDriveVelocity(autonomous_speed_pct, vex::percentUnits::pct);
-
-  // // We do not know whether drive is a blocking-call. If it turns out it is a
-  // // blocking call, we should use drivefor. The way we would know is that the
-  // // robot would drive forever.
-  // Drivetrain.drive(vex::directionType::fwd);
-
-  // const double start_time_milliseconds = Brain.timer(msec);
-
-  // while (true) {
-  //   double elapsed_time_msec = Brain.timer(msec) - start_time_milliseconds;
-  //   if (elapsed_time_msec > experiment_duration_ms) {
-  //       Drivetrain.stop();
-  //       intake_roller_motor.stop();
-  //   }
-  // }
 }
 
 /**
