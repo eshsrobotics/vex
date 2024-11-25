@@ -22,4 +22,8 @@ double PidController::calculate(const double measurement, const double setpoint)
 
 
     previousError = error;
+
+    // This code is not complete. It should be replaced with the actual PID
+    // formula. For now, we just want to build the code.
+    return 0;
 }

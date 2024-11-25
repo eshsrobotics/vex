@@ -46,7 +46,7 @@ class PivotRampPrototype : public Idrive, public Iintake, public Ilift {
          */
         PivotRampPrototype(const std::vector<vex::motor>& left_motors_,
                            const std::vector<vex::motor>& right_motors_,
-                           const std::vector<vex::motor>& intake, const vex::motor_group& lift,
+                           const std::vector<vex::motor>& intake, const std::vector<vex::motor>& lift,
                            double rotationsToTop);
                            
         /**
@@ -118,7 +118,7 @@ class PivotRampPrototype : public Idrive, public Iintake, public Ilift {
         std::vector<vex::motor> left_motors;
         std::vector<vex::motor> right_motors;
         std::vector<vex::motor> intake_motors;
-        vex::motor_group lift_group;
+        std::vector<vex::motor> lift_motors;
         double rotationsToTop;
 
         LiftHeights liftHeights_;

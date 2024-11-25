@@ -182,11 +182,10 @@ class DriveMillisecondsTask : public Task {
     void start();
   
   private:
-    double waitTimeMsec;
-    double startTimeMsec;
-    double driveVelocity_;
     Idrive& driveObject;
-
+    double waitTimeMsec;
+    double driveVelocity_;
+    double startTimeMsec;
 };
 
 /**
@@ -214,11 +213,10 @@ class IntakeMillisecondsTask : public Task {
     void start();
     
   private:
-    double startTimeMsec;
+    Iintake& intakeObject;
     double desiredIntakingTimeMsec;
     double intake_speed_;
-    Iintake& intakeObject;
-  
+    double startTimeMsec;
 };
 
 #endif // (ifndef __AUTONOMOUS_TASK_TREE_H_INCLUDED__)
