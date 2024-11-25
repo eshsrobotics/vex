@@ -8,6 +8,7 @@
 /*----------------------------------------------------------------------------*/
 
 #include "vex.h"
+#include "hardware.h"
 
 using namespace vex;
 
@@ -65,10 +66,10 @@ void usercontrol(void) {
     // Each time through the loop your program should update motor + servo
     // values based on feedback from the joysticks.
 
-    // ........................................................................
-    // Insert user code here. This is where you use the joystick values to
-    // update your motors, etc.
-    // ........................................................................
+    double controllerFrontBackPosition = Controller.Axis4.position();
+    double controllerLeftRightPosition = Controller.Axis3.position();
+
+    robotDrive(controllerFrontBackPosition, controllerLeftRightPosition);
 
     wait(20, msec); // Sleep the task for a short amount of time to
                     // prevent wasted resources.

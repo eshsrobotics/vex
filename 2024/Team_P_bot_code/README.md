@@ -4,7 +4,7 @@ subsystems
   * 4x 11W motors
 * Ramp/Intake
   * 1x 11w motor
-* Moble goal latch
+* Mobile goal latch
   * 1x 11w motor
 * Lift
   * 2x 11w motor
