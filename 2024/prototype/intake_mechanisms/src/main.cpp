@@ -117,7 +117,7 @@ PivotRampPrototype makePivotRampPrototype() {
   vector<motor> intakeMotors = {intakeMotor1};
 
   vex::motor liftMotor1(LIFT_MOTOR_PORT);
-  vex::motor_group liftMotorGroup(liftMotor1);
+  vector<motor> liftMotors = {liftMotor1};
 
 
   const double rotationsToTop = 0.5; // TODO: Must be determined experimentally.
@@ -125,7 +125,7 @@ PivotRampPrototype makePivotRampPrototype() {
   PivotRampPrototype p(leftMotors,
                        rightMotors,
                        intakeMotors,
-                       liftMotorGroup,
+                       liftMotors,
                        rotationsToTop);
   p.setLiftHeights({
     // Update these values once rotationsToTop has been determined.
