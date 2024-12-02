@@ -23,7 +23,7 @@ class PidController {
          * measurement closer to setpoint.
          *
          */
-        double calculate(const double measurement, const double setpoint);
+        double calculate(const double measurement, const double setpoint) const;
         
     private:
         // The accumulated error terms over time

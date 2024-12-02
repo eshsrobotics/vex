@@ -45,6 +45,14 @@ const int CONTROLLER_ROBOT_STOPPED_ROW = 3;
 const double INTAKE_SPEED_DEADZONE = 0.05;
 
 
+// PID Controller constants for the Turn Task.
+const double TURN_TASK_P_GAIN = 0.05;
+const double TURN_TASK_I_GAIN = 0;
+const double TURN_TASK_D_GAIN = 0;
+
+// The constant determines whether we have reached our setPoint.
+double TURN_TASK_EPSILON_DEGREES = 0.1; 
+
 // double LIFT_POSITION_DEADZONE = 0.05;
 
 /**

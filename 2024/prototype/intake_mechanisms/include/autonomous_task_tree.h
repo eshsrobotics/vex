@@ -8,6 +8,7 @@
 #include <vector>
 #include "vex.h"
 #include "Idrive.h"
+#include "pid.h"
 
 struct Task {
   // Generates the unique task ID
@@ -164,6 +165,7 @@ class TurnTask : public Task {
     double desiredAngle_;
     gyro gyro_;
     Idrive& drive;
+    PidController pidController;
 
 };
 

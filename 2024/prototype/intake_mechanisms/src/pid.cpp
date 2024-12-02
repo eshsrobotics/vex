@@ -4,9 +4,15 @@
 PidController::PidController(const double P_, const double I_, const double D_) 
     : integral(0), P(P_), I(I_), D(D_) {}
 
-double PidController::calculate(const double measurement, const double setpoint) {
+double PidController::calculate(const double measurement, const double setpoint) const {
+   
+    // The calculate function feels like it should be const; it is only
+    // calculating and not actuating anything. However, it is technically not
+    // const as it is modifying its internal state; thus, we are making it const
+    // and const_casting it.
+    auto that = const_cast<PidController *>(this);
     double error = setpoint - measurement;
-    integral = integral + error;
+    that->integral = integral + error;
     
     
     const double epsilon = 0.005;
@@ -17,11 +23,11 @@ double PidController::calculate(const double measurement, const double setpoint)
     // reset the integral term to 0. This is especially important if the proportional gain is too small compared to the integral gain.
     bool errorIsTooLarge = (fabs(error) > fabs(setpoint));
     if (reachedSetPoint || errorIsTooLarge) {
-        integral = 0;
+        that->integral = 0;
     }
 
     double derivative = error - previousError;
-    previousError = error;
+    that->previousError = error;
 
 
     double power = error * P + integral * I + derivative * D;
