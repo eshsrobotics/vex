@@ -47,7 +47,7 @@ void updateLiftState(bool upButton, bool downButton,
     // The position that the lift reaches can vary by up to this value and still
     // be considered to be on-target.
     // Adjust as needed.
-    const double deadzone = 0.03;
+    const double DEADZONE = 0.03;
 
     const double position = robotWithLift.getliftPosition();
     const double defaultHeight = robotWithLift.liftHeights().defaultHeight;
@@ -55,10 +55,10 @@ void updateLiftState(bool upButton, bool downButton,
     const double allianceStakeHeight = robotWithLift.liftHeights().allianceStakeHeight;
     const double wallStakeHeight = robotWithLift.liftHeights().wallStakeHeight;
 
-    bool reachedDefaultHeight = abs(position - defaultHeight) < deadzone;
-    bool reachedMobileGoalHeight = abs(position - mobileGoalHeight) < deadzone;
-    bool reachedAllianceStakeHeight = abs(position - allianceStakeHeight) < deadzone;
-    bool reachedWallStakeHeight = abs(position - wallStakeHeight) < deadzone;
+    bool reachedDefaultHeight = abs(position - defaultHeight) < DEADZONE;
+    bool reachedMobileGoalHeight = abs(position - mobileGoalHeight) < DEADZONE;
+    bool reachedAllianceStakeHeight = abs(position - allianceStakeHeight) < DEADZONE;
+    bool reachedWallStakeHeight = abs(position - wallStakeHeight) < DEADZONE;
 
     const char* format = "Next State: %s      ";
     const char* label = "";

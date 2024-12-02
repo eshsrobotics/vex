@@ -51,9 +51,7 @@ const double TURN_TASK_I_GAIN = 0;
 const double TURN_TASK_D_GAIN = 0;
 
 // The constant determines whether we have reached our setPoint.
-double TURN_TASK_EPSILON_DEGREES = 0.1; 
-
-// double LIFT_POSITION_DEADZONE = 0.05;
+const double TURN_TASK_EPSILON_DEGREES = 0.1;
 
 /**
  * Used to initialize code/tasks/devices added using tools in VEXcode Text.
