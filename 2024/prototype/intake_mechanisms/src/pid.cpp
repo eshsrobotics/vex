@@ -12,18 +12,18 @@ double PidController::calculate(const double measurement, const double setpoint)
     const double epsilon = 0.005;
     bool reachedSetPoint = (fabs(error) <= epsilon);
 
-    // Trying to prevent integral wind-up, 
-    // When the error is greater than the setPoint, we are worried
+    // Trying to prevent integral wind-up, When the error is greater than the
+    // setPoint, we are worried that our integral gain will be too great so
+    // reset the integral term to 0. This is especially important if the proportional gain is too small compared to the integral gain.
     bool errorIsTooLarge = (fabs(error) > fabs(setpoint));
     if (reachedSetPoint || errorIsTooLarge) {
         integral = 0;
     }
 
-
-
+    double derivative = error - previousError;
     previousError = error;
 
-    // This code is not complete. It should be replaced with the actual PID
-    // formula. For now, we just want to build the code.
-    return 0;
+
+    double power = error * P + integral * I + derivative * D;
+    return power;
 }
