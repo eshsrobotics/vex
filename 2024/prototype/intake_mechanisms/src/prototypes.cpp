@@ -50,8 +50,8 @@ void arcade_drive(double straightSpeed, double turnSpeed, vector<motor>& left,
     difference = max(-1.0, min(difference, 1.0));
     double leftVelocity = -(sum);
     double rightVelocity = -(difference);
-    leftVelocity *= 0.3;
-    rightVelocity *= 0.3;
+    leftVelocity *= 0.6;
+    rightVelocity *= 0.6;
 
     Controller.Screen.setCursor(3, 1);
     Controller.Screen.print("Vel: l=%.2f, r=%.2f  ", leftVelocity, rightVelocity);
