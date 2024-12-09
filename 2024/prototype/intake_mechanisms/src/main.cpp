@@ -33,6 +33,11 @@ using std::max;
 using std::vector;
 using std::make_shared;
 
+// This is global temporary so we can test whether the digital_out::value()
+// method works for the digital solenoid the way we think it works. This is
+// really supposed to be inside the factory.
+digital_out pneumaticClamp(DOUBLE_SOLENOID_PORT);
+
 enum class PrototypeIntakeState {
 
   // Initial state of the state machine
@@ -119,14 +124,14 @@ PivotRampPrototype makePivotRampPrototype() {
   vex::motor liftMotor1(LIFT_MOTOR_PORT);
   vector<motor> liftMotors = {liftMotor1};
 
-
   const double rotationsToTop = 0.5; // TODO: Must be determined experimentally.
 
   PivotRampPrototype p(leftMotors,
                        rightMotors,
                        intakeMotors,
                        liftMotors,
-                       rotationsToTop);
+                       rotationsToTop,
+                       pneumaticClamp);
   p.setLiftHeights({
     // Update these values once rotationsToTop has been determined.
     .defaultHeight=0,
@@ -135,6 +140,21 @@ PivotRampPrototype makePivotRampPrototype() {
     .wallStakeHeight=0
   });
   return p;
+}
+
+/**
+ * Encapsulates all clamping functionality for teleop in one easy-to-use wrapper
+ * function.
+ * @param p a reference to a ImobileGoalIntake instance
+*/
+void updateClampState(ImobileGoalIntake& p) {
+  bool clamp = Controller.ButtonUp.pressing();
+  bool unclamp = Controller.ButtonDown.pressing();
+  if (clamp) {
+    p.clamp(true);
+  } else if (unclamp) {
+    p.clamp(false);
+  }
 }
 
 /**
@@ -158,12 +178,12 @@ void autonomous() {
   const double experiment_duration_ms = 5000;
 
   auto rootTask = make_shared<WaitMillisecondsTask>(0);
-  auto driveMillisecondsTask = 
+  auto driveMillisecondsTask =
     make_shared<DriveMillisecondsTask>(prototype, experiment_duration_ms, autonomous_drive_speed
                                        );
-  auto intakeMillisecondsTask = 
-    make_shared<IntakeMillisecondsTask>(prototype, 
-                                        experiment_duration_ms, 
+  auto intakeMillisecondsTask =
+    make_shared<IntakeMillisecondsTask>(prototype,
+                                        experiment_duration_ms,
                                         autonomous_intake_speed);
   // auto testDriveTask = make_shared<TestDriveTask>(10, prototype);
   // addTask(rootTask, testDriveTask);
@@ -190,6 +210,9 @@ void teleop() {
                       prototype,
                       intakeState);
 
+    // Allows controlling the mobile goal clamp.
+    updateClampState(prototype);
+
     // // Allow the driver to control the lift position.
     // bool buttonUp = Controller.ButtonL1.pressing();
     // bool buttonDown = Controller.ButtonL2.pressing();
@@ -205,7 +228,8 @@ void teleop() {
     // moveLiftRotationsToTopDebug(buttonUp, buttonDown, prototype); // move lift directly (rotationsToTop)
     // moveLiftGatherHeightsDebug(buttonUp, buttonDown, prototype); // move lift directly (relative heights)
     // updateLiftState(buttonUp, buttonDown, prototype, liftState); // move lift by state machine (final)
-
+    Brain.Screen.setCursor(BRAIN_CLAMP_VALUE_ROW, 1);
+    Brain.Screen.print("clamp value: %d", pneumaticClamp.value());
     vex::wait(50, msec);
   }
 }
@@ -285,4 +309,5 @@ int main() {
   while (true) {
     vex::wait(50, msec);
   }
+
 }

@@ -90,14 +90,14 @@ void arcade_drive(double straightSpeed, double turnSpeed, vector<motor>& left,
 PivotRampPrototype::PivotRampPrototype(const std::vector<vex::motor>& left_motors_,
                                        const std::vector<vex::motor>& right_motors_,
                                        const std::vector<vex::motor>& intake_, const std::vector<vex::motor>& lift_,
-                                       double rotToTop)
+                                       double rotToTop, const vex::digital_out& pneumaticClamp_)
     : left_motors(left_motors_), right_motors(right_motors_),
-      intake_motors(intake_), lift_motors(lift_), rotationsToTop(rotToTop) {
+      intake_motors(intake_), lift_motors(lift_), rotationsToTop(rotToTop), pneumaticClamp(pneumaticClamp_) {
     // Where we are right now -- the initialLiftPosition -- will now
     // correspond to an encoder value of zero.
     for_each(lift_motors.begin(), lift_motors.end(), [](motor& current_motor) {
         current_motor.resetPosition();
-    }); 
+    });
 }
 
 void PivotRampPrototype::drive(double straightSpeed, double turnSpeed) {
@@ -143,7 +143,7 @@ void PivotRampPrototype::setLiftPosition(double desiredLiftPosition) {
 
     // Makes the spinToPosition call non-blocking.
     const bool waitForCompletion = false;
-    
+
     for (motor& current_motor : lift_motors) {
         current_motor.spinToPosition(desiredRotations, rev,
                                     LIFT_VELOCITY_PERCENT, velocityUnits::pct,
@@ -177,7 +177,7 @@ void PivotRampPrototype::moveLiftDirect(double rotations) {
     const double DEADZONE = 0.1;
     if (fabs(rotations) < DEADZONE) {
         for_each(lift_motors.begin(), lift_motors.end(), [](motor& current_motor) {
-            current_motor.stop();   
+            current_motor.stop();
         });
     } else {
 
@@ -203,4 +203,8 @@ void PivotRampPrototype::setLiftHeights(LiftHeights liftHeights) {
 
 bool PivotRampPrototype::isLiftAvailable() const {
     return !lift_motors.empty();
+}
+
+void PivotRampPrototype::clamp(bool active) {
+    this->pneumaticClamp.set(active);
 }
