@@ -53,8 +53,7 @@ const double INTAKE_SPEED_DEADZONE = 0.05;
 
 // double LIFT_POSITION_DEADZONE = 0.05;
 
-// The double solenoid port for the mobile goal clamp
-vex::triport::port DOUBLE_SOLENOID_PORT = Brain.ThreeWirePort.A;
+
 
 /**
  * Used to initialize code/tasks/devices added using tools in VEXcode Text.

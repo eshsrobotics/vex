@@ -33,11 +33,6 @@ using std::max;
 using std::vector;
 using std::make_shared;
 
-// This is global temporary so we can test whether the digital_out::value()
-// method works for the digital solenoid the way we think it works. This is
-// really supposed to be inside the factory.
-digital_out pneumaticClamp(DOUBLE_SOLENOID_PORT);
-
 enum class PrototypeIntakeState {
 
   // Initial state of the state machine
@@ -125,6 +120,9 @@ PivotRampPrototype makePivotRampPrototype() {
   vector<motor> liftMotors = {liftMotor1};
 
   const double rotationsToTop = 0.5; // TODO: Must be determined experimentally.
+
+  vex::triport::port DOUBLE_SOLENOID_PORT = Brain.ThreeWirePort.A;
+  digital_out pneumaticClamp(DOUBLE_SOLENOID_PORT);
 
   PivotRampPrototype p(leftMotors,
                        rightMotors,
@@ -229,7 +227,7 @@ void teleop() {
     // moveLiftGatherHeightsDebug(buttonUp, buttonDown, prototype); // move lift directly (relative heights)
     // updateLiftState(buttonUp, buttonDown, prototype, liftState); // move lift by state machine (final)
     Brain.Screen.setCursor(BRAIN_CLAMP_VALUE_ROW, 1);
-    Brain.Screen.print("clamp value: %d", pneumaticClamp.value());
+    Brain.Screen.print("clamp value: %d", prototype.pneumaticClamp.value());
     vex::wait(50, msec);
   }
 }

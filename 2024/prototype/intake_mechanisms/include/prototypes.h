@@ -136,6 +136,7 @@ class PivotRampPrototype : public Idrive, public Iintake, public Ilift,
 
         LiftHeights liftHeights_;
 
+    public: // Temporary for testing
         vex::digital_out pneumaticClamp;
 };
 
