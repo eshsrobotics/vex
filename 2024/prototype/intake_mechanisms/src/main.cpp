@@ -242,7 +242,7 @@ void teleop() {
  * @param outtakeButton true if the caller wants to outtake and false if they do
  *                      not. If both are of the same value, it is ignored.
  * @param robotWithIntake a prototype that we can instruct it to intake
- * @param state[out] Whenever we change states in our state machine, we
+ * @param state [out] Whenever we change states in our state machine, we
  * override the previous value of state. We do not own state.
  */
 void updateIntakeState(bool intakeButton, bool outtakeButton, Iintake& robotWithIntake,
