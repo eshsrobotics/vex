@@ -95,38 +95,41 @@ competition Competition;
 
 PivotRampPrototype makePivotRampPrototype() {
   const int LEFT_MOTOR_PORT_A = 4 - 1; // left_front_motor
-  const int LEFT_MOTOR_PORT_B = 5 - 1; // left_center_motor
-  const int LEFT_MOTOR_PORT_C = 6 - 1; // left_back_motor
-  const int RIGHT_MOTOR_PORT_A = 1 - 1; // right_front_motor
-  const int RIGHT_MOTOR_PORT_B = 2 - 1; // right_center_motor
-  const int RIGHT_MOTOR_PORT_C = 3 - 1; // right_back_motor
-  const int INTAKE_MOTOR_PORT = 1 - 1;
+  const int LEFT_MOTOR_PORT_B = 5 - 1; // left_bottom_motor
+  const int LEFT_MOTOR_PORT_C = 6 - 1; // left_top_motor
+  const int RIGHT_MOTOR_PORT_A = 1 - 1; // right_top_motor
+  const int RIGHT_MOTOR_PORT_B = 2 - 1; // right_bottom_motor
+  const int RIGHT_MOTOR_PORT_C = 3 - 1; // right_top_motor
+  const int INTAKE_MOTOR_PORT = 8 - 1;
   const int LIFT_MOTOR_PORT = 9 - 1;
 
   vex::motor leftMotor1(LEFT_MOTOR_PORT_A);
-  vex::motor leftMotor2(LEFT_MOTOR_PORT_B, true);
-  vex::motor leftMotor3(LEFT_MOTOR_PORT_C, true);
+  vex::motor leftMotor2(LEFT_MOTOR_PORT_B);
+  vex::motor leftMotor3(LEFT_MOTOR_PORT_C);
   vector<motor> leftMotors = {leftMotor1, leftMotor2, leftMotor3};
 
   vex::motor rightMotor1(RIGHT_MOTOR_PORT_A);
-  vex::motor rightMotor2(RIGHT_MOTOR_PORT_B, true);
-  vex::motor rightMotor3(RIGHT_MOTOR_PORT_C, true);
+  vex::motor rightMotor2(RIGHT_MOTOR_PORT_B);
+  vex::motor rightMotor3(RIGHT_MOTOR_PORT_C);
   vector<motor> rightMotors = {rightMotor1, rightMotor2, rightMotor3};
 
   vex::motor intakeMotor1(INTAKE_MOTOR_PORT);
   vector<motor> intakeMotors = {intakeMotor1};
 
   vex::motor liftMotor1(LIFT_MOTOR_PORT);
-  vex::motor_group liftMotorGroup(liftMotor1);
-
+  vector<motor> liftMotors = {liftMotor1};
 
   const double rotationsToTop = 0.5; // TODO: Must be determined experimentally.
+
+  vex::triport::port DOUBLE_SOLENOID_PORT = Brain.ThreeWirePort.A;
+  digital_out pneumaticClamp(DOUBLE_SOLENOID_PORT);
 
   PivotRampPrototype p(leftMotors,
                        rightMotors,
                        intakeMotors,
-                       liftMotorGroup,
-                       rotationsToTop);
+                       liftMotors,
+                       rotationsToTop,
+                       pneumaticClamp);
   p.setLiftHeights({
     // Update these values once rotationsToTop has been determined.
     .defaultHeight=0,
@@ -135,6 +138,21 @@ PivotRampPrototype makePivotRampPrototype() {
     .wallStakeHeight=0
   });
   return p;
+}
+
+/**
+ * Encapsulates all clamping functionality for teleop in one easy-to-use wrapper
+ * function.
+ * @param p a reference to a ImobileGoalIntake instance
+*/
+void updateClampState(ImobileGoalIntake& p) {
+  bool clamp = Controller.ButtonUp.pressing();
+  bool unclamp = Controller.ButtonDown.pressing();
+  if (clamp) {
+    p.clamp(true);
+  } else if (unclamp) {
+    p.clamp(false);
+  }
 }
 
 /**
@@ -158,12 +176,12 @@ void autonomous() {
   const double experiment_duration_ms = 5000;
 
   auto rootTask = make_shared<WaitMillisecondsTask>(0);
-  auto driveMillisecondsTask = 
+  auto driveMillisecondsTask =
     make_shared<DriveMillisecondsTask>(prototype, experiment_duration_ms, autonomous_drive_speed
                                        );
-  auto intakeMillisecondsTask = 
-    make_shared<IntakeMillisecondsTask>(prototype, 
-                                        experiment_duration_ms, 
+  auto intakeMillisecondsTask =
+    make_shared<IntakeMillisecondsTask>(prototype,
+                                        experiment_duration_ms,
                                         autonomous_intake_speed);
   // auto testDriveTask = make_shared<TestDriveTask>(10, prototype);
   // addTask(rootTask, testDriveTask);
@@ -190,6 +208,9 @@ void teleop() {
                       prototype,
                       intakeState);
 
+    // Allows controlling the mobile goal clamp.
+    updateClampState(prototype);
+
     // // Allow the driver to control the lift position.
     // bool buttonUp = Controller.ButtonL1.pressing();
     // bool buttonDown = Controller.ButtonL2.pressing();
@@ -205,7 +226,8 @@ void teleop() {
     // moveLiftRotationsToTopDebug(buttonUp, buttonDown, prototype); // move lift directly (rotationsToTop)
     // moveLiftGatherHeightsDebug(buttonUp, buttonDown, prototype); // move lift directly (relative heights)
     // updateLiftState(buttonUp, buttonDown, prototype, liftState); // move lift by state machine (final)
-
+    Brain.Screen.setCursor(BRAIN_CLAMP_VALUE_ROW, 1);
+    Brain.Screen.print("clamp value: %d", prototype.pneumaticClamp.value());
     vex::wait(50, msec);
   }
 }
@@ -220,7 +242,7 @@ void teleop() {
  * @param outtakeButton true if the caller wants to outtake and false if they do
  *                      not. If both are of the same value, it is ignored.
  * @param robotWithIntake a prototype that we can instruct it to intake
- * @param state[out] Whenever we change states in our state machine, we
+ * @param state [out] Whenever we change states in our state machine, we
  * override the previous value of state. We do not own state.
  */
 void updateIntakeState(bool intakeButton, bool outtakeButton, Iintake& robotWithIntake,
@@ -285,4 +307,5 @@ int main() {
   while (true) {
     vex::wait(50, msec);
   }
+
 }

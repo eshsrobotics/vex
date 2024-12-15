@@ -38,6 +38,7 @@ const double LIFT_VELOCITY_PERCENT = 50.0;
 const int CONTROLLER_LIFT_STATE_ROW = 1;
 const int CONTROLLER_LIFT_POSITION_ROW = 2;
 const int CONTROLLER_ROBOT_STOPPED_ROW = 3;
+const int BRAIN_CLAMP_VALUE_ROW = 5;
 
 /**
  * Deadzones the intake speed velocities, meaning if they are below a certain
@@ -51,6 +52,8 @@ const double INTAKE_SPEED_DEADZONE = 0.05;
 
 
 // double LIFT_POSITION_DEADZONE = 0.05;
+
+
 
 /**
  * Used to initialize code/tasks/devices added using tools in VEXcode Text.

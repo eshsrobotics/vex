@@ -50,8 +50,8 @@ void arcade_drive(double straightSpeed, double turnSpeed, vector<motor>& left,
     difference = max(-1.0, min(difference, 1.0));
     double leftVelocity = -(sum);
     double rightVelocity = -(difference);
-    leftVelocity *= 0.3;
-    rightVelocity *= 0.3;
+    leftVelocity *= 1;
+    rightVelocity *= 1;
 
     Controller.Screen.setCursor(3, 1);
     Controller.Screen.print("Vel: l=%.2f, r=%.2f  ", leftVelocity, rightVelocity);
@@ -89,13 +89,15 @@ void arcade_drive(double straightSpeed, double turnSpeed, vector<motor>& left,
 
 PivotRampPrototype::PivotRampPrototype(const std::vector<vex::motor>& left_motors_,
                                        const std::vector<vex::motor>& right_motors_,
-                                       const std::vector<vex::motor>& intake_, const vex::motor_group& lift_,
-                                       double rotToTop)
+                                       const std::vector<vex::motor>& intake_, const std::vector<vex::motor>& lift_,
+                                       double rotToTop, const vex::digital_out& pneumaticClamp_)
     : left_motors(left_motors_), right_motors(right_motors_),
-      intake_motors(intake_), lift_group(lift_), rotationsToTop(rotToTop) {
+      intake_motors(intake_), lift_motors(lift_), rotationsToTop(rotToTop), pneumaticClamp(pneumaticClamp_) {
     // Where we are right now -- the initialLiftPosition -- will now
     // correspond to an encoder value of zero.
-    lift_group.resetPosition();
+    for_each(lift_motors.begin(), lift_motors.end(), [](motor& current_motor) {
+        current_motor.resetPosition();
+    });
 }
 
 void PivotRampPrototype::drive(double straightSpeed, double turnSpeed) {
@@ -139,10 +141,14 @@ void PivotRampPrototype::setLiftPosition(double desiredLiftPosition) {
     // to reach the desired abstract liftRotations such as 0.6 of the way up.
     double desiredRotations = u * (rotationsToTop);
 
+    // Makes the spinToPosition call non-blocking.
     const bool waitForCompletion = false;
-    this->lift_group.spinToPosition(desiredRotations, rev,
+
+    for (motor& current_motor : lift_motors) {
+        current_motor.spinToPosition(desiredRotations, rev,
                                     LIFT_VELOCITY_PERCENT, velocityUnits::pct,
                                     waitForCompletion);
+    }
 
     Controller.Screen.setCursor(CONTROLLER_LIFT_POSITION_ROW, 1);
     Controller.Screen.print("Lift=%.2f%, target=%.2f%  ", getliftPosition() * 100, desiredLiftPosition * 100);
@@ -152,8 +158,11 @@ double PivotRampPrototype::getliftPosition() const {
     if (!isLiftAvailable()) {
         return 0;
     }
-    motor_group lift_gr = this->lift_group;
-    double rotations = lift_gr.position(vex::rotationUnits::rev);
+
+    // We trying to call position which is non-const for unknown reasons so we
+    // are telling the compiler to ignore the constness.
+    PivotRampPrototype* that = const_cast<PivotRampPrototype*>(this);
+    double rotations = that->lift_motors[0].position(rev);
 
     return rotations/rotationsToTop;
 }
@@ -167,14 +176,21 @@ void PivotRampPrototype::moveLiftDirect(double rotations) {
     // DEADZONE, then we won't spin at all.
     const double DEADZONE = 0.1;
     if (fabs(rotations) < DEADZONE) {
-        this->lift_group.stop();
+        for_each(lift_motors.begin(), lift_motors.end(), [](motor& current_motor) {
+            current_motor.stop();
+        });
     } else {
+
+        // Prevents the called the method from being a blocking call.
         const bool waitForCompletion = false;
-        this->lift_group.spinFor(rotations, vex::rotationUnits::rev, waitForCompletion);
+
+        for_each(lift_motors.begin(), lift_motors.end(), [rotations](motor& current_motor) {
+             current_motor.spinFor(rotations, vex::rotationUnits::rev, waitForCompletion);
+        });
 
         Controller.Screen.setCursor(CONTROLLER_LIFT_POSITION_ROW, 1);
         Controller.Screen.print("Lift at %.2f revs ",
-                                lift_group.position(rev));
+                                lift_motors[0].position(rev));
     }
 }
 
@@ -186,9 +202,9 @@ void PivotRampPrototype::setLiftHeights(LiftHeights liftHeights) {
 }
 
 bool PivotRampPrototype::isLiftAvailable() const {
-    if (const_cast<vex::motor_group&>(lift_group).count() == 0) {
-        return false;
-    } else {
-        return true;
-    }
+    return !lift_motors.empty();
+}
+
+void PivotRampPrototype::clamp(bool active) {
+    this->pneumaticClamp.set(active);
 }

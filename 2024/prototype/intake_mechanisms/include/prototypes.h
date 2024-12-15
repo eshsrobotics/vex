@@ -8,11 +8,15 @@
 #include "Idrive.h"
 #include "Iintake.h"
 #include "Ilift.h"
+#include "ImobileGoalIntake.h"
+
+
 
 /**
  *
  */
-class PivotRampPrototype : public Idrive, public Iintake, public Ilift {
+class PivotRampPrototype : public Idrive, public Iintake, public Ilift,
+                           public ImobileGoalIntake {
     public:
         /**
          * Construct a pivot ramp prototype robot.
@@ -43,12 +47,14 @@ class PivotRampPrototype : public Idrive, public Iintake, public Ilift {
          *               motor has to make for the lift to extend.  This value
          *               must be determined experimentally (please see
          *               setLiftRotationsDebug()).
+         * @param pneumaticsClamp A digital_out object connected to a double
+         *               solenoid for controlling pneumatic mobile goal grabber.
          */
         PivotRampPrototype(const std::vector<vex::motor>& left_motors_,
                            const std::vector<vex::motor>& right_motors_,
-                           const std::vector<vex::motor>& intake, const vex::motor_group& lift,
-                           double rotationsToTop);
-                           
+                           const std::vector<vex::motor>& intake, const std::vector<vex::motor>& lift,
+                           double rotationsToTop, const vex::digital_out& pneumaticsClamp);
+
         /**
          * Drive the robot at the given speeds.
          *
@@ -76,6 +82,7 @@ class PivotRampPrototype : public Idrive, public Iintake, public Ilift {
          *
          */
         virtual void resetEncoders();
+
         /**
          * Turn on the intake_group at a specific speed.
          *
@@ -114,14 +121,23 @@ class PivotRampPrototype : public Idrive, public Iintake, public Ilift {
 
         void setLiftHeights(LiftHeights liftHeights);
 
+        /**
+         * Clamps and unclamps the mobile goal grabber.
+         * @param active true for the clamp to close and false for open
+        */
+        void clamp(bool active);
+
     private:
         std::vector<vex::motor> left_motors;
         std::vector<vex::motor> right_motors;
         std::vector<vex::motor> intake_motors;
-        vex::motor_group lift_group;
+        std::vector<vex::motor> lift_motors;
         double rotationsToTop;
 
         LiftHeights liftHeights_;
+
+    public: // Temporary for testing
+        vex::digital_out pneumaticClamp;
 };
 
-#endif // (ifndef __PROTOTYPE_H_INCLUDED__)
+#endif // (ifndef __PROTOTYPE_H_INCLUDED__)—
