@@ -14,6 +14,9 @@ motor FrontLeft(FRONT_LEFT_PORT);
 motor FrontRight(FRONT_RIGHT_PORT);
 motor BackLeft(BACK_LEFT_PORT);
 motor BackRight(BACK_RIGHT_PORT);
+motor FrontLiftRight(LiftFR);
+motor BackLiftLeft(LiftBL);
+
 
 motor Intake(INTAKE_PORT);
 
@@ -22,6 +25,8 @@ motor_group Right(FrontRight, BackRight);
 drivetrain DriveTrain(Left, Right, WHEEL_CIRCUMFERENCE_CM, 
                       DRIVE_TRAIN_WIDTH_CM, DRIVE_TRAIN_LENGTH_CM, 
                       distanceUnits::cm, DRIVE_TRAIN_GEAR_RATIO_CM);
+
+motor_group updownlift(FrontLiftRight, BackLiftLeft);
 
 void robotDrive(double frontBackSpeed, double turnSpeed) {
 
@@ -64,6 +69,18 @@ void robotintake(int intakeOrOuttake) {
         Intake.spin(vex::directionType::rev);
     } else {
         // No movement
-        Intake.stop(brakeType::brake);
+        Intake.stop(vex::brakeType::brake);
+    }
+}
+
+//Lift system code
+void robotlift(int Lift) {
+    updownlift.setVelocity(100.00, vex::percentUnits::pct);
+    if (Lift > 0) {
+        updownlift.spin (vex::directionType::fwd);
+    } else if (Lift < 0) {
+        updownlift.spin(vex::directionType::rev);
+    } else {
+        updownlift.stop(vex::brakeType::brake);
     }
 }

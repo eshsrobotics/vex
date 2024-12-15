@@ -26,6 +26,10 @@ extern vex::motor Intake;
 // Intake motor port
 const int INTAKE_PORT = 8 - 1;
 
+// Lift motor port
+const int LiftFR = 9 - 1;
+const int LiftBL = 10 - 1;
+
 // These are the motor groups used to feed the vex::drivetrain object...an
 // object which we are no longer convinced we need in the first place.
 extern vex::motor_group Left;
@@ -67,5 +71,6 @@ void robotDrive(double frontBackSpeed, double turnSpeed);
  */
 void robotintake(int intakeOrOuttake);
 
+void robotlift(int Lift);
 
 #endif

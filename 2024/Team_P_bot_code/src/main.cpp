@@ -81,6 +81,20 @@ void usercontrol(void) {
 
     robotintake(intakeOrOuttake);
 
+
+    bool uplift = Controller.ButtonUp.pressing();
+    bool downlift = Controller.ButtonDown.pressing();
+    int Lift = 0;
+    if (uplift == true) {
+      Lift = 1;
+    } else if (downlift == true) {
+      Lift = -1;
+    }
+
+
+    robotlift(Lift);
+
+
     wait(20, msec); // Sleep the task for a short amount of time to
                     // prevent wasted resources.
   }
