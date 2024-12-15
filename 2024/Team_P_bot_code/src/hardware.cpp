@@ -74,11 +74,11 @@ void robotintake(int intakeOrOuttake) {
 }
 
 //Lift system code
-void robotlift(int Lift) {
+void robotlift(int lift) {
     updownlift.setVelocity(100.00, vex::percentUnits::pct);
-    if (Lift > 0) {
+    if (lift > 0) {
         updownlift.spin (vex::directionType::fwd);
-    } else if (Lift < 0) {
+    } else if (lift < 0) {
         updownlift.spin(vex::directionType::rev);
     } else {
         updownlift.stop(vex::brakeType::brake);

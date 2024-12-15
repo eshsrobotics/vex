@@ -71,6 +71,14 @@ void robotDrive(double frontBackSpeed, double turnSpeed);
  */
 void robotintake(int intakeOrOuttake);
 
-void robotlift(int Lift);
+/**
+ * Controls the lift subsystem. We can call this during teleop and autonomus.
+ *
+ * @param lift Makes the Lift raise and lower pivot ramp. If the sign of the
+ *             number is a positive, it triggers the lift to go up. Zero stops
+ *             the system, and if the sign of the number is negative it triggers
+ *             lowering system.
+ */
+void robotlift(int lift);
 
 #endif

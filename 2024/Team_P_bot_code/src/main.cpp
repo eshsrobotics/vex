@@ -84,15 +84,15 @@ void usercontrol(void) {
 
     bool uplift = Controller.ButtonUp.pressing();
     bool downlift = Controller.ButtonDown.pressing();
-    int Lift = 0;
+    int lift = 0;
     if (uplift == true) {
-      Lift = 1;
+      lift = 1;
     } else if (downlift == true) {
-      Lift = -1;
+      lift = -1;
     }
 
 
-    robotlift(Lift);
+    robotlift(lift);
 
 
     wait(20, msec); // Sleep the task for a short amount of time to
