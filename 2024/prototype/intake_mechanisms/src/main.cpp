@@ -94,23 +94,23 @@ void moveLiftGatherHeightsDebug(bool buttonUp, bool buttonDown, Ilift& robotWith
 competition Competition;
 
 PivotRampPrototype makePivotRampPrototype() {
-  const int LEFT_MOTOR_PORT_A = 4 - 1; // left_front_motor
-  const int LEFT_MOTOR_PORT_B = 5 - 1; // left_bottom_motor
-  const int LEFT_MOTOR_PORT_C = 6 - 1; // left_top_motor
-  const int RIGHT_MOTOR_PORT_A = 1 - 1; // right_top_motor
-  const int RIGHT_MOTOR_PORT_B = 2 - 1; // right_bottom_motor
-  const int RIGHT_MOTOR_PORT_C = 3 - 1; // right_top_motor
+  const int LEFT_MOTOR_PORT_A = 5 - 1; // left_front_motor
+  const int LEFT_MOTOR_PORT_B = 6 - 1; // left_bottom_motor
+  const int LEFT_MOTOR_PORT_C = 4 - 1; // left_top_motor
+  const int RIGHT_MOTOR_PORT_A = 2 - 1; // right_top_motor
+  const int RIGHT_MOTOR_PORT_B = 3 - 1; // right_bottom_motor
+  const int RIGHT_MOTOR_PORT_C = 1 - 1; // right_top_motor
   const int INTAKE_MOTOR_PORT = 8 - 1;
   const int LIFT_MOTOR_PORT = 9 - 1;
 
   vex::motor leftMotor1(LEFT_MOTOR_PORT_A);
   vex::motor leftMotor2(LEFT_MOTOR_PORT_B);
-  vex::motor leftMotor3(LEFT_MOTOR_PORT_C);
+  vex::motor leftMotor3(LEFT_MOTOR_PORT_C, true);
   vector<motor> leftMotors = {leftMotor1, leftMotor2, leftMotor3};
 
   vex::motor rightMotor1(RIGHT_MOTOR_PORT_A);
   vex::motor rightMotor2(RIGHT_MOTOR_PORT_B);
-  vex::motor rightMotor3(RIGHT_MOTOR_PORT_C);
+  vex::motor rightMotor3(RIGHT_MOTOR_PORT_C, true);
   vector<motor> rightMotors = {rightMotor1, rightMotor2, rightMotor3};
 
   vex::motor intakeMotor1(INTAKE_MOTOR_PORT);
