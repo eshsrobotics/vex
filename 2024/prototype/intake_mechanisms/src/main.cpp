@@ -146,8 +146,8 @@ PivotRampPrototype makePivotRampPrototype() {
  * @param p a reference to a ImobileGoalIntake instance
 */
 void updateClampState(ImobileGoalIntake& p) {
-  bool clamp = Controller.ButtonUp.pressing();
-  bool unclamp = Controller.ButtonDown.pressing();
+  bool clamp = Controller.ButtonL1.pressing(); //means the air is released
+  bool unclamp = Controller.ButtonL2.pressing(); //means the air is pumped in
   if (clamp) {
     p.clamp(true);
   } else if (unclamp) {
