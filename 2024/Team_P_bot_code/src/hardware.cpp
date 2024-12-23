@@ -1,6 +1,8 @@
-// hardware.cpp: Contains the definitions for the declarations made in hardware.h
+// hardware.cpp: Contains the definitions for the declarations made in
+// hardware.h
 
 #include "hardware.h"
+
 #include <algorithm>
 
 using namespace vex;
@@ -17,23 +19,27 @@ motor BackRight(BACK_RIGHT_PORT);
 motor FrontLiftRight(LiftFR);
 motor BackLiftLeft(LiftBL);
 
-
 motor Intake(INTAKE_PORT);
 
 motor_group Left(FrontLeft, BackLeft);
 motor_group Right(FrontRight, BackRight);
-drivetrain DriveTrain(Left, Right, WHEEL_CIRCUMFERENCE_CM, 
-                      DRIVE_TRAIN_WIDTH_CM, DRIVE_TRAIN_LENGTH_CM, 
-                      distanceUnits::cm, DRIVE_TRAIN_GEAR_RATIO_CM);
+drivetrain DriveTrain(
+    Left,
+    Right,
+    WHEEL_CIRCUMFERENCE_CM,
+    DRIVE_TRAIN_WIDTH_CM,
+    DRIVE_TRAIN_LENGTH_CM,
+    distanceUnits::cm,
+    DRIVE_TRAIN_GEAR_RATIO_CM
+);
 
 motor_group updownlift(FrontLiftRight, BackLiftLeft);
 
 void robotDrive(double frontBackSpeed, double turnSpeed) {
-
-    // This is set to false because it seems that only one drive method is allowed 
-    // at a time, so turn() would cancel out drive().
+    // This is set to false because it seems that only one drive method is
+    // allowed at a time, so turn() would cancel out drive().
     const bool vexDoesTheRightThing = false;
-    
+
     if (vexDoesTheRightThing) {
         // Option 1: Drive Train internally Does the Right Thing™ and combines
         // turning and forward/back speed to produce an overall chassis speed.
@@ -55,10 +61,10 @@ void robotDrive(double frontBackSpeed, double turnSpeed) {
         Left.spin(fwd, leftMotorSpeed, velocityUnits::pct);
         Right.spin(fwd, rightMotorSpeed, velocityUnits::pct);
     }
-
 }
-//When testing if Intake and Outake are reversed change the code for it to be
-//reversed.
+
+// When testing if Intake and Outake are reversed change the code for it to be
+// reversed.
 void robotintake(int intakeOrOuttake) {
     Intake.setVelocity(100.00, vex::percentUnits::pct);
     if (intakeOrOuttake > 0) {
@@ -73,11 +79,11 @@ void robotintake(int intakeOrOuttake) {
     }
 }
 
-//Lift system code
+// Lift system code
 void robotlift(int lift) {
     updownlift.setVelocity(100.00, vex::percentUnits::pct);
     if (lift > 0) {
-        updownlift.spin (vex::directionType::fwd);
+        updownlift.spin(vex::directionType::fwd);
     } else if (lift < 0) {
         updownlift.spin(vex::directionType::rev);
     } else {

@@ -7,8 +7,8 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
-#include "vex.h"
 #include "hardware.h"
+#include "vex.h"
 
 using namespace vex;
 
@@ -28,9 +28,8 @@ competition Competition;
 /*---------------------------------------------------------------------------*/
 
 void pre_auton(void) {
-
-  // All activities that occur before the competition starts
-  // Example: clearing encoders, setting servo positions, ...
+    // All activities that occur before the competition starts
+    // Example: clearing encoders, setting servo positions, ...
 }
 
 /*---------------------------------------------------------------------------*/
@@ -44,9 +43,9 @@ void pre_auton(void) {
 /*---------------------------------------------------------------------------*/
 
 void autonomous(void) {
-  // ..........................................................................
-  // Insert autonomous user code here.
-  // ..........................................................................
+    // ..........................................................................
+    // Insert autonomous user code here.
+    // ..........................................................................
 }
 
 /*---------------------------------------------------------------------------*/
@@ -60,59 +59,57 @@ void autonomous(void) {
 /*---------------------------------------------------------------------------*/
 
 void usercontrol(void) {
-  // User control code here, inside the loop
-  while (1) {
-    // This is the main execution loop for the user control program.
-    // Each time through the loop your program should update motor + servo
-    // values based on feedback from the joysticks.
+    // User control code here, inside the loop
+    while (1) {
+        // This is the main execution loop for the user control program.
+        // Each time through the loop your program should update motor + servo
+        // values based on feedback from the joysticks.
 
-    double controllerFrontBackPosition = Controller.Axis4.position();
-    double controllerLeftRightPosition = Controller.Axis3.position();
-    robotDrive(controllerFrontBackPosition, controllerLeftRightPosition);
+        double controllerFrontBackPosition = Controller.Axis4.position();
+        double controllerLeftRightPosition = Controller.Axis3.position();
+        robotDrive(controllerFrontBackPosition, controllerLeftRightPosition);
 
-    bool outtake = Controller.ButtonL2.pressing();
-    bool intake = Controller.ButtonR2.pressing();
-    int intakeOrOuttake = 0;
-    if (intake == true) {
-      intakeOrOuttake = 1;
-    } else if (outtake == true) {
-      intakeOrOuttake = -1;
+        bool outtake = Controller.ButtonL2.pressing();
+        bool intake = Controller.ButtonR2.pressing();
+        int intakeOrOuttake = 0;
+        if (intake == true) {
+            intakeOrOuttake = 1;
+        } else if (outtake == true) {
+            intakeOrOuttake = -1;
+        }
+
+        robotintake(intakeOrOuttake);
+
+        bool uplift = Controller.ButtonUp.pressing();
+        bool downlift = Controller.ButtonDown.pressing();
+        int lift = 0;
+        if (uplift == true) {
+            lift = 1;
+        } else if (downlift == true) {
+            lift = -1;
+        }
+
+        robotlift(lift);
+
+        // Sleep the task for a short amount of time to
+        // prevent wasted resources.
+        wait(20, msec);
     }
-
-    robotintake(intakeOrOuttake);
-
-
-    bool uplift = Controller.ButtonUp.pressing();
-    bool downlift = Controller.ButtonDown.pressing();
-    int lift = 0;
-    if (uplift == true) {
-      lift = 1;
-    } else if (downlift == true) {
-      lift = -1;
-    }
-
-
-    robotlift(lift);
-
-
-    wait(20, msec); // Sleep the task for a short amount of time to
-                    // prevent wasted resources.
-  }
 }
 
 //
 // Main will set up the competition functions and callbacks.
 //
 int main() {
-  // Set up callbacks for autonomous and driver control periods.
-  Competition.autonomous(autonomous);
-  Competition.drivercontrol(usercontrol);
+    // Set up callbacks for autonomous and driver control periods.
+    Competition.autonomous(autonomous);
+    Competition.drivercontrol(usercontrol);
 
-  // Run the pre-autonomous function.
-  pre_auton();
+    // Run the pre-autonomous function.
+    pre_auton();
 
-  // Prevent main from exiting with an infinite loop.
-  while (true) {
-    wait(100, msec);
-  }
+    // Prevent main from exiting with an infinite loop.
+    while (true) {
+        wait(100, msec);
+    }
 }
