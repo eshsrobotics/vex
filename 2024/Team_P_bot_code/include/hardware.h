@@ -35,13 +35,18 @@ const int LiftBL = 10 - 1;
 extern vex::motor_group Left;
 extern vex::motor_group Right;
 
-// The DRIVE_TRAIN_WIDTH_CM and DRIVE_TRAIN_LENGTH_CM don't refer to the actual length/width
-// of the drivetrain, but rather the distance between the centers of the wheels
+// The DRIVE_TRAIN_WIDTH_CM and DRIVE_TRAIN_LENGTH_CM don't refer to the actual
+// length/width of the drivetrain, but rather the distance between the centers
+// of the wheels
 
-const double DRIVE_TRAIN_WIDTH_CM = 32;       // Vex calls this "track width"
-const double WHEEL_CIRCUMFERENCE_CM = 30;     // Vex calls this "wheel travel"
-const double DRIVE_TRAIN_LENGTH_CM = 32;      // Vex calls this "wheel base"
-const double DRIVE_TRAIN_GEAR_RATIO_CM = 1.0; // Ratio between motor input shaft and wheel output shaft
+// Vex calls this "track width"
+const double DRIVE_TRAIN_WIDTH_CM = 32;
+// Vex calls this "wheel travel"
+const double WHEEL_CIRCUMFERENCE_CM = 30;
+// Vex calls this "wheel base"
+const double DRIVE_TRAIN_LENGTH_CM = 32;
+// Ratio between motor input shaft and wheel output shaft
+const double DRIVE_TRAIN_GEAR_RATIO_CM = 1.0;
 
 extern vex::drivetrain DriveTrain;
 
