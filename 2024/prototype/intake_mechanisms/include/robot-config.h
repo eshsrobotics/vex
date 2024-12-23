@@ -3,10 +3,8 @@
 
 #include "vex.h"
 
-using namespace vex;
-
-extern brain Brain;
-extern controller Controller;
+extern vex::brain Brain;
+extern vex::controller Controller;
 
 // VEXcode devices
 
@@ -14,14 +12,12 @@ extern controller Controller;
 // give the member function drivetrain() gear ratios as one of the arguments,
 // which will give the code dead reckoning ability to predict how much the robot
 // will move.
-extern drivetrain Drivetrain;
-extern motor intake_roller_motor;
+extern vex::drivetrain Drivetrain;
+extern vex::motor intake_roller_motor;
 
-const auto gearbox_ratio = ratio6_1;
+const auto gearbox_ratio = vex::ratio6_1;
 
 const double autonomous_speed_pct = 15.0;
-
-
 
 // How quickly to raise or lower the lift mechanism, in percent units between 0
 // and 100.
@@ -33,7 +29,6 @@ const double LIFT_VELOCITY_PERCENT = 50.0;
 * speeds, intake speeds, and driving.
 
 */
-
 
 const int CONTROLLER_LIFT_STATE_ROW = 1;
 const int CONTROLLER_LIFT_POSITION_ROW = 2;
@@ -50,10 +45,7 @@ const int BRAIN_CLAMP_VALUE_ROW = 5;
  */
 const double INTAKE_SPEED_DEADZONE = 0.05;
 
-
 // double LIFT_POSITION_DEADZONE = 0.05;
-
-
 
 /**
  * Used to initialize code/tasks/devices added using tools in VEXcode Text.

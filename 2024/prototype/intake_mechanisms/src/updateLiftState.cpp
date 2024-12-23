@@ -1,9 +1,12 @@
 // Implements and definition updateLiftState.h
 
 #include "updateLiftState.h"
-#include "vex.h"
-#include <algorithm>  // abs()
+
+#include <algorithm> // abs()
 #include <string>
+
+#include "robot-config.h"
+#include "vex.h"
 
 using std::abs;
 using std::string;
@@ -31,7 +34,8 @@ enum class LiftState {
 
 // The lift is an abstraction that can go from the lowest position at 0.0 to the
 // highest position at 1.0.  Somewhere along the way, there are various "stops"
-// that represent the heights that the lift needs to go to to reach of our destinations:
+// that represent the heights that the lift needs to go to to reach of our
+// destinations:
 //
 //   - The ground
 //   - The (top of the) mobile goal
@@ -41,9 +45,12 @@ enum class LiftState {
 // These values vary from robot to robot.
 LiftState INITIAL_LIFT_STATE = LiftState::START;
 
-void updateLiftState(bool upButton, bool downButton,
-                     Ilift& robotWithLift, LiftState& state) {
-
+void updateLiftState(
+    bool upButton,
+    bool downButton,
+    Ilift& robotWithLift,
+    LiftState& state
+) {
     // The position that the lift reaches can vary by up to this value and still
     // be considered to be on-target.
     // Adjust as needed.
@@ -51,13 +58,16 @@ void updateLiftState(bool upButton, bool downButton,
 
     const double position = robotWithLift.getliftPosition();
     const double defaultHeight = robotWithLift.liftHeights().defaultHeight;
-    const double mobileGoalHeight = robotWithLift.liftHeights().mobileGoalHeight;
-    const double allianceStakeHeight = robotWithLift.liftHeights().allianceStakeHeight;
+    const double mobileGoalHeight =
+        robotWithLift.liftHeights().mobileGoalHeight;
+    const double allianceStakeHeight =
+        robotWithLift.liftHeights().allianceStakeHeight;
     const double wallStakeHeight = robotWithLift.liftHeights().wallStakeHeight;
 
     bool reachedDefaultHeight = abs(position - defaultHeight) < deadzone;
     bool reachedMobileGoalHeight = abs(position - mobileGoalHeight) < deadzone;
-    bool reachedAllianceStakeHeight = abs(position - allianceStakeHeight) < deadzone;
+    bool reachedAllianceStakeHeight =
+        abs(position - allianceStakeHeight) < deadzone;
     bool reachedWallStakeHeight = abs(position - wallStakeHeight) < deadzone;
 
     const char* format = "Next State: %s      ";
@@ -87,7 +97,7 @@ void updateLiftState(bool upButton, bool downButton,
             break;
 
         case LiftState::MOBILE_GOAL_UP:
-            if (reachedAllianceStakeHeight){
+            if (reachedAllianceStakeHeight) {
                 robotWithLift.setLiftPosition(0);
                 if (!upButton) {
                     state = LiftState::ALLIANCE_STAKE;
@@ -117,7 +127,8 @@ void updateLiftState(bool upButton, bool downButton,
             }
             break;
 
-        case LiftState::ALLIANCE_STAKE_UP: // Heading up to the wall stake height
+        case LiftState::ALLIANCE_STAKE_UP: // Heading up to the wall stake
+                                           // height
             if (reachedWallStakeHeight) {
                 robotWithLift.setLiftPosition(0);
                 if (!upButton) {
@@ -127,8 +138,9 @@ void updateLiftState(bool upButton, bool downButton,
             }
             break;
 
-        case LiftState::ALLIANCE_STAKE_DOWN: //Heading down to the mobile goal height
-             if (reachedMobileGoalHeight) {
+        case LiftState::ALLIANCE_STAKE_DOWN: // Heading down to the mobile goal
+                                             // height
+            if (reachedMobileGoalHeight) {
                 robotWithLift.setLiftPosition(0);
                 if (!downButton) {
                     state = LiftState::MOBILE_GOAL;
@@ -147,7 +159,8 @@ void updateLiftState(bool upButton, bool downButton,
             }
             break;
 
-        case LiftState::WALL_STAKE_DOWN: // Heading down to the alliance stake height
+        case LiftState::WALL_STAKE_DOWN: // Heading down to the alliance stake
+                                         // height
             if (reachedAllianceStakeHeight) {
                 robotWithLift.setLiftPosition(0);
                 if (!downButton) {
