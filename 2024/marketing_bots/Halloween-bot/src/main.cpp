@@ -7,11 +7,11 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
-#include "vex.h"
-#include "input.h"
-#include "hardwareConstitution.h"
 #include "armSubsystem.h"
 #include "auton.h"
+#include "hardwareConstitution.h"
+#include "input.h"
+#include "vex.h"
 
 using namespace vex;
 
@@ -32,12 +32,12 @@ competition Competition;
 
 // void pre_auton(void) {
 
-  // All activities that occur before the competition starts
-  // Example: clearing encoders, setting servo positions, ...
+// All activities that occur before the competition starts
+// Example: clearing encoders, setting servo positions, ...
 
-  // Open the arm to trap-jaw position to keep the robot dimensions below 18x18
-  // inches
-  // moveArm(0, CLAW_OPEN, armMotorLeft, armMotorRight, clawMotor);
+// Open the arm to trap-jaw position to keep the robot dimensions below 18x18
+// inches
+// moveArm(0, CLAW_OPEN, armMotorLeft, armMotorRight, clawMotor);
 // }
 
 /*---------------------------------------------------------------------------*/
@@ -50,7 +50,7 @@ competition Competition;
 /*  You must modify the code to add your own robot specific commands here.   */
 /*---------------------------------------------------------------------------*/
 
-void autonomous(void) { }
+void autonomous(void) {}
 
 /*---------------------------------------------------------------------------*/
 /*                                                                           */
@@ -63,65 +63,65 @@ void autonomous(void) { }
 /*---------------------------------------------------------------------------*/
 
 void usercontrol(void) {
+    calibrateClaw(clawMotor, getBumper());
+    Controller.Screen.clearScreen();
+    Controller.Screen.setCursor(1, 1);
+    Controller.Screen.print("Calibration finished!");
 
-  calibrateClaw(clawMotor, getBumper());
-  Controller.Screen.clearScreen();
-  Controller.Screen.setCursor(1, 1);
-  Controller.Screen.print("Calibration finished!");
-  
-  // User control code here, inside the loop
-  while (1) {
-    // This is the main execution loop for the user control program.
-    // Each time through the loop your program should update motor + servo
-    // values based on feedback from the joysticks.
+    // User control code here, inside the loop
+    while (1) {
+        // This is the main execution loop for the user control program.
+        // Each time through the loop your program should update motor + servo
+        // values based on feedback from the joysticks.
 
-    // ........................................................................
-    // Insert user code here. This is where you use the joystick values to
-    // update your motors, etc.
-    // ........................................................................
+        // ........................................................................
+        // Insert user code here. This is where you use the joystick values to
+        // update your motors, etc.
+        // ........................................................................
 
-    double horizontalChannel = Controller.Axis4.position();
-    double verticalChannel = Controller.Axis3.position();
-    // arcade_drive(Controller.Axis4.position(),
-    //              Controller.Axis3.position(),
-    //              L, R);
-    horizontalChannel *= 0.60;
-    arcade_drive_by_quadrant(horizontalChannel, 
-                             verticalChannel);
+        double horizontalChannel = Controller.Axis4.position();
+        double verticalChannel = Controller.Axis3.position();
+        // arcade_drive(Controller.Axis4.position(),
+        //              Controller.Axis3.position(),
+        //              L, R);
+        horizontalChannel *= 0.60;
+        arcade_drive_by_quadrant(horizontalChannel, verticalChannel);
 
-    ClawState clawState = CLAW_NEUTRAL;
-    if (Controller.ButtonL1.pressing() == true)
-    {
-      clawState = CLAW_OPEN;
+        ClawState clawState = CLAW_NEUTRAL;
+        if (Controller.ButtonL1.pressing() == true) {
+            clawState = CLAW_OPEN;
+        } else if (Controller.ButtonR1.pressing() == true) {
+            clawState = CLAW_CLOSE;
+        }
+
+        moveArm(
+            -Controller.Axis2.position(),
+            clawState,
+            armMotorLeft,
+            armMotorRight,
+            clawMotor
+        );
+
+        // m.spin(fwd, 100, pct);
+
+        wait(20, msec); // Sleep the task for a short amount of time to
+                        // prevent wasted resources.
     }
-    else if (Controller.ButtonR1.pressing() == true)
-    {
-      clawState = CLAW_CLOSE;
-    }
-
-    moveArm (-Controller.Axis2.position(),
-             clawState, armMotorLeft, armMotorRight, clawMotor);
-
-    // m.spin(fwd, 100, pct);
-
-    wait(20, msec); // Sleep the task for a short amount of time to
-                    // prevent wasted resources.
-  }
 }
 
 //
 // Main will set up the competition functions and callbacks.
 //
 int main() {
-  // Set up callbacks for autonomous and driver control periods.
-//  Competition.autonomous(autonomous);
-  Competition.drivercontrol(usercontrol);
+    // Set up callbacks for autonomous and driver control periods.
+    //  Competition.autonomous(autonomous);
+    Competition.drivercontrol(usercontrol);
 
-  // Run the pre-autonomous function.
-//  pre_auton();
+    // Run the pre-autonomous function.
+    //  pre_auton();
 
-  // Prevent main from exiting with an infinite loop.
-  while (true) {
-    wait(100, msec);
-  }
+    // Prevent main from exiting with an infinite loop.
+    while (true) {
+        wait(100, msec);
+    }
 }
