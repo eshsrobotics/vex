@@ -53,7 +53,7 @@ const double INTAKE_SPEED_DEADZONE = 0.05;
 
 // double LIFT_POSITION_DEADZONE = 0.05;
 
-
+const double MOBILE_GOAL_INTAKE_DURATION_MILLISECONDS = 200;
 
 /**
  * Used to initialize code/tasks/devices added using tools in VEXcode Text.
