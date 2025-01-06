@@ -14,6 +14,25 @@ const int FRONT_RIGHT_PORT = 5 - 1;
 const int BACK_LEFT_PORT = 6 - 1;
 const int BACK_RIGHT_PORT = 7 - 1;
 
+const double JOYSTICK_DEADZONE = 0.1;
+const bool ACCELERATION_ENABLED = true;
+const double FORWARD_BACK_ACCELERATION = 0.006;
+
+// The robot runs at 50Hz.
+//
+// If, when the joystick is idle, you want the robot to take *less* than 1.0
+// seconds to  decelerate to the deadzone, decrease this value.  To make the
+// robot take *more* than 1.0 seconds to decelerate, increase this value
+// instead.
+const double FRAMES_TO_DECELERATE = 50.0;
+
+// This decay factor will cause us to decelerate from full speed to the deadzone
+// within FRAMES_TO_DECELERATE frames.
+//
+// You can confirm this by calculating pow(DECAY_FACTOR, FRAMES_TO_DECELERATE)
+// and confirming that this value is equal to the deadzone.
+const double DECAY_FACTOR = exp(log(JOYSTICK_DEADZONE) / FRAMES_TO_DECELERATE); 
+
 // The drive motors (2 motors on each side of the drive base.)
 extern vex::motor FrontLeft;
 extern vex::motor FrontRight;
