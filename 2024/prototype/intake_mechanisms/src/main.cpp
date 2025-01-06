@@ -173,7 +173,7 @@ void autonomous() {
   auto prototype = makePivotRampPrototype();
   auto gyro = vex::gyro(Brain.ThreeWirePort.B);
 
-  auto rootTask = make_shared<WaitMillisecondsTask>(0);
+  auto fullAutonRootTask = make_shared<WaitMillisecondsTask>(0);
   auto B = make_shared<DriveStraightTask>(-0.4572 * 100, prototype);
   auto C = make_shared<MobileGoalIntakeTask>(prototype, true);
   auto D = make_shared<TurnTask>(94.7, gyro, prototype);
@@ -190,10 +190,10 @@ void autonomous() {
   auto O = make_shared<MobileGoalIntakeTask>(prototype, true);
   auto P = make_shared<IntakeMillisecondsTask>(prototype, 1e5);
   auto Q = make_shared<TurnTask>(-3.83, gyro, prototype);
-  auto R = make_shared<DriveStraightTask>(0.236 * 100, prototype);
+  auto R = make_shared<DriveStraightTask>(-0.236 * 100, prototype);
 
   // Leg 1: Moving backwards to the first Mobile Goal.
-  addTask(rootTask, B);
+  addTask(fullAutonRootTask, B);
   addTask(B, C);
   addTask(C, D);
 
@@ -221,8 +221,14 @@ void autonomous() {
 
   // Leg 6: Driving forward to reach the wall and scoring the autonomous win point.
   addTask(Q, R);
+  
+  // This is a fallback task tree to use in case fullAutonRootTask is not tested before competition
+  auto simpleRootTask = make_shared<TurnTask>(36.56, gyro, prototype);
+  auto driveBackTask = make_shared<DriveStraightTask>(-102.2, prototype);
+  addTask(simpleRootTask, driveBackTask);
 
-  execute(rootTask);
+  // execute(fullAutonRootTask);
+  execute(simpleRootTask);
 }
 
 /**
