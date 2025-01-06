@@ -60,7 +60,7 @@ extern vex::motor_group Right;
 const double DRIVE_TRAIN_WIDTH_CM = 32;       // Vex calls this "track width"
 const double WHEEL_CIRCUMFERENCE_CM = 30;     // Vex calls this "wheel travel"
 const double DRIVE_TRAIN_LENGTH_CM = 32;      // Vex calls this "wheel base"
-const double DRIVE_TRAIN_GEAR_RATIO_CM = 1.0; // Ratio between motor input shaft and wheel output shaft
+const double DRIVE_TRAIN_GEAR_RATIO = 1.0; // Ratio between motor input shaft and wheel output shaft
 
 extern vex::drivetrain DriveTrain;
 
