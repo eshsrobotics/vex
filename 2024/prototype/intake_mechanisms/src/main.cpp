@@ -94,23 +94,23 @@ void moveLiftGatherHeightsDebug(bool buttonUp, bool buttonDown, Ilift& robotWith
 competition Competition;
 
 PivotRampPrototype makePivotRampPrototype() {
-  const int LEFT_MOTOR_PORT_A = 4 - 1; // left_front_motor
-  const int LEFT_MOTOR_PORT_B = 5 - 1; // left_bottom_motor
-  const int LEFT_MOTOR_PORT_C = 6 - 1; // left_top_motor
-  const int RIGHT_MOTOR_PORT_A = 1 - 1; // right_top_motor
-  const int RIGHT_MOTOR_PORT_B = 2 - 1; // right_bottom_motor
-  const int RIGHT_MOTOR_PORT_C = 3 - 1; // right_top_motor
+  const int LEFT_MOTOR_PORT_A = 5 - 1; // left_front_motor
+  const int LEFT_MOTOR_PORT_B = 6 - 1; // left_bottom_motor
+  const int LEFT_MOTOR_PORT_C = 4 - 1; // left_top_motor
+  const int RIGHT_MOTOR_PORT_A = 2 - 1; // right_top_motor
+  const int RIGHT_MOTOR_PORT_B = 3 - 1; // right_bottom_motor
+  const int RIGHT_MOTOR_PORT_C = 1 - 1; // right_top_motor
   const int INTAKE_MOTOR_PORT = 8 - 1;
   const int LIFT_MOTOR_PORT = 9 - 1;
 
   vex::motor leftMotor1(LEFT_MOTOR_PORT_A);
   vex::motor leftMotor2(LEFT_MOTOR_PORT_B);
-  vex::motor leftMotor3(LEFT_MOTOR_PORT_C);
+  vex::motor leftMotor3(LEFT_MOTOR_PORT_C, true);
   vector<motor> leftMotors = {leftMotor1, leftMotor2, leftMotor3};
 
   vex::motor rightMotor1(RIGHT_MOTOR_PORT_A);
   vex::motor rightMotor2(RIGHT_MOTOR_PORT_B);
-  vex::motor rightMotor3(RIGHT_MOTOR_PORT_C);
+  vex::motor rightMotor3(RIGHT_MOTOR_PORT_C, true);
   vector<motor> rightMotors = {rightMotor1, rightMotor2, rightMotor3};
 
   vex::motor intakeMotor1(INTAKE_MOTOR_PORT);
@@ -146,8 +146,8 @@ PivotRampPrototype makePivotRampPrototype() {
  * @param p a reference to a ImobileGoalIntake instance
 */
 void updateClampState(ImobileGoalIntake& p) {
-  bool clamp = Controller.ButtonUp.pressing();
-  bool unclamp = Controller.ButtonDown.pressing();
+  bool clamp = Controller.ButtonL1.pressing(); //means the air is released
+  bool unclamp = Controller.ButtonL2.pressing(); //means the air is pumped in
   if (clamp) {
     p.clamp(true);
   } else if (unclamp) {
@@ -171,20 +171,57 @@ void pre_auton() {
  */
 void autonomous() {
   auto prototype = makePivotRampPrototype();
-  const double autonomous_drive_speed = 1;
-  const double autonomous_intake_speed = 1;
-  const double experiment_duration_ms = 5000;
+  auto gyro = vex::gyro(Brain.ThreeWirePort.B);
 
   auto rootTask = make_shared<WaitMillisecondsTask>(0);
-  auto driveMillisecondsTask =
-    make_shared<DriveMillisecondsTask>(prototype, experiment_duration_ms, autonomous_drive_speed
-                                       );
-  auto intakeMillisecondsTask =
-    make_shared<IntakeMillisecondsTask>(prototype,
-                                        experiment_duration_ms,
-                                        autonomous_intake_speed);
-  // auto testDriveTask = make_shared<TestDriveTask>(10, prototype);
-  // addTask(rootTask, testDriveTask);
+  auto B = make_shared<DriveStraightTask>(-0.4572 * 100, prototype);
+  auto C = make_shared<MobileGoalIntakeTask>(prototype, true);
+  auto D = make_shared<TurnTask>(94.7, gyro, prototype);
+  auto E = make_shared<DriveStraightTask>(0.22 * 100, prototype);
+  auto F = make_shared<IntakeMillisecondsTask>(prototype, 1e5);
+  auto G = make_shared<IntakeMillisecondsTask>(prototype, 67.96);
+  auto H = make_shared<DriveStraightTask>(0.2 * 100, prototype);
+  auto I = make_shared<TurnTask>(65.01, gyro, prototype);
+  auto J = make_shared<MobileGoalIntakeTask>(prototype, false);
+  auto K = make_shared<DriveStraightTask>(1.37 * 100, prototype);
+  auto L = make_shared<IntakeMillisecondsTask>(prototype, 0.5);
+  auto M = make_shared<TurnTask>(8.57, gyro, prototype);
+  auto N = make_shared<DriveStraightTask>(-0.225 * 100, prototype);
+  auto O = make_shared<MobileGoalIntakeTask>(prototype, true);
+  auto P = make_shared<IntakeMillisecondsTask>(prototype, 1e5);
+  auto Q = make_shared<TurnTask>(-3.83, gyro, prototype);
+  auto R = make_shared<DriveStraightTask>(0.236 * 100, prototype);
+
+  // Leg 1: Moving backwards to the first Mobile Goal.
+  addTask(rootTask, B);
+  addTask(B, C);
+  addTask(C, D);
+
+  // Leg 2: Driving and score the first set of rings.
+  addTask(D, E);
+  addTask(D, F);
+  addTask(E, G);
+
+  // Leg 3: Driving and scoring one of the cluster of 8 rings.
+  addTask(G, H);
+  addTask(H, I);
+  addTask(I, J);
+
+  // Leg 4: The long drive from the driver's left to the driver's right and
+  // scoring a ring from a right-side stack.
+  addTask(I, K);
+  addTask(K, L);
+  addTask(L, M);
+
+  // Leg 5: Grabbing a mobile goal to score the rings intaked in Leg 4.
+  addTask(M, N);
+  addTask(N, O);
+  addTask(O, P);
+  addTask(O, Q);
+
+  // Leg 6: Driving forward to reach the wall and scoring the autonomous win point.
+  addTask(Q, R);
+
   execute(rootTask);
 }
 

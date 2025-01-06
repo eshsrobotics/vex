@@ -12,6 +12,6 @@ class ImobileGoalIntake {
          * non-blocking call, and it takes non-zero time for the clamp to
          * complete; this method initiates the clamping process.
          * @param active true for the clamp to close and false for open
-        */
+         */
         virtual void clamp(bool active) = 0;
 };

@@ -43,11 +43,18 @@ struct Task {
   /*--------------------------------------------------------*/
   /*                 Friend Declarations                    */
   /*--------------------------------------------------------*/
-  
+
   friend void addTask(std::shared_ptr<Task> parentTask,
                       std::shared_ptr<Task> childTask);
 
   friend void execute(std::shared_ptr<Task> rootTask);
+
+  /*-------------------*/
+  /* PROTECTED METHODS */
+  /*-------------------*/
+  protected:
+    void modifyTaskName(std::string name);
+
 };
 
 /*----------------------------------------------------------*/
@@ -65,15 +72,16 @@ extern void execute(std::shared_ptr<Task> rootTask);
 /*****************************************************
  * A TASK THAT WAITS FOR A SPECIFIED PERIOD OF TIME. *
  *****************************************************/
+
 class WaitMillisecondsTask : public Task {
-  public: 
+  public:
     WaitMillisecondsTask(double timeToWaitMilliseconds);
     bool done() const;
     void start();
   private:
     // The time at which start() was called.
     double startTimeMilliseconds;
-    
+
     // The number of milliseconds to wait.
     double waitTimeMilliseconds;
 };
@@ -89,13 +97,13 @@ class DriveStraightTask : public Task {
   private:
 
     // std::function is a thing a reference to a function. It works with
-    // functions, lambdas, functors, and function pointers. 
+    // functions, lambdas, functors, and function pointers.
 
-    // A function 
+    // A function
     std::function<double(double)> predictedDistanceCm;
     double distanceToDriveCm;
     Idrive& drive;
-    
+
     double startingRotations;
 
     // TODO: Use Desmos to perform a linear regression after calculating
@@ -126,11 +134,11 @@ class TestDriveTask : public Task {
 
     // Prints number of rotations on controller. Returns true if target reached,
     // false otherwise.
-    bool done() const; 
+    bool done() const;
 
     /// Starts driving for as many drive motor revolutions as specified in target
     void start();
-    
+
 private:
 
     // Reference to Idrive to allow the robot to actually move
@@ -149,18 +157,27 @@ private:
  */
 class TurnTask : public Task {
   public:
+    /**
+     * Constructs a TurnTask that turns for a given number of degrees using a
+     * given gyro.
+     *
+     * @param angleDegrees the amount to rotate in degrees: positive numbers
+     * rotate clockwise and negative numbers rotate counterclockwise
+     * @param gyro_ a yaw rate gyroscope used to measure the current chasis's bearing
+     * @param drive a reference to an Idrive object which actually does the driving
+    */
     TurnTask(double angleDegrees, vex::gyro gyro_, Idrive& drive);
-    
+
     bool done() const;
 
     void start();
-  
+
   private:
     /**
      * Where the robot's gyro was at the point the robot start()ed to rotate.
      */
     double startAngle;
-    
+
     double desiredAngle_;
     gyro gyro_;
     Idrive& drive;
@@ -174,13 +191,13 @@ class TurnTask : public Task {
  * the same for all prototypes.
 */
 class DriveMillisecondsTask : public Task {
-  public: 
+  public:
     DriveMillisecondsTask(Idrive& drive, double milliseconds, double driveVelocity = 1.0);
 
     bool done() const;
-    
+
     void start();
-  
+
   private:
     Idrive& driveObject;
     double waitTimeMsec;
@@ -195,12 +212,12 @@ class DriveMillisecondsTask : public Task {
 class IntakeMillisecondsTask : public Task {
   public:
 
-    /** 
+    /**
      * The constructor for the IntakeTaskSeconds task
      *
      * @param seconds the number of seconds that the intake motors will rotate
      * @param intake_speed the speed of the intake motors. We will pass in a
-     * value between 1 and -1. 1 means intaking and -1 means outtaking.  
+     * value between 1 and -1. 1 means intaking and -1 means outtaking.
      * Most likely, we will not need different velocities, only different
      * directions.
      *
@@ -211,12 +228,25 @@ class IntakeMillisecondsTask : public Task {
     bool done() const;
 
     void start();
-    
+
   private:
     Iintake& intakeObject;
     double desiredIntakingTimeMsec;
     double intake_speed_;
     double startTimeMsec;
+};
+
+class MobileGoalIntakeTask : public WaitMillisecondsTask {
+  public:
+
+    MobileGoalIntakeTask(ImobileGoalIntake& mobileGoalIntake, bool clamp);
+
+    bool done() const;
+
+    void start();
+  private:
+    ImobileGoalIntake& mobileGoalIntakeObject;
+    bool clamp_;
 };
 
 #endif // (ifndef __AUTONOMOUS_TASK_TREE_H_INCLUDED__)

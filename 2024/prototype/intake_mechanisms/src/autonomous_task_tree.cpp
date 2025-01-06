@@ -27,6 +27,9 @@ Task::Task(const string &name) : name(name) {
   this->name += out.str();
 }
 
+void Task::modifyTaskName(std::string name) {
+  this->name = name;
+}
 
 void addTask(std::shared_ptr<Task> parentTask,
              std::shared_ptr<Task> childTask) {
@@ -93,7 +96,7 @@ void execute(std::shared_ptr<Task> rootTask) {
  * Definitions for the WaitMillisecondsTask. *
  *********************************************/
 
-WaitMillisecondsTask::WaitMillisecondsTask(double timeToWaitMilliseconds) : Task("w") {
+WaitMillisecondsTask::WaitMillisecondsTask(double timeToWaitMilliseconds) : Task("WaitMillisecondsTask") {
   // User passes in: 6000 (timeToWaitMilliseconds == 6000)
   // We currently have: 0 (waitTimeMilliseconds is default-initialized to 0)
   // Your code on the next line overwrites the 6000 with 0.  Is that what you want?
@@ -118,11 +121,11 @@ void WaitMillisecondsTask::start() {
  * Definitions for the DriveStraightTask. *
  ******************************************/
 
-DriveStraightTask::DriveStraightTask(double desiredDistanceCentimeters, 
+DriveStraightTask::DriveStraightTask(double desiredDistanceCentimeters,
                                      Idrive& driveObject)
   : Task("l"),
     predictedDistanceCm([=](double rotations) { return SLOPE * rotations + Y_INTERCEPT; }),
-    distanceToDriveCm{desiredDistanceCentimeters}, drive{driveObject} {} 
+    distanceToDriveCm{desiredDistanceCentimeters}, drive{driveObject} {}
 
 void DriveStraightTask::start() {
   startingRotations = drive.getRotations();
@@ -132,7 +135,7 @@ void DriveStraightTask::start() {
 bool DriveStraightTask::done() const {
 
   // Predict the distance our bot has traveled given the *actual* number of
-  // rotations since start() was called. 
+  // rotations since start() was called.
   const double currentRotations = drive.getRotations() - startingRotations;
   const double predictedDistanceDriven = predictedDistanceCm(currentRotations);
 
@@ -155,7 +158,7 @@ bool TestDriveTask::done() const {
   // One the change in rotations pet frame is less than this value, we've come
   // to a stop.  At least, it's a good enough definition of "stopped."
   const double DEADZONE = 0.001;
-  
+
   // We want to wait a particular amount before checking whether the motor is
   // stopped as the motor might be accelerating slowly instead -- it would be
   // tragic if we cut the motor off early because we were too impatient!
@@ -167,7 +170,7 @@ bool TestDriveTask::done() const {
   double& previousRotations = const_cast<TestDriveTask*>(this)->previousRotationNumber;
 
   currentRotations = driveObject.getRotations();
-  
+
   // Just checking if the velocity is 0 is not sufficient. The robot may drift
   // farther even if the motors are stopped. This is a much more precise way of
   // making sure the motors are stopped by checking if the change in motor
@@ -213,7 +216,7 @@ TurnTask::TurnTask(double desiredAngle, vex::gyro gyroscope, Idrive& driveObject
 // - We don't stop at the angle. [<---solved by PID.]
 //   * Start with P=1, I=0, D=0.
 //   * We need to calculate the ERROR every frame, which is the angle that
-//     goes from the current angle to the target angle 
+//     goes from the current angle to the target angle
 //     (= signed_delta of target angle and current angle.)
 //
 // - We're not rotating optimally [SOLVED by signed_delta().]
@@ -221,7 +224,7 @@ TurnTask::TurnTask(double desiredAngle, vex::gyro gyroscope, Idrive& driveObject
 //   * Your desired angle is 355 degrees (355 is -10 modulo 360.)
 //   * Better to rotate 10 degrees counterclockwise than 350 degrees clockwise.
 //
- 
+
 void TurnTask::start() {
   startAngle = gyro_.angle();
   drive.drive(0.0, 0.6);
@@ -229,7 +232,7 @@ void TurnTask::start() {
 
 // This function returns the smallest number of degrees to rotate.
 double signedDelta(double currentAngle, double desiredAngle) {
-  
+
   return std::fmod(desiredAngle - currentAngle + 180, 360) - 180;
 }
 
@@ -252,7 +255,7 @@ bool TurnTask::done() const {
  * Definitions for the DriveMillisecondsTask. *
  *********************************/
 
-DriveMillisecondsTask::DriveMillisecondsTask(Idrive& drive, double milliseconds, double driveVelocity) 
+DriveMillisecondsTask::DriveMillisecondsTask(Idrive& drive, double milliseconds, double driveVelocity)
 : Task ("s"), driveObject{drive}, waitTimeMsec{milliseconds}, driveVelocity_{driveVelocity} {
 
 }
@@ -277,10 +280,10 @@ bool DriveMillisecondsTask::done() const {
 // Definitions for IntakeTask //
 ////////////////////////////////
 
-IntakeMillisecondsTask::IntakeMillisecondsTask(Iintake& intake_bot, double msec, 
-                                                             double intake_speed) 
-  : Task ("IntakeMsec"), intakeObject{intake_bot}, desiredIntakingTimeMsec{msec}, intake_speed_{intake_speed} {
-    
+IntakeMillisecondsTask::IntakeMillisecondsTask(Iintake& intake_bot, double msec,
+                                               double intake_speed)
+  : Task {"IntakeMsec"}, intakeObject{intake_bot}, desiredIntakingTimeMsec{msec}, intake_speed_{intake_speed} {
+
 }
 
 void IntakeMillisecondsTask::start() {
@@ -297,4 +300,22 @@ bool IntakeMillisecondsTask::done() const {
   } else {
     return false;
   }
+}
+
+// Definitions for MobileGoalIntakeTask
+
+MobileGoalIntakeTask::MobileGoalIntakeTask(ImobileGoalIntake& mobileGoalIntake,
+                                           bool clamp)
+  : WaitMillisecondsTask(MOBILE_GOAL_INTAKE_DURATION_MILLISECONDS), mobileGoalIntakeObject{mobileGoalIntake},
+    clamp_(clamp) {
+  modifyTaskName("MobileGoalIntakeTask");
+}
+
+void MobileGoalIntakeTask::start() {
+  WaitMillisecondsTask::start();
+  mobileGoalIntakeObject.clamp(clamp_);
+}
+
+bool MobileGoalIntakeTask::done() const {
+  return WaitMillisecondsTask::done();
 }
