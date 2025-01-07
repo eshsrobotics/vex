@@ -1,16 +1,16 @@
 {
 	"extension": {
-		"version": "0.6.0",
+		"version": "0.6.1",
 		"json": 2
 	},
 	"project": {
 		"name": "intake_mechanisms",
 		"description": "",
-		"creationDate": "7/7/2024, 4:03:05 PM",
+		"creationDate": "Mon, 06 Jan 2025 00:58:30 GMT",
 		"platform": "V5",
 		"language": "cpp",
 		"slot": 1,
-		"sdkVersion": "V5_20240223_11_00_00",
+		"sdkVersion": "V5_20240802_15_00_00",
 		"cpp": {
 			"includePath": [],
 			"printf_float": true

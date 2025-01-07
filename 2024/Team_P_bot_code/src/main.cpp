@@ -15,7 +15,19 @@ using namespace vex;
 // A global instance of competition
 competition Competition;
 
-// define your global instances of motors and other devices here
+/**
+ * Returns the sign of a number -- +1 if it is positive, -1 if it is negative,
+ * and 0 otherwise.
+ */
+double sgn(double n) {
+  if (n > 0) {
+    return 1;
+  } else if (n < 0) {
+    return -1;
+  } else {
+    return 0;
+  }
+}
 
 /*---------------------------------------------------------------------------*/
 /*                          Pre-Autonomous Functions                         */
@@ -60,6 +72,8 @@ void autonomous(void) {
 /*---------------------------------------------------------------------------*/
 
 void usercontrol(void) {
+  
+  double forwardBackVelocity = 0;
   // User control code here, inside the loop
   while (1) {
     // This is the main execution loop for the user control program.
@@ -68,8 +82,38 @@ void usercontrol(void) {
 
     double controllerFrontBackPosition = Controller.Axis4.position();
     double controllerLeftRightPosition = Controller.Axis3.position();
-    robotDrive(controllerFrontBackPosition, controllerLeftRightPosition);
 
+    // Make the left and right turn velocity be instant.
+    const double turnVelocity = controllerLeftRightPosition;
+
+    if (fabs(controllerFrontBackPosition) > JOYSTICK_DEADZONE) {
+      // The user is accelerating.
+      //
+      // If we are already moving backwards (our velocity is negative), then we
+      // need to accelerate backwards, too.
+      forwardBackVelocity = forwardBackVelocity + sgn(forwardBackVelocity) * FORWARD_BACK_ACCELERATION;
+
+      if (fabs(forwardBackVelocity) > 1) {
+        forwardBackVelocity = sgn(forwardBackVelocity);
+      }
+    } else {
+      // The user has let go of the joystick.  Slow down, regardless of the
+      // direction in which we were previously accelerating. 
+      forwardBackVelocity = forwardBackVelocity * DECAY_FACTOR;
+    }    
+
+    // We are experimenting with an acceleration paradigm for teleop.  The
+    // ACCELERATION_ENABLED flag can be set at compile time to determine whether
+    // we'll use it or not; drivers were complaining about jerky movements
+    // without acceleration, which is why we're trying this in the first place.
+    //
+    // We'll see how it goes.
+    if (ACCELERATION_ENABLED) {
+      robotDrive(forwardBackVelocity, turnVelocity);
+    } else {
+      robotDrive(controllerFrontBackPosition, controllerLeftRightPosition);
+    }
+    
     bool outtake = Controller.ButtonL2.pressing();
     bool intake = Controller.ButtonR2.pressing();
     int intakeOrOuttake = 0;
