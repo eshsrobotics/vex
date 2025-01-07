@@ -24,7 +24,7 @@ motor_group Left(FrontLeft, BackLeft);
 motor_group Right(FrontRight, BackRight);
 drivetrain DriveTrain(Left, Right, WHEEL_CIRCUMFERENCE_CM, 
                       DRIVE_TRAIN_WIDTH_CM, DRIVE_TRAIN_LENGTH_CM, 
-                      distanceUnits::cm, DRIVE_TRAIN_GEAR_RATIO_CM);
+                      distanceUnits::cm, DRIVE_TRAIN_GEAR_RATIO);
 
 motor_group updownlift(FrontLiftRight, BackLiftLeft);
 
