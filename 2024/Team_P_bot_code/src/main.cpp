@@ -80,8 +80,8 @@ void usercontrol(void) {
     // Each time through the loop your program should update motor + servo
     // values based on feedback from the joysticks.
 
-    double controllerFrontBackPosition = Controller.Axis4.position(); // Controller Axis 4 is actually left right? We need to look into this
-    double controllerLeftRightPosition = Controller.Axis3.position();
+    double controllerFrontBackPosition = Controller.Axis3.position(); 
+    double controllerLeftRightPosition = Controller.Axis4.position();
 
     // Make the left and right turn velocity be instant.
     const double turnVelocity = controllerLeftRightPosition;
@@ -100,9 +100,6 @@ void usercontrol(void) {
       // The user has let go of the joystick.  Slow down, regardless of the
       // direction in which we were previously accelerating. 
       forwardBackVelocity = forwardBackVelocity * DECAY_FACTOR;
-      Controller.Screen.clearScreen();
-      Controller.Screen.setCursor(1, 1);
-      Controller.Screen.print(forwardBackVelocity);
     }    
 
     // We are experimenting with an acceleration paradigm for teleop.  The
@@ -112,10 +109,14 @@ void usercontrol(void) {
     //
     // We'll see how it goes.
     if (ACCELERATION_ENABLED) {
-      robotDrive(forwardBackVelocity, -turnVelocity);
+      // We're multiplying forwardBackVelocity by 100 here because due to the
+      // nature of the previously used sgn() function, not doing this would mean
+      // frontBackVelocity has a maximum range of [-1, 1] while robotDrive's
+      // velocity values can be anywhere within a maximum range of [-100, 100]
+      robotDrive(forwardBackVelocity * 100, turnVelocity);
     } else {
-      robotDrive(-controllerFrontBackPosition, -controllerLeftRightPosition);       // For some reason the controls were inverted until we inverted the
-    }                                                                               // controller front back and left right positions
+      robotDrive(controllerFrontBackPosition, controllerLeftRightPosition);       
+    }                                                                               
 
     
     
