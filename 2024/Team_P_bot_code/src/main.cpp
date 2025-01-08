@@ -80,7 +80,7 @@ void usercontrol(void) {
     // Each time through the loop your program should update motor + servo
     // values based on feedback from the joysticks.
 
-    double controllerFrontBackPosition = Controller.Axis4.position();
+    double controllerFrontBackPosition = Controller.Axis4.position(); // Controller Axis 4 is actually left right? We need to look into this
     double controllerLeftRightPosition = Controller.Axis3.position();
 
     // Make the left and right turn velocity be instant.
@@ -100,6 +100,9 @@ void usercontrol(void) {
       // The user has let go of the joystick.  Slow down, regardless of the
       // direction in which we were previously accelerating. 
       forwardBackVelocity = forwardBackVelocity * DECAY_FACTOR;
+      Controller.Screen.clearScreen();
+      Controller.Screen.setCursor(1, 1);
+      Controller.Screen.print(forwardBackVelocity);
     }    
 
     // We are experimenting with an acceleration paradigm for teleop.  The
@@ -109,10 +112,13 @@ void usercontrol(void) {
     //
     // We'll see how it goes.
     if (ACCELERATION_ENABLED) {
-      robotDrive(forwardBackVelocity, turnVelocity);
+      robotDrive(forwardBackVelocity, -turnVelocity);
     } else {
-      robotDrive(controllerFrontBackPosition, controllerLeftRightPosition);
-    }
+      robotDrive(-controllerFrontBackPosition, -controllerLeftRightPosition);       // For some reason the controls were inverted until we inverted the
+    }                                                                               // controller front back and left right positions
+
+    
+    
     
     bool outtake = Controller.ButtonL2.pressing();
     bool intake = Controller.ButtonR2.pressing();
