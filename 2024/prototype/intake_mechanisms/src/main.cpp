@@ -94,13 +94,13 @@ void moveLiftGatherHeightsDebug(bool buttonUp, bool buttonDown, Ilift& robotWith
 competition Competition;
 
 PivotRampPrototype makePivotRampPrototype() {
-  const int LEFT_MOTOR_PORT_A = 5 - 1; // left_front_motor
-  const int LEFT_MOTOR_PORT_B = 6 - 1; // left_bottom_motor
-  const int LEFT_MOTOR_PORT_C = 4 - 1; // left_top_motor
-  const int RIGHT_MOTOR_PORT_A = 2 - 1; // right_top_motor
-  const int RIGHT_MOTOR_PORT_B = 3 - 1; // right_bottom_motor
-  const int RIGHT_MOTOR_PORT_C = 1 - 1; // right_top_motor
-  const int INTAKE_MOTOR_PORT = 8 - 1;
+  const int LEFT_MOTOR_PORT_A = 15 - 1; // left_front_motor
+  const int LEFT_MOTOR_PORT_B = 16 - 1; // left_bottom_motor
+  const int LEFT_MOTOR_PORT_C = 14 - 1; // left_top_motor
+  const int RIGHT_MOTOR_PORT_A = 12 - 1; // right_top_motor
+  const int RIGHT_MOTOR_PORT_B = 13 - 1; // right_bottom_motor
+  const int RIGHT_MOTOR_PORT_C = 11 - 1; // right_top_motor
+  const int INTAKE_MOTOR_PORT = 18 - 1;
   const int LIFT_MOTOR_PORT = 9 - 1;
 
   vex::motor leftMotor1(LEFT_MOTOR_PORT_A);
@@ -257,6 +257,7 @@ void teleop() {
     // // Allow the driver to control the lift position.
     // bool buttonUp = Controller.ButtonL1.pressing();
     // bool buttonDown = Controller.ButtonL2.pressing();
+    //moveLiftRotationsToTopDebug(Controller.ButtonL1.pressing(), Controller.ButtonL2.pressing(), Ilift& robotWithLift);
 
     // // The functions below are mutually exclusive. We have two ways of moving
     // // the lift, one directly and one direction.

@@ -24,7 +24,7 @@ const double FORWARD_BACK_ACCELERATION = 0.006;
 // seconds to  decelerate to the deadzone, decrease this value.  To make the
 // robot take *more* than 1.0 seconds to decelerate, increase this value
 // instead.
-const double FRAMES_TO_DECELERATE = 50.0;
+const double FRAMES_TO_DECELERATE = 150.0;
 
 // This decay factor will cause us to decelerate from full speed to the deadzone
 // within FRAMES_TO_DECELERATE frames.
@@ -91,7 +91,7 @@ void robotDrive(double frontBackSpeed, double turnSpeed);
 void robotintake(int intakeOrOuttake);
 
 /**
- * Controls the lift subsystem. We can call this during teleop and autonomus.
+ * Controls the lift subsystem. We can call this during teleop and autonomous.
  *
  * @param lift Makes the Lift raise and lower pivot ramp. If the sign of the
  *             number is a positive, it triggers the lift to go up. Zero stops

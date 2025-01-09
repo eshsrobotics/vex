@@ -80,8 +80,8 @@ void usercontrol(void) {
     // Each time through the loop your program should update motor + servo
     // values based on feedback from the joysticks.
 
-    double controllerFrontBackPosition = Controller.Axis4.position();
-    double controllerLeftRightPosition = Controller.Axis3.position();
+    double controllerFrontBackPosition = Controller.Axis3.position(); 
+    double controllerLeftRightPosition = Controller.Axis4.position();
 
     // Make the left and right turn velocity be instant.
     const double turnVelocity = controllerLeftRightPosition;
@@ -109,10 +109,17 @@ void usercontrol(void) {
     //
     // We'll see how it goes.
     if (ACCELERATION_ENABLED) {
-      robotDrive(forwardBackVelocity, turnVelocity);
+      // We're multiplying forwardBackVelocity by 100 here because due to the
+      // nature of the previously used sgn() function, not doing this would mean
+      // frontBackVelocity has a maximum range of [-1, 1] while robotDrive's
+      // velocity values can be anywhere within a maximum range of [-100, 100]
+      robotDrive(forwardBackVelocity * 100, turnVelocity);
     } else {
-      robotDrive(controllerFrontBackPosition, controllerLeftRightPosition);
-    }
+      robotDrive(controllerFrontBackPosition, controllerLeftRightPosition);       
+    }                                                                               
+
+    
+    
     
     bool outtake = Controller.ButtonL2.pressing();
     bool intake = Controller.ButtonR2.pressing();
