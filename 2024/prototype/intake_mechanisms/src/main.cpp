@@ -257,7 +257,7 @@ void teleop() {
     // // Allow the driver to control the lift position.
     // bool buttonUp = Controller.ButtonL1.pressing();
     // bool buttonDown = Controller.ButtonL2.pressing();
-    //moveLiftRotationsToTopDebug(Controller.ButtonL1.pressing(), Controller.ButtonL2.pressing(), Ilift& robotWithLift);
+    moveLiftRotationsToTopDebug(Controller.ButtonL1.pressing(), Controller.ButtonL2.pressing(), prototype);
 
     // // The functions below are mutually exclusive. We have two ways of moving
     // // the lift, one directly and one direction.
