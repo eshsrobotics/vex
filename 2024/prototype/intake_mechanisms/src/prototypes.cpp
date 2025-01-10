@@ -188,10 +188,9 @@ void PivotRampPrototype::moveLiftDirect(double rotations) {
              current_motor.spinFor(rotations, vex::rotationUnits::rev, waitForCompletion);
         });
 
-        Controller.Screen.setCursor(CONTROLLER_LIFT_POSITION_ROW, 1);
-        Controller.Screen.print("Lift at %.2f revs ",
-                                lift_motors[0].position(rev));
     }
+
+    
 }
 
 void PivotRampPrototype::setLiftHeights(LiftHeights liftHeights) {
