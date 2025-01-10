@@ -68,14 +68,23 @@ void updateIntakeState(bool intakeButton, bool outtakeButton, Iintake& robotWith
  * @param rotationsPerButton the number of rotations the motor makes
  */
 void moveLiftRotationsToTopDebug(bool buttonUp, bool buttonDown, Ilift& robotWithLift) {
-  const double rotationsPerButton = 0.5;
+  const double rotationsPerButton = 0.1;
+  static double rotations = 0;
+
+  // The lift moves UP if L2 (buttonDown) is pressed, so the signs are reversed
+  // for buttonUp and buttonDown.
   if (buttonUp) {
       robotWithLift.moveLiftDirect(rotationsPerButton);
+      rotations -= rotationsPerButton;
   } else if (buttonDown) {
       robotWithLift.moveLiftDirect(-rotationsPerButton);
+      rotations += rotationsPerButton;
   } else {
     robotWithLift.moveLiftDirect(0);
   }
+  Controller.Screen.setCursor(CONTROLLER_LIFT_POSITION_ROW, 1);
+  Controller.Screen.print("Lift at %.2f revs ",
+                          rotations);
 }
 
 
@@ -87,8 +96,9 @@ void moveLiftGatherHeightsDebug(bool buttonUp, bool buttonDown, Ilift& robotWith
     robotWithLift.setLiftPosition(robotWithLift.getliftPosition() + incrementPerButton);
   } else if (buttonDown) {
     robotWithLift.setLiftPosition(robotWithLift.getliftPosition() - incrementPerButton);
-  }
-
+  } 
+  Controller.Screen.setCursor(CONTROLLER_LIFT_POSITION_ROW, 1);
+  Controller.Screen.print(robotWithLift.getliftPosition() * 100);
 }
 
 competition Competition;
@@ -100,7 +110,8 @@ PivotRampPrototype makePivotRampPrototype() {
   const int RIGHT_MOTOR_PORT_A = 12 - 1; // right_top_motor
   const int RIGHT_MOTOR_PORT_B = 13 - 1; // right_bottom_motor
   const int RIGHT_MOTOR_PORT_C = 11 - 1; // right_top_motor
-  const int INTAKE_MOTOR_PORT = 18 - 1;
+  const int INTAKE_MOTOR_PORT_A = 18 - 1;
+  const int INTAKE_MOTOR_PORT_B = 17-1;
   const int LIFT_MOTOR_PORT = 9 - 1;
 
   vex::motor leftMotor1(LEFT_MOTOR_PORT_A);
@@ -113,13 +124,14 @@ PivotRampPrototype makePivotRampPrototype() {
   vex::motor rightMotor3(RIGHT_MOTOR_PORT_C, true);
   vector<motor> rightMotors = {rightMotor1, rightMotor2, rightMotor3};
 
-  vex::motor intakeMotor1(INTAKE_MOTOR_PORT);
-  vector<motor> intakeMotors = {intakeMotor1};
+  vex::motor intakeMotor1(INTAKE_MOTOR_PORT_A);
+  vex::motor intakeMotor2(INTAKE_MOTOR_PORT_B);
+  vector<motor> intakeMotors = {intakeMotor1, intakeMotor2};
 
   vex::motor liftMotor1(LIFT_MOTOR_PORT);
   vector<motor> liftMotors = {liftMotor1};
 
-  const double rotationsToTop = 0.5; // TODO: Must be determined experimentally.
+  const double rotationsToTop = 4.5; // TODO: Must be determined experimentally.
 
   vex::triport::port DOUBLE_SOLENOID_PORT = Brain.ThreeWirePort.A;
   digital_out pneumaticClamp(DOUBLE_SOLENOID_PORT);
@@ -258,7 +270,8 @@ void teleop() {
     // bool buttonUp = Controller.ButtonL1.pressing();
     // bool buttonDown = Controller.ButtonL2.pressing();
     moveLiftRotationsToTopDebug(Controller.ButtonL1.pressing(), Controller.ButtonL2.pressing(), prototype);
-
+    //moveLiftGatherHeightsDebug(Controller.ButtonL1.pressing(), Controller.ButtonL2.pressing(), prototype);
+   
     // // The functions below are mutually exclusive. We have two ways of moving
     // // the lift, one directly and one direction.
     // //
