@@ -10,9 +10,9 @@ using std::min;
 brain Brain;
 controller Controller;
 
-motor FrontLeft(FRONT_LEFT_PORT);
+motor FrontLeft(FRONT_LEFT_PORT, true);
 motor FrontRight(FRONT_RIGHT_PORT);
-motor BackLeft(BACK_LEFT_PORT);
+motor BackLeft(BACK_LEFT_PORT, true);
 motor BackRight(BACK_RIGHT_PORT);
 motor FrontLiftRight(LiftFR);
 motor BackLiftLeft(LiftBL);

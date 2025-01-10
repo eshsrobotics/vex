@@ -91,7 +91,7 @@ void usercontrol(void) {
       //
       // If we are already moving backwards (our velocity is negative), then we
       // need to accelerate backwards, too.
-      forwardBackVelocity = forwardBackVelocity + sgn(forwardBackVelocity) * FORWARD_BACK_ACCELERATION;
+      forwardBackVelocity = forwardBackVelocity + sgn(controllerFrontBackPosition) * FORWARD_BACK_ACCELERATION;
 
       if (fabs(forwardBackVelocity) > 1) {
         forwardBackVelocity = sgn(forwardBackVelocity);
