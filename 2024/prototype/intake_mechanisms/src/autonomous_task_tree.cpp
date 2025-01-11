@@ -237,17 +237,28 @@ double signedDelta(double currentAngle, double desiredAngle) {
 }
 
 bool TurnTask::done() const {
+  const double THRESHOLD = 3;
   //This is a bang-bang controller.
   double currentAngle = const_cast<TurnTask*>(this)->gyro_.angle();
 
-  if (currentAngle < desiredAngle_) {
-      drive.drive(0.0, 0.6);
-      return false;
-  } else if (currentAngle > desiredAngle_) {
-      drive.drive(0.0, -0.6);
+  // double error = signedDelta(currentAngle, desiredAngle_);
+  // const double P = 0.002;
+  // double gain = P * error;
+  // drive.drive(0, gain);
+  // if (fabs(error) < THRESHOLD) {
+  //   return true;
+  // } else {
+  //   return false;
+  // }
+  if (fabs(desiredAngle_ - currentAngle) < THRESHOLD) {
+    drive.drive(0.0, 0.0);
+    return true;
+  } else if (currentAngle < desiredAngle_) {
+      drive.drive(0.0, 0.3);
       return false;
   } else {
-      return true;
+      drive.drive(0.0, -0.3);
+      return false;
   }
 }
 

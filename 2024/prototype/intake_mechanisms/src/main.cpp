@@ -183,64 +183,69 @@ void pre_auton() {
  */
 void autonomous() {
   auto prototype = makePivotRampPrototype();
-  auto gyro = vex::gyro(Seventeen59A.ThreeWirePort.B);
+  auto gyro = vex::gyro(Seventeen59A.ThreeWirePort.G);
 
-  auto fullAutonRootTask = make_shared<WaitMillisecondsTask>(0);
-  auto B = make_shared<DriveStraightTask>(-0.4572 * 100, prototype);
-  auto C = make_shared<MobileGoalIntakeTask>(prototype, true);
-  auto D = make_shared<TurnTask>(94.7, gyro, prototype);
-  auto E = make_shared<DriveStraightTask>(0.22 * 100, prototype);
-  auto F = make_shared<IntakeMillisecondsTask>(prototype, 1e5);
-  auto G = make_shared<IntakeMillisecondsTask>(prototype, 67.96);
-  auto H = make_shared<DriveStraightTask>(0.2 * 100, prototype);
-  auto I = make_shared<TurnTask>(65.01, gyro, prototype);
-  auto J = make_shared<MobileGoalIntakeTask>(prototype, false);
-  auto K = make_shared<DriveStraightTask>(1.37 * 100, prototype);
-  auto L = make_shared<IntakeMillisecondsTask>(prototype, 0.5);
-  auto M = make_shared<TurnTask>(8.57, gyro, prototype);
-  auto N = make_shared<DriveStraightTask>(-0.225 * 100, prototype);
-  auto O = make_shared<MobileGoalIntakeTask>(prototype, true);
-  auto P = make_shared<IntakeMillisecondsTask>(prototype, 1e5);
-  auto Q = make_shared<TurnTask>(-3.83, gyro, prototype);
-  auto R = make_shared<DriveStraightTask>(-0.236 * 100, prototype);
+  // auto fullAutonRootTask = make_shared<WaitMillisecondsTask>(0);
+  // auto B = make_shared<DriveStraightTask>(-0.4572 * 100, prototype);
+  // auto C = make_shared<MobileGoalIntakeTask>(prototype, true);
+  // auto D = make_shared<TurnTask>(94.7, gyro, prototype);
+  // auto E = make_shared<DriveStraightTask>(0.22 * 100, prototype);
+  // auto F = make_shared<IntakeMillisecondsTask>(prototype, 1e5);
+  // auto G = make_shared<IntakeMillisecondsTask>(prototype, 67.96);
+  // auto H = make_shared<DriveStraightTask>(0.2 * 100, prototype);
+  // auto I = make_shared<TurnTask>(65.01, gyro, prototype);
+  // auto J = make_shared<MobileGoalIntakeTask>(prototype, false);
+  // auto K = make_shared<DriveStraightTask>(1.37 * 100, prototype);
+  // auto L = make_shared<IntakeMillisecondsTask>(prototype, 0.5);
+  // auto M = make_shared<TurnTask>(8.57, gyro, prototype);
+  // auto N = make_shared<DriveStraightTask>(-0.225 * 100, prototype);
+  // auto O = make_shared<MobileGoalIntakeTask>(prototype, true);
+  // auto P = make_shared<IntakeMillisecondsTask>(prototype, 1e5);
+  // auto Q = make_shared<TurnTask>(-3.83, gyro, prototype);
+  // auto R = make_shared<DriveStraightTask>(-0.236 * 100, prototype);
 
-  // Leg 1: Moving backwards to the first Mobile Goal.
-  addTask(fullAutonRootTask, B);
-  addTask(B, C);
-  addTask(C, D);
+  // // Leg 1: Moving backwards to the first Mobile Goal.
+  // addTask(fullAutonRootTask, B);
+  // addTask(B, C);
+  // addTask(C, D);
 
-  // Leg 2: Driving and score the first set of rings.
-  addTask(D, E);
-  addTask(D, F);
-  addTask(E, G);
+  // // Leg 2: Driving and score the first set of rings.
+  // addTask(D, E);
+  // addTask(D, F);
+  // addTask(E, G);
 
-  // Leg 3: Driving and scoring one of the cluster of 8 rings.
-  addTask(G, H);
-  addTask(H, I);
-  addTask(I, J);
+  // // Leg 3: Driving and scoring one of the cluster of 8 rings.
+  // addTask(G, H);
+  // addTask(H, I);
+  // addTask(I, J);
 
-  // Leg 4: The long drive from the driver's left to the driver's right and
-  // scoring a ring from a right-side stack.
-  addTask(I, K);
-  addTask(K, L);
-  addTask(L, M);
+  // // Leg 4: The long drive from the driver's left to the driver's right and
+  // // scoring a ring from a right-side stack.
+  // addTask(I, K);
+  // addTask(K, L);
+  // addTask(L, M);
 
-  // Leg 5: Grabbing a mobile goal to score the rings intaked in Leg 4.
-  addTask(M, N);
-  addTask(N, O);
-  addTask(O, P);
-  addTask(O, Q);
+  // // Leg 5: Grabbing a mobile goal to score the rings intaked in Leg 4.
+  // addTask(M, N);
+  // addTask(N, O);
+  // addTask(O, P);
+  // addTask(O, Q);
 
-  // Leg 6: Driving forward to reach the wall and scoring the autonomous win point.
-  addTask(Q, R);
+  // // Leg 6: Driving forward to reach the wall and scoring the autonomous win point.
+  // addTask(Q, R);
   
   // This is a fallback task tree to use in case fullAutonRootTask is not tested before competition
-  auto simpleRootTask = make_shared<TurnTask>(36.56, gyro, prototype);
-  auto driveBackTask = make_shared<DriveStraightTask>(-102.2, prototype);
-  addTask(simpleRootTask, driveBackTask);
+  //auto simpleRootTask = make_shared<TurnTask>(36.56, gyro, prototype);
+  
+  auto rootTask = make_shared<WaitMillisecondsTask>(0);
+  // auto simpleRootTask = make_shared<DriveStraightTask>(-102.2, prototype);
+  auto DriveTask = make_shared<TestDriveTask>(2, prototype);
+  auto stopTask = make_shared<DriveStraightTask>(0, prototype);
+  addTask(rootTask, DriveTask);
+  addTask(DriveTask, stopTask);
 
   // execute(fullAutonRootTask);
-  execute(simpleRootTask);
+  execute(rootTask);
 }
 
 /**
