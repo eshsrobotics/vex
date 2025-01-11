@@ -18,10 +18,10 @@ Differential drive (split arcade drive scheme)
 * `Axis 1` (left joystick horizontal axis) : Turns left/right
 
 - Generic Lift Control Scheme
-* `L1`: Moves the lift up by one level.
-* `L2`: Moves the lift down by one level.
+* `Up button`: Moves the lift up by one level.
+* `Down button`: Moves the lift down by one level.
 
-- Generic clamping
-* `Up arrow`: Clamps the pneumatics clamp
-* `Down arrow`: Unclamps the pneumatic clamp
+- Mobile goal clamping
+* `L1`: Clamps the pneumatics clamp
+* `L2`: Unclamps the pneumatic clamp
 

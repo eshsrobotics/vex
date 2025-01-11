@@ -73,6 +73,14 @@ class Ilift {
         virtual void moveLiftDirect(double rotations) = 0;
 
         /**
+         * This just tells us whether the lift is moving. We are adding this
+         * because the position function always returns. We are rewritting our
+         * lift state machine such that it spins for a certain a number of
+         * rotations and transitions when the motor stops spinning.
+        */
+        virtual bool isLiftSpinning() const = 0;
+
+        /**
          * Returns the default height value constants. However, each robot will
          * have different height values for their lift. The derived classes can
          * override the default values.

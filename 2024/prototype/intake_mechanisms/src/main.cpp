@@ -111,7 +111,7 @@ PivotRampPrototype makePivotRampPrototype() {
   const int RIGHT_MOTOR_PORT_B = 13 - 1; // right_bottom_motor
   const int RIGHT_MOTOR_PORT_C = 11 - 1; // right_top_motor
   const int INTAKE_MOTOR_PORT_A = 18 - 1;
-  const int INTAKE_MOTOR_PORT_B = 17-1;
+  const int INTAKE_MOTOR_PORT_B = 1 - 1;
   const int LIFT_MOTOR_PORT = 9 - 1;
 
   vex::motor leftMotor1(LEFT_MOTOR_PORT_A);
@@ -128,12 +128,12 @@ PivotRampPrototype makePivotRampPrototype() {
   vex::motor intakeMotor2(INTAKE_MOTOR_PORT_B);
   vector<motor> intakeMotors = {intakeMotor1, intakeMotor2};
 
-  vex::motor liftMotor1(LIFT_MOTOR_PORT);
+  vex::motor liftMotor1(LIFT_MOTOR_PORT, true);
   vector<motor> liftMotors = {liftMotor1};
 
-  const double rotationsToTop = 4.5; // TODO: Must be determined experimentally.
+  const double rotationsToTop = 6.1; // TODO: Must be determined experimentally.
 
-  vex::triport::port DOUBLE_SOLENOID_PORT = Brain.ThreeWirePort.A;
+  vex::triport::port DOUBLE_SOLENOID_PORT = Brain.ThreeWirePort.C;
   digital_out pneumaticClamp(DOUBLE_SOLENOID_PORT);
 
   PivotRampPrototype p(leftMotors,
@@ -143,11 +143,11 @@ PivotRampPrototype makePivotRampPrototype() {
                        rotationsToTop,
                        pneumaticClamp);
   p.setLiftHeights({
-    // Update these values once rotationsToTop has been determined.
-    .defaultHeight=0,
-    .mobileGoalHeight=0,
-    .allianceStakeHeight=0,
-    .wallStakeHeight=0
+    // These values have been determined experimentally.
+    .defaultHeight = 0,
+    .mobileGoalHeight = 0.37,
+    .allianceStakeHeight = rotationsToTop,
+    .wallStakeHeight = 4.6
   });
   return p;
 }
@@ -267,9 +267,8 @@ void teleop() {
     updateClampState(prototype);
 
     // // Allow the driver to control the lift position.
-    // bool buttonUp = Controller.ButtonL1.pressing();
-    // bool buttonDown = Controller.ButtonL2.pressing();
-    moveLiftRotationsToTopDebug(Controller.ButtonL1.pressing(), Controller.ButtonL2.pressing(), prototype);
+    bool buttonUp = Controller.ButtonUp.pressing();
+    bool buttonDown = Controller.ButtonDown.pressing();
     //moveLiftGatherHeightsDebug(Controller.ButtonL1.pressing(), Controller.ButtonL2.pressing(), prototype);
    
     // // The functions below are mutually exclusive. We have two ways of moving
@@ -280,9 +279,10 @@ void teleop() {
     // //   heights after having determined the rotationsToTop.
     // // * The third function calls the production state machine functions but
     // //   requires all the heights identified.
-    // moveLiftRotationsToTopDebug(buttonUp, buttonDown, prototype); // move lift directly (rotationsToTop)
+    moveLiftRotationsToTopDebug(buttonUp, buttonDown, prototype); // move lift directly (rotationsToTop)
     // moveLiftGatherHeightsDebug(buttonUp, buttonDown, prototype); // move lift directly (relative heights)
     // updateLiftState(buttonUp, buttonDown, prototype, liftState); // move lift by state machine (final)
+
     Brain.Screen.setCursor(BRAIN_CLAMP_VALUE_ROW, 1);
     Brain.Screen.print("clamp value: %d", prototype.pneumaticClamp.value());
     vex::wait(50, msec);

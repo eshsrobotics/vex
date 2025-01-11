@@ -39,6 +39,7 @@ const int CONTROLLER_LIFT_STATE_ROW = 1;
 const int CONTROLLER_LIFT_POSITION_ROW = 2;
 const int CONTROLLER_ROBOT_STOPPED_ROW = 3;
 const int BRAIN_CLAMP_VALUE_ROW = 5;
+const int BRAIN_LIFT_POSITION_ROW = 6;
 
 /**
  * Deadzones the intake speed velocities, meaning if they are below a certain

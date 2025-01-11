@@ -113,6 +113,8 @@ class PivotRampPrototype : public Idrive, public Iintake, public Ilift,
          */
         void moveLiftDirect(double rotations);
 
+        bool isLiftSpinning() const;
+
         bool isLiftAvailable() const;
 
         LiftHeights liftHeights() const {

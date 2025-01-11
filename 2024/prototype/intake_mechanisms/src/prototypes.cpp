@@ -177,7 +177,7 @@ void PivotRampPrototype::moveLiftDirect(double rotations) {
     const double DEADZONE = 0.1;
     if (fabs(rotations) < DEADZONE) {
         for_each(lift_motors.begin(), lift_motors.end(), [](motor& current_motor) {
-            current_motor.stop();
+            current_motor.stop(vex::brakeType::hold);
         });
     } else {
 
@@ -187,10 +187,20 @@ void PivotRampPrototype::moveLiftDirect(double rotations) {
         for_each(lift_motors.begin(), lift_motors.end(), [rotations](motor& current_motor) {
              current_motor.spinFor(rotations, vex::rotationUnits::rev, waitForCompletion);
         });
+        //lift_motors.at(0).spinFor(rotations, vex::rotationUnits::rev, waitForCompletion);
 
     }
+}
 
-    
+bool PivotRampPrototype::isLiftSpinning() const {
+    bool result = false;
+    PivotRampPrototype* that = const_cast<PivotRampPrototype*>(this);
+    for_each(that->lift_motors.begin(), that->lift_motors.end(), [&result](motor& current_motor) {
+        if (current_motor.isSpinning()) {
+            result = true;
+        }
+    });
+    return result;
 }
 
 void PivotRampPrototype::setLiftHeights(LiftHeights liftHeights) {
