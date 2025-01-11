@@ -106,7 +106,7 @@ WaitMillisecondsTask::WaitMillisecondsTask(double timeToWaitMilliseconds) : Task
 bool WaitMillisecondsTask::done() const {
   // If the number of ms since start() was called is too small compared to
   // timeToWaitMilliseconds, return false.
-  if (Brain.timer(msec) - startTimeMilliseconds < waitTimeMilliseconds) {
+  if (Seventeen59A.timer(msec) - startTimeMilliseconds < waitTimeMilliseconds) {
     return false;
   } else {
     return true;
@@ -114,7 +114,7 @@ bool WaitMillisecondsTask::done() const {
 }
 
 void WaitMillisecondsTask::start() {
-   startTimeMilliseconds = Brain.timer(msec);
+   startTimeMilliseconds = Seventeen59A.timer(msec);
 }
 
 /******************************************
@@ -177,7 +177,7 @@ bool TestDriveTask::done() const {
   // rotation is small enough.
 
   if (currentRotations - previousRotationNumber <= DEADZONE &&
-      Brain.timer(msec) - startTimeMsec >= MINIMUM_WAIT_TIME_MSEC) {
+      Seventeen59A.timer(msec) - startTimeMsec >= MINIMUM_WAIT_TIME_MSEC) {
     Controller.Screen.setCursor(CONTROLLER_ROBOT_STOPPED_ROW, 1);
     Controller.Screen.print("STOPPED ");
     Controller.Screen.print("%.2f", currentRotations);
@@ -193,7 +193,7 @@ void TestDriveTask::start() {
   driveObject.drive(1.0, 0.0);
   currentRotationNumber = 0;
   previousRotationNumber = driveObject.getRotations();
-  startTimeMsec = Brain.timer(vex::timeUnits::msec);
+  startTimeMsec = Seventeen59A.timer(vex::timeUnits::msec);
 }
 
 /*********************************
@@ -261,12 +261,12 @@ DriveMillisecondsTask::DriveMillisecondsTask(Idrive& drive, double milliseconds,
 }
 
 void DriveMillisecondsTask::start() {
-  startTimeMsec = Brain.timer(vex::timeUnits::msec);
+  startTimeMsec = Seventeen59A.timer(vex::timeUnits::msec);
   driveObject.drive(driveVelocity_, 0.0);
 }
 
 bool DriveMillisecondsTask::done() const {
-  const double currentTimeMsec = Brain.timer(msec);
+  const double currentTimeMsec = Seventeen59A.timer(msec);
   const double elapsedTimeMsec = currentTimeMsec - startTimeMsec;
   if (elapsedTimeMsec >= waitTimeMsec) {
     driveObject.drive(0, 0);
@@ -287,12 +287,12 @@ IntakeMillisecondsTask::IntakeMillisecondsTask(Iintake& intake_bot, double msec,
 }
 
 void IntakeMillisecondsTask::start() {
-  startTimeMsec = Brain.timer(vex::timeUnits::msec);
+  startTimeMsec = Seventeen59A.timer(vex::timeUnits::msec);
   intakeObject.intake(intake_speed_);
 }
 
 bool IntakeMillisecondsTask::done() const {
-  const double currentTimeMsec = Brain.timer(msec);
+  const double currentTimeMsec = Seventeen59A.timer(msec);
   const double elapsedTimeMsec = currentTimeMsec - startTimeMsec;
   if (elapsedTimeMsec >= desiredIntakingTimeMsec) {
     intakeObject.intake(0);

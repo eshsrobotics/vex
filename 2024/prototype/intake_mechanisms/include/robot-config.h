@@ -5,7 +5,7 @@
 
 using namespace vex;
 
-extern brain Brain;
+extern brain Seventeen59A;
 extern controller Controller;
 
 // VEXcode devices

@@ -133,7 +133,7 @@ PivotRampPrototype makePivotRampPrototype() {
 
   const double rotationsToTop = 6.1; // TODO: Must be determined experimentally.
 
-  vex::triport::port DOUBLE_SOLENOID_PORT = Brain.ThreeWirePort.C;
+  vex::triport::port DOUBLE_SOLENOID_PORT = Seventeen59A.ThreeWirePort.C;
   digital_out pneumaticClamp(DOUBLE_SOLENOID_PORT);
 
   PivotRampPrototype p(leftMotors,
@@ -183,7 +183,7 @@ void pre_auton() {
  */
 void autonomous() {
   auto prototype = makePivotRampPrototype();
-  auto gyro = vex::gyro(Brain.ThreeWirePort.B);
+  auto gyro = vex::gyro(Seventeen59A.ThreeWirePort.B);
 
   auto fullAutonRootTask = make_shared<WaitMillisecondsTask>(0);
   auto B = make_shared<DriveStraightTask>(-0.4572 * 100, prototype);
@@ -250,7 +250,7 @@ void autonomous() {
 void teleop() {
   PrototypeIntakeState intakeState = PrototypeIntakeState::START;
   LiftState liftState = INITIAL_LIFT_STATE;
-  Brain.Screen.clearScreen();
+  Seventeen59A.Screen.clearScreen();
   Controller.Screen.clearScreen();
   while (true) {
     auto prototype = makePivotRampPrototype();
@@ -283,8 +283,8 @@ void teleop() {
     // moveLiftGatherHeightsDebug(buttonUp, buttonDown, prototype); // move lift directly (relative heights)
     // updateLiftState(buttonUp, buttonDown, prototype, liftState); // move lift by state machine (final)
 
-    Brain.Screen.setCursor(BRAIN_CLAMP_VALUE_ROW, 1);
-    Brain.Screen.print("clamp value: %d", prototype.pneumaticClamp.value());
+    Seventeen59A.Screen.setCursor(BRAIN_CLAMP_VALUE_ROW, 1);
+    Seventeen59A.Screen.print("clamp value: %d", prototype.pneumaticClamp.value());
     vex::wait(50, msec);
   }
 }
@@ -307,7 +307,7 @@ void updateIntakeState(bool intakeButton, bool outtakeButton, Iintake& robotWith
   // Establishes the control system for any arbitrary prototype intake.
   const char* format = "Next State: %s        ";
   const char* label = "";
-  Brain.Screen.setCursor(3, 10);
+  Seventeen59A.Screen.setCursor(3, 10);
   switch (state) {
     case PrototypeIntakeState::START:
       robotWithIntake.intake(0);
