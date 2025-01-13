@@ -68,7 +68,7 @@ void updateIntakeState(bool intakeButton, bool outtakeButton, Iintake& robotWith
  * @param rotationsPerButton the number of rotations the motor makes
  */
 void moveLiftRotationsToTopDebug(bool buttonUp, bool buttonDown, Ilift& robotWithLift) {
-  const double rotationsPerButton = 0.1;
+  const double rotationsPerButton = 1;
   static double rotations = 0;
 
   // The lift moves UP if L2 (buttonDown) is pressed, so the signs are reversed
@@ -136,12 +136,16 @@ PivotRampPrototype makePivotRampPrototype() {
   vex::triport::port DOUBLE_SOLENOID_PORT = Seventeen59A.ThreeWirePort.C;
   digital_out pneumaticClamp(DOUBLE_SOLENOID_PORT);
 
+  vex::triport::port CLIMB_PORT = Seventeen59A.ThreeWirePort.B;
+  digital_out pneumaticClimb(CLIMB_PORT);
+
   PivotRampPrototype p(leftMotors,
                        rightMotors,
                        intakeMotors,
                        liftMotors,
                        rotationsToTop,
-                       pneumaticClamp);
+                       pneumaticClamp,
+                       pneumaticClimb);
   p.setLiftHeights({
     // These values have been determined experimentally.
     .defaultHeight = 0,
@@ -153,9 +157,9 @@ PivotRampPrototype makePivotRampPrototype() {
 }
 
 /**
- * Encapsulates all clamping functionality for teleop in one easy-to-use wrapper
+ * Encapsulates mobile goal clamping functionality for teleop in one easy-to-use wrapper
  * function.
- * @param p a reference to a ImobileGoalIntake instance
+ * @param p a reference to a ImobileGoalIntake instance 
 */
 void updateClampState(ImobileGoalIntake& p) {
   bool clamp = Controller.ButtonL1.pressing(); //means the air is released
@@ -164,6 +168,16 @@ void updateClampState(ImobileGoalIntake& p) {
     p.clamp(true);
   } else if (unclamp) {
     p.clamp(false);
+  }
+}
+/**
+ * Encapsulates climb functionality for teleop in one function.
+ * @param p a reference to an Iclimb instance (the prototype)
+ */
+void updateClimbState(Iclimb& p) {
+  bool buttonDown = Controller.ButtonX.pressing();
+  if (buttonDown) {
+    p.activateClimb();
   }
 }
 
@@ -266,6 +280,9 @@ void teleop() {
     // Allows controlling the mobile goal clamp.
     updateClampState(prototype);
 
+    // Allows controlling the climb hooks.
+    updateClimbState(prototype);
+
     // // Allow the driver to control the lift position.
     bool buttonUp = Controller.ButtonUp.pressing();
     bool buttonDown = Controller.ButtonDown.pressing();
@@ -279,9 +296,9 @@ void teleop() {
     // //   heights after having determined the rotationsToTop.
     // // * The third function calls the production state machine functions but
     // //   requires all the heights identified.
-    moveLiftRotationsToTopDebug(buttonUp, buttonDown, prototype); // move lift directly (rotationsToTop)
+    // moveLiftRotationsToTopDebug(buttonUp, buttonDown, prototype); // move lift directly (rotationsToTop)
     // moveLiftGatherHeightsDebug(buttonUp, buttonDown, prototype); // move lift directly (relative heights)
-    // updateLiftState(buttonUp, buttonDown, prototype, liftState); // move lift by state machine (final)
+    updateLiftState(buttonUp, buttonDown, prototype, liftState); // move lift by state machine (final)
 
     Seventeen59A.Screen.setCursor(BRAIN_CLAMP_VALUE_ROW, 1);
     Seventeen59A.Screen.print("clamp value: %d", prototype.pneumaticClamp.value());
