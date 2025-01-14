@@ -71,8 +71,9 @@ extern vex::drivetrain DriveTrain;
  * By having this as a separate function, we can call the same *tested* code in
  * both teleop and autonomous, and both will do the same thing to the drive.
  *
- * @param frontBackSpeed The speed in the front/back direction, from -100 (full
- *                       driving forward or backward is not desired.
+ * @param frontBackSpeed The speed in the forward or backward direction from 
+ *                       -100 (full speed backwards) to +100 (full speed
+ *                       forwards). Use 0 if turning is not desired.
  * @param turnSpeed      The angular velocity of the robot turning about its own
  *                       center, from -100 (full speed counterclockwise) to +100
  *                       (full speed clockwise.)  Use 0 if turning is not

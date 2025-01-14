@@ -25,3 +25,6 @@ Differential drive (split arcade drive scheme)
 * `L1`: Clamps the pneumatics clamp
 * `L2`: Unclamps the pneumatic clamp
 
+- Climb hooks
+* `X button`: Makes the climb hooks go up
+
