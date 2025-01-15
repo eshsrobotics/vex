@@ -64,6 +64,8 @@ void updateLiftState(bool upButton, bool downButton,
                 state = LiftState::DEFAULT_UP;
                 label = "Default up";
                 robotWithLift.moveLiftDirect(mobileGoalHeight - defaultHeight);
+            } else {
+                robotWithLift.moveLiftDirect(0);
             }
             break;
 
@@ -87,6 +89,8 @@ void updateLiftState(bool upButton, bool downButton,
                 state = LiftState::MOBILE_GOAL_DOWN;
                 label = "Mobile goal down";
                 robotWithLift.moveLiftDirect(defaultHeight - mobileGoalHeight);
+            } else {
+                robotWithLift.moveLiftDirect(0);
             }
             break;
 
@@ -119,6 +123,8 @@ void updateLiftState(bool upButton, bool downButton,
                 state = LiftState::WALL_STAKE_UP;
                 label = "Wall stake up";
                 robotWithLift.moveLiftDirect(allianceStakeHeight - wallStakeHeight);
+            } else {
+                robotWithLift.moveLiftDirect(0);
             }
             break;
 
@@ -147,6 +153,8 @@ void updateLiftState(bool upButton, bool downButton,
                 state = LiftState::ALLIANCE_STAKE_DOWN;
                 label = "Alliance stake down";
                 robotWithLift.moveLiftDirect(wallStakeHeight - allianceStakeHeight);
+            } else {
+                robotWithLift.moveLiftDirect(0);
             }
             break;
 

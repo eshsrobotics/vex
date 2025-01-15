@@ -68,7 +68,7 @@ void updateIntakeState(bool intakeButton, bool outtakeButton, Iintake& robotWith
  * @param rotationsPerButton the number of rotations the motor makes
  */
 void moveLiftRotationsToTopDebug(bool buttonUp, bool buttonDown, Ilift& robotWithLift) {
-  const double rotationsPerButton = 1;
+  const double rotationsPerButton = 10;
   static double rotations = 0;
 
   // The lift moves UP if L2 (buttonDown) is pressed, so the signs are reversed

@@ -63,7 +63,7 @@ void arcade_drive(double straightSpeed, double turnSpeed, vector<motor>& left,
         });
     } else {
         for_each(right.begin(), right.end(), [&](motor& m) {
-            m.stop();
+            m.stop(hold);
         });
     }
 
@@ -74,7 +74,7 @@ void arcade_drive(double straightSpeed, double turnSpeed, vector<motor>& left,
         });
     } else {
         for_each(left.begin(), left.end(), [&](motor& m) {
-            m.stop();
+            m.stop(hold);
         });
     }
 }
@@ -178,7 +178,7 @@ void PivotRampPrototype::moveLiftDirect(double rotations) {
     const double DEADZONE = 0.1;
     if (fabs(rotations) < DEADZONE) {
         for_each(lift_motors.begin(), lift_motors.end(), [](motor& current_motor) {
-            current_motor.stop(vex::brakeType::hold);
+            current_motor.stop(hold);
         });
     } else {
 
