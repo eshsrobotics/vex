@@ -131,7 +131,7 @@ PivotRampPrototype makePivotRampPrototype() {
   vex::motor liftMotor1(LIFT_MOTOR_PORT, true);
   vector<motor> liftMotors = {liftMotor1};
 
-  const double rotationsToTop = 6.1; // TODO: Must be determined experimentally.
+  const double rotationsToTop = 2.6; // TODO: Must be determined experimentally.
 
   vex::triport::port DOUBLE_SOLENOID_PORT = Seventeen59A.ThreeWirePort.C;
   digital_out pneumaticClamp(DOUBLE_SOLENOID_PORT);
@@ -151,7 +151,7 @@ PivotRampPrototype makePivotRampPrototype() {
     .defaultHeight = 0,
     .mobileGoalHeight = 0.37,
     .allianceStakeHeight = rotationsToTop,
-    .wallStakeHeight = 4.6
+    .wallStakeHeight = 2.2
   });
   return p;
 }
