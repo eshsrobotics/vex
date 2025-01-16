@@ -71,7 +71,7 @@ void moveLiftRotationsToTopDebug(bool buttonUp, bool buttonDown, Ilift& robotWit
   const double rotationsPerButton = 10;
   static double rotations = 0;
 
-  // The lift moves UP if L2 (buttonDown) is pressed, so the signs are reversed
+  // The lift moves UP if buttonDown is pressed, so the signs are reversed
   // for buttonUp and buttonDown.
   if (buttonUp) {
       robotWithLift.moveLiftDirect(rotationsPerButton);
@@ -131,7 +131,7 @@ PivotRampPrototype makePivotRampPrototype() {
   vex::motor liftMotor1(LIFT_MOTOR_PORT, true);
   vector<motor> liftMotors = {liftMotor1};
 
-  const double rotationsToTop = 2.6; // TODO: Must be determined experimentally.
+  const double rotationsToTop = 2.6; //This value has been determined experimentally.
 
   vex::triport::port DOUBLE_SOLENOID_PORT = Seventeen59A.ThreeWirePort.C;
   digital_out pneumaticClamp(DOUBLE_SOLENOID_PORT);
