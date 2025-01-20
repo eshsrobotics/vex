@@ -42,6 +42,15 @@ extern vex::motor BackRight;
 // The intake motor, used to collect rings.
 extern vex::motor Intake;
 
+// The clamp motor, used to hold mobile goals.
+extern vex::motor Clamp;
+
+const int CLAMP_PORT = 11 - 1;
+
+const double CLAMP_TIMEOUT_SEC = 1.00;
+
+const double CLAMP_VELOCITY_PCT = 100.00;
+
 // Intake motor port
 const int INTAKE_PORT = 8 - 1;
 
@@ -63,6 +72,7 @@ const double DRIVE_TRAIN_LENGTH_CM = 32;      // Vex calls this "wheel base"
 const double DRIVE_TRAIN_GEAR_RATIO = 1.0; // Ratio between motor input shaft and wheel output shaft
 
 extern vex::drivetrain DriveTrain;
+
 
 /**
  * Controls the drive subsystem by instantaneously adjusting the speed of the
@@ -100,5 +110,19 @@ void robotintake(int intakeOrOuttake);
  *             lowering system.
  */
 void robotlift(int lift);
+
+/**
+ * Controls the robot clamp. The function needs to be called once per frame
+ * (both during teleop *and* during autonomous) because, if not called, then the
+ * clamp motor will continue whatever it was told last forever. 
+ *
+ * By calling this function once per frame the clamp motors velocity can be
+ * continuously managed.
+ *
+ * @param close Makes the clamp open or close. If the argument is true, the
+ *              clamp will close. If the argument is false, the clamp will open.
+ */
+void updateClampState(bool close);
+
 
 #endif
