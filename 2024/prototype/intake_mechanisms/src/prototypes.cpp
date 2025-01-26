@@ -1,47 +1,35 @@
 // PROTOTYPES.CPP -- Implementation file for PROTOTYPE.H
+#include <algorithm>    // min, max, for_each
+#include <sstream>      // stringstream
+#include <iomanip>      // setprecision
 #include "prototypes.h"
-
-#include <algorithm> // min, max, for_each
-#include <iomanip> // setprecision
-#include <sstream> // stringstream
-
 #include "robot-config.h"
 
-using std::for_each;
-using std::max;
 using std::min;
-using std::setprecision;
-using std::stringstream;
+using std::max;
 using std::vector;
+using std::for_each;
+using std::stringstream;
+using std::setprecision;
 using namespace vex;
 
 void intake(double intakeSpeed, vector<motor>& intake_motors) {
     if (fabs(intakeSpeed) < INTAKE_SPEED_DEADZONE) {
-        for_each(
-            intake_motors.begin(),
-            intake_motors.end(),
-            [](motor& intake_motor) { intake_motor.stop(); }
-        );
+        for_each(intake_motors.begin(), intake_motors.end(), [](motor& intake_motor) {
+            intake_motor.stop();
+        });
     } else {
-        for_each(
-            intake_motors.begin(),
-            intake_motors.end(),
-            [intakeSpeed](motor& intake_motor) {
-                intake_motor.spin(forward, intakeSpeed * 100, pct);
-            }
-        );
+        for_each(intake_motors.begin(), intake_motors.end(), [intakeSpeed](motor& intake_motor) {
+            intake_motor.spin(forward, intakeSpeed * 100, pct);
+        });
     }
 }
 
 /**
  * Internal helper function for differential driving with arcade-style controls.
  */
-void arcade_drive(
-    double straightSpeed,
-    double turnSpeed,
-    vector<motor>& left,
-    vector<motor>& right
-) {
+void arcade_drive(double straightSpeed, double turnSpeed, vector<motor>& left,
+                  vector<motor>& right) {
     double JOYSTICK_DEADZONE = 0.05;
     // We do not want any minor mis-inputs to throw the robot off-course.
     if (fabs(straightSpeed) < JOYSTICK_DEADZONE) {
@@ -51,9 +39,9 @@ void arcade_drive(
         turnSpeed = 0;
     }
 
-    // This is an arcade drive formula translation. We want to ensure that the
-    //  actual speed that were are passing into setVelocity is a value between 1
-    //  and -1.
+    //This is an arcade drive formula translation. We want to ensure that the
+    // actual speed that were are passing into setVelocity is a value between 1
+    // and -1.
 
     // Clamp the input to the interval [-1, 1].
     double sum = straightSpeed + turnSpeed;
@@ -66,8 +54,7 @@ void arcade_drive(
     rightVelocity *= 1;
 
     Controller.Screen.setCursor(3, 1);
-    Controller.Screen
-        .print("Vel: l=%.2f, r=%.2f  ", leftVelocity, rightVelocity);
+    Controller.Screen.print("Vel: l=%.2f, r=%.2f  ", leftVelocity, rightVelocity);
 
     if (rightVelocity != 0) {
         for_each(right.begin(), right.end(), [&](motor& m) {
@@ -75,7 +62,9 @@ void arcade_drive(
             m.spin(reverse);
         });
     } else {
-        for_each(right.begin(), right.end(), [&](motor& m) { m.stop(); });
+        for_each(right.begin(), right.end(), [&](motor& m) {
+            m.stop(hold);
+        });
     }
 
     if (leftVelocity != 0) {
@@ -84,7 +73,9 @@ void arcade_drive(
             m.spin(forward);
         });
     } else {
-        for_each(left.begin(), left.end(), [&](motor& m) { m.stop(); });
+        for_each(left.begin(), left.end(), [&](motor& m) {
+            m.stop(hold);
+        });
     }
 }
 
@@ -95,20 +86,14 @@ void arcade_drive(
  * Iintake will look a whole lot like PivotRampPrototype.                   *
  ****************************************************************************/
 
-PivotRampPrototype::PivotRampPrototype(
-    const std::vector<vex::motor>& left_motors_,
-    const std::vector<vex::motor>& right_motors_,
-    const std::vector<vex::motor>& intake_,
-    const std::vector<vex::motor>& lift_,
-    double rotToTop,
-    const vex::digital_out& pneumaticClamp_
-) :
-    left_motors(left_motors_),
-    right_motors(right_motors_),
-    intake_motors(intake_),
-    lift_motors(lift_),
-    rotationsToTop(rotToTop),
-    pneumaticClamp(pneumaticClamp_) {
+
+PivotRampPrototype::PivotRampPrototype(const std::vector<vex::motor>& left_motors_,
+                                       const std::vector<vex::motor>& right_motors_,
+                                       const std::vector<vex::motor>& intake_, const std::vector<vex::motor>& lift_,
+                                       double rotToTop, const vex::digital_out& pneumaticClamp_, 
+                                       const vex::digital_out& pneumaticClimb_)
+    : left_motors(left_motors_), right_motors(right_motors_),
+      intake_motors(intake_), lift_motors(lift_), rotationsToTop(rotToTop), pneumaticClamp(pneumaticClamp_), pneumaticClimb(pneumaticClimb_) {
     // Where we are right now -- the initialLiftPosition -- will now
     // correspond to an encoder value of zero.
     for_each(lift_motors.begin(), lift_motors.end(), [](motor& current_motor) {
@@ -139,9 +124,7 @@ double PivotRampPrototype::getRotations() const {
     // non-const function.  (Why, VEX?  Why?)  Since we *know* it's not going to
     // actually change anything, we know it's safe to call even here in a const
     // method.  So we essentially tell the compiler to shove off.
-    return const_cast<PivotRampPrototype*>(this)->left_motors[0].position(
-        vex::rotationUnits::rev
-    );
+    return const_cast<PivotRampPrototype*>(this)->left_motors[0].position(vex::rotationUnits::rev);
 }
 
 void PivotRampPrototype::intake(double intakeSpeed) {
@@ -163,21 +146,13 @@ void PivotRampPrototype::setLiftPosition(double desiredLiftPosition) {
     const bool waitForCompletion = false;
 
     for (motor& current_motor : lift_motors) {
-        current_motor.spinToPosition(
-            desiredRotations,
-            rev,
-            LIFT_VELOCITY_PERCENT,
-            velocityUnits::pct,
-            waitForCompletion
-        );
+        current_motor.spinToPosition(desiredRotations, rev,
+                                    LIFT_VELOCITY_PERCENT, velocityUnits::pct,
+                                    waitForCompletion);
     }
 
     Controller.Screen.setCursor(CONTROLLER_LIFT_POSITION_ROW, 1);
-    Controller.Screen.print(
-        "Lift=%.2f%, target=%.2f%  ",
-        getliftPosition() * 100,
-        desiredLiftPosition * 100
-    );
+    Controller.Screen.print("Lift=%.2f%, target=%.2f%  ", getliftPosition() * 100, desiredLiftPosition * 100);
 }
 
 double PivotRampPrototype::getliftPosition() const {
@@ -190,7 +165,7 @@ double PivotRampPrototype::getliftPosition() const {
     PivotRampPrototype* that = const_cast<PivotRampPrototype*>(this);
     double rotations = that->lift_motors[0].position(rev);
 
-    return rotations / rotationsToTop;
+    return rotations/rotationsToTop;
 }
 
 void PivotRampPrototype::moveLiftDirect(double rotations) {
@@ -202,33 +177,31 @@ void PivotRampPrototype::moveLiftDirect(double rotations) {
     // DEADZONE, then we won't spin at all.
     const double DEADZONE = 0.1;
     if (fabs(rotations) < DEADZONE) {
-        for_each(
-            lift_motors.begin(),
-            lift_motors.end(),
-            [](motor& current_motor) { current_motor.stop(); }
-        );
+        for_each(lift_motors.begin(), lift_motors.end(), [](motor& current_motor) {
+            current_motor.stop(hold);
+        });
     } else {
+
         // Prevents the called the method from being a blocking call.
         const bool waitForCompletion = false;
 
-        for_each(
-            lift_motors.begin(),
-            lift_motors.end(),
-            [rotations](motor& current_motor) {
-                current_motor.spinFor(
-                    rotations,
-                    vex::rotationUnits::rev,
-                    waitForCompletion
-                );
-            }
-        );
+        for_each(lift_motors.begin(), lift_motors.end(), [rotations](motor& current_motor) {
+             current_motor.spinFor(rotations, vex::rotationUnits::rev, waitForCompletion);
+        });
+        //lift_motors.at(0).spinFor(rotations, vex::rotationUnits::rev, waitForCompletion);
 
-        Controller.Screen.setCursor(CONTROLLER_LIFT_POSITION_ROW, 1);
-        Controller.Screen.print(
-            "Lift at %.2f revs ",
-            lift_motors[0].position(rev)
-        );
     }
+}
+
+bool PivotRampPrototype::isLiftSpinning() const {
+    bool result = false;
+    PivotRampPrototype* that = const_cast<PivotRampPrototype*>(this);
+    for_each(that->lift_motors.begin(), that->lift_motors.end(), [&result](motor& current_motor) {
+        if (current_motor.isSpinning()) {
+            result = true;
+        }
+    });
+    return result;
 }
 
 void PivotRampPrototype::setLiftHeights(LiftHeights liftHeights) {
@@ -244,4 +217,8 @@ bool PivotRampPrototype::isLiftAvailable() const {
 
 void PivotRampPrototype::clamp(bool active) {
     this->pneumaticClamp.set(active);
+}
+
+void PivotRampPrototype::activateClimb() {
+    this->pneumaticClimb.set(true);
 }

@@ -74,6 +74,9 @@ void autonomous(void) {
 void usercontrol(void) {
   
   double forwardBackVelocity = 0;
+
+  bool closingClamp = false;
+
   // User control code here, inside the loop
   while (1) {
     // This is the main execution loop for the user control program.
@@ -91,7 +94,7 @@ void usercontrol(void) {
       //
       // If we are already moving backwards (our velocity is negative), then we
       // need to accelerate backwards, too.
-      forwardBackVelocity = forwardBackVelocity + sgn(forwardBackVelocity) * FORWARD_BACK_ACCELERATION;
+      forwardBackVelocity = forwardBackVelocity + sgn(controllerFrontBackPosition) * FORWARD_BACK_ACCELERATION;
 
       if (fabs(forwardBackVelocity) > 1) {
         forwardBackVelocity = sgn(forwardBackVelocity);
@@ -133,17 +136,23 @@ void usercontrol(void) {
     robotintake(intakeOrOuttake);
 
 
-    bool uplift = Controller.ButtonUp.pressing();
-    bool downlift = Controller.ButtonDown.pressing();
+    bool uplift = Controller.ButtonR1.pressing();
+    bool downlift = Controller.ButtonL1.pressing();
     int lift = 0;
     if (uplift == true) {
       lift = 1;
     } else if (downlift == true) {
       lift = -1;
     }
-
-
     robotlift(lift);
+
+    if (Controller.ButtonUp.pressing()) {
+      closingClamp = false;
+    } else if (Controller.ButtonDown.pressing()) {
+      closingClamp = true;
+    }
+    
+    updateClampState(closingClamp);
 
 
     wait(20, msec); // Sleep the task for a short amount of time to

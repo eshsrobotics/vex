@@ -16,7 +16,7 @@ const int BACK_RIGHT_PORT = 7 - 1;
 
 const double JOYSTICK_DEADZONE = 0.1;
 const bool ACCELERATION_ENABLED = true;
-const double FORWARD_BACK_ACCELERATION = 0.006;
+const double FORWARD_BACK_ACCELERATION = 0.03;
 
 // The robot runs at 50Hz.
 //
@@ -42,6 +42,15 @@ extern vex::motor BackRight;
 // The intake motor, used to collect rings.
 extern vex::motor Intake;
 
+// The clamp motor, used to hold mobile goals.
+extern vex::motor Clamp;
+
+const int CLAMP_PORT = 11 - 1;
+
+const double CLAMP_TIMEOUT_SEC = 1.00;
+
+const double CLAMP_VELOCITY_PCT = 100.00;
+
 // Intake motor port
 const int INTAKE_PORT = 8 - 1;
 
@@ -64,6 +73,7 @@ const double DRIVE_TRAIN_GEAR_RATIO = 1.0; // Ratio between motor input shaft an
 
 extern vex::drivetrain DriveTrain;
 
+
 /**
  * Controls the drive subsystem by instantaneously adjusting the speed of the
  * drive motors.
@@ -71,8 +81,9 @@ extern vex::drivetrain DriveTrain;
  * By having this as a separate function, we can call the same *tested* code in
  * both teleop and autonomous, and both will do the same thing to the drive.
  *
- * @param frontBackSpeed The speed in the front/back direction, from -100 (full
- *                       driving forward or backward is not desired.
+ * @param frontBackSpeed The speed in the forward or backward direction from 
+ *                       -100 (full speed backwards) to +100 (full speed
+ *                       forwards). Use 0 if turning is not desired.
  * @param turnSpeed      The angular velocity of the robot turning about its own
  *                       center, from -100 (full speed counterclockwise) to +100
  *                       (full speed clockwise.)  Use 0 if turning is not
@@ -99,5 +110,19 @@ void robotintake(int intakeOrOuttake);
  *             lowering system.
  */
 void robotlift(int lift);
+
+/**
+ * Controls the robot clamp. The function needs to be called once per frame
+ * (both during teleop *and* during autonomous) because, if not called, then the
+ * clamp motor will continue whatever it was told last forever. 
+ *
+ * By calling this function once per frame the clamp motors velocity can be
+ * continuously managed.
+ *
+ * @param close Makes the clamp open or close. If the argument is true, the
+ *              clamp will close. If the argument is false, the clamp will open.
+ */
+void updateClampState(bool close);
+
 
 #endif
