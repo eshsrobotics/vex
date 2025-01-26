@@ -21,7 +21,7 @@ extern vex::motor armMotorRight;
 // already been constructed by then.
 vex::bumper& getBumper();
 
-// On the Brain given to us by 6526, the following ports are marked as dead: 
+// On the Brain given to us by 6526, the following ports are marked as dead:
 // 6, 7?, 9, 10, 16, 17, 20?
 // These ports seem loose: 2, 3, 13, 18
 const int LEFT_MOTOR_PORT_FRONT = 11 - 1;
