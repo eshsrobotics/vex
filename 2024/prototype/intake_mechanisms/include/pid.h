@@ -18,7 +18,12 @@
  * measurement closer to setpoint.
  *
  */
-double calculate(const double P, const double I, const double D, 
-                 const double measurement, const double setpoint);
+double calculate(
+    const double P,
+    const double I,
+    const double D,
+    const double measurement,
+    const double setpoint
+);
 
 #endif // (ifndef PID__H__)
