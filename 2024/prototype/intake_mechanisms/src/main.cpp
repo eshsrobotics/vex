@@ -149,7 +149,7 @@ PivotRampPrototype makePivotRampPrototype() {
   p.setLiftHeights({
     // These values have been determined experimentally.
     .defaultHeight = 0,
-    .mobileGoalHeight = 0.37,
+    .mobileGoalHeight = 0.39,
     .allianceStakeHeight = rotationsToTop,
     .wallStakeHeight = 2.2
   });
