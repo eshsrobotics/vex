@@ -175,6 +175,7 @@ bool TestDriveTask::done() const {
   // farther even if the motors are stopped. This is a much more precise way of
   // making sure the motors are stopped by checking if the change in motor
   // rotation is small enough.
+  // currentRotations - previousRotationNumber <= DEADZONE
 
   if (currentRotations - previousRotationNumber <= DEADZONE &&
       Seventeen59A.timer(msec) - startTimeMsec >= MINIMUM_WAIT_TIME_MSEC) {

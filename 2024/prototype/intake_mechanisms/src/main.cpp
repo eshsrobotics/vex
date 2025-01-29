@@ -128,10 +128,10 @@ PivotRampPrototype makePivotRampPrototype() {
   vex::motor intakeMotor2(INTAKE_MOTOR_PORT_B);
   vector<motor> intakeMotors = {intakeMotor1, intakeMotor2};
 
-  vex::motor liftMotor1(LIFT_MOTOR_PORT, true);
+  vex::motor liftMotor1(LIFT_MOTOR_PORT);
   vector<motor> liftMotors = {liftMotor1};
 
-  const double rotationsToTop = 2.6; //This value has been determined experimentally.
+  const double rotationsToTop = 6; //This value has been determined experimentally.
 
   vex::triport::port DOUBLE_SOLENOID_PORT = Seventeen59A.ThreeWirePort.C;
   digital_out pneumaticClamp(DOUBLE_SOLENOID_PORT);
@@ -149,9 +149,9 @@ PivotRampPrototype makePivotRampPrototype() {
   p.setLiftHeights({
     // These values have been determined experimentally.
     .defaultHeight = 0,
-    .mobileGoalHeight = 0.39,
+    .mobileGoalHeight = 0.56,
     .allianceStakeHeight = rotationsToTop,
-    .wallStakeHeight = 2.2
+    .wallStakeHeight = 3.6
   });
   return p;
 }
@@ -252,12 +252,13 @@ void autonomous() {
   //auto simpleRootTask = make_shared<TurnTask>(36.56, gyro, prototype);
   
   auto rootTask = make_shared<WaitMillisecondsTask>(0);
-  // auto simpleRootTask = make_shared<DriveStraightTask>(-102.2, prototype);
-  auto DriveTask = make_shared<TestDriveTask>(2, prototype);
-  auto stopTask = make_shared<DriveStraightTask>(0, prototype);
-  addTask(rootTask, DriveTask);
-  addTask(DriveTask, stopTask);
-
+  auto driveTest = make_shared<TestDriveTask>(5, prototype);
+  // auto DriveTask = make_shared<TestDriveTask>(2, prototype);
+  // auto stopTask = make_shared<DriveStraightTask>(0, prototype);
+  // addTask(rootTask, DriveTask);
+  // addTask(DriveTask, stopTask);
+  addTask(rootTask, driveTest);
+  
   // execute(fullAutonRootTask);
   execute(rootTask);
 }
