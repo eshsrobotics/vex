@@ -17,6 +17,8 @@ motor BackRight(BACK_RIGHT_PORT);
 motor FrontLiftRight(LiftFR);
 motor BackLiftLeft(LiftBL);
 
+//Positive velocities close the clamp, while negative velocities open the clamp.
+motor Clamp(CLAMP_PORT);
 
 motor Intake(INTAKE_PORT);
 
@@ -27,6 +29,19 @@ drivetrain DriveTrain(Left, Right, WHEEL_CIRCUMFERENCE_CM,
                       distanceUnits::cm, DRIVE_TRAIN_GEAR_RATIO);
 
 motor_group updownlift(FrontLiftRight, BackLiftLeft);
+
+/**
+ * We are using a state machine, meaning that we're constantly switching betweeen
+ * different "states" where various different actions are done. The enum class
+ * below represents the different states of the state machine as enum values. 
+ */
+enum class ClampState {
+    Start,
+    Opening,
+    Closing,
+    FullyOpen,
+    FullyClosed,
+};
 
 void robotDrive(double frontBackSpeed, double turnSpeed) {
 
@@ -82,5 +97,63 @@ void robotlift(int lift) {
         updownlift.spin(vex::directionType::rev);
     } else {
         updownlift.stop(vex::brakeType::brake);
+    }
+}
+
+//Clamp code
+void updateClampState(bool close) {
+    static ClampState clampStatus = ClampState::Start;
+    static double startTimeSec = 0;
+    switch(clampStatus) {
+        case ClampState::Start:
+            startTimeSec = Brain.timer(vex::timeUnits::sec);
+            if (close == true) {            
+                clampStatus = ClampState::Closing;
+            } else {
+                clampStatus = ClampState::Opening;
+            }
+            break;
+        
+        case ClampState::Opening:
+            Clamp.spin(vex::directionType::rev, CLAMP_VELOCITY_PCT, pct);
+            if (Brain.timer(vex::timeUnits::sec) >= CLAMP_TIMEOUT_SEC + startTimeSec) {
+                clampStatus = ClampState::FullyOpen;
+            } else if (close == true) {
+                // User stopped opening and is now closing the clamp.
+                startTimeSec = Brain.timer(vex::timeUnits::sec);
+                clampStatus = ClampState::Closing;
+            }
+            break;
+        
+        case ClampState::Closing:
+            Clamp.spin(vex::directionType::fwd, CLAMP_VELOCITY_PCT, pct);
+            if (Brain.timer(vex::timeUnits::sec) >= CLAMP_TIMEOUT_SEC + startTimeSec) {
+                clampStatus = ClampState::FullyClosed;
+            } else if (close == false) { 
+                // User stopped closing and is now opening the clamp.
+                startTimeSec = Brain.timer(vex::timeUnits::sec);
+                clampStatus = ClampState::Opening;
+            }
+            break;
+
+        case ClampState::FullyOpen:
+            Clamp.stop(vex::hold);
+            if (close == true) {
+                // User is closing the fully open clamp.
+                startTimeSec = Brain.timer(vex::timeUnits::sec);
+                clampStatus = ClampState::Closing;
+            }
+            break;
+
+        case ClampState::FullyClosed:
+            Clamp.stop(vex::hold);
+            if (close == false) {
+                // User is opening the fully closed clamp.
+                startTimeSec = Brain.timer(vex::timeUnits::sec);
+                clampStatus = ClampState::Opening;
+            }
+            break;
+
+
     }
 }
