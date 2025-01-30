@@ -179,10 +179,11 @@ bool TestDriveTask::done() const {
 
   if (currentRotations - previousRotationNumber <= DEADZONE &&
       Seventeen59A.timer(msec) - startTimeMsec >= MINIMUM_WAIT_TIME_MSEC) {
+    driveObject.drive(0.0, 0.0);
     Controller.Screen.setCursor(CONTROLLER_ROBOT_STOPPED_ROW, 1);
     Controller.Screen.print("STOPPED ");
     Controller.Screen.print("%.2f", currentRotations);
-    driveObject.drive(0.0, 0.0);
+    vex::wait(2000, msec);
     return true;
   } else {
     previousRotations = currentRotations;
