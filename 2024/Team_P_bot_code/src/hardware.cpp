@@ -30,6 +30,11 @@ drivetrain DriveTrain(Left, Right, WHEEL_CIRCUMFERENCE_CM,
 
 motor_group updownlift(FrontLiftRight, BackLiftLeft);
 
+/**
+ * We are using a state machine, meaning that we're constantly switching betweeen
+ * different "states" where various different actions are done. The enum class
+ * below represents the different states of the state machine as enum values. 
+ */
 enum class ClampState {
     Start,
     Opening,
@@ -37,8 +42,6 @@ enum class ClampState {
     FullyOpen,
     FullyClosed,
 };
-
-ClampState clampStatus = ClampState::Start;
 
 void robotDrive(double frontBackSpeed, double turnSpeed) {
 
@@ -99,14 +102,14 @@ void robotlift(int lift) {
 
 //Clamp code
 void updateClampState(bool close) {
+    static ClampState clampStatus = ClampState::Start;
     static double startTimeSec = 0;
     switch(clampStatus) {
         case ClampState::Start:
-            if (close == true) {
-                startTimeSec = Brain.timer(vex::timeUnits::sec);
+            startTimeSec = Brain.timer(vex::timeUnits::sec);
+            if (close == true) {            
                 clampStatus = ClampState::Closing;
             } else {
-                startTimeSec = Brain.timer(vex::timeUnits::sec);
                 clampStatus = ClampState::Opening;
             }
             break;

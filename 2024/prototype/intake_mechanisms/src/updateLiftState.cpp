@@ -1,9 +1,11 @@
 // Implements and definition updateLiftState.h
 
 #include "updateLiftState.h"
-#include "vex.h"
-#include <algorithm>  // abs()
+
+#include <algorithm> // abs()
 #include <string>
+
+#include "vex.h"
 
 using std::abs;
 using std::string;
@@ -32,7 +34,8 @@ enum class LiftState {
 
 // The lift is an abstraction that can go from the lowest position at 0.0 to the
 // highest position at 1.0.  Somewhere along the way, there are various "stops"
-// that represent the heights that the lift needs to go to to reach of our destinations:
+// that represent the heights that the lift needs to go to to reach of our
+// destinations:
 //
 //   - The ground
 //   - The (top of the) mobile goal
@@ -42,12 +45,17 @@ enum class LiftState {
 // These values vary from robot to robot.
 LiftState INITIAL_LIFT_STATE = LiftState::START;
 
-void updateLiftState(bool upButton, bool downButton,
-                     Ilift& robotWithLift, LiftState& state) {
-
+void updateLiftState(
+    bool upButton,
+    bool downButton,
+    Ilift& robotWithLift,
+    LiftState& state
+) {
     const double defaultHeight = robotWithLift.liftHeights().defaultHeight;
-    const double mobileGoalHeight = robotWithLift.liftHeights().mobileGoalHeight;
-    const double allianceStakeHeight = robotWithLift.liftHeights().allianceStakeHeight;
+    const double mobileGoalHeight =
+        robotWithLift.liftHeights().mobileGoalHeight;
+    const double allianceStakeHeight =
+        robotWithLift.liftHeights().allianceStakeHeight;
     const double wallStakeHeight = robotWithLift.liftHeights().wallStakeHeight;
 
     const char* format = "Next State: %s";
@@ -78,13 +86,15 @@ void updateLiftState(bool upButton, bool downButton,
                 }
             }
             break;
-        
+
         case LiftState::MOBILE_GOAL:
             // Allow the user to go either up or down, but not both.
             if (upButton && !downButton) {
                 state = LiftState::MOBILE_GOAL_UP;
                 label = "Mobile goal up";
-                robotWithLift.moveLiftDirect(wallStakeHeight - mobileGoalHeight);
+                robotWithLift.moveLiftDirect(
+                    wallStakeHeight - mobileGoalHeight
+                );
             } else if (downButton && !upButton) {
                 state = LiftState::MOBILE_GOAL_DOWN;
                 label = "Mobile goal down";
@@ -113,22 +123,27 @@ void updateLiftState(bool upButton, bool downButton,
                 }
             }
             break;
-        
+
         case LiftState::WALL_STAKE:
             if (downButton && !upButton) {
                 state = LiftState::WALL_STAKE_DOWN;
                 label = "Wall stake down";
-                robotWithLift.moveLiftDirect(mobileGoalHeight - wallStakeHeight);
+                robotWithLift.moveLiftDirect(
+                    mobileGoalHeight - wallStakeHeight
+                );
             } else if (upButton && !downButton) {
                 state = LiftState::WALL_STAKE_UP;
                 label = "Wall stake up";
-                robotWithLift.moveLiftDirect(allianceStakeHeight - wallStakeHeight);
+                robotWithLift.moveLiftDirect(
+                    allianceStakeHeight - wallStakeHeight
+                );
             } else {
                 robotWithLift.moveLiftDirect(0);
             }
             break;
 
-        case LiftState::WALL_STAKE_DOWN: // Heading down to the alliance stake height
+        case LiftState::WALL_STAKE_DOWN: // Heading down to the alliance stake
+                                         // height
             if (!robotWithLift.isLiftSpinning()) {
                 robotWithLift.moveLiftDirect(0);
                 if (!downButton) {
@@ -137,7 +152,7 @@ void updateLiftState(bool upButton, bool downButton,
                 }
             }
             break;
-        
+
         case LiftState::WALL_STAKE_UP: // Heading up to the wall stake height
             if (!robotWithLift.isLiftSpinning()) {
                 robotWithLift.moveLiftDirect(0);
@@ -152,14 +167,17 @@ void updateLiftState(bool upButton, bool downButton,
             if (downButton) {
                 state = LiftState::ALLIANCE_STAKE_DOWN;
                 label = "Alliance stake down";
-                robotWithLift.moveLiftDirect(wallStakeHeight - allianceStakeHeight);
+                robotWithLift.moveLiftDirect(
+                    wallStakeHeight - allianceStakeHeight
+                );
             } else {
                 robotWithLift.moveLiftDirect(0);
             }
             break;
 
-        case LiftState::ALLIANCE_STAKE_DOWN: //Heading down to the mobile goal height
-             if (!robotWithLift.isLiftSpinning()) {
+        case LiftState::ALLIANCE_STAKE_DOWN: // Heading down to the mobile goal
+                                             // height
+            if (!robotWithLift.isLiftSpinning()) {
                 robotWithLift.moveLiftDirect(0);
                 if (!downButton) {
                     state = LiftState::WALL_STAKE;
