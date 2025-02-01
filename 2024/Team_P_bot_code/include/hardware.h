@@ -24,7 +24,7 @@ const double FORWARD_BACK_ACCELERATION = 0.03;
 // seconds to  decelerate to the deadzone, decrease this value.  To make the
 // robot take *more* than 1.0 seconds to decelerate, increase this value
 // instead.
-const double FRAMES_TO_DECELERATE = 150.0;
+const double FRAMES_TO_DECELERATE = 160.0;
 
 // This decay factor will cause us to decelerate from full speed to the deadzone
 // within FRAMES_TO_DECELERATE frames.
@@ -47,7 +47,7 @@ extern vex::motor Clamp;
 
 const int CLAMP_PORT = 11 - 1;
 
-const double CLAMP_TIMEOUT_SEC = 1.00;
+const double CLAMP_TIMEOUT_SEC = 0.40;
 
 const double CLAMP_VELOCITY_PCT = 100.00;
 
