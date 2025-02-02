@@ -31,7 +31,7 @@ drivetrain DriveTrain(Left, Right, WHEEL_CIRCUMFERENCE_CM,
 motor_group updownlift(FrontLiftRight, BackLiftLeft);
 
 /**
- * We are using a state machine, meaning that we're constantly switching betweeen
+ * We are using a state machine, meaning that we're constantly switching between
  * different "states" where various different actions are done. The enum class
  * below represents the different states of the state machine as enum values. 
  */
@@ -116,7 +116,7 @@ void updateClampState(bool close) {
         
         case ClampState::Opening:
             Clamp.spin(vex::directionType::rev, CLAMP_VELOCITY_PCT, pct);
-            if (Brain.timer(vex::timeUnits::sec) >= CLAMP_TIMEOUT_SEC + startTimeSec) {
+            if (Brain.timer(vex::timeUnits::sec) >= OPEN_CLAMP_TIMEOUT_SEC + startTimeSec) {
                 clampStatus = ClampState::FullyOpen;
             } else if (close == true) {
                 // User stopped opening and is now closing the clamp.
@@ -127,7 +127,7 @@ void updateClampState(bool close) {
         
         case ClampState::Closing:
             Clamp.spin(vex::directionType::fwd, CLAMP_VELOCITY_PCT, pct);
-            if (Brain.timer(vex::timeUnits::sec) >= CLAMP_TIMEOUT_SEC + startTimeSec) {
+            if (Brain.timer(vex::timeUnits::sec) >= CLOSE_CLAMP_TIMEOUT_SEC + startTimeSec) {
                 clampStatus = ClampState::FullyClosed;
             } else if (close == false) { 
                 // User stopped closing and is now opening the clamp.
