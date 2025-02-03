@@ -21,7 +21,10 @@ const auto gearbox_ratio = ratio6_1;
 
 const double autonomous_speed_pct = 15.0;
 
-
+// PID Controller constants for the Turn Task.
+const double TURN_TASK_P_GAIN = 0.05;
+const double TURN_TASK_I_GAIN = 0;
+const double TURN_TASK_D_GAIN = 0;
 
 // How quickly to raise or lower the lift mechanism, in percent units between 0
 // and 100.
@@ -31,9 +34,7 @@ const double LIFT_VELOCITY_PERCENT = 50.0;
 * For all inputs in the range [-1, 1], the threshold that has to be overcome
 * for the inputs to be considered non-zero. This currently applies to lift
 * speeds, intake speeds, and driving.
-
 */
-
 
 const int CONTROLLER_LIFT_STATE_ROW = 1;
 const int CONTROLLER_LIFT_POSITION_ROW = 2;

@@ -7,6 +7,7 @@
 #include <vector>
 
 #include "Idrive.h"
+#include "pid.h"
 #include "vex.h"
 
 struct Task {
@@ -183,6 +184,7 @@ class TurnTask: public Task {
     double desiredAngle_;
     gyro gyro_;
     Idrive& drive;
+    PidController pidController;
 };
 
 /**
