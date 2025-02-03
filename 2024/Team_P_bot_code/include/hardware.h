@@ -9,6 +9,8 @@ extern vex::brain Brain;
 extern vex::controller Controller;
 
 // Drive motor ports.
+// The first number is what port you should connect the motor to in real life.
+// The "- 1" is added because each motor port is offset by 1 in the software.
 const int FRONT_LEFT_PORT = 4 - 1;
 const int FRONT_RIGHT_PORT = 5 - 1;
 const int BACK_LEFT_PORT = 6 - 1;
@@ -47,7 +49,16 @@ extern vex::motor Clamp;
 
 const int CLAMP_PORT = 11 - 1;
 
-const double CLAMP_TIMEOUT_SEC = 0.40;
+// const double CLAMP_TIMEOUT_SEC = 0.40;
+
+// The clamp timeout variable needed to be split into two variables since the
+// clamp was closer to the ground than expected, and even if we lowered the
+// timeout time the clamp kept pushing into the ground. Because of this, the
+// timeout time when the clamp is going downwards is lower than when the clamp
+// is moving upwards.
+const double OPEN_CLAMP_TIMEOUT_SEC = 0.40;
+
+const double CLOSE_CLAMP_TIMEOUT_SEC = 0.20;
 
 const double CLAMP_VELOCITY_PCT = 100.00;
 
