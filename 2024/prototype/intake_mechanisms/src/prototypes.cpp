@@ -124,7 +124,14 @@ double PivotRampPrototype::getRotations() const {
     // non-const function.  (Why, VEX?  Why?)  Since we *know* it's not going to
     // actually change anything, we know it's safe to call even here in a const
     // method.  So we essentially tell the compiler to shove off.
-    return const_cast<PivotRampPrototype*>(this)->left_motors[0].position(vex::rotationUnits::rev);
+    //
+    // Additionally, the motor represented by left_motors[0] moves backwards
+    // compared to the robot's actual movement, so currentRotations in
+    // TestDriveTask always increases in the negative direction. We need to
+    // multiply it by -1 to make currentRotations actually increase positively.
+    
+    const auto rotations = const_cast<PivotRampPrototype*>(this)->left_motors[0].position(vex::rotationUnits::rev);
+    return -1 * rotations;
 }
 
 void PivotRampPrototype::intake(double intakeSpeed) {
