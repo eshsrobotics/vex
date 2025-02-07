@@ -63,7 +63,7 @@ void arcade_drive(double straightSpeed, double turnSpeed, vector<motor>& left,
         });
     } else {
         for_each(right.begin(), right.end(), [&](motor& m) {
-            m.stop(hold);
+            m.stop();
         });
     }
 
@@ -74,7 +74,7 @@ void arcade_drive(double straightSpeed, double turnSpeed, vector<motor>& left,
         });
     } else {
         for_each(left.begin(), left.end(), [&](motor& m) {
-            m.stop(hold);
+            m.stop();
         });
     }
 }
