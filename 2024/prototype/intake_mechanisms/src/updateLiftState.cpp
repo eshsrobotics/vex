@@ -1,7 +1,7 @@
 // Implements and definition updateLiftState.h
 
 #include "updateLiftState.h"
-
+#include "robot-config.h"
 #include <algorithm> // abs()
 #include <string>
 

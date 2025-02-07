@@ -252,7 +252,7 @@ void autonomous() {
   //auto simpleRootTask = make_shared<TurnTask>(36.56, gyro, prototype);
   
   auto rootTask = make_shared<WaitMillisecondsTask>(0);
-  auto driveTest = make_shared<DriveStraightTask>(100, prototype);
+  auto driveTest = make_shared<TurnTask>(90, gyro, prototype);
   // auto DriveTask = make_shared<TestDriveTask>(2, prototype);
   // auto stopTask = make_shared<DriveStraightTask>(0, prototype);
   // addTask(rootTask, DriveTask);

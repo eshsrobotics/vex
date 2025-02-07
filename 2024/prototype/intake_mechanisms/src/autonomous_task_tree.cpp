@@ -2,6 +2,7 @@
 
 #include "vex.h"
 #include "prototypes.h"
+#include "robot-config.h"
 
 #include "autonomous_task_tree.h"
 #include "vex.h"
@@ -203,8 +204,8 @@ void TestDriveTask::start() {
  *********************************/
 
 TurnTask::TurnTask(double desiredAngle, vex::gyro gyroscope, Idrive& driveObject)
-  : Task ("r"), desiredAngle_{desiredAngle}, gyro_{gyroscope}, drive{driveObject} {}
-
+  : Task ("r"), desiredAngle_{desiredAngle}, gyro_{gyroscope}, drive{driveObject},
+    pidController{TURN_TASK_P_GAIN, TURN_TASK_I_GAIN, TURN_TASK_D_GAIN} {}
 
 // Scenario: Your robot's start angle is 45 degrees.
 // The desired angle is 40 degrees.
@@ -228,8 +229,9 @@ TurnTask::TurnTask(double desiredAngle, vex::gyro gyroscope, Idrive& driveObject
 //
 
 void TurnTask::start() {
+  gyro_.resetAngle();
   startAngle = gyro_.angle();
-  drive.drive(0.0, 0.6);
+  //drive.drive(0.0, 0.6);
 }
 
 // This function returns the smallest number of degrees to rotate.
@@ -239,28 +241,18 @@ double signedDelta(double currentAngle, double desiredAngle) {
 }
 
 bool TurnTask::done() const {
-  const double THRESHOLD = 3;
-  //This is a bang-bang controller.
   double currentAngle = const_cast<TurnTask*>(this)->gyro_.angle();
+  double delta = signedDelta(currentAngle, desiredAngle_);
 
-  // double error = signedDelta(currentAngle, desiredAngle_);
-  // const double P = 0.002;
-  // double gain = P * error;
-  // drive.drive(0, gain);
-  // if (fabs(error) < THRESHOLD) {
-  //   return true;
-  // } else {
-  //   return false;
-  // }
-  if (fabs(desiredAngle_ - currentAngle) < THRESHOLD) {
-    drive.drive(0.0, 0.0);
+  if (fabs(delta) < TURN_TASK_EPSILON_DEGREES) {
+    drive.drive(0, 0);
     return true;
-  } else if (currentAngle < desiredAngle_) {
-      drive.drive(0.0, 0.3);
-      return false;
   } else {
-      drive.drive(0.0, -0.3);
-      return false;
+    // double setPoint = currentAngle + delta;
+    // double power = pidController.calculate(currentAngle, setPoint);
+    double power = pidController.calculate(currentAngle, desiredAngle_);
+    drive.drive(0, power);
+    return false;
   }
 }
 
