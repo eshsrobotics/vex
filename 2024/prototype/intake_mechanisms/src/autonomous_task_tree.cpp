@@ -2,6 +2,7 @@
 
 #include "vex.h"
 #include "prototypes.h"
+#include "robot-config.h"
 
 #include "autonomous_task_tree.h"
 #include "vex.h"
@@ -228,8 +229,9 @@ TurnTask::TurnTask(double desiredAngle, vex::gyro gyroscope, Idrive& driveObject
 //
 
 void TurnTask::start() {
+  gyro_.resetAngle();
   startAngle = gyro_.angle();
-  drive.drive(0.0, 0.6);
+  //drive.drive(0.0, 0.6);
 }
 
 // This function returns the smallest number of degrees to rotate.
@@ -246,8 +248,9 @@ bool TurnTask::done() const {
     drive.drive(0, 0);
     return true;
   } else {
-    double setPoint = currentAngle + delta;
-    double power = pidController.calculate(currentAngle, setPoint);
+    // double setPoint = currentAngle + delta;
+    // double power = pidController.calculate(currentAngle, setPoint);
+    double power = pidController.calculate(currentAngle, desiredAngle_);
     drive.drive(0, power);
     return false;
   }

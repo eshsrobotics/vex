@@ -1,3 +1,5 @@
+#include "vex.h"
+#include "robot-config.h"
 #include "pid.h"
 #include <cmath> // fabs
 
@@ -15,7 +17,7 @@ double PidController::calculate(const double measurement, const double setpoint)
     that->integral = integral + error;
 
 
-    const double epsilon = 0.005;
+    const double epsilon = 1;
     bool reachedSetPoint = (fabs(error) <= epsilon);
 
     // Trying to prevent integral wind-up, When the error is greater than the
@@ -31,5 +33,11 @@ double PidController::calculate(const double measurement, const double setpoint)
 
 
     double power = error * P + integral * I + derivative * D;
+    Controller.Screen.setCursor(1,1);
+    Controller.Screen.print("p=%.4f", power);
+    Controller.Screen.setCursor(2,1);
+    Controller.Screen.print("e=%.4f", error);
+    Controller.Screen.setCursor(3,1);
+    Controller.Screen.print("m=%.4f", measurement);
     return power;
 }

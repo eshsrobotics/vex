@@ -54,7 +54,7 @@ void arcade_drive(double straightSpeed, double turnSpeed, vector<motor>& left,
     rightVelocity *= 1;
 
     Controller.Screen.setCursor(3, 1);
-    Controller.Screen.print("Vel: l=%.2f, r=%.2f  ", leftVelocity, rightVelocity);
+    //Controller.Screen.print("Vel: l=%.2f, r=%.2f  ", leftVelocity, rightVelocity);
 
     if (rightVelocity != 0) {
         for_each(right.begin(), right.end(), [&](motor& m) {

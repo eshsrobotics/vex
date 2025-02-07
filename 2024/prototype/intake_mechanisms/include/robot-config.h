@@ -22,7 +22,7 @@ const auto gearbox_ratio = ratio6_1;
 const double autonomous_speed_pct = 15.0;
 
 // PID Controller constants for the Turn Task.
-const double TURN_TASK_P_GAIN = 0.05;
+const double TURN_TASK_P_GAIN = 0.06 * 1e-2;
 const double TURN_TASK_I_GAIN = 0;
 const double TURN_TASK_D_GAIN = 0;
 
@@ -56,6 +56,11 @@ const double INTAKE_SPEED_DEADZONE = 0.05;
 // double LIFT_POSITION_DEADZONE = 0.05;
 
 const double MOBILE_GOAL_INTAKE_DURATION_MILLISECONDS = 200;
+
+/**
+ * Deadzone for the TurnTask PID.
+*/
+const double TURN_TASK_EPSILON_DEGREES = 1;
 
 /**
  * Used to initialize code/tasks/devices added using tools in VEXcode Text.

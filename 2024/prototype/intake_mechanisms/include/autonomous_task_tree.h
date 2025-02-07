@@ -182,7 +182,7 @@ class TurnTask: public Task {
     double startAngle;
 
     double desiredAngle_;
-    gyro gyro_;
+    vex::gyro gyro_;
     Idrive& drive;
     PidController pidController;
 };
