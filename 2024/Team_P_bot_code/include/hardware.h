@@ -58,7 +58,7 @@ const int CLAMP_PORT = 11 - 1;
 // is moving upwards.
 const double OPEN_CLAMP_TIMEOUT_SEC = 0.40;
 
-const double CLOSE_CLAMP_TIMEOUT_SEC = 0.20;
+const double CLOSE_CLAMP_TIMEOUT_SEC = 0.40;
 
 const double CLAMP_VELOCITY_PCT = 100.00;
 

@@ -163,7 +163,7 @@ bool TestDriveTask::done() const {
   // We want to wait a particular amount before checking whether the motor is
   // stopped as the motor might be accelerating slowly instead -- it would be
   // tragic if we cut the motor off early because we were too impatient!
-  const double MINIMUM_WAIT_TIME_MSEC = 300;
+  const double MAXIMUM_WAIT_TIME_MSEC = 15 * 1000;
 
   // We want to edit these values but they are coming from a const function, we
   // const_cast to allow modification.
@@ -178,8 +178,8 @@ bool TestDriveTask::done() const {
   // rotation is small enough.
   // currentRotations - previousRotationNumber <= DEADZONE
 
-  if (currentRotations - previousRotationNumber <= DEADZONE &&
-      Seventeen59A.timer(msec) - startTimeMsec >= MINIMUM_WAIT_TIME_MSEC) {
+  if (currentRotations >= targetRotations ||
+      Seventeen59A.timer(msec) - startTimeMsec >= MAXIMUM_WAIT_TIME_MSEC) {
     driveObject.drive(0.0, 0.0);
     Controller.Screen.setCursor(CONTROLLER_ROBOT_STOPPED_ROW, 1);
     Controller.Screen.print("STOPPED ");

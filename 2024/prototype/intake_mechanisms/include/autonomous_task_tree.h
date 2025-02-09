@@ -113,8 +113,8 @@ class DriveStraightTask: public Task {
     //
     // This will alow us to roughly predict how many rotations will get us to a
     // given distance.
-    const double SLOPE = 0;
-    const double Y_INTERCEPT = 0;
+    const double SLOPE = 46.10714;
+    const double Y_INTERCEPT = 9.49643;
 };
 
 //////////////////////////////////////////////////////////////////////////

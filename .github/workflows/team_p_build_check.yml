@@ -1,0 +1,18 @@
+name: Team P build check
+on:
+  push:
+    branches:
+      - 'master'
+    paths:
+      - '2024/Team_P_bot_code/**'
+
+jobs:
+  build_check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build Check
+        uses: baysmith/vex_build@v1
+        with:
+          path: 2024/Team_P_bot_code
+
