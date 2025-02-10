@@ -170,6 +170,8 @@ bool DriveStraightTask::done() const {
             return false;
         }
     }
+    // Control should never make it there. 
+    return true;
 }
 
     /********************************************
