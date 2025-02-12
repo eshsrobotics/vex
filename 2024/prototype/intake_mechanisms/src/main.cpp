@@ -116,12 +116,12 @@ PivotRampPrototype makePivotRampPrototype() {
 
   vex::motor leftMotor1(LEFT_MOTOR_PORT_A);
   vex::motor leftMotor2(LEFT_MOTOR_PORT_B);
-  vex::motor leftMotor3(LEFT_MOTOR_PORT_C, true);
+  vex::motor leftMotor3(LEFT_MOTOR_PORT_C);
   vector<motor> leftMotors = {leftMotor1, leftMotor2, leftMotor3};
 
   vex::motor rightMotor1(RIGHT_MOTOR_PORT_A);
   vex::motor rightMotor2(RIGHT_MOTOR_PORT_B);
-  vex::motor rightMotor3(RIGHT_MOTOR_PORT_C, true);
+  vex::motor rightMotor3(RIGHT_MOTOR_PORT_C);
   vector<motor> rightMotors = {rightMotor1, rightMotor2, rightMotor3};
 
   vex::motor intakeMotor1(INTAKE_MOTOR_PORT_A);
@@ -252,9 +252,9 @@ void autonomous() {
   //auto simpleRootTask = make_shared<TurnTask>(36.56, gyro, prototype);
   
   auto rootTask = make_shared<WaitMillisecondsTask>(0);
-  auto driveTest = make_shared<TurnTask>(90, gyro, prototype);
+  //auto driveTest = make_shared<TurnTask>(90, gyro, prototype);
   // auto DriveTask = make_shared<TestDriveTask>(2, prototype);
-  // auto stopTask = make_shared<DriveStraightTask>(0, prototype);
+  auto driveTest = make_shared<DriveStraightTask>(50, prototype);
   // addTask(rootTask, DriveTask);
   // addTask(DriveTask, stopTask);
   addTask(rootTask, driveTest);
