@@ -39,5 +39,5 @@ double PidController::calculate(const double measurement, const double setpoint)
     Controller.Screen.print("e=%.4f", error);
     Controller.Screen.setCursor(3,1);
     Controller.Screen.print("m=%.4f", measurement);
-    return power;
+    return -power;
 }

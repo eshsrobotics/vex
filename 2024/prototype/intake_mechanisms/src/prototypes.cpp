@@ -93,7 +93,8 @@ PivotRampPrototype::PivotRampPrototype(const std::vector<vex::motor>& left_motor
                                        double rotToTop, const vex::digital_out& pneumaticClamp_, 
                                        const vex::digital_out& pneumaticClimb_)
     : left_motors(left_motors_), right_motors(right_motors_),
-      intake_motors(intake_), lift_motors(lift_), rotationsToTop(rotToTop), pneumaticClamp(pneumaticClamp_), pneumaticClimb(pneumaticClimb_) {
+      intake_motors(intake_), lift_motors(lift_), rotationsToTop(rotToTop), pneumaticClamp(pneumaticClamp_), 
+      pneumaticClimb(pneumaticClimb_) {
     // Where we are right now -- the initialLiftPosition -- will now
     // correspond to an encoder value of zero.
     for_each(lift_motors.begin(), lift_motors.end(), [](motor& current_motor) {

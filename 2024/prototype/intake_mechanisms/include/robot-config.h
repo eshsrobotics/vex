@@ -22,7 +22,7 @@ const auto gearbox_ratio = ratio6_1;
 const double autonomous_speed_pct = 15.0;
 
 // PID Controller constants for the Turn Task.
-const double TURN_TASK_P_GAIN = 0.06 * 1e-2;
+const double TURN_TASK_P_GAIN = 9 * 1e-4;
 const double TURN_TASK_I_GAIN = 0;
 const double TURN_TASK_D_GAIN = 0;
 
