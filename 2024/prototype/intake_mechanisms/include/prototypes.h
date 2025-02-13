@@ -9,14 +9,14 @@
 #include "Iintake.h"
 #include "Ilift.h"
 #include "ImobileGoalIntake.h"
-
+#include "Iclimb.h"
 
 
 /**
  *
  */
 class PivotRampPrototype : public Idrive, public Iintake, public Ilift,
-                           public ImobileGoalIntake {
+                           public ImobileGoalIntake, public Iclimb {
     public:
         /**
          * Construct a pivot ramp prototype robot.
@@ -49,11 +49,14 @@ class PivotRampPrototype : public Idrive, public Iintake, public Ilift,
          *               setLiftRotationsDebug()).
          * @param pneumaticsClamp A digital_out object connected to a double
          *               solenoid for controlling pneumatic mobile goal grabber.
+         * @param pneumaticsClimb A digital_out object connected to the
+         *               pneumatics responsible for the climb hooks.
          */
         PivotRampPrototype(const std::vector<vex::motor>& left_motors_,
                            const std::vector<vex::motor>& right_motors_,
                            const std::vector<vex::motor>& intake, const std::vector<vex::motor>& lift,
-                           double rotationsToTop, const vex::digital_out& pneumaticsClamp);
+                           double rotationsToTop, const vex::digital_out& pneumaticsClamp, 
+                           const vex::digital_out& pneumaticsClimb);
 
         /**
          * Drive the robot at the given speeds.
@@ -113,6 +116,8 @@ class PivotRampPrototype : public Idrive, public Iintake, public Ilift,
          */
         void moveLiftDirect(double rotations);
 
+        bool isLiftSpinning() const;
+
         bool isLiftAvailable() const;
 
         LiftHeights liftHeights() const {
@@ -127,6 +132,8 @@ class PivotRampPrototype : public Idrive, public Iintake, public Ilift,
         */
         void clamp(bool active);
 
+        void activateClimb();
+
     private:
         std::vector<vex::motor> left_motors;
         std::vector<vex::motor> right_motors;
@@ -138,6 +145,7 @@ class PivotRampPrototype : public Idrive, public Iintake, public Ilift,
 
     public: // Temporary for testing
         vex::digital_out pneumaticClamp;
+        vex::digital_out pneumaticClimb;
 };
 
 #endif // (ifndef __PROTOTYPE_H_INCLUDED__)—

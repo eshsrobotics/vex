@@ -54,7 +54,7 @@ void arcade_drive(double straightSpeed, double turnSpeed, vector<motor>& left,
     rightVelocity *= 1;
 
     Controller.Screen.setCursor(3, 1);
-    Controller.Screen.print("Vel: l=%.2f, r=%.2f  ", leftVelocity, rightVelocity);
+    //Controller.Screen.print("Vel: l=%.2f, r=%.2f  ", leftVelocity, rightVelocity);
 
     if (rightVelocity != 0) {
         for_each(right.begin(), right.end(), [&](motor& m) {
@@ -90,9 +90,10 @@ void arcade_drive(double straightSpeed, double turnSpeed, vector<motor>& left,
 PivotRampPrototype::PivotRampPrototype(const std::vector<vex::motor>& left_motors_,
                                        const std::vector<vex::motor>& right_motors_,
                                        const std::vector<vex::motor>& intake_, const std::vector<vex::motor>& lift_,
-                                       double rotToTop, const vex::digital_out& pneumaticClamp_)
+                                       double rotToTop, const vex::digital_out& pneumaticClamp_, 
+                                       const vex::digital_out& pneumaticClimb_)
     : left_motors(left_motors_), right_motors(right_motors_),
-      intake_motors(intake_), lift_motors(lift_), rotationsToTop(rotToTop), pneumaticClamp(pneumaticClamp_) {
+      intake_motors(intake_), lift_motors(lift_), rotationsToTop(rotToTop), pneumaticClamp(pneumaticClamp_), pneumaticClimb(pneumaticClimb_) {
     // Where we are right now -- the initialLiftPosition -- will now
     // correspond to an encoder value of zero.
     for_each(lift_motors.begin(), lift_motors.end(), [](motor& current_motor) {
@@ -123,7 +124,14 @@ double PivotRampPrototype::getRotations() const {
     // non-const function.  (Why, VEX?  Why?)  Since we *know* it's not going to
     // actually change anything, we know it's safe to call even here in a const
     // method.  So we essentially tell the compiler to shove off.
-    return const_cast<PivotRampPrototype*>(this)->left_motors[0].position(vex::rotationUnits::rev);
+    //
+    // Additionally, the motor represented by left_motors[0] moves backwards
+    // compared to the robot's actual movement, so currentRotations in
+    // TestDriveTask always increases in the negative direction. We need to
+    // multiply it by -1 to make currentRotations actually increase positively.
+    
+    const auto rotations = const_cast<PivotRampPrototype*>(this)->left_motors[0].position(vex::rotationUnits::rev);
+    return -1 * rotations;
 }
 
 void PivotRampPrototype::intake(double intakeSpeed) {
@@ -177,7 +185,7 @@ void PivotRampPrototype::moveLiftDirect(double rotations) {
     const double DEADZONE = 0.1;
     if (fabs(rotations) < DEADZONE) {
         for_each(lift_motors.begin(), lift_motors.end(), [](motor& current_motor) {
-            current_motor.stop();
+            current_motor.stop(hold);
         });
     } else {
 
@@ -187,11 +195,20 @@ void PivotRampPrototype::moveLiftDirect(double rotations) {
         for_each(lift_motors.begin(), lift_motors.end(), [rotations](motor& current_motor) {
              current_motor.spinFor(rotations, vex::rotationUnits::rev, waitForCompletion);
         });
+        //lift_motors.at(0).spinFor(rotations, vex::rotationUnits::rev, waitForCompletion);
 
-        Controller.Screen.setCursor(CONTROLLER_LIFT_POSITION_ROW, 1);
-        Controller.Screen.print("Lift at %.2f revs ",
-                                lift_motors[0].position(rev));
     }
+}
+
+bool PivotRampPrototype::isLiftSpinning() const {
+    bool result = false;
+    PivotRampPrototype* that = const_cast<PivotRampPrototype*>(this);
+    for_each(that->lift_motors.begin(), that->lift_motors.end(), [&result](motor& current_motor) {
+        if (current_motor.isSpinning()) {
+            result = true;
+        }
+    });
+    return result;
 }
 
 void PivotRampPrototype::setLiftHeights(LiftHeights liftHeights) {
@@ -207,4 +224,8 @@ bool PivotRampPrototype::isLiftAvailable() const {
 
 void PivotRampPrototype::clamp(bool active) {
     this->pneumaticClamp.set(active);
+}
+
+void PivotRampPrototype::activateClimb() {
+    this->pneumaticClimb.set(true);
 }

@@ -3,7 +3,6 @@
 
 #include "Ilift.h"
 
-
 enum class LiftState;
 
 /**
@@ -21,7 +20,11 @@ extern LiftState INITIAL_LIFT_STATE;
  * @param state[out] the current state of the lift, must be maintained by the
  * caller. The value passed in initially must be INITIAL_LIFT_STATE.
  */
-void updateLiftState(bool upButton, bool downButton,
-                     Ilift& robotWithLift, LiftState& state);
+void updateLiftState(
+    bool upButton,
+    bool downButton,
+    Ilift& robotWithLift,
+    LiftState& state
+);
 
 #endif __UPDATE_LIFT_STATE_INCLUDED__

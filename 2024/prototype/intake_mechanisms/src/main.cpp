@@ -68,14 +68,23 @@ void updateIntakeState(bool intakeButton, bool outtakeButton, Iintake& robotWith
  * @param rotationsPerButton the number of rotations the motor makes
  */
 void moveLiftRotationsToTopDebug(bool buttonUp, bool buttonDown, Ilift& robotWithLift) {
-  const double rotationsPerButton = 0.5;
+  const double rotationsPerButton = 10;
+  static double rotations = 0;
+
+  // The lift moves UP if buttonDown is pressed, so the signs are reversed
+  // for buttonUp and buttonDown.
   if (buttonUp) {
       robotWithLift.moveLiftDirect(rotationsPerButton);
+      rotations -= rotationsPerButton;
   } else if (buttonDown) {
       robotWithLift.moveLiftDirect(-rotationsPerButton);
+      rotations += rotationsPerButton;
   } else {
     robotWithLift.moveLiftDirect(0);
   }
+  Controller.Screen.setCursor(CONTROLLER_LIFT_POSITION_ROW, 1);
+  Controller.Screen.print("Lift at %.2f revs ",
+                          rotations);
 }
 
 
@@ -87,20 +96,22 @@ void moveLiftGatherHeightsDebug(bool buttonUp, bool buttonDown, Ilift& robotWith
     robotWithLift.setLiftPosition(robotWithLift.getliftPosition() + incrementPerButton);
   } else if (buttonDown) {
     robotWithLift.setLiftPosition(robotWithLift.getliftPosition() - incrementPerButton);
-  }
-
+  } 
+  Controller.Screen.setCursor(CONTROLLER_LIFT_POSITION_ROW, 1);
+  Controller.Screen.print(robotWithLift.getliftPosition() * 100);
 }
 
 competition Competition;
 
 PivotRampPrototype makePivotRampPrototype() {
-  const int LEFT_MOTOR_PORT_A = 5 - 1; // left_front_motor
-  const int LEFT_MOTOR_PORT_B = 6 - 1; // left_bottom_motor
-  const int LEFT_MOTOR_PORT_C = 4 - 1; // left_top_motor
-  const int RIGHT_MOTOR_PORT_A = 2 - 1; // right_top_motor
-  const int RIGHT_MOTOR_PORT_B = 3 - 1; // right_bottom_motor
-  const int RIGHT_MOTOR_PORT_C = 1 - 1; // right_top_motor
-  const int INTAKE_MOTOR_PORT = 8 - 1;
+  const int LEFT_MOTOR_PORT_A = 15 - 1; // left_front_motor
+  const int LEFT_MOTOR_PORT_B = 16 - 1; // left_bottom_motor
+  const int LEFT_MOTOR_PORT_C = 14 - 1; // left_top_motor
+  const int RIGHT_MOTOR_PORT_A = 12 - 1; // right_top_motor
+  const int RIGHT_MOTOR_PORT_B = 13 - 1; // right_bottom_motor
+  const int RIGHT_MOTOR_PORT_C = 11 - 1; // right_top_motor
+  const int INTAKE_MOTOR_PORT_A = 18 - 1;
+  const int INTAKE_MOTOR_PORT_B = 1 - 1;
   const int LIFT_MOTOR_PORT = 9 - 1;
 
   vex::motor leftMotor1(LEFT_MOTOR_PORT_A);
@@ -113,45 +124,60 @@ PivotRampPrototype makePivotRampPrototype() {
   vex::motor rightMotor3(RIGHT_MOTOR_PORT_C, true);
   vector<motor> rightMotors = {rightMotor1, rightMotor2, rightMotor3};
 
-  vex::motor intakeMotor1(INTAKE_MOTOR_PORT);
-  vector<motor> intakeMotors = {intakeMotor1};
+  vex::motor intakeMotor1(INTAKE_MOTOR_PORT_A);
+  vex::motor intakeMotor2(INTAKE_MOTOR_PORT_B);
+  vector<motor> intakeMotors = {intakeMotor1, intakeMotor2};
 
   vex::motor liftMotor1(LIFT_MOTOR_PORT);
   vector<motor> liftMotors = {liftMotor1};
 
-  const double rotationsToTop = 0.5; // TODO: Must be determined experimentally.
+  const double rotationsToTop = 6; //This value has been determined experimentally.
 
-  vex::triport::port DOUBLE_SOLENOID_PORT = Brain.ThreeWirePort.A;
+  vex::triport::port DOUBLE_SOLENOID_PORT = Seventeen59A.ThreeWirePort.C;
   digital_out pneumaticClamp(DOUBLE_SOLENOID_PORT);
+
+  vex::triport::port CLIMB_PORT = Seventeen59A.ThreeWirePort.B;
+  digital_out pneumaticClimb(CLIMB_PORT);
 
   PivotRampPrototype p(leftMotors,
                        rightMotors,
                        intakeMotors,
                        liftMotors,
                        rotationsToTop,
-                       pneumaticClamp);
+                       pneumaticClamp,
+                       pneumaticClimb);
   p.setLiftHeights({
-    // Update these values once rotationsToTop has been determined.
-    .defaultHeight=0,
-    .mobileGoalHeight=0,
-    .allianceStakeHeight=0,
-    .wallStakeHeight=0
+    // These values have been determined experimentally.
+    .defaultHeight = 0,
+    .mobileGoalHeight = 0.56,
+    .allianceStakeHeight = rotationsToTop,
+    .wallStakeHeight = 3.6
   });
   return p;
 }
 
 /**
- * Encapsulates all clamping functionality for teleop in one easy-to-use wrapper
+ * Encapsulates mobile goal clamping functionality for teleop in one easy-to-use wrapper
  * function.
- * @param p a reference to a ImobileGoalIntake instance
+ * @param p a reference to a ImobileGoalIntake instance 
 */
 void updateClampState(ImobileGoalIntake& p) {
-  bool clamp = Controller.ButtonL1.pressing(); //means the air is released
-  bool unclamp = Controller.ButtonL2.pressing(); //means the air is pumped in
+  bool clamp = Controller.ButtonL2.pressing(); //means the air is released
+  bool unclamp = Controller.ButtonL1.pressing(); //means the air is pumped in
   if (clamp) {
     p.clamp(true);
   } else if (unclamp) {
     p.clamp(false);
+  }
+}
+/**
+ * Encapsulates climb functionality for teleop in one function.
+ * @param p a reference to an Iclimb instance (the prototype)
+ */
+void updateClimbState(Iclimb& p) {
+  bool buttonDown = Controller.ButtonX.pressing();
+  if (buttonDown) {
+    p.activateClimb();
   }
 }
 
@@ -171,64 +197,70 @@ void pre_auton() {
  */
 void autonomous() {
   auto prototype = makePivotRampPrototype();
-  auto gyro = vex::gyro(Brain.ThreeWirePort.B);
+  auto gyro = vex::gyro(Seventeen59A.ThreeWirePort.G);
 
-  auto fullAutonRootTask = make_shared<WaitMillisecondsTask>(0);
-  auto B = make_shared<DriveStraightTask>(-0.4572 * 100, prototype);
-  auto C = make_shared<MobileGoalIntakeTask>(prototype, true);
-  auto D = make_shared<TurnTask>(94.7, gyro, prototype);
-  auto E = make_shared<DriveStraightTask>(0.22 * 100, prototype);
-  auto F = make_shared<IntakeMillisecondsTask>(prototype, 1e5);
-  auto G = make_shared<IntakeMillisecondsTask>(prototype, 67.96);
-  auto H = make_shared<DriveStraightTask>(0.2 * 100, prototype);
-  auto I = make_shared<TurnTask>(65.01, gyro, prototype);
-  auto J = make_shared<MobileGoalIntakeTask>(prototype, false);
-  auto K = make_shared<DriveStraightTask>(1.37 * 100, prototype);
-  auto L = make_shared<IntakeMillisecondsTask>(prototype, 0.5);
-  auto M = make_shared<TurnTask>(8.57, gyro, prototype);
-  auto N = make_shared<DriveStraightTask>(-0.225 * 100, prototype);
-  auto O = make_shared<MobileGoalIntakeTask>(prototype, true);
-  auto P = make_shared<IntakeMillisecondsTask>(prototype, 1e5);
-  auto Q = make_shared<TurnTask>(-3.83, gyro, prototype);
-  auto R = make_shared<DriveStraightTask>(-0.236 * 100, prototype);
+  // auto fullAutonRootTask = make_shared<WaitMillisecondsTask>(0);
+  // auto B = make_shared<DriveStraightTask>(-0.4572 * 100, prototype);
+  // auto C = make_shared<MobileGoalIntakeTask>(prototype, true);
+  // auto D = make_shared<TurnTask>(94.7, gyro, prototype);
+  // auto E = make_shared<DriveStraightTask>(0.22 * 100, prototype);
+  // auto F = make_shared<IntakeMillisecondsTask>(prototype, 1e5);
+  // auto G = make_shared<IntakeMillisecondsTask>(prototype, 67.96);
+  // auto H = make_shared<DriveStraightTask>(0.2 * 100, prototype);
+  // auto I = make_shared<TurnTask>(65.01, gyro, prototype);
+  // auto J = make_shared<MobileGoalIntakeTask>(prototype, false);
+  // auto K = make_shared<DriveStraightTask>(1.37 * 100, prototype);
+  // auto L = make_shared<IntakeMillisecondsTask>(prototype, 0.5);
+  // auto M = make_shared<TurnTask>(8.57, gyro, prototype);
+  // auto N = make_shared<DriveStraightTask>(-0.225 * 100, prototype);
+  // auto O = make_shared<MobileGoalIntakeTask>(prototype, true);
+  // auto P = make_shared<IntakeMillisecondsTask>(prototype, 1e5);
+  // auto Q = make_shared<TurnTask>(-3.83, gyro, prototype);
+  // auto R = make_shared<DriveStraightTask>(-0.236 * 100, prototype);
 
-  // Leg 1: Moving backwards to the first Mobile Goal.
-  addTask(fullAutonRootTask, B);
-  addTask(B, C);
-  addTask(C, D);
+  // // Leg 1: Moving backwards to the first Mobile Goal.
+  // addTask(fullAutonRootTask, B);
+  // addTask(B, C);
+  // addTask(C, D);
 
-  // Leg 2: Driving and score the first set of rings.
-  addTask(D, E);
-  addTask(D, F);
-  addTask(E, G);
+  // // Leg 2: Driving and score the first set of rings.
+  // addTask(D, E);
+  // addTask(D, F);
+  // addTask(E, G);
 
-  // Leg 3: Driving and scoring one of the cluster of 8 rings.
-  addTask(G, H);
-  addTask(H, I);
-  addTask(I, J);
+  // // Leg 3: Driving and scoring one of the cluster of 8 rings.
+  // addTask(G, H);
+  // addTask(H, I);
+  // addTask(I, J);
 
-  // Leg 4: The long drive from the driver's left to the driver's right and
-  // scoring a ring from a right-side stack.
-  addTask(I, K);
-  addTask(K, L);
-  addTask(L, M);
+  // // Leg 4: The long drive from the driver's left to the driver's right and
+  // // scoring a ring from a right-side stack.
+  // addTask(I, K);
+  // addTask(K, L);
+  // addTask(L, M);
 
-  // Leg 5: Grabbing a mobile goal to score the rings intaked in Leg 4.
-  addTask(M, N);
-  addTask(N, O);
-  addTask(O, P);
-  addTask(O, Q);
+  // // Leg 5: Grabbing a mobile goal to score the rings intaked in Leg 4.
+  // addTask(M, N);
+  // addTask(N, O);
+  // addTask(O, P);
+  // addTask(O, Q);
 
-  // Leg 6: Driving forward to reach the wall and scoring the autonomous win point.
-  addTask(Q, R);
+  // // Leg 6: Driving forward to reach the wall and scoring the autonomous win point.
+  // addTask(Q, R);
   
   // This is a fallback task tree to use in case fullAutonRootTask is not tested before competition
-  auto simpleRootTask = make_shared<TurnTask>(36.56, gyro, prototype);
-  auto driveBackTask = make_shared<DriveStraightTask>(-102.2, prototype);
-  addTask(simpleRootTask, driveBackTask);
-
+  //auto simpleRootTask = make_shared<TurnTask>(36.56, gyro, prototype);
+  
+  auto rootTask = make_shared<WaitMillisecondsTask>(0);
+  auto driveTest = make_shared<TurnTask>(90, gyro, prototype);
+  // auto DriveTask = make_shared<TestDriveTask>(2, prototype);
+  // auto stopTask = make_shared<DriveStraightTask>(0, prototype);
+  // addTask(rootTask, DriveTask);
+  // addTask(DriveTask, stopTask);
+  addTask(rootTask, driveTest);
+  
   // execute(fullAutonRootTask);
-  execute(simpleRootTask);
+  execute(rootTask);
 }
 
 /**
@@ -238,7 +270,7 @@ void autonomous() {
 void teleop() {
   PrototypeIntakeState intakeState = PrototypeIntakeState::START;
   LiftState liftState = INITIAL_LIFT_STATE;
-  Brain.Screen.clearScreen();
+  Seventeen59A.Screen.clearScreen();
   Controller.Screen.clearScreen();
   while (true) {
     auto prototype = makePivotRampPrototype();
@@ -254,10 +286,14 @@ void teleop() {
     // Allows controlling the mobile goal clamp.
     updateClampState(prototype);
 
-    // // Allow the driver to control the lift position.
-    // bool buttonUp = Controller.ButtonL1.pressing();
-    // bool buttonDown = Controller.ButtonL2.pressing();
+    // Allows controlling the climb hooks.
+    updateClimbState(prototype);
 
+    // // Allow the driver to control the lift position.
+    bool buttonUp = Controller.ButtonUp.pressing();
+    bool buttonDown = Controller.ButtonDown.pressing();
+    //moveLiftGatherHeightsDebug(Controller.ButtonL1.pressing(), Controller.ButtonL2.pressing(), prototype);
+   
     // // The functions below are mutually exclusive. We have two ways of moving
     // // the lift, one directly and one direction.
     // //
@@ -268,9 +304,10 @@ void teleop() {
     // //   requires all the heights identified.
     // moveLiftRotationsToTopDebug(buttonUp, buttonDown, prototype); // move lift directly (rotationsToTop)
     // moveLiftGatherHeightsDebug(buttonUp, buttonDown, prototype); // move lift directly (relative heights)
-    // updateLiftState(buttonUp, buttonDown, prototype, liftState); // move lift by state machine (final)
-    Brain.Screen.setCursor(BRAIN_CLAMP_VALUE_ROW, 1);
-    Brain.Screen.print("clamp value: %d", prototype.pneumaticClamp.value());
+    updateLiftState(buttonUp, buttonDown, prototype, liftState); // move lift by state machine (final)
+
+    Seventeen59A.Screen.setCursor(BRAIN_CLAMP_VALUE_ROW, 1);
+    Seventeen59A.Screen.print("clamp value: %d", prototype.pneumaticClamp.value());
     vex::wait(50, msec);
   }
 }
@@ -293,7 +330,7 @@ void updateIntakeState(bool intakeButton, bool outtakeButton, Iintake& robotWith
   // Establishes the control system for any arbitrary prototype intake.
   const char* format = "Next State: %s        ";
   const char* label = "";
-  Brain.Screen.setCursor(3, 10);
+  Seventeen59A.Screen.setCursor(3, 10);
   switch (state) {
     case PrototypeIntakeState::START:
       robotWithIntake.intake(0);
