@@ -82,6 +82,23 @@ class Ilift {
     virtual bool isLiftSpinning() const = 0;
 
     /**
+     * Previously, the lift stops moving when it hits a physical barrier. Rubber
+     * bands were added to overcome the slippage (the lift moved downwards
+     * because the lift motor could not hold its position). Thus, rubber bands
+     * were added to fight gravity.
+     *
+     * However, this strains the lift motor when moving down because the
+     * physical barrier stopping it rubber bands. The lift doesn't fully stop
+     * (sprongy-sprongy). Our state machines worked by checking whether the lift
+     * has stopped spinning due to obstruction.
+     *
+     * Since, this is no longer valid due to the rubber bands preventing the
+     * complete stop, we will use a limit switch to determine when the lift has
+     * reached low enough.
+     */
+    virtual bool hasLiftReachedBottom() const = 0;
+
+    /**
      * Returns the default height value constants. However, each robot will
      * have different height values for their lift. The derived classes can
      * override the default values.
