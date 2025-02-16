@@ -224,13 +224,10 @@ bool PivotRampPrototype::isLiftAvailable() const {
 }
 
 bool PivotRampPrototype::hasLiftReachedBottom() const {
-    // PivotRampPrototype* that = const_cast<PivotRampPrototype*>(this);
-    // int limitSwitchValue = that->limitSwitch.value();
-    vex::limit input(Seventeen59A.ThreeWirePort.B);
-    Controller.Screen.setCursor(CONTROLLER_LIMIT_SWITCH_ROW, CONTROLLER_LIFT_LIMIT_SWITCH_COLUMN);
-    Controller.Screen.print("%d [%s]", input.value(), (input ? "true" : "false")); // Ternary operator
-    // Controller.Screen.print<int>(limitSwitchValue);
-    return input.value();
+    PivotRampPrototype* that = const_cast<PivotRampPrototype*>(this);
+    int limitSwitchValue = that->limitSwitch.value();
+    //vex::limit input(Seventeen59A.ThreeWirePort.B);
+    return limitSwitchValue;
 }
 
 void PivotRampPrototype::clamp(bool active) {
