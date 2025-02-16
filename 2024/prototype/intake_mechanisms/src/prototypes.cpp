@@ -91,10 +91,10 @@ PivotRampPrototype::PivotRampPrototype(const std::vector<vex::motor>& left_motor
                                        const std::vector<vex::motor>& right_motors_,
                                        const std::vector<vex::motor>& intake_, const std::vector<vex::motor>& lift_,
                                        double rotToTop, const vex::digital_out& pneumaticClamp_, 
-                                       const vex::digital_out& pneumaticClimb_)
+                                       const vex::digital_out& pneumaticClimb_, const vex::limit& limitSwitch_)
     : left_motors(left_motors_), right_motors(right_motors_),
       intake_motors(intake_), lift_motors(lift_), rotationsToTop(rotToTop), pneumaticClamp(pneumaticClamp_), 
-      pneumaticClimb(pneumaticClimb_) {
+      pneumaticClimb(pneumaticClimb_), limitSwitch(limitSwitch_) {
     // Where we are right now -- the initialLiftPosition -- will now
     // correspond to an encoder value of zero.
     for_each(lift_motors.begin(), lift_motors.end(), [](motor& current_motor) {
@@ -221,6 +221,16 @@ void PivotRampPrototype::setLiftHeights(LiftHeights liftHeights) {
 
 bool PivotRampPrototype::isLiftAvailable() const {
     return !lift_motors.empty();
+}
+
+bool PivotRampPrototype::hasLiftReachedBottom() const {
+    // PivotRampPrototype* that = const_cast<PivotRampPrototype*>(this);
+    // int limitSwitchValue = that->limitSwitch.value();
+    vex::limit input(Seventeen59A.ThreeWirePort.B);
+    Controller.Screen.setCursor(CONTROLLER_LIMIT_SWITCH_ROW, CONTROLLER_LIFT_LIMIT_SWITCH_COLUMN);
+    Controller.Screen.print("%d [%s]", input.value(), (input ? "true" : "false")); // Ternary operator
+    // Controller.Screen.print<int>(limitSwitchValue);
+    return input.value();
 }
 
 void PivotRampPrototype::clamp(bool active) {

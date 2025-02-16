@@ -82,19 +82,21 @@ class Ilift {
     virtual bool isLiftSpinning() const = 0;
 
     /**
-     * Previously, the lift stops moving when it hits a physical barrier. Rubber
-     * bands were added to overcome the slippage (the lift moved downwards
-     * because the lift motor could not hold its position). Thus, rubber bands
-     * were added to fight gravity.
+     * Our robot's 'lift' is a lever that flips upward and over.  Before
+     * 2025-02-14, when moving the lift "down", this lever mechanism would be
+     * physically stopped by metal hitting metal: the lift could not physically
+     * move down further.  We took advantage of that in order to transition from
+     * the MOBILE_GOAL_DOWN state to the DEFAULT_LOWEST_HEIGHT state: all we had
+     * to test was whether the lift motor stopped rotating!
      *
-     * However, this strains the lift motor when moving down because the
-     * physical barrier stopping it rubber bands. The lift doesn't fully stop
-     * (sprongy-sprongy). Our state machines worked by checking whether the lift
-     * has stopped spinning due to obstruction.
+     * But after 2025-02-14, rubber bands were added to help resist the lift's
+     * downward drift under load due to gravity.  That caused a new problem: The
+     * rubber bands physically restrain the lever from hitting the bottommost
+     * point (where there used to be a *THUD*, there was not a *SPROING*.)
      *
-     * Since, this is no longer valid due to the rubber bands preventing the
-     * complete stop, we will use a limit switch to determine when the lift has
-     * reached low enough.
+     * So we can no longer rely on rotations stopping to let us know we've hit
+     * rock bottom.  That's why the team added a limit switch, and that's what
+     * this function tests for.
      */
     virtual bool hasLiftReachedBottom() const = 0;
 

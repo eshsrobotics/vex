@@ -102,9 +102,11 @@ void updateLiftState(
             } else {
                 robotWithLift.moveLiftDirect(0);
             }
+            robotWithLift.hasLiftReachedBottom();
             break;
 
         case LiftState::MOBILE_GOAL_UP:
+            robotWithLift.hasLiftReachedBottom();
             if (!robotWithLift.isLiftSpinning()) {
                 robotWithLift.moveLiftDirect(0);
                 if (!upButton) {
@@ -115,7 +117,7 @@ void updateLiftState(
             break;
 
         case LiftState::MOBILE_GOAL_DOWN: // Heading down to the lowest height
-            if (!robotWithLift.isLiftSpinning()) {
+            if (robotWithLift.hasLiftReachedBottom()) {
                 robotWithLift.moveLiftDirect(0);
                 if (!downButton) {
                     state = LiftState::DEFAULT_LOWEST_HEIGHT;

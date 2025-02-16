@@ -51,12 +51,16 @@ class PivotRampPrototype : public Idrive, public Iintake, public Ilift,
          *               solenoid for controlling pneumatic mobile goal grabber.
          * @param pneumaticsClimb A digital_out object connected to the
          *               pneumatics responsible for the climb hooks.
+         * @param limitSwitch A limit switch at the bottom of the lift that will
+         *               transition us out of the MOBILE_GOAL_DOWN state into the
+         *               DEFAULT_STATE.
+
          */
         PivotRampPrototype(const std::vector<vex::motor>& left_motors_,
                            const std::vector<vex::motor>& right_motors_,
                            const std::vector<vex::motor>& intake, const std::vector<vex::motor>& lift,
                            double rotationsToTop, const vex::digital_out& pneumaticsClamp, 
-                           const vex::digital_out& pneumaticsClimb);
+                           const vex::digital_out& pneumaticsClimb, const vex::limit& limitSwitch);
 
         /**
          * Drive the robot at the given speeds.
@@ -120,6 +124,8 @@ class PivotRampPrototype : public Idrive, public Iintake, public Ilift,
 
         bool isLiftAvailable() const;
 
+        bool hasLiftReachedBottom() const;
+
         LiftHeights liftHeights() const {
             return liftHeights_;
         }
@@ -146,6 +152,7 @@ class PivotRampPrototype : public Idrive, public Iintake, public Ilift,
     public: // Temporary for testing
         vex::digital_out pneumaticClamp;
         vex::digital_out pneumaticClimb;
+        vex::limit limitSwitch;
 };
 
 #endif // (ifndef __PROTOTYPE_H_INCLUDED__)—
