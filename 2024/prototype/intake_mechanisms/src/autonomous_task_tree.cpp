@@ -154,7 +154,7 @@ DriveStraightTask::DriveStraightTask(double desiredDistanceCentimeters,
 
 void DriveStraightTask::start() {
   startingRotations = drive.getRotations();
-  drive.drive(sign(distanceToDriveCm), 0.0);
+  drive.drive(sign(distanceToDriveCm) * 0.18, 0.0);
 }
 
 bool DriveStraightTask::done() const {
@@ -382,9 +382,19 @@ bool DriveStraightTask::done() const {
 
     void MobileGoalIntakeTask::start() {
         WaitMillisecondsTask::start();
-        mobileGoalIntakeObject.clamp(clamp_);
+        //The only reason we are redefining the clamp port here is because the
+        //VEX API doesn't like it when we use copy constructors repeatedly. This
+        //is a confusing situation that we can't explain, unfortunately, so we
+        //have no choice but to redeclare the port again.
+        vex::triport::port DOUBLE_SOLENOID_PORT = Seventeen59A.ThreeWirePort.C;
+        digital_out foo(DOUBLE_SOLENOID_PORT);
+        foo.set(true);
+        
     }
 
     bool MobileGoalIntakeTask::done() const {
-        return WaitMillisecondsTask::done();
+        
+        bool result = WaitMillisecondsTask::done();
+        
+        return result;
     }

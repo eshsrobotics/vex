@@ -256,12 +256,24 @@ void autonomous() {
   //auto simpleRootTask = make_shared<TurnTask>(36.56, gyro, prototype);
   
   auto rootTask = make_shared<WaitMillisecondsTask>(0);
-  auto turnTest = make_shared<TurnTask>(90, inertialSensor, prototype);
+  auto driveTask1 = make_shared<DriveStraightTask>(-20, prototype);
+  auto clampTask = make_shared<MobileGoalIntakeTask>(prototype, true);
+  auto turnTask = make_shared<TurnTask>(-45, inertialSensor, prototype);
+  auto driveTask2 = make_shared<DriveStraightTask>(10, prototype);
+  auto intakeTask = make_shared <IntakeMillisecondsTask>(prototype, 1000, 1);
+  //auto turnTest = make_shared<TurnTask>(90, inertialSensor, prototype);
   // auto DriveTask = make_shared<TestDriveTask>(2, prototype);
   // auto stopTask = make_shared<DriveStraightTask>(0, prototype);
   // addTask(rootTask, DriveTask);
   // addTask(DriveTask, stopTask);
-  addTask(rootTask, turnTest);
+  addTask(rootTask, driveTask1);
+  addTask(driveTask1, clampTask);
+  addTask(clampTask, turnTask);
+  addTask(turnTask, driveTask2);
+  addTask(turnTask, intakeTask);
+  // addTask(clampTask, turnTask);
+  // addTask(turnTask, driveTask2);
+  // addTask(driveTask2, intakeTask);
   
   // execute(fullAutonRootTask);
   execute(rootTask);
