@@ -201,7 +201,7 @@ void pre_auton() {
  */
 void autonomous() {
   auto prototype = makePivotRampPrototype();
-  auto gyro = vex::gyro(Seventeen59A.ThreeWirePort.G);
+  vex::inertial inertialSensor(INERTIAL_PORT);
 
   // auto fullAutonRootTask = make_shared<WaitMillisecondsTask>(0);
   // auto B = make_shared<DriveStraightTask>(-0.4572 * 100, prototype);
@@ -256,7 +256,7 @@ void autonomous() {
   //auto simpleRootTask = make_shared<TurnTask>(36.56, gyro, prototype);
   
   auto rootTask = make_shared<WaitMillisecondsTask>(0);
-  auto turnTest = make_shared<TurnTask>(90, gyro, prototype);
+  auto turnTest = make_shared<TurnTask>(90, inertialSensor, prototype);
   // auto DriveTask = make_shared<TestDriveTask>(2, prototype);
   // auto stopTask = make_shared<DriveStraightTask>(0, prototype);
   // addTask(rootTask, DriveTask);

@@ -15,6 +15,16 @@
 using namespace vex;
 using namespace std;
 
+
+
+void calibrateOnce(vex::inertial& sensor) {
+  static bool initialized = false;
+  if (!initialized) {
+    sensor.calibrate();
+    initialized = true;
+  }
+}
+
 /**
  * Returns the sign of a number.
  * @param number the number to check the sign of
@@ -239,16 +249,16 @@ bool DriveStraightTask::done() const {
      * Definitions for the TurnTask. *
      *********************************/
 
-    TurnTask::TurnTask(
-        double desiredAngle,
-        vex::gyro gyroscope,
-        Idrive& driveObject
-    ) :
-        Task("r"),
+    TurnTask::TurnTask(double desiredAngle,
+                       vex::inertial inertialSensor,
+                       Idrive& driveObject) 
+      : Task("r"),
         desiredAngle_ {desiredAngle},
-        gyro_ {gyroscope},
+        inertialSensor_ {inertialSensor},
         drive {driveObject},
-        pidController {TURN_TASK_P_GAIN, TURN_TASK_I_GAIN, TURN_TASK_D_GAIN} {}
+        pidController {TURN_TASK_P_GAIN, TURN_TASK_I_GAIN, TURN_TASK_D_GAIN} {
+          calibrateOnce(inertialSensor);
+    }
 
     // Scenario: Your robot's start angle is 45 degrees.
     // The desired angle is 40 degrees.
@@ -274,8 +284,6 @@ bool DriveStraightTask::done() const {
     //
 
     void TurnTask::start() {
-        gyro_.resetAngle();
-        startAngle = gyro_.angle();
         // drive.drive(0.0, 0.6);
     }
 
@@ -285,17 +293,17 @@ bool DriveStraightTask::done() const {
     }
 
     bool TurnTask::done() const {
-        double currentAngle = const_cast<TurnTask*>(this)->gyro_.angle();
+        double currentAngle = const_cast<TurnTask*>(this)->inertialSensor_.heading();
         double delta = signedDelta(currentAngle, desiredAngle_);
 
         if (fabs(delta) < TURN_TASK_EPSILON_DEGREES) {
             drive.drive(0, 0);
             return true;
         } else {
-            // double setPoint = currentAngle + delta;
-            // double power = pidController.calculate(currentAngle, setPoint);
-            double power = pidController.calculate(currentAngle, desiredAngle_);
-            drive.drive(0, power);
+            double setPoint = currentAngle + delta;
+            double power = pidController.calculate(0, delta);
+            // double power = pidController.calculate(currentAngle, desiredAngle_);
+            drive.drive(0, -power);
             return false;
         }
     }

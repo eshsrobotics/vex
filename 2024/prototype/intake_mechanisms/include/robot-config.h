@@ -74,4 +74,7 @@ const double TURN_TASK_EPSILON_DEGREES = 1;
  */
 void vexcodeInit(void);
 
+// Port number for the inertial sensor
+const int INERTIAL_PORT = 20-1;
+
 #endif // (ifndef __ROBOT_CONFIG_INCLUDED__)

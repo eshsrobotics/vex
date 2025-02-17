@@ -164,12 +164,12 @@ class TurnTask: public Task {
      *
      * @param angleDegrees the amount to rotate in degrees: positive numbers
      * rotate clockwise and negative numbers rotate counterclockwise
-     * @param gyro_ a yaw rate gyroscope used to measure the current chasis's
-     * bearing
+     * @param inertialSensor_ an inertial sensor that we use to measure the
+     *                        robot's yaw angle
      * @param drive a reference to an Idrive object which actually does the
      * driving
      */
-    TurnTask(double angleDegrees, vex::gyro gyro_, Idrive& drive);
+    TurnTask(double angleDegrees, vex::inertial inertialSensor_, Idrive& drive);
 
     bool done() const;
 
@@ -182,7 +182,7 @@ class TurnTask: public Task {
     double startAngle;
 
     double desiredAngle_;
-    vex::gyro gyro_;
+    vex::inertial inertialSensor_;
     Idrive& drive;
     PidController pidController;
 };
