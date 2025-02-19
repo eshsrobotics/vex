@@ -259,4 +259,17 @@ class MobileGoalIntakeTask: public WaitMillisecondsTask {
     bool clamp_;
 };
 
+class DeployDoinkerTask: public WaitMillisecondsTask {
+  public:
+    DeployDoinkerTask(Iclimb& doinker, bool clamp);
+
+    bool done() const;
+
+    void start();
+
+  private:
+    Iclimb& doinkerObject;
+    bool clamp_;
+};
+
 #endif // (ifndef __AUTONOMOUS_TASK_TREE_H_INCLUDED__)

@@ -393,8 +393,26 @@ bool DriveStraightTask::done() const {
     }
 
     bool MobileGoalIntakeTask::done() const {
-        
         bool result = WaitMillisecondsTask::done();
-        
         return result;
+    }
+
+    // Definitions for DeployDoinkerTask
+    DeployDoinkerTask::DeployDoinkerTask(Iclimb& doinker, bool clamp) : 
+      WaitMillisecondsTask(0), doinkerObject{doinker}, clamp_(clamp) {
+      modifyTaskName("DeployDoinkerTask");
+    }
+
+    void DeployDoinkerTask::start() {
+      WaitMillisecondsTask::start();
+      // redefining the doinker port here to avoid memory errors as described
+      // with MobileGoalIntakeTask
+      vex::triport::port DOINKER_PORT = Seventeen59A.ThreeWirePort.D;
+      digital_out pneumaticDoinker(DOINKER_PORT);
+      pneumaticDoinker.set(clamp_);
+    }
+
+    bool DeployDoinkerTask::done() const {
+      bool result = WaitMillisecondsTask::done();
+      return result;
     }

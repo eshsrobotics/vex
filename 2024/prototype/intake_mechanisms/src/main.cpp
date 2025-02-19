@@ -139,6 +139,9 @@ PivotRampPrototype makePivotRampPrototype() {
   vex::triport::port CLIMB_PORT = Seventeen59A.ThreeWirePort.G;
   digital_out pneumaticClimb(CLIMB_PORT);
 
+  vex::triport::port DOINKER_PORT = Seventeen59A.ThreeWirePort.D;
+  digital_out pneumaticDoinker(DOINKER_PORT);
+
   vex::triport::port SWITCH_PORT = Seventeen59A.ThreeWirePort.B;
   vex::limit limitSwitch(SWITCH_PORT);
 
@@ -148,7 +151,7 @@ PivotRampPrototype makePivotRampPrototype() {
                        liftMotors,
                        rotationsToTop,
                        pneumaticClamp,
-                       pneumaticClimb,
+                       pneumaticDoinker,
                        limitSwitch);
   p.setLiftHeights({
     // These values have been determined experimentally.
@@ -175,13 +178,18 @@ void updateClampState(ImobileGoalIntake& p) {
   }
 }
 /**
- * Encapsulates climb functionality for teleop in one function.
+ * Encapsulates doinker functionality for teleop in one function.
  * @param p a reference to an Iclimb instance (the prototype)
  */
-void updateClimbState(Iclimb& p) {
+void updateDoinkerState(Iclimb& p) {
   bool buttonDown = Controller.ButtonX.pressing();
+  bool buttonUp = Controller.ButtonY.pressing();
+
   if (buttonDown) {
-    p.activateClimb();
+    p.activateClimb(true);
+  }
+  if (buttonUp) {
+    p.activateClimb(false);
   }
 }
 
@@ -252,31 +260,22 @@ void autonomous() {
   // // Leg 6: Driving forward to reach the wall and scoring the autonomous win point.
   // addTask(Q, R);
   
-  // This is a fallback task tree to use in case fullAutonRootTask is not tested before competition
-  //auto simpleRootTask = make_shared<TurnTask>(36.56, gyro, prototype);
-  
-  auto rootTask = make_shared<WaitMillisecondsTask>(0);
-  auto driveTask1 = make_shared<DriveStraightTask>(-20, prototype);
+  // This is a trajectory that 
+  auto singleRingRootTask = make_shared<WaitMillisecondsTask>(0);
+  auto driveBackward = make_shared<DriveStraightTask>(-20, prototype);
   auto clampTask = make_shared<MobileGoalIntakeTask>(prototype, true);
-  auto turnTask = make_shared<TurnTask>(-45, inertialSensor, prototype);
-  auto driveTask2 = make_shared<DriveStraightTask>(10, prototype);
   auto intakeTask = make_shared <IntakeMillisecondsTask>(prototype, 1000, 1);
-  //auto turnTest = make_shared<TurnTask>(90, inertialSensor, prototype);
-  // auto DriveTask = make_shared<TestDriveTask>(2, prototype);
-  // auto stopTask = make_shared<DriveStraightTask>(0, prototype);
-  // addTask(rootTask, DriveTask);
-  // addTask(DriveTask, stopTask);
-  addTask(rootTask, driveTask1);
-  addTask(driveTask1, clampTask);
-  addTask(clampTask, turnTask);
-  addTask(turnTask, driveTask2);
-  addTask(turnTask, intakeTask);
-  // addTask(clampTask, turnTask);
-  // addTask(turnTask, driveTask2);
-  // addTask(driveTask2, intakeTask);
-  
+
+  // This trajectory's purpose is to do something else
+  auto goalRushRootTask = make_shared<WaitMillisecondsTask>(0);
+  auto driveForward = make_shared<DriveStraightTask>(20, prototype);
+  auto doinkerDown = make_shared<DeployDoinkerTask>(prototype, true);
+  // auto intakeTask = make_shared <IntakeMillisecondsTask>(prototype, 1000, 1);
+  // auto driveBack = make_shared<DriveStraightTask>(10, prototype);
+
+
   // execute(fullAutonRootTask);
-  execute(rootTask);
+  execute(singleRingRootTask);
 }
 
 /**
@@ -303,7 +302,7 @@ void teleop() {
     updateClampState(prototype);
 
     // Allows controlling the climb hooks.
-    updateClimbState(prototype);
+    updateDoinkerState(prototype);
 
     // // Allow the driver to control the lift position.
     bool buttonUp = Controller.ButtonUp.pressing();
