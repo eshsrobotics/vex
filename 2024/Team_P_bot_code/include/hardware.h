@@ -47,6 +47,9 @@ extern vex::motor Intake;
 // The clamp motor, used to hold mobile goals.
 extern vex::motor Clamp;
 
+// Limit switch to stop clamp from opening too far.
+extern vex::limit ClampLimit;
+
 const int CLAMP_PORT = 11 - 1;
 
 // const double CLAMP_TIMEOUT_SEC = 0.40;
