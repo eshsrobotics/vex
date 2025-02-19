@@ -9,13 +9,12 @@
 class Iclimb {
   public:
     /**
-     * Makes the climb hooks activate and go up. The hooks are down by
-     * default and we don't need them during auton, so there is no need to
-     * make the hooks go back down after the piston is activated.
-     * Additionally, since the piston is activated to make the hooks go up,
-     * the set boolean will always be true. Lastly, the button only needs to
-     * be pressed once, even though the function is being called over and
-     * over again in the teleop function.
+     * This code was initially for the climb hooks, which have been defeatured.
+     * Now, the climb pneumatics are being used for a doinker. The doinker is a
+     * hammer on the front right of the robot that can come down and grab onto
+     * mobile goals for the robot to drag around.
+     * 
+     * @param active true to deploy the doinker, false to retract it
      */
-    virtual void activateClimb() = 0;
+    virtual void activateClimb(bool active) = 0;
 };

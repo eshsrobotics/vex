@@ -91,10 +91,10 @@ PivotRampPrototype::PivotRampPrototype(const std::vector<vex::motor>& left_motor
                                        const std::vector<vex::motor>& right_motors_,
                                        const std::vector<vex::motor>& intake_, const std::vector<vex::motor>& lift_,
                                        double rotToTop, const vex::digital_out& pneumaticClamp_, 
-                                       const vex::digital_out& pneumaticClimb_, const vex::limit& limitSwitch_)
+                                       const vex::digital_out& pneumaticDoinker_, const vex::limit& limitSwitch_)
     : left_motors(left_motors_), right_motors(right_motors_),
       intake_motors(intake_), lift_motors(lift_), rotationsToTop(rotToTop), pneumaticClamp(pneumaticClamp_), 
-      pneumaticClimb(pneumaticClimb_), limitSwitch(limitSwitch_) {
+      pneumaticDoinker(pneumaticDoinker_), limitSwitch(limitSwitch_) {
     // Where we are right now -- the initialLiftPosition -- will now
     // correspond to an encoder value of zero.
     for_each(lift_motors.begin(), lift_motors.end(), [](motor& current_motor) {
@@ -234,6 +234,6 @@ void PivotRampPrototype::clamp(bool active) {
     this->pneumaticClamp.set(active);
 }
 
-void PivotRampPrototype::activateClimb() {
-    this->pneumaticClimb.set(true);
+void PivotRampPrototype::activateClimb(bool active) {
+    this->pneumaticDoinker.set(active);
 }
