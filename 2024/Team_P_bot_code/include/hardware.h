@@ -59,11 +59,11 @@ const int CLAMP_PORT = 11 - 1;
 // timeout time the clamp kept pushing into the ground. Because of this, the
 // timeout time when the clamp is going downwards is lower than when the clamp
 // is moving upwards.
-const double OPEN_CLAMP_TIMEOUT_SEC = 0.40;
+const double OPEN_CLAMP_TIMEOUT_SEC = 4.0;
 
-const double CLOSE_CLAMP_TIMEOUT_SEC = 0.40;
+const double CLOSE_CLAMP_TIMEOUT_SEC = 4.0;
 
-const double CLAMP_VELOCITY_PCT = 100.00;
+const double CLAMP_VELOCITY_PCT = 80.00;
 
 // Intake motor port
 const int INTAKE_PORT = 8 - 1;
