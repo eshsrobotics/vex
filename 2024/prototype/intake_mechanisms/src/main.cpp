@@ -260,22 +260,42 @@ void autonomous() {
   // // Leg 6: Driving forward to reach the wall and scoring the autonomous win point.
   // addTask(Q, R);
   
-  // This is a trajectory that 
+  // This is a trajectory that we can use for either positive or negative
+  // corner, we will choose based on game strategy before a match
+  //
+  // We will use the single ring trajectory if our alliance member has a similar
+  // ~3-point scoring auton
   auto singleRingRootTask = make_shared<WaitMillisecondsTask>(0);
   auto driveBackward = make_shared<DriveStraightTask>(-20, prototype);
   auto clampTask = make_shared<MobileGoalIntakeTask>(prototype, true);
-  auto intakeTask = make_shared <IntakeMillisecondsTask>(prototype, 1000, 1);
+  auto intakeTask = make_shared <IntakeMillisecondsTask>(prototype, 1000, -1);
 
-  // This trajectory's purpose is to do something else
+  // This trajectory will be used when our alliance partner either has a
+  // full-blown 12 point auton or no auton at all, also will depend on the other
+  // team's history of auton points
+  //
+  // This trajectory works only on the positive corner
   auto goalRushRootTask = make_shared<WaitMillisecondsTask>(0);
-  auto driveForward = make_shared<DriveStraightTask>(20, prototype);
+  auto driveForward = make_shared<DriveStraightTask>(85, prototype);
   auto doinkerDown = make_shared<DeployDoinkerTask>(prototype, true);
+  auto waitTask = make_shared<WaitMillisecondsTask>(500);
+  auto driveBack = make_shared<DriveStraightTask>(-85, prototype);
+  //auto doinkerUp = make_shared<DeployDoinkerTask>(prototype, false);
   // auto intakeTask = make_shared <IntakeMillisecondsTask>(prototype, 1000, 1);
   // auto driveBack = make_shared<DriveStraightTask>(10, prototype);
 
+  addTask(singleRingRootTask, driveBackward);
+  addTask(driveBackward, clampTask);
+  addTask(clampTask, intakeTask);
+
+  addTask(goalRushRootTask, driveForward);
+  addTask(driveForward, doinkerDown);
+  addTask(doinkerDown, waitTask);
+  addTask(waitTask, driveBack);
 
   // execute(fullAutonRootTask);
-  execute(singleRingRootTask);
+  execute(goalRushRootTask);
+  // execute(singleRingRootTask);
 }
 
 /**
