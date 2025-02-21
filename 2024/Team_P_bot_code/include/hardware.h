@@ -17,7 +17,7 @@ const int BACK_LEFT_PORT = 6 - 1;
 const int BACK_RIGHT_PORT = 7 - 1;
 
 const double JOYSTICK_DEADZONE = 0.1;
-const bool ACCELERATION_ENABLED = true;
+const bool ACCELERATION_ENABLED = false;
 const double FORWARD_BACK_ACCELERATION = 0.03;
 
 // The robot runs at 50Hz.
