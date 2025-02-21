@@ -187,6 +187,19 @@ class TurnTask: public Task {
     PidController pidController;
 };
 
+class GoodTurnTask: public Task {
+  public:
+    GoodTurnTask(double desiredAngleDegrees, Idrive& drive);
+
+    bool done() const;
+
+    void start();
+
+  private:
+    double desiredAngleDegrees_;
+    Idrive& drive_;
+};  
+
 /**
  * Need to drive the robot for arbitrary seconds to implement the testing
  * protocol for the prototypes. The experimental protocol will be done

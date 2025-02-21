@@ -308,6 +308,27 @@ bool DriveStraightTask::done() const {
         }
     }
 
+    GoodTurnTask::GoodTurnTask(double desiredAngleDegrees, Idrive& drive) : 
+      Task("v"), desiredAngleDegrees_{desiredAngleDegrees}, drive_{drive} {
+    }
+
+    void GoodTurnTask::start(){
+      drive_.drive(0.0, 0.1);
+    }
+
+    bool GoodTurnTask::done() const {
+      double currentRotations = drive_.getRotations();
+      Controller.Screen.setCursor(1,1);
+      Controller.Screen.print(currentRotations);
+
+      if(currentRotations >= desiredAngleDegrees_ * 0.0178 / 3) {
+        drive_.drive(0.0, 0.0);
+        return true;
+      } else {
+        return false;
+      }
+    }
+
     /*********************************
      * Definitions for the DriveMillisecondsTask. *
      *********************************/

@@ -276,26 +276,41 @@ void autonomous() {
   //
   // This trajectory works only on the positive corner
   auto goalRushRootTask = make_shared<WaitMillisecondsTask>(0);
-  auto driveForward = make_shared<DriveStraightTask>(85, prototype);
-  auto doinkerDown = make_shared<DeployDoinkerTask>(prototype, true);
-  auto waitTask = make_shared<WaitMillisecondsTask>(500);
-  auto driveBack = make_shared<DriveStraightTask>(-85, prototype);
-  //auto doinkerUp = make_shared<DeployDoinkerTask>(prototype, false);
+  auto A = make_shared<DriveStraightTask>(105, prototype);
+  auto B = make_shared<DeployDoinkerTask>(prototype, true);
+  auto C = make_shared<WaitMillisecondsTask>(500);
+  auto D = make_shared<DriveStraightTask>(-105, prototype);
+  auto E = make_shared<DeployDoinkerTask>(prototype, false);
+  auto F = make_shared<GoodTurnTask>(80, prototype);
+  auto G = make_shared<DriveStraightTask>(-45, prototype);
+  auto H = make_shared<MobileGoalIntakeTask>(prototype, true);
+  auto I = make_shared<IntakeMillisecondsTask>(prototype, 1000, -1);
   // auto intakeTask = make_shared <IntakeMillisecondsTask>(prototype, 1000, 1);
   // auto driveBack = make_shared<DriveStraightTask>(10, prototype);
+
+  auto testRootTask = make_shared<WaitMillisecondsTask>(0);
+  auto testTurn = make_shared<GoodTurnTask>(90, prototype);
 
   addTask(singleRingRootTask, driveBackward);
   addTask(driveBackward, clampTask);
   addTask(clampTask, intakeTask);
 
-  addTask(goalRushRootTask, driveForward);
-  addTask(driveForward, doinkerDown);
-  addTask(doinkerDown, waitTask);
-  addTask(waitTask, driveBack);
+  addTask(goalRushRootTask, A);
+  addTask(A, B);
+  addTask(B, C);
+  addTask(C, D);
+  addTask(D, E);
+  addTask(E, F);
+  addTask(F, G);
+  addTask(G, H);
+  addTask(H, I);
+
+  addTask(testRootTask, testTurn);
 
   // execute(fullAutonRootTask);
   execute(goalRushRootTask);
   // execute(singleRingRootTask);
+  // execute(testRootTask);
 }
 
 /**
