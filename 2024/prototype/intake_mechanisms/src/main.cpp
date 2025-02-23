@@ -260,56 +260,122 @@ void autonomous() {
   // // Leg 6: Driving forward to reach the wall and scoring the autonomous win point.
   // addTask(Q, R);
   
-  // This is a trajectory that we can use for either positive or negative
-  // corner, we will choose based on game strategy before a match
-  //
-  // We will use the single ring trajectory if our alliance member has a similar
-  // ~3-point scoring auton
-  auto singleRingRootTask = make_shared<WaitMillisecondsTask>(0);
-  auto driveBackward = make_shared<DriveStraightTask>(-20, prototype);
-  auto clampTask = make_shared<MobileGoalIntakeTask>(prototype, true);
-  auto intakeTask = make_shared <IntakeMillisecondsTask>(prototype, 1000, -1);
+  // This trajectory works only on the red negative corner
+  auto REDNegative = make_shared<WaitMillisecondsTask>(0);
+  auto A1 = make_shared<DriveStraightTask>(-80, prototype);
+  auto B1 = make_shared<MobileGoalIntakeTask>(prototype, true);
+  auto C1 = make_shared<IntakeMillisecondsTask>(prototype, 5000, -1);
+  auto D1 = make_shared<GoodTurnTask>(45, prototype);
+  auto E1 = make_shared<DriveStraightTask>(50, prototype);
+  auto F1 = make_shared<GoodTurnTask>(190, prototype);
+  auto G1 = make_shared<DriveStraightTask>(100, prototype);
 
-  // This trajectory will be used when our alliance partner either has a
-  // full-blown 12 point auton or no auton at all, also will depend on the other
-  // team's history of auton points
-  //
-  // This trajectory works only on the positive corner
-  auto goalRushRootTask = make_shared<WaitMillisecondsTask>(0);
-  auto A = make_shared<DriveStraightTask>(105, prototype);
-  auto B = make_shared<DeployDoinkerTask>(prototype, true);
-  auto C = make_shared<WaitMillisecondsTask>(500);
-  auto D = make_shared<DriveStraightTask>(-105, prototype);
-  auto E = make_shared<DeployDoinkerTask>(prototype, false);
-  auto F = make_shared<GoodTurnTask>(80, prototype);
-  auto G = make_shared<DriveStraightTask>(-45, prototype);
-  auto H = make_shared<MobileGoalIntakeTask>(prototype, true);
-  auto I = make_shared<IntakeMillisecondsTask>(prototype, 1000, -1);
+  auto BLUENegative = make_shared<WaitMillisecondsTask>(0);
+  auto A3 = make_shared<DriveStraightTask>(-80, prototype);
+  auto B3 = make_shared<MobileGoalIntakeTask>(prototype, true);
+  auto C3 = make_shared<IntakeMillisecondsTask>(prototype, 7000, -1);
+  auto D3 = make_shared<GoodTurnTask>(-45, prototype);
+  auto E3 = make_shared<DriveStraightTask>(50, prototype);
+  auto F3 = make_shared<GoodTurnTask>(-190, prototype);
+  auto G3 = make_shared<DriveStraightTask>(100, prototype);
+
+  // This trajectory works only on the red positive corner
+  auto REDgoalRushPositiveRootTask = make_shared<WaitMillisecondsTask>(0);
+  auto A = make_shared<DriveStraightTask>(65, prototype);
+  auto B = make_shared<IntakeMillisecondsTask>(prototype, 600, -1);
+  auto C = make_shared<DriveStraightTask>(60, prototype);
+  auto D = make_shared<DriveStraightTask>(-30, prototype);
+  auto E = make_shared<GoodTurnTask>(-33, prototype);
+  auto F = make_shared<DriveStraightTask>(37, prototype);
+  auto G = make_shared<DeployDoinkerTask>(prototype, true);
+  auto H = make_shared<WaitMillisecondsTask>(100);
+  auto I = make_shared<DriveStraightTask>(-60, prototype);
+  auto J = make_shared<GoodTurnTask>(60, prototype);
+  auto K = make_shared<DeployDoinkerTask>(prototype, false);
+  auto L = make_shared<GoodTurnTask>(40, prototype);
+  auto M = make_shared<DriveStraightTask>(-80, prototype);
+  auto N = make_shared<MobileGoalIntakeTask>(prototype, true); 
+  auto O = make_shared<IntakeMillisecondsTask>(prototype, 2500, -1);
+  auto P = make_shared<DriveStraightTask>(70, prototype);
+
+auto BLUEgoalRushPositiveRootTask = make_shared<WaitMillisecondsTask>(0);
+  auto A2 = make_shared<DriveStraightTask>(60, prototype);
+  auto B2 = make_shared<IntakeMillisecondsTask>(prototype, 500, -1);
+  auto C2 = make_shared<DriveStraightTask>(60, prototype);
+  auto D2 = make_shared<DeployDoinkerTask>(prototype, true);
+  auto E2 = make_shared<WaitMillisecondsTask>(100);
+  auto F2 = make_shared<DriveStraightTask>(-90, prototype);
+  auto G2 = make_shared<GoodTurnTask>(-120, prototype);
+  auto H2 = make_shared<DeployDoinkerTask>(prototype, false);
+  auto I2 = make_shared<GoodTurnTask>(-40, prototype);
+  auto J2 = make_shared<DriveStraightTask>(-70, prototype);
+  auto K2 = make_shared<MobileGoalIntakeTask>(prototype, true); 
+  auto L2 = make_shared<IntakeMillisecondsTask>(prototype, 4500, -1);
+  auto M2 = make_shared<GoodTurnTask>(-100, prototype);
+  auto N2 = make_shared<DriveStraightTask>(40, prototype);
+
+
   // auto intakeTask = make_shared <IntakeMillisecondsTask>(prototype, 1000, 1);
   // auto driveBack = make_shared<DriveStraightTask>(10, prototype);
 
   auto testRootTask = make_shared<WaitMillisecondsTask>(0);
   auto testTurn = make_shared<GoodTurnTask>(90, prototype);
 
-  addTask(singleRingRootTask, driveBackward);
-  addTask(driveBackward, clampTask);
-  addTask(clampTask, intakeTask);
+  addTask(REDNegative, A1);
+  addTask(A1, B1);
+  addTask(B1, C1);
+  addTask(B1, D1);
+  addTask(D1, E1);
+  addTask(E1, F1);
+  addTask(F1, G1);
 
-  addTask(goalRushRootTask, A);
+  addTask(BLUENegative, A3);
+  addTask(A3, B3);
+  addTask(B3, C3);
+  addTask(B3, D3);
+  addTask(D3, E3);
+  addTask(E3, F3);
+  addTask(F3, G3);
+
+  addTask(REDgoalRushPositiveRootTask, A);
   addTask(A, B);
-  addTask(B, C);
+  addTask(A, C);
   addTask(C, D);
   addTask(D, E);
   addTask(E, F);
   addTask(F, G);
   addTask(G, H);
   addTask(H, I);
+  addTask(I, J);
+  addTask(J, K);
+  addTask(J, L);
+  addTask(L, M);
+  addTask(M, N);
+  addTask(M, O);
+
+  addTask(BLUEgoalRushPositiveRootTask, A2);
+  addTask(A2, B2);
+  addTask(A2, C2);
+  addTask(C2, D2);
+  addTask(D2, E2);
+  addTask(E2, F2);
+  addTask(F2, G2);
+  addTask(G2, H2);
+  addTask(G2, I2);
+  addTask(I2, J2);
+  addTask(J2, K2);
+  addTask(K2, L2);
+  addTask(K2, M2);
+  addTask(M2, N2);
+
 
   addTask(testRootTask, testTurn);
 
   // execute(fullAutonRootTask);
-  execute(goalRushRootTask);
-  // execute(singleRingRootTask);
+  execute(REDgoalRushPositiveRootTask);
+ // execute(BLUEgoalRushPositiveRootTask);
+ // execute(REDNegative);          //Michal Look Here
+  // execute(BLUENegative);       
   // execute(testRootTask);
 }
 
