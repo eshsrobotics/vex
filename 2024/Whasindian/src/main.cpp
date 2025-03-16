@@ -24,10 +24,12 @@ int main() {
    
     while(1) {
         
-        double leftSpatulaPosition = Spatula.Axis3.position();
-        double rightSpatulaPosition = Spatula.Axis2.position();
+        double leftSpatulaPosition = Spatula.Axis2.position();
+        double rightSpatulaPosition = Spatula.Axis3.position();
 
+        // Let the frying commence
         letHimCook(leftSpatulaPosition, rightSpatulaPosition);
+
         // Allow other tasks to run
         this_thread::sleep_for(10);
     }
