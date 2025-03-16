@@ -3,8 +3,8 @@
 
 #include "vex.h"
 
-extern vex::brain Brain;
-extern vex::controller Controller;
+extern vex::brain NuggetMind;
+extern vex::controller Spatula;
 
 // The motor port assignments below are just place-holders and are subject to change
 // The first number is what port you should connect the motor to in real life.
@@ -28,6 +28,6 @@ extern vex::motor RightBack;
 extern vex::motor_group Left;
 extern vex::motor_group Right;
 
-void letHimCook(double frontBackSpeed, double turnSpeed);
+void letHimCook(double leftNuggetSpeed, double rightNuggetSpeed);
 
 #endif

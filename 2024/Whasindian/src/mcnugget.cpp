@@ -1,7 +1,12 @@
 #include "vex.h"
 #include "mcnugget.h"
+#include <algorithm>
 
 using namespace vex;
+using namespace std;
+
+brain NuggetMind;
+controller Spatula;
 
 // Some of these motors are reversed because when the robot is assembled, if the
 // motor layout is symmetrical then half the motors will be spinning in the
@@ -23,10 +28,12 @@ motor RightBack(RIGHT_BACK_PORT);
 motor_group Left(LeftFront, LeftMiddle, LeftBack);
 motor_group Right(RightFront, RightMiddle, RightBack);
 
-void letHimCook(double frontBackSpeed, double turnSpeed){
+void letHimCook(double leftNuggetSpeed, double rightNuggetSpeed){
 
+    leftNuggetSpeed = max(-100.0, min(leftNuggetSpeed, 100.0));
+    rightNuggetSpeed = max(-100.0, min(rightNuggetSpeed, 100.0));
 
-    // drive code goes here
-
+    Left.spin(fwd, leftNuggetSpeed, velocityUnits::pct);
+    Right.spin(fwd, rightNuggetSpeed, velocityUnits::pct);
 
 }
