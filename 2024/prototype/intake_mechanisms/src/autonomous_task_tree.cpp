@@ -2,6 +2,7 @@
 
 #include "vex.h"
 #include "prototypes.h"
+#include "robot-config.h"
 
 #include "autonomous_task_tree.h"
 #include "vex.h"
@@ -13,6 +14,30 @@
 
 using namespace vex;
 using namespace std;
+
+
+
+void calibrateOnce(vex::inertial& sensor) {
+  static bool initialized = false;
+  if (!initialized) {
+    sensor.calibrate();
+    initialized = true;
+  }
+}
+
+/**
+ * Returns the sign of a number.
+ * @param number the number to check the sign of
+*/
+double sign(double number) {
+  if (number > 0) {
+    return 1;
+  } else if (number < 0) {
+    return -1;
+  } else {
+    return 0;
+  }
+};
 
 /*--------------------------------------------------------*/
 /*                    Task Methods                        */
@@ -129,206 +154,290 @@ DriveStraightTask::DriveStraightTask(double desiredDistanceCentimeters,
 
 void DriveStraightTask::start() {
   startingRotations = drive.getRotations();
-  drive.drive(1.0, 0.0);
+  //Michal, forward/backward speed value, multiplier should be less than 1
+  drive.drive(sign(distanceToDriveCm) * 0.27, 0.0);
 }
 
 bool DriveStraightTask::done() const {
+    // Predict the distance our bot has traveled given the *actual* number of
+    // rotations since start() was called.
+    const double currentRotations = drive.getRotations() - startingRotations;
+    const double predictedDistanceDriven =
+        predictedDistanceCm(currentRotations);
 
-  // Predict the distance our bot has traveled given the *actual* number of
-  // rotations since start() was called.
-  const double currentRotations = drive.getRotations() - startingRotations;
-  const double predictedDistanceDriven = predictedDistanceCm(currentRotations);
 
-  if (predictedDistanceDriven >= distanceToDriveCm) {
-    drive.drive(0.0, 0.0);
+    if (distanceToDriveCm >= 0) {
+        if (predictedDistanceDriven >= distanceToDriveCm) {
+            drive.drive(0.0, 0.0);
+            return true;
+        } else {
+            return false;
+        }
+    } else if (distanceToDriveCm < 0) {
+        if (predictedDistanceDriven <= distanceToDriveCm) {
+            drive.drive(0.0, 0.0);
+            return true;
+        } else {
+            return false;
+        }
+    }
+    // Control should never make it there. 
     return true;
-  } else {
-    return false;
-  }
 }
 
-/********************************************
- * Definitions for the TestDriveTask class. *
- ********************************************/
+    /********************************************
+     * Definitions for the TestDriveTask class. *
+     ********************************************/
 
-TestDriveTask::TestDriveTask(double targetRotations_, Idrive& drivingRobot)
-  : Task("t"), driveObject{drivingRobot}, targetRotations{targetRotations_} {}
+    TestDriveTask::TestDriveTask(
+        double targetRotations_,
+        Idrive& drivingRobot
+    ) :
+        Task("t"),
+        driveObject {drivingRobot},
+        targetRotations {targetRotations_} {}
 
-bool TestDriveTask::done() const {
-  // One the change in rotations pet frame is less than this value, we've come
-  // to a stop.  At least, it's a good enough definition of "stopped."
-  const double DEADZONE = 0.001;
+    bool TestDriveTask::done() const {
+        // One the change in rotations pet frame is less than this value, we've
+        // come to a stop.  At least, it's a good enough definition of
+        // "stopped."
+        const double DEADZONE = 0.001;
 
-  // We want to wait a particular amount before checking whether the motor is
-  // stopped as the motor might be accelerating slowly instead -- it would be
-  // tragic if we cut the motor off early because we were too impatient!
-  const double MINIMUM_WAIT_TIME_MSEC = 300;
+        // We want to wait a particular amount before checking whether the motor
+        // is stopped as the motor might be accelerating slowly instead -- it
+        // would be tragic if we cut the motor off early because we were too
+        // impatient!
+        const double MINIMUM_WAIT_TIME_MSEC = 300;
 
-  // We want to edit these values but they are coming from a const function, we
-  // const_cast to allow modification.
-  double& currentRotations = const_cast<TestDriveTask*>(this)->currentRotationNumber;
-  double& previousRotations = const_cast<TestDriveTask*>(this)->previousRotationNumber;
+        // We want to edit these values but they are coming from a const
+        // function, we const_cast to allow modification.
+        double& currentRotations =
+            const_cast<TestDriveTask*>(this)->currentRotationNumber;
+        double& previousRotations =
+            const_cast<TestDriveTask*>(this)->previousRotationNumber;
 
-  currentRotations = driveObject.getRotations();
+        currentRotations = driveObject.getRotations();
 
-  // Just checking if the velocity is 0 is not sufficient. The robot may drift
-  // farther even if the motors are stopped. This is a much more precise way of
-  // making sure the motors are stopped by checking if the change in motor
-  // rotation is small enough.
-  // currentRotations - previousRotationNumber <= DEADZONE
+        // Just checking if the velocity is 0 is not sufficient. The robot may
+        // drift farther even if the motors are stopped. This is a much more
+        // precise way of making sure the motors are stopped by checking if the
+        // change in motor rotation is small enough. currentRotations -
+        // previousRotationNumber <= DEADZONE
 
-  if (currentRotations - previousRotationNumber <= DEADZONE &&
-      Seventeen59A.timer(msec) - startTimeMsec >= MINIMUM_WAIT_TIME_MSEC) {
-    driveObject.drive(0.0, 0.0);
-    Controller.Screen.setCursor(CONTROLLER_ROBOT_STOPPED_ROW, 1);
-    Controller.Screen.print("STOPPED ");
-    Controller.Screen.print("%.2f", currentRotations);
-    vex::wait(2000, msec);
-    return true;
-  } else {
-    previousRotations = currentRotations;
-    return false;
-  }
-}
+        if (currentRotations - previousRotationNumber <= DEADZONE
+            && Seventeen59A.timer(msec) - startTimeMsec
+                >= MINIMUM_WAIT_TIME_MSEC) {
+            driveObject.drive(0.0, 0.0);
+            Controller.Screen.setCursor(CONTROLLER_ROBOT_STOPPED_ROW, 1);
+            Controller.Screen.print("STOPPED ");
+            Controller.Screen.print("%.2f", currentRotations);
+            vex::wait(2000, msec);
+            return true;
+        } else {
+            previousRotations = currentRotations;
+            return false;
+        }
+    }
 
-void TestDriveTask::start() {
-  driveObject.drive(1.0, 0.0);
-  currentRotationNumber = 0;
-  previousRotationNumber = driveObject.getRotations();
-  startTimeMsec = Seventeen59A.timer(vex::timeUnits::msec);
-}
+    void TestDriveTask::start() {
+        driveObject.drive(1.0, 0.0);
+        currentRotationNumber = 0;
+        previousRotationNumber = driveObject.getRotations();
+        startTimeMsec = Seventeen59A.timer(vex::timeUnits::msec);
+    }
 
-/*********************************
- * Definitions for the TurnTask. *
- *********************************/
+    /*********************************
+     * Definitions for the TurnTask. *
+     *********************************/
 
-TurnTask::TurnTask(double desiredAngle, vex::gyro gyroscope, Idrive& driveObject)
-  : Task ("r"), desiredAngle_{desiredAngle}, gyro_{gyroscope}, drive{driveObject} {}
+    TurnTask::TurnTask(double desiredAngle,
+                       vex::inertial inertialSensor,
+                       Idrive& driveObject) 
+      : Task("r"),
+        desiredAngle_ {desiredAngle},
+        inertialSensor_ {inertialSensor},
+        drive {driveObject},
+        pidController {TURN_TASK_P_GAIN, TURN_TASK_I_GAIN, TURN_TASK_D_GAIN} {
+          calibrateOnce(inertialSensor);
+    }
 
+    // Scenario: Your robot's start angle is 45 degrees.
+    // The desired angle is 40 degrees.
+    // Proceed.
 
-// Scenario: Your robot's start angle is 45 degrees.
-// The desired angle is 40 degrees.
-// Proceed.
+    // Question #1: Positive angle == clockwise or counterclockwise?
+    //   * Confirmed: According to Idrive.h, it is clockwise.
+    //
+    // 45, 61, 92, 108, 117, 127, .........., 355, 10, 21, 36, 48, 59, ........
+    // Never makes it to exactly 40.
+    //
+    // - We don't stop at the angle. [<---solved by PID.]
+    //   * Start with P=1, I=0, D=0.
+    //   * We need to calculate the ERROR every frame, which is the angle that
+    //     goes from the current angle to the target angle
+    //     (= signed_delta of target angle and current angle.)
+    //
+    // - We're not rotating optimally [SOLVED by signed_delta().]
+    //   * Your current angle is 5 degrees.
+    //   * Your desired angle is 355 degrees (355 is -10 modulo 360.)
+    //   * Better to rotate 10 degrees counterclockwise than 350 degrees
+    //   clockwise.
+    //
 
-// Question #1: Positive angle == clockwise or counterclockwise?
-//   * Confirmed: According to Idrive.h, it is clockwise.
-//
-// 45, 61, 92, 108, 117, 127, .........., 355, 10, 21, 36, 48, 59, ........ Never makes it to exactly 40.
-//
-// - We don't stop at the angle. [<---solved by PID.]
-//   * Start with P=1, I=0, D=0.
-//   * We need to calculate the ERROR every frame, which is the angle that
-//     goes from the current angle to the target angle
-//     (= signed_delta of target angle and current angle.)
-//
-// - We're not rotating optimally [SOLVED by signed_delta().]
-//   * Your current angle is 5 degrees.
-//   * Your desired angle is 355 degrees (355 is -10 modulo 360.)
-//   * Better to rotate 10 degrees counterclockwise than 350 degrees clockwise.
-//
+    void TurnTask::start() {
+        // drive.drive(0.0, 0.6);
+    }
 
-void TurnTask::start() {
-  startAngle = gyro_.angle();
-  drive.drive(0.0, 0.6);
-}
+    // This function returns the smallest number of degrees to rotate.
+    double signedDelta(double currentAngle, double desiredAngle) {
+        return std::fmod(desiredAngle - currentAngle + 180, 360) - 180;
+    }
 
-// This function returns the smallest number of degrees to rotate.
-double signedDelta(double currentAngle, double desiredAngle) {
+    bool TurnTask::done() const {
+        double currentAngle = const_cast<TurnTask*>(this)->inertialSensor_.heading();
+        double delta = signedDelta(currentAngle, desiredAngle_);
 
-  return std::fmod(desiredAngle - currentAngle + 180, 360) - 180;
-}
+        if (fabs(delta) < TURN_TASK_EPSILON_DEGREES) {
+            drive.drive(0, 0);
+            return true;
+        } else {
+            double setPoint = currentAngle + delta;
+            double power = pidController.calculate(0, delta);
+            // double power = pidController.calculate(currentAngle, desiredAngle_);
+            drive.drive(0, -power);
+            return false;
+        }
+    }
 
-bool TurnTask::done() const {
-  const double THRESHOLD = 3;
-  //This is a bang-bang controller.
-  double currentAngle = const_cast<TurnTask*>(this)->gyro_.angle();
+    GoodTurnTask::GoodTurnTask(double desiredAngleDegrees, Idrive& drive) : 
+      Task("v"), desiredAngleDegrees_{desiredAngleDegrees}, drive_{drive} {
+    }
 
-  // double error = signedDelta(currentAngle, desiredAngle_);
-  // const double P = 0.002;
-  // double gain = P * error;
-  // drive.drive(0, gain);
-  // if (fabs(error) < THRESHOLD) {
-  //   return true;
-  // } else {
-  //   return false;
-  // }
-  if (fabs(desiredAngle_ - currentAngle) < THRESHOLD) {
-    drive.drive(0.0, 0.0);
-    return true;
-  } else if (currentAngle < desiredAngle_) {
-      drive.drive(0.0, 0.3);
-      return false;
-  } else {
-      drive.drive(0.0, -0.3);
-      return false;
-  }
-}
+    //Michal, edit the second argument in the drive function to edit the turn
+    //speed, should be between 0 and 1
+    void GoodTurnTask::start(){
+      drive_.resetEncoders();
+      drive_.drive(0.0, sign(desiredAngleDegrees_) * 0.3);
+    }
 
-/*********************************
- * Definitions for the DriveMillisecondsTask. *
- *********************************/
+    bool GoodTurnTask::done() const {
+      double currentRotations = drive_.getRotations();
+      Controller.Screen.setCursor(1,1);
+      Controller.Screen.print(currentRotations);
 
-DriveMillisecondsTask::DriveMillisecondsTask(Idrive& drive, double milliseconds, double driveVelocity)
-: Task ("s"), driveObject{drive}, waitTimeMsec{milliseconds}, driveVelocity_{driveVelocity} {
+      if(abs(currentRotations) >= abs(desiredAngleDegrees_ * 0.0178 / 3)) {
+        drive_.drive(0.0, 0.0);
+        return true;
+      } else {
+        return false;
+      }
+    }
 
-}
+    /*********************************
+     * Definitions for the DriveMillisecondsTask. *
+     *********************************/
 
-void DriveMillisecondsTask::start() {
-  startTimeMsec = Seventeen59A.timer(vex::timeUnits::msec);
-  driveObject.drive(driveVelocity_, 0.0);
-}
+    DriveMillisecondsTask::DriveMillisecondsTask(
+        Idrive & drive,
+        double milliseconds,
+        double driveVelocity
+    ) :
+        Task("s"),
+        driveObject {drive},
+        waitTimeMsec {milliseconds},
+        driveVelocity_ {driveVelocity} {}
 
-bool DriveMillisecondsTask::done() const {
-  const double currentTimeMsec = Seventeen59A.timer(msec);
-  const double elapsedTimeMsec = currentTimeMsec - startTimeMsec;
-  if (elapsedTimeMsec >= waitTimeMsec) {
-    driveObject.drive(0, 0);
-    return true;
-  } else {
-    return false;
-  }
-}
+    void DriveMillisecondsTask::start() {
+        startTimeMsec = Seventeen59A.timer(vex::timeUnits::msec);
+        driveObject.drive(driveVelocity_, 0.0);
+    }
 
-////////////////////////////////
-// Definitions for IntakeTask //
-////////////////////////////////
+    bool DriveMillisecondsTask::done() const {
+        const double currentTimeMsec = Seventeen59A.timer(msec);
+        const double elapsedTimeMsec = currentTimeMsec - startTimeMsec;
+        if (elapsedTimeMsec >= waitTimeMsec) {
+            driveObject.drive(0, 0);
+            return true;
+        } else {
+            return false;
+        }
+    }
 
-IntakeMillisecondsTask::IntakeMillisecondsTask(Iintake& intake_bot, double msec,
-                                               double intake_speed)
-  : Task {"IntakeMsec"}, intakeObject{intake_bot}, desiredIntakingTimeMsec{msec}, intake_speed_{intake_speed} {
+    ////////////////////////////////
+    // Definitions for IntakeTask //
+    ////////////////////////////////
 
-}
+    IntakeMillisecondsTask::IntakeMillisecondsTask(
+        Iintake & intake_bot,
+        double msec,
+        double intake_speed
+    ) :
+        Task {"IntakeMsec"},
+        intakeObject {intake_bot},
+        desiredIntakingTimeMsec {msec},
+        intake_speed_ {intake_speed} {}
 
-void IntakeMillisecondsTask::start() {
-  startTimeMsec = Seventeen59A.timer(vex::timeUnits::msec);
-  intakeObject.intake(intake_speed_);
-}
+    void IntakeMillisecondsTask::start() {
+        startTimeMsec = Seventeen59A.timer(vex::timeUnits::msec);
+        intakeObject.intake(intake_speed_);
+    }
 
-bool IntakeMillisecondsTask::done() const {
-  const double currentTimeMsec = Seventeen59A.timer(msec);
-  const double elapsedTimeMsec = currentTimeMsec - startTimeMsec;
-  if (elapsedTimeMsec >= desiredIntakingTimeMsec) {
-    intakeObject.intake(0);
-    return true;
-  } else {
-    return false;
-  }
-}
+    bool IntakeMillisecondsTask::done() const {
+        const double currentTimeMsec = Seventeen59A.timer(msec);
+        const double elapsedTimeMsec = currentTimeMsec - startTimeMsec;
+        if (elapsedTimeMsec >= desiredIntakingTimeMsec) {
+            intakeObject.intake(0);
+            return true;
+        } else {
+            return false;
+        }
+    }
 
-// Definitions for MobileGoalIntakeTask
+    // Definitions for MobileGoalIntakeTask
 
-MobileGoalIntakeTask::MobileGoalIntakeTask(ImobileGoalIntake& mobileGoalIntake,
-                                           bool clamp)
-  : WaitMillisecondsTask(MOBILE_GOAL_INTAKE_DURATION_MILLISECONDS), mobileGoalIntakeObject{mobileGoalIntake},
-    clamp_(clamp) {
-  modifyTaskName("MobileGoalIntakeTask");
-}
+    MobileGoalIntakeTask::MobileGoalIntakeTask(
+        ImobileGoalIntake & mobileGoalIntake,
+        bool clamp
+    ) :
+        WaitMillisecondsTask(MOBILE_GOAL_INTAKE_DURATION_MILLISECONDS),
+        mobileGoalIntakeObject {mobileGoalIntake},
+        clamp_(clamp) {
+        modifyTaskName("MobileGoalIntakeTask");
+    }
 
-void MobileGoalIntakeTask::start() {
-  WaitMillisecondsTask::start();
-  mobileGoalIntakeObject.clamp(clamp_);
-}
+    void MobileGoalIntakeTask::start() {
+        WaitMillisecondsTask::start();
+        //The only reason we are redefining the clamp port here is because the
+        //VEX API doesn't like it when we use copy constructors repeatedly. This
+        //is a confusing situation that we can't explain, unfortunately, so we
+        //have no choice but to redeclare the port again.
+        vex::triport::port DOUBLE_SOLENOID_PORT = Seventeen59A.ThreeWirePort.C;
+        digital_out foo(DOUBLE_SOLENOID_PORT);
+        foo.set(true);
+        
+    }
 
-bool MobileGoalIntakeTask::done() const {
-  return WaitMillisecondsTask::done();
-}
+    bool MobileGoalIntakeTask::done() const {
+        bool result = WaitMillisecondsTask::done();
+        return result;
+    }
+
+    // Definitions for DeployDoinkerTask
+    DeployDoinkerTask::DeployDoinkerTask(Iclimb& doinker, bool clamp) : 
+      WaitMillisecondsTask(0), doinkerObject{doinker}, clamp_(clamp) {
+      modifyTaskName("DeployDoinkerTask");
+    }
+
+    void DeployDoinkerTask::start() {
+      WaitMillisecondsTask::start();
+      // redefining the doinker port here to avoid memory errors as described
+      // with MobileGoalIntakeTask
+      vex::triport::port DOINKER_PORT = Seventeen59A.ThreeWirePort.D;
+      digital_out pneumaticDoinker(DOINKER_PORT);
+      pneumaticDoinker.set(clamp_);
+    }
+
+    bool DeployDoinkerTask::done() const {
+      bool result = WaitMillisecondsTask::done();
+      return result;
+    }

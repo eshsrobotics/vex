@@ -7,6 +7,7 @@
 #include <vector>
 
 #include "Idrive.h"
+#include "pid.h"
 #include "vex.h"
 
 struct Task {
@@ -112,8 +113,8 @@ class DriveStraightTask: public Task {
     //
     // This will alow us to roughly predict how many rotations will get us to a
     // given distance.
-    const double SLOPE = 0;
-    const double Y_INTERCEPT = 0;
+    const double SLOPE = 46.10714;
+    const double Y_INTERCEPT = 9.49643;
 };
 
 //////////////////////////////////////////////////////////////////////////
@@ -163,12 +164,12 @@ class TurnTask: public Task {
      *
      * @param angleDegrees the amount to rotate in degrees: positive numbers
      * rotate clockwise and negative numbers rotate counterclockwise
-     * @param gyro_ a yaw rate gyroscope used to measure the current chasis's
-     * bearing
+     * @param inertialSensor_ an inertial sensor that we use to measure the
+     *                        robot's yaw angle
      * @param drive a reference to an Idrive object which actually does the
      * driving
      */
-    TurnTask(double angleDegrees, vex::gyro gyro_, Idrive& drive);
+    TurnTask(double angleDegrees, vex::inertial inertialSensor_, Idrive& drive);
 
     bool done() const;
 
@@ -181,9 +182,23 @@ class TurnTask: public Task {
     double startAngle;
 
     double desiredAngle_;
-    gyro gyro_;
+    vex::inertial inertialSensor_;
     Idrive& drive;
+    PidController pidController;
 };
+
+class GoodTurnTask: public Task {
+  public:
+    GoodTurnTask(double desiredAngleDegrees, Idrive& drive);
+
+    bool done() const;
+
+    void start();
+
+  private:
+    double desiredAngleDegrees_;
+    Idrive& drive_;
+};  
 
 /**
  * Need to drive the robot for arbitrary seconds to implement the testing
@@ -254,6 +269,19 @@ class MobileGoalIntakeTask: public WaitMillisecondsTask {
 
   private:
     ImobileGoalIntake& mobileGoalIntakeObject;
+    bool clamp_;
+};
+
+class DeployDoinkerTask: public WaitMillisecondsTask {
+  public:
+    DeployDoinkerTask(Iclimb& doinker, bool clamp);
+
+    bool done() const;
+
+    void start();
+
+  private:
+    Iclimb& doinkerObject;
     bool clamp_;
 };
 

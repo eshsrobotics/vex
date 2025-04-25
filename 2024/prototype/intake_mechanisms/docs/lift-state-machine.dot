@@ -30,8 +30,8 @@ digraph G {
     MobileGoal -> MobileGoal [label="L1 released\n AND L2 released"];
     MobileGoal -> MobileGoalUp [label="L1 pressed", fontcolor="red", color="red"];
 
-    MobileGoalDown -> Default [label="Default height reached\n AND L2 released", fontcolor="lime", color="lime"];
-    MobileGoalDown -> MobileGoalDown [label="Default height not reached\n OR L2 pressed", fontcolor="blue", color="blue"];
+    MobileGoalDown -> Default [label="Limit switch pressed\n AND L2 released", fontcolor="lime", color="lime"];
+    MobileGoalDown -> MobileGoalDown [label="Limit switch not pressed\n OR L2 pressed", fontcolor="blue", color="blue"];
 
     MobileGoalUp -> AllianceStake [label="alliance stake height reached\n AND L1 released", fontcolor="orange", color="orange"];
     MobileGoalUp -> MobileGoalUp [label="alliance stake height not reached\n OR L1 pressed", fontcolor="red", color="red"];

@@ -21,7 +21,10 @@ const auto gearbox_ratio = ratio6_1;
 
 const double autonomous_speed_pct = 15.0;
 
-
+// PID Controller constants for the Turn Task.
+const double TURN_TASK_P_GAIN = 5.9 * 1e-4;
+const double TURN_TASK_I_GAIN = 0;
+const double TURN_TASK_D_GAIN = 0;
 
 // How quickly to raise or lower the lift mechanism, in percent units between 0
 // and 100.
@@ -31,15 +34,17 @@ const double LIFT_VELOCITY_PERCENT = 50.0;
 * For all inputs in the range [-1, 1], the threshold that has to be overcome
 * for the inputs to be considered non-zero. This currently applies to lift
 * speeds, intake speeds, and driving.
-
 */
-
 
 const int CONTROLLER_LIFT_STATE_ROW = 1;
 const int CONTROLLER_LIFT_POSITION_ROW = 2;
 const int CONTROLLER_ROBOT_STOPPED_ROW = 3;
+const int CONTROLLER_LIMIT_SWITCH_ROW = 4;
+const int CONTROLLER_LIFT_LIMIT_SWITCH_COLUMN = 5;
+
 const int BRAIN_CLAMP_VALUE_ROW = 5;
 const int BRAIN_LIFT_POSITION_ROW = 6;
+
 
 /**
  * Deadzones the intake speed velocities, meaning if they are below a certain
@@ -57,10 +62,19 @@ const double INTAKE_SPEED_DEADZONE = 0.05;
 const double MOBILE_GOAL_INTAKE_DURATION_MILLISECONDS = 200;
 
 /**
+ * Deadzone for the TurnTask PID.
+*/
+const double TURN_TASK_EPSILON_DEGREES = 1;
+
+
+/**
  * Used to initialize code/tasks/devices added using tools in VEXcode Text.
  *
  * This should be called at the start of your int main function.
  */
 void vexcodeInit(void);
+
+// Port number for the inertial sensor
+const int INERTIAL_PORT = 20-1;
 
 #endif // (ifndef __ROBOT_CONFIG_INCLUDED__)

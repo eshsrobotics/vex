@@ -82,6 +82,25 @@ class Ilift {
     virtual bool isLiftSpinning() const = 0;
 
     /**
+     * Our robot's 'lift' is a lever that flips upward and over.  Before
+     * 2025-02-14, when moving the lift "down", this lever mechanism would be
+     * physically stopped by metal hitting metal: the lift could not physically
+     * move down further.  We took advantage of that in order to transition from
+     * the MOBILE_GOAL_DOWN state to the DEFAULT_LOWEST_HEIGHT state: all we had
+     * to test was whether the lift motor stopped rotating!
+     *
+     * But after 2025-02-14, rubber bands were added to help resist the lift's
+     * downward drift under load due to gravity.  That caused a new problem: The
+     * rubber bands physically restrain the lever from hitting the bottommost
+     * point (where there used to be a *THUD*, there was not a *SPROING*.)
+     *
+     * So we can no longer rely on rotations stopping to let us know we've hit
+     * rock bottom.  That's why the team added a limit switch, and that's what
+     * this function tests for.
+     */
+    virtual bool hasLiftReachedBottom() const = 0;
+
+    /**
      * Returns the default height value constants. However, each robot will
      * have different height values for their lift. The derived classes can
      * override the default values.

@@ -131,13 +131,19 @@ PivotRampPrototype makePivotRampPrototype() {
   vex::motor liftMotor1(LIFT_MOTOR_PORT);
   vector<motor> liftMotors = {liftMotor1};
 
-  const double rotationsToTop = 6; //This value has been determined experimentally.
+  const double rotationsToTop = 1.5; //This value has been determined experimentally.
 
   vex::triport::port DOUBLE_SOLENOID_PORT = Seventeen59A.ThreeWirePort.C;
   digital_out pneumaticClamp(DOUBLE_SOLENOID_PORT);
 
-  vex::triport::port CLIMB_PORT = Seventeen59A.ThreeWirePort.B;
+  vex::triport::port CLIMB_PORT = Seventeen59A.ThreeWirePort.G;
   digital_out pneumaticClimb(CLIMB_PORT);
+
+  vex::triport::port DOINKER_PORT = Seventeen59A.ThreeWirePort.D;
+  digital_out pneumaticDoinker(DOINKER_PORT);
+
+  vex::triport::port SWITCH_PORT = Seventeen59A.ThreeWirePort.B;
+  vex::limit limitSwitch(SWITCH_PORT);
 
   PivotRampPrototype p(leftMotors,
                        rightMotors,
@@ -145,13 +151,14 @@ PivotRampPrototype makePivotRampPrototype() {
                        liftMotors,
                        rotationsToTop,
                        pneumaticClamp,
-                       pneumaticClimb);
+                       pneumaticDoinker,
+                       limitSwitch);
   p.setLiftHeights({
     // These values have been determined experimentally.
     .defaultHeight = 0,
-    .mobileGoalHeight = 0.56,
+    .mobileGoalHeight = 0.231,
     .allianceStakeHeight = rotationsToTop,
-    .wallStakeHeight = 3.6
+    .wallStakeHeight = 1.3
   });
   return p;
 }
@@ -162,8 +169,8 @@ PivotRampPrototype makePivotRampPrototype() {
  * @param p a reference to a ImobileGoalIntake instance 
 */
 void updateClampState(ImobileGoalIntake& p) {
-  bool clamp = Controller.ButtonL1.pressing(); //means the air is released
-  bool unclamp = Controller.ButtonL2.pressing(); //means the air is pumped in
+  bool clamp = Controller.ButtonL2.pressing(); //means the air is released
+  bool unclamp = Controller.ButtonL1.pressing(); //means the air is pumped in
   if (clamp) {
     p.clamp(true);
   } else if (unclamp) {
@@ -171,13 +178,18 @@ void updateClampState(ImobileGoalIntake& p) {
   }
 }
 /**
- * Encapsulates climb functionality for teleop in one function.
+ * Encapsulates doinker functionality for teleop in one function.
  * @param p a reference to an Iclimb instance (the prototype)
  */
-void updateClimbState(Iclimb& p) {
+void updateDoinkerState(Iclimb& p) {
   bool buttonDown = Controller.ButtonX.pressing();
+  bool buttonUp = Controller.ButtonY.pressing();
+
   if (buttonDown) {
-    p.activateClimb();
+    p.activateClimb(true);
+  }
+  if (buttonUp) {
+    p.activateClimb(false);
   }
 }
 
@@ -197,7 +209,7 @@ void pre_auton() {
  */
 void autonomous() {
   auto prototype = makePivotRampPrototype();
-  auto gyro = vex::gyro(Seventeen59A.ThreeWirePort.G);
+  vex::inertial inertialSensor(INERTIAL_PORT);
 
   // auto fullAutonRootTask = make_shared<WaitMillisecondsTask>(0);
   // auto B = make_shared<DriveStraightTask>(-0.4572 * 100, prototype);
@@ -248,19 +260,123 @@ void autonomous() {
   // // Leg 6: Driving forward to reach the wall and scoring the autonomous win point.
   // addTask(Q, R);
   
-  // This is a fallback task tree to use in case fullAutonRootTask is not tested before competition
-  //auto simpleRootTask = make_shared<TurnTask>(36.56, gyro, prototype);
-  
-  auto rootTask = make_shared<WaitMillisecondsTask>(0);
-  auto driveTest = make_shared<TestDriveTask>(5, prototype);
-  // auto DriveTask = make_shared<TestDriveTask>(2, prototype);
-  // auto stopTask = make_shared<DriveStraightTask>(0, prototype);
-  // addTask(rootTask, DriveTask);
-  // addTask(DriveTask, stopTask);
-  addTask(rootTask, driveTest);
-  
+  // This trajectory works only on the red negative corner
+  auto REDNegative = make_shared<WaitMillisecondsTask>(0);
+  auto A1 = make_shared<DriveStraightTask>(-80, prototype);
+  auto B1 = make_shared<MobileGoalIntakeTask>(prototype, true);
+  auto C1 = make_shared<IntakeMillisecondsTask>(prototype, 5000, -1);
+  auto D1 = make_shared<GoodTurnTask>(45, prototype);
+  auto E1 = make_shared<DriveStraightTask>(50, prototype);
+  auto F1 = make_shared<GoodTurnTask>(190, prototype);
+  auto G1 = make_shared<DriveStraightTask>(100, prototype);
+
+  auto BLUENegative = make_shared<WaitMillisecondsTask>(0);
+  auto A3 = make_shared<DriveStraightTask>(-80, prototype);
+  auto B3 = make_shared<MobileGoalIntakeTask>(prototype, true);
+  auto C3 = make_shared<IntakeMillisecondsTask>(prototype, 7000, -1);
+  auto D3 = make_shared<GoodTurnTask>(-45, prototype);
+  auto E3 = make_shared<DriveStraightTask>(50, prototype);
+  auto F3 = make_shared<GoodTurnTask>(-190, prototype);
+  auto G3 = make_shared<DriveStraightTask>(100, prototype);
+
+  // This trajectory works only on the red positive corner
+  auto REDgoalRushPositiveRootTask = make_shared<WaitMillisecondsTask>(0);
+  auto A = make_shared<DriveStraightTask>(65, prototype);
+  auto B = make_shared<IntakeMillisecondsTask>(prototype, 600, -1);
+  auto C = make_shared<DriveStraightTask>(60, prototype);
+  auto D = make_shared<DriveStraightTask>(-30, prototype);
+  auto E = make_shared<GoodTurnTask>(-33, prototype);
+  auto F = make_shared<DriveStraightTask>(37, prototype);
+  auto G = make_shared<DeployDoinkerTask>(prototype, true);
+  auto H = make_shared<WaitMillisecondsTask>(100);
+  auto I = make_shared<DriveStraightTask>(-60, prototype);
+  auto J = make_shared<GoodTurnTask>(60, prototype);
+  auto K = make_shared<DeployDoinkerTask>(prototype, false);
+  auto L = make_shared<GoodTurnTask>(40, prototype);
+  auto M = make_shared<DriveStraightTask>(-80, prototype);
+  auto N = make_shared<MobileGoalIntakeTask>(prototype, true); 
+  auto O = make_shared<IntakeMillisecondsTask>(prototype, 2500, -1);
+  auto P = make_shared<DriveStraightTask>(70, prototype);
+
+auto BLUEgoalRushPositiveRootTask = make_shared<WaitMillisecondsTask>(0);
+  auto A2 = make_shared<DriveStraightTask>(60, prototype);
+  auto B2 = make_shared<IntakeMillisecondsTask>(prototype, 500, -1);
+  auto C2 = make_shared<DriveStraightTask>(60, prototype);
+  auto D2 = make_shared<DeployDoinkerTask>(prototype, true);
+  auto E2 = make_shared<WaitMillisecondsTask>(100);
+  auto F2 = make_shared<DriveStraightTask>(-90, prototype);
+  auto G2 = make_shared<GoodTurnTask>(-120, prototype);
+  auto H2 = make_shared<DeployDoinkerTask>(prototype, false);
+  auto I2 = make_shared<GoodTurnTask>(-40, prototype);
+  auto J2 = make_shared<DriveStraightTask>(-70, prototype);
+  auto K2 = make_shared<MobileGoalIntakeTask>(prototype, true); 
+  auto L2 = make_shared<IntakeMillisecondsTask>(prototype, 4500, -1);
+  auto M2 = make_shared<GoodTurnTask>(-100, prototype);
+  auto N2 = make_shared<DriveStraightTask>(40, prototype);
+
+
+  // auto intakeTask = make_shared <IntakeMillisecondsTask>(prototype, 1000, 1);
+  // auto driveBack = make_shared<DriveStraightTask>(10, prototype);
+
+  auto testRootTask = make_shared<WaitMillisecondsTask>(0);
+  auto testTurn = make_shared<GoodTurnTask>(90, prototype);
+
+  addTask(REDNegative, A1);
+  addTask(A1, B1);
+  addTask(B1, C1);
+  addTask(B1, D1);
+  addTask(D1, E1);
+  addTask(E1, F1);
+  addTask(F1, G1);
+
+  addTask(BLUENegative, A3);
+  addTask(A3, B3);
+  addTask(B3, C3);
+  addTask(B3, D3);
+  addTask(D3, E3);
+  addTask(E3, F3);
+  addTask(F3, G3);
+
+  addTask(REDgoalRushPositiveRootTask, A);
+  addTask(A, B);
+  addTask(A, C);
+  addTask(C, D);
+  addTask(D, E);
+  addTask(E, F);
+  addTask(F, G);
+  addTask(G, H);
+  addTask(H, I);
+  addTask(I, J);
+  addTask(J, K);
+  addTask(J, L);
+  addTask(L, M);
+  addTask(M, N);
+  addTask(M, O);
+
+  addTask(BLUEgoalRushPositiveRootTask, A2);
+  addTask(A2, B2);
+  addTask(A2, C2);
+  addTask(C2, D2);
+  addTask(D2, E2);
+  addTask(E2, F2);
+  addTask(F2, G2);
+  addTask(G2, H2);
+  addTask(G2, I2);
+  addTask(I2, J2);
+  addTask(J2, K2);
+  addTask(K2, L2);
+  addTask(K2, M2);
+  addTask(M2, N2);
+
+
+  addTask(testRootTask, testTurn);
+
   // execute(fullAutonRootTask);
-  execute(rootTask);
+  execute(REDgoalRushPositiveRootTask);
+ // execute(BLUEgoalRushPositiveRootTask);
+ // execute(REDNegative);          //Michal Look Here
+  // execute(BLUENegative);       
+  // execute(testRootTask);
 }
 
 /**
@@ -287,7 +403,7 @@ void teleop() {
     updateClampState(prototype);
 
     // Allows controlling the climb hooks.
-    updateClimbState(prototype);
+    updateDoinkerState(prototype);
 
     // // Allow the driver to control the lift position.
     bool buttonUp = Controller.ButtonUp.pressing();

@@ -1,7 +1,7 @@
 // Implements and definition updateLiftState.h
 
 #include "updateLiftState.h"
-
+#include "robot-config.h"
 #include <algorithm> // abs()
 #include <string>
 
@@ -115,7 +115,7 @@ void updateLiftState(
             break;
 
         case LiftState::MOBILE_GOAL_DOWN: // Heading down to the lowest height
-            if (!robotWithLift.isLiftSpinning()) {
+            if (robotWithLift.hasLiftReachedBottom()) {
                 robotWithLift.moveLiftDirect(0);
                 if (!downButton) {
                     state = LiftState::DEFAULT_LOWEST_HEIGHT;

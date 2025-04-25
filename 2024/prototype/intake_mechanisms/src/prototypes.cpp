@@ -54,7 +54,7 @@ void arcade_drive(double straightSpeed, double turnSpeed, vector<motor>& left,
     rightVelocity *= 1;
 
     Controller.Screen.setCursor(3, 1);
-    Controller.Screen.print("Vel: l=%.2f, r=%.2f  ", leftVelocity, rightVelocity);
+    //Controller.Screen.print("Vel: l=%.2f, r=%.2f  ", leftVelocity, rightVelocity);
 
     if (rightVelocity != 0) {
         for_each(right.begin(), right.end(), [&](motor& m) {
@@ -63,7 +63,7 @@ void arcade_drive(double straightSpeed, double turnSpeed, vector<motor>& left,
         });
     } else {
         for_each(right.begin(), right.end(), [&](motor& m) {
-            m.stop(hold);
+            m.stop();
         });
     }
 
@@ -74,7 +74,7 @@ void arcade_drive(double straightSpeed, double turnSpeed, vector<motor>& left,
         });
     } else {
         for_each(left.begin(), left.end(), [&](motor& m) {
-            m.stop(hold);
+            m.stop();
         });
     }
 }
@@ -91,9 +91,10 @@ PivotRampPrototype::PivotRampPrototype(const std::vector<vex::motor>& left_motor
                                        const std::vector<vex::motor>& right_motors_,
                                        const std::vector<vex::motor>& intake_, const std::vector<vex::motor>& lift_,
                                        double rotToTop, const vex::digital_out& pneumaticClamp_, 
-                                       const vex::digital_out& pneumaticClimb_)
+                                       const vex::digital_out& pneumaticDoinker_, const vex::limit& limitSwitch_)
     : left_motors(left_motors_), right_motors(right_motors_),
-      intake_motors(intake_), lift_motors(lift_), rotationsToTop(rotToTop), pneumaticClamp(pneumaticClamp_), pneumaticClimb(pneumaticClimb_) {
+      intake_motors(intake_), lift_motors(lift_), rotationsToTop(rotToTop), pneumaticClamp(pneumaticClamp_), 
+      pneumaticDoinker(pneumaticDoinker_), limitSwitch(limitSwitch_) {
     // Where we are right now -- the initialLiftPosition -- will now
     // correspond to an encoder value of zero.
     for_each(lift_motors.begin(), lift_motors.end(), [](motor& current_motor) {
@@ -124,7 +125,14 @@ double PivotRampPrototype::getRotations() const {
     // non-const function.  (Why, VEX?  Why?)  Since we *know* it's not going to
     // actually change anything, we know it's safe to call even here in a const
     // method.  So we essentially tell the compiler to shove off.
-    return const_cast<PivotRampPrototype*>(this)->left_motors[0].position(vex::rotationUnits::rev);
+    //
+    // Additionally, the motor represented by left_motors[0] moves backwards
+    // compared to the robot's actual movement, so currentRotations in
+    // TestDriveTask always increases in the negative direction. We need to
+    // multiply it by -1 to make currentRotations actually increase positively.
+    
+    const auto rotations = const_cast<PivotRampPrototype*>(this)->left_motors[0].position(vex::rotationUnits::rev);
+    return -1 * rotations;
 }
 
 void PivotRampPrototype::intake(double intakeSpeed) {
@@ -215,10 +223,17 @@ bool PivotRampPrototype::isLiftAvailable() const {
     return !lift_motors.empty();
 }
 
+bool PivotRampPrototype::hasLiftReachedBottom() const {
+    PivotRampPrototype* that = const_cast<PivotRampPrototype*>(this);
+    int limitSwitchValue = that->limitSwitch.value();
+    //vex::limit input(Seventeen59A.ThreeWirePort.B);
+    return limitSwitchValue;
+}
+
 void PivotRampPrototype::clamp(bool active) {
     this->pneumaticClamp.set(active);
 }
 
-void PivotRampPrototype::activateClimb() {
-    this->pneumaticClimb.set(true);
+void PivotRampPrototype::activateClimb(bool active) {
+    this->pneumaticDoinker.set(active);
 }

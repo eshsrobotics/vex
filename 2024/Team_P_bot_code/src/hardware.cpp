@@ -2,10 +2,13 @@
 
 #include "hardware.h"
 #include <algorithm>
+#include <map>
+
 
 using namespace vex;
 using std::max;
 using std::min;
+using std::map;
 
 brain Brain;
 controller Controller;
@@ -19,6 +22,8 @@ motor BackLiftLeft(LiftBL);
 
 //Positive velocities close the clamp, while negative velocities open the clamp.
 motor Clamp(CLAMP_PORT);
+
+limit ClampLimit(Brain.ThreeWirePort.C);
 
 motor Intake(INTAKE_PORT);
 
@@ -104,10 +109,19 @@ void robotlift(int lift) {
 void updateClampState(bool close) {
     static ClampState clampStatus = ClampState::Start;
     static double startTimeSec = 0;
+    map<ClampState, const char*> stateNames = {
+        {ClampState::Start, "Start"},
+        {ClampState::Opening, "Opening"},
+        {ClampState::FullyOpen, "Fully open"},
+        {ClampState::Closing, "Closing"},
+        {ClampState::FullyClosed, "FullyClosed"}
+    };
+    Controller.Screen.setCursor(1,1);
+    Controller.Screen.print("%s: Limit = %d   ", stateNames[clampStatus], ClampLimit.value());
     switch(clampStatus) {
         case ClampState::Start:
             startTimeSec = Brain.timer(vex::timeUnits::sec);
-            if (close == true) {            
+            if (close == true) {           
                 clampStatus = ClampState::Closing;
             } else {
                 clampStatus = ClampState::Opening;
@@ -115,8 +129,8 @@ void updateClampState(bool close) {
             break;
         
         case ClampState::Opening:
-            Clamp.spin(vex::directionType::rev, CLAMP_VELOCITY_PCT, pct);
-            if (Brain.timer(vex::timeUnits::sec) >= OPEN_CLAMP_TIMEOUT_SEC + startTimeSec) {
+            Clamp.spin(vex::directionType::fwd, CLAMP_VELOCITY_PCT, pct);
+            if (Brain.timer(vex::timeUnits::sec) >= OPEN_CLAMP_TIMEOUT_SEC + startTimeSec || ClampLimit.value() > 0) {
                 clampStatus = ClampState::FullyOpen;
             } else if (close == true) {
                 // User stopped opening and is now closing the clamp.
@@ -126,7 +140,7 @@ void updateClampState(bool close) {
             break;
         
         case ClampState::Closing:
-            Clamp.spin(vex::directionType::fwd, CLAMP_VELOCITY_PCT, pct);
+            Clamp.spin(vex::directionType::rev, CLAMP_VELOCITY_PCT, pct);
             if (Brain.timer(vex::timeUnits::sec) >= CLOSE_CLAMP_TIMEOUT_SEC + startTimeSec) {
                 clampStatus = ClampState::FullyClosed;
             } else if (close == false) { 
