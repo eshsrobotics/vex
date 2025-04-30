@@ -38,9 +38,9 @@ vex::brain       Brain;
 int main() {
 
     while (true) {
-        int forward_back_speed = Controller.Axis3.position();
-        int left_right_speed = Controller.Axis1.position();
-        int turn_speed = Controller.Axis4.position();
+        int forward_back_speed = Controller.Axis3.position() / 1.1;
+        int left_right_speed = Controller.Axis1.position() / 1.1;
+        int turn_speed = Controller.Axis4.position() / 1.1;
         mecanum_drive(forward_back_speed, left_right_speed, turn_speed);
 
         // Allow other tasks to run
