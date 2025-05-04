@@ -154,7 +154,8 @@ DriveStraightTask::DriveStraightTask(double desiredDistanceCentimeters,
 
 void DriveStraightTask::start() {
   startingRotations = drive.getRotations();
-  drive.drive(sign(distanceToDriveCm) * 0.18, 0.0);
+  //Michal, forward/backward speed value, multiplier should be less than 1
+  drive.drive(sign(distanceToDriveCm) * 0.27, 0.0);
 }
 
 bool DriveStraightTask::done() const {
@@ -306,6 +307,30 @@ bool DriveStraightTask::done() const {
             drive.drive(0, -power);
             return false;
         }
+    }
+
+    GoodTurnTask::GoodTurnTask(double desiredAngleDegrees, Idrive& drive) : 
+      Task("v"), desiredAngleDegrees_{desiredAngleDegrees}, drive_{drive} {
+    }
+
+    //Michal, edit the second argument in the drive function to edit the turn
+    //speed, should be between 0 and 1
+    void GoodTurnTask::start(){
+      drive_.resetEncoders();
+      drive_.drive(0.0, sign(desiredAngleDegrees_) * 0.3);
+    }
+
+    bool GoodTurnTask::done() const {
+      double currentRotations = drive_.getRotations();
+      Controller.Screen.setCursor(1,1);
+      Controller.Screen.print(currentRotations);
+
+      if(abs(currentRotations) >= abs(desiredAngleDegrees_ * 0.0178 / 3)) {
+        drive_.drive(0.0, 0.0);
+        return true;
+      } else {
+        return false;
+      }
     }
 
     /*********************************
