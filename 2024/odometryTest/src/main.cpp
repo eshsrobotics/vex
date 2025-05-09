@@ -74,7 +74,9 @@ void usercontrol(void) {
     // update your motors, etc.
     // ........................................................................
     drive(::controller.Axis3.position(), ::controller.Axis1.position());
-
+    ::controller.Screen.setCursor(1,1);
+    ::controller.Screen.print(odometrySensor.position(degrees));
+    
     wait(20, msec); // Sleep the task for a short amount of time to
                     // prevent wasted resources.
   }

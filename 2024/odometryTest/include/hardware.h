@@ -15,13 +15,13 @@ extern vex::motor rightMotor1;
 extern vex::motor rightMotor2;
 extern vex::motor rightMotor3;
 
-const int leftFrontPort = 1; //the frontmost motor on the left side of the drive
-const int leftTopPort = 2; //the motor on top at the back of the left side of the drive
-const int leftBottomPort = 3; //the motor on bottom at the back of the left side of the drive
+const int leftFrontPort = 15-1; //the frontmost motor on the left side of the drive
+const int leftTopPort = 14-1; //the motor on top at the back of the left side of the drive
+const int leftBottomPort = 16-1; //the motor on bottom at the back of the left side of the drive
 
-const int rightFrontPort = 4; //the frontmost motor on the right side of the drive
-const int rightTopPort = 5; //the motor on top at the back of the right side of the drive
-const int rightBottomPort = 6; //the motor on bottom at the back of the right side of the drive
+const int rightFrontPort = 12-1; //the frontmost motor on the right side of the drive
+const int rightTopPort = 20-1; //the motor on top at the back of the right side of the drive
+const int rightBottomPort = 13-1; //the motor on bottom at the back of the right side of the drive
 
 /**
  * This is the drive function that instantaneously sets the motor speeds. This
@@ -39,7 +39,7 @@ const int rightBottomPort = 6; //the motor on bottom at the back of the right si
 void drive(double driveForward, double turnClockwise);
 
 extern vex::rotation odometrySensor; //only used for the foward-back odometry wheel
-const int odometrySensorPort = 7;
+const int odometrySensorPort = 11-1;
 
 const double rotationsToDistanceInches = 25;
 
