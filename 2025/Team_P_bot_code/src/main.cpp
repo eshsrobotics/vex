@@ -8,6 +8,8 @@
 /*----------------------------------------------------------------------------*/
 
 #include "vex.h"
+#include "hardware.h"
+#include <vector>
 
 using namespace vex;
 
@@ -30,6 +32,13 @@ void pre_auton(void) {
 
   // All activities that occur before the competition starts
   // Example: clearing encoders, setting servo positions, ...
+
+  // The first half of the motor ports are for the left side, and the second
+  // half are for the right side
+  // If you need to reverse a motor, make its port number negative
+  std::vector<int> ports = {1, 2, 3, 4};
+  createDriveMotors(ports);
+
 }
 
 /*---------------------------------------------------------------------------*/
@@ -43,9 +52,9 @@ void pre_auton(void) {
 /*---------------------------------------------------------------------------*/
 
 void autonomous(void) {
-  // ..........................................................................
-  // Insert autonomous user code here.
-  // ..........................................................................
+  
+  testMotors(2000);
+
 }
 
 /*---------------------------------------------------------------------------*/
@@ -65,10 +74,13 @@ void usercontrol(void) {
     // Each time through the loop your program should update motor + servo
     // values based on feedback from the joysticks.
 
-    // ........................................................................
-    // Insert user code here. This is where you use the joystick values to
-    // update your motors, etc.
-    // ........................................................................
+    controller userController;
+    double controllerFrontBackPosition = userController.Axis3.position();
+    double controllerLeftRightPosition = userController.Axis4.position();
+
+    drive(controllerFrontBackPosition, controllerLeftRightPosition);
+
+
 
     wait(20, msec); // Sleep the task for a short amount of time to
                     // prevent wasted resources.

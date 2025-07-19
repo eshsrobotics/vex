@@ -1,9 +1,11 @@
 #include "hardware.h"
 #include "vex.h"
 #include <algorithm>
+#include <memory>
 
 using std::max;
 using std::min;
+using std::unique_ptr;
 
 std::vector<vex::motor> driveMotors;
 
@@ -15,10 +17,10 @@ void createDriveMotors(std::vector<int> driveMotorPorts) {
 
         // If we encounter a negative port number, then that means we need to
         // reverse the corresponding motor when constructing it.
-        vex::motor motor(abs(driveMotorPorts[i]),
-                         driveMotorPorts[i] > 0 ? false : true);
+        vex::motor motor = vex::motor(abs(driveMotorPorts[i]),
+                                      driveMotorPorts[i] > 0 ? false : true);
 
-        driveMotorPorts.emplace_back(motor);
+        driveMotors.emplace_back(motor);
     } 
 
 }
@@ -53,6 +55,22 @@ void drive(double frontBackSpeed, double turnSpeed) {
     }
 
 
+
+}
+
+void testMotors(int timeInMillis) {
+
+    while (true) {
+
+        for (size_t i = 0; i < driveMotors.size(); i++) {
+
+            driveMotors[i].spin(vex::directionType::fwd, 100, vex::velocityUnits::pct);
+            wait(timeInMillis, vex::msec);
+            driveMotors[i].stop(vex::brakeType::brake);
+
+        }
+
+    }
 
 }
 

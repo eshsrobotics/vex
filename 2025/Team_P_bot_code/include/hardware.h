@@ -46,6 +46,16 @@ void createDriveMotors(std::vector<int> driveMotorPorts);
  */
 void drive(double frontBackSpeed, double turnSpeed);
 
+/**
+ * Just a function to test if the motors in the drive are spinning and see which
+ * direction they're spinning in.
+ * 
+ * @param timeInMillis
+ * This is the time, in milliseconds, that the motors will spin for.
+ * 
+ */
+void testMotors(int timeInMillis);
+
 
 // In theory, when the joystick is at position 0, the robot will stop moving.
 // However, in practice the position that the joystick goes to when you release
