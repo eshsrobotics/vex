@@ -1,41 +1,22 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /*    Module:       main.cpp                                                  */
-/*    Author:       17475                                                     */
-/*    Created:      10/5/2025, 4:17:08 PM                                     */
+/*    Author:       sanjaynataraj                                             */
+/*    Created:      7/13/2025, 2:55:55 PM                                     */
 /*    Description:  V5 project                                                */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
 #include "vex.h"
+#include "hardware.h"
+#include <vector>
 
 using namespace vex;
-
 
 // A global instance of competition
 competition Competition;
 
 // define your global instances of motors and other devices here
-
-const int FRONT_LEFT_PORT = 5 - 1;
-const int BACK_LEFT_PORT = 6 - 1;
-const int FRONT_RIGHT_PORT = 8 - 1;
-const int BACK_RIGHT_PORT = 7 - 1;
-
-vex::brain Brain;
-vex::controller Controller;
-
-motor FrontLeft(FRONT_LEFT_PORT);
-motor FrontRight(FRONT_RIGHT_PORT);
-motor BackLeft(BACK_LEFT_PORT);
-motor BackRight(BACK_RIGHT_PORT);
-
-motor_group LeftMotors = motor_group(FrontLeft, BackLeft);
-motor_group RightMotors = motor_group(FrontRight, BackRight);
-
-drivetrain Drive = drivetrain(LeftMotors, RightMotors, 320, 330, 320, distanceUnits::mm, 1);
-
-
 
 /*---------------------------------------------------------------------------*/
 /*                          Pre-Autonomous Functions                         */
@@ -51,6 +32,13 @@ void pre_auton(void) {
 
   // All activities that occur before the competition starts
   // Example: clearing encoders, setting servo positions, ...
+
+  // The first half of the motor ports are for the left side, and the second
+  // half are for the right side
+  // If you need to reverse a motor, make its port number negative
+  std::vector<int> ports = {1, 2, 3, 4};
+  createDriveMotors(ports);
+
 }
 
 /*---------------------------------------------------------------------------*/
@@ -64,9 +52,9 @@ void pre_auton(void) {
 /*---------------------------------------------------------------------------*/
 
 void autonomous(void) {
-  // ..........................................................................
-  // Insert autonomous user code here.
-  // ..........................................................................
+  
+  testMotors(2000);
+
 }
 
 /*---------------------------------------------------------------------------*/
@@ -80,23 +68,19 @@ void autonomous(void) {
 /*---------------------------------------------------------------------------*/
 
 void usercontrol(void) {
-
-  double forwardBackVelocity = 0;
-
   // User control code here, inside the loop
   while (1) {
     // This is the main execution loop for the user control program.
     // Each time through the loop your program should update motor + servo
     // values based on feedback from the joysticks.
 
-    double ControllerUpDownPosition = Controller.Axis3.position();
-    double ControllerLeftRightPosition = Controller.Axis4.position();
+    controller userController;
+    double controllerFrontBackPosition = userController.Axis3.position();
+    double controllerLeftRightPosition = userController.Axis4.position();
+
+    drive(controllerFrontBackPosition, controllerLeftRightPosition);
 
 
-    // ........................................................................
-    // Insert user code here. This is where you use the joystick values to
-    // update your motors, etc.
-    // ........................................................................
 
     wait(20, msec); // Sleep the task for a short amount of time to
                     // prevent wasted resources.
