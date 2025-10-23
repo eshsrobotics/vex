@@ -15,7 +15,7 @@ brain       Brain;
 
 const int LCLAW_PORT = 1;
 const int RCLAW_PORT = 2;
-const int MaximumClawSpeedPercent = 50;
+const int MaximumClawSpeedPercent = 20;
 
 motor LMotor = motor(LCLAW_PORT, true);
 motor RMotor = motor(RCLAW_PORT);
