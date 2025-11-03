@@ -12,7 +12,7 @@
 #include <vector>
 
 using namespace vex;
-
+vex::motor test_motor = vex::motor(vex::PORT10, false);
 // A global instance of competition
 competition Competition;
 
@@ -36,7 +36,7 @@ void pre_auton(void) {
   // The first half of the motor ports are for the left side, and the second
   // half are for the right side
   // If you need to reverse a motor, make its port number negative
-  std::vector<int> ports = {1, 2, 3, 4};
+  std::vector<int> ports = {vex::PORT3, vex::PORT4, vex::PORT5, vex::PORT6};
   createDriveMotors(ports);
 
 }
@@ -69,14 +69,15 @@ void autonomous(void) {
 
 void usercontrol(void) {
   // User control code here, inside the loop
+  // test_motor.spin(fwd);
   while (1) {
     // This is the main execution loop for the user control program.
     // Each time through the loop your program should update motor + servo
     // values based on feedback from the joysticks.
 
     controller userController;
-    double controllerFrontBackPosition = userController.Axis3.position();
-    double controllerLeftRightPosition = userController.Axis4.position();
+    double controllerFrontBackPosition = -userController.Axis4.position();
+    double controllerLeftRightPosition = -userController.Axis3.position();
 
     drive(controllerFrontBackPosition, controllerLeftRightPosition);
 

@@ -20,3 +20,11 @@ Drive scheme
   * Launching Controls
     * Button Y: Ejects Octo from tube
     * Button A: Intake Octo to tube
+
+Motor Assignments
+=================
+
+  * Port3 is back left motor
+  * Port4 is front left motor (currently defective as of 2025-11-02T16:53:00 PST)
+  * Port5 is front right motor
+  * Port6 is back right motor

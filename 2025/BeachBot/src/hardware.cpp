@@ -2,6 +2,7 @@
 #include "vex.h"
 #include <algorithm>
 #include <memory>
+#include <iostream>
 
 using std::max;
 using std::min;
@@ -34,26 +35,25 @@ void drive(double frontBackSpeed, double turnSpeed) {
     leftMotorSpeed = max(-100.0, min(leftMotorSpeed, 100.0));
     rightMotorSpeed = max(-100.0, min(rightMotorSpeed, 100.0));
 
+    // Drive or stop the motors on the left side.
     for (size_t i = 0; i < numberOfMotors/2; i++) {
-
         if(fabs(leftMotorSpeed) > DEADZONE) {
             driveMotors[i].spin(vex::directionType::fwd, leftMotorSpeed, vex::velocityUnits::pct);
         } else {
             driveMotors[i].stop(vex::brakeType::brake);
         }
-        
     }
 
+    // Drive or stop the motors on the right side.
     for (size_t i = numberOfMotors/2; i < numberOfMotors; i++) {
-        
+
+
         if(fabs(rightMotorSpeed) > DEADZONE) {
             driveMotors[i].spin(vex::directionType::fwd, rightMotorSpeed, vex::velocityUnits::pct);
         } else {
             driveMotors[i].stop(vex::brakeType::brake);
         }
-
     }
-
 
 
 }
