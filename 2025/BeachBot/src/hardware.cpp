@@ -8,7 +8,20 @@ using std::max;
 using std::min;
 using std::unique_ptr;
 
-std::vector<vex::motor> driveMotors;
+// This array has a size that depends on the number of motors in our
+// differential drive. We have a choice between allocating static ports (that
+// never change) for the rest of our subsystems or building off of the drive
+// motor port assignments.  Of the two, we prefer having fixed ports for
+// non-drive motors.
+//
+// Keep in mind that this means our additional ports should start beyond the
+// last possible port number that any differential drive could have.  So we
+// start with vex::PORT9.
+std::vector<vex::motor> driveMotors; 
+
+vex::motor leftIntakeMotor(vex::PORT9, true);
+vex::motor rightIntakeMotor(vex::PORT10);
+vex::motor uptakeMotor(vex::PORT11);
 
 void createDriveMotors(std::vector<int> driveMotorPorts) {
 
@@ -54,8 +67,20 @@ void drive(double frontBackSpeed, double turnSpeed) {
             driveMotors[i].stop(vex::brakeType::brake);
         }
     }
+}
 
-
+void intakeControl(int speedPercent) {
+    if (speedPercent == 0) {
+        // Stop the intake motors.
+        leftIntakeMotor.stop(vex::brakeType::brake);
+        rightIntakeMotor.stop(vex::brakeType::brake);
+        uptakeMotor.stop(vex::brakeType::brake);
+    } else {
+        leftIntakeMotor.spin(vex::forward, speedPercent, vex::percentUnits::pct);
+        rightIntakeMotor.spin(vex::forward, speedPercent, vex::percentUnits::pct);
+        uptakeMotor.spin(vex::forward, speedPercent, vex::percentUnits::pct);
+    }
+    
 }
 
 void testMotors(int timeInMillis) {

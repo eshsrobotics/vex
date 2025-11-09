@@ -81,8 +81,21 @@ void usercontrol(void) {
 
     drive(controllerFrontBackPosition, controllerLeftRightPosition);
 
+    // Allow the user to control the intake
+    if (userController.ButtonY.pressing()) {
+      // Reverse the intake
+      intakeControl(-100);
+    } else if (userController.ButtonA.pressing()) {
+      // Drive intake forward
+      intakeControl(100);
+    } else {
+      // Stop the intake
+      intakeControl(0);
+    }
 
-
+    //Allows the user to
+    
+    
     wait(20, msec); // Sleep the task for a short amount of time to
                     // prevent wasted resources.
   }

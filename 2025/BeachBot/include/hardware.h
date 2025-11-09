@@ -47,6 +47,17 @@ void createDriveMotors(std::vector<int> driveMotorPorts);
 void drive(double frontBackSpeed, double turnSpeed);
 
 /**
+ * Controls the intake subsystem, letting us switch between intaking and
+ * outtaking blocks.
+ *
+ * @param speedPercent
+ * The speed that the motors in this subsystem will spin at, expressed as a
+ * percentage of the maximum speed.  The range is from -100 (full outtake) to
+ * +100 (full intake).  Use 0 to stop the intake and uptake motors.
+ */
+void intakeControl(int speedPercent);
+
+/**
  * Just a function to test if the motors in the drive are spinning and see which
  * direction they're spinning in.
  * 

@@ -25,6 +25,9 @@ Motor Assignments
 =================
 
   * Port3 is back left motor
-  * Port4 is front left motor (currently defective as of 2025-11-02T16:53:00 PST)
+  * Port4 is front left motor
   * Port5 is front right motor
   * Port6 is back right motor
+  * Port9 is intake left motor
+  * Port10 is intake right motor
+  * Port11 is uptake motor.
