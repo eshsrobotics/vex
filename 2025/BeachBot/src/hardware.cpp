@@ -23,6 +23,9 @@ vex::motor leftIntakeMotor(vex::PORT9, true);
 vex::motor rightIntakeMotor(vex::PORT10);
 vex::motor uptakeMotor(vex::PORT11);
 
+vex::motor armLeft(vex::PORT12);
+vex::motor armRight(vex::PORT13, true);
+
 void createDriveMotors(std::vector<int> driveMotorPorts) {
 
     size_t numberOfMotorPorts = driveMotorPorts.size();
@@ -80,7 +83,17 @@ void intakeControl(int speedPercent) {
         rightIntakeMotor.spin(vex::forward, speedPercent, vex::percentUnits::pct);
         uptakeMotor.spin(vex::forward, speedPercent, vex::percentUnits::pct);
     }
-    
+}
+
+void armControl(int speedPercent) {
+    if (speedPercent == 0) {
+        // Stop arm motors
+        armLeft.stop(vex::brakeType::hold);
+        armRight.stop(vex::brakeType::hold);
+    } else {
+        armLeft.spin(vex::forward, speedPercent, vex::percentUnits::pct);
+        armRight.spin(vex::forward, speedPercent, vex::percentUnits::pct);
+    }
 }
 
 void testMotors(int timeInMillis) {

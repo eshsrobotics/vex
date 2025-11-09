@@ -3,12 +3,12 @@ Subsystems
 * Drive subsystem
   * 4x 11W motors
 * Launcher
-  * 1x 11w motor
+  * 1x 5.5w motor
   * 2x 5.5w motor
-* 4-bar Lift
+* 4-bar Lift (the external gear ratio for the arms is 48 to 72)
   * 2x 11w motor
 
-Drive scheme
+Input scheme
 ============
 * Drive train:
   * Arcade drive controls:
@@ -24,10 +24,12 @@ Drive scheme
 Motor Assignments
 =================
 
-  * Port3 is back left motor
-  * Port4 is front left motor
-  * Port5 is front right motor
-  * Port6 is back right motor
-  * Port9 is intake left motor
-  * Port10 is intake right motor
-  * Port11 is uptake motor.
+  * `Port3` is back left motor (11 W)
+  * `Port4` is front left motor (11 W)
+  * `Port5` is front right motor (11 W)
+  * `Port6` is back right motor (11 W)
+  * `Port9` is intake left motor (5.5 W)
+  * `Port10` is intake right motor (5.5 W)
+  * `Port11` is uptake motor (5.5 W)
+  * `Port12` is left lift motor (11 W)
+  * `Port13` is right lift motor (11 W)

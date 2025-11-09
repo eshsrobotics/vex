@@ -93,8 +93,18 @@ void usercontrol(void) {
       intakeControl(0);
     }
 
-    //Allows the user to
-    
+    //Allows the user to raise and lower the arm.
+    if (userController.ButtonR1.pressing()) {
+      // Raises the arms.
+      armControl(+100);
+    } else if (userController.ButtonR2.pressing()) {
+      // Lowers the arms.
+      armControl(-100);
+    } else {
+      // Stop the arms.
+      armControl(0);
+    }
+  
     
     wait(20, msec); // Sleep the task for a short amount of time to
                     // prevent wasted resources.

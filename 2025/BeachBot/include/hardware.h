@@ -57,6 +57,17 @@ void drive(double frontBackSpeed, double turnSpeed);
  */
 void intakeControl(int speedPercent);
 
+
+/**
+ * Controls the arm subsystem, letting us raise and lower the arm.
+ *
+ * @param speedPercent
+ * The speed that the motors in this subsystem will spin at, expressed as a
+ * percentage of the maximum speed.  The range is from -100 (full speed
+ * downward) to +100 (full speed upward).  Set to 0 to stop the arm motors.
+ */
+void armControl(int speedPercent);
+
 /**
  * Just a function to test if the motors in the drive are spinning and see which
  * direction they're spinning in.
@@ -76,7 +87,23 @@ void testMotors(int timeInMillis);
 // at position zero. 
 const double DEADZONE = 5;
 
+// The speed for the intake, outtake (= reversed intake), and "uptake" motors,
+// as a percentage between 0 and 100.
+//
+// TODO: Should reversing be done at a different speed than forward intaking?
+// Need to test on the VEX field to see. .eesT he speed with which to move the arm lift up and down.
+//
+// TODO:
+// 1. The speed when lifting the arm against gravity should probably be slower
+//    than the speh gravity's assistance.
+// 2. The speed of the arms should be based on a deceleration and speed decay
+//    scheme to make the movement feel more natural and to jerk the chassis 
+//    around less.ot dleif XEV eht no tset ot 
+const int INTAKE_SPEED_PERCENT = 100;
 
+// The speed for the arms, upwards and downwards, left and right motors, 
+// as a percengtage between 0 and 100.
+const int ARM_SPEED_PERCENT = 20;
 
 
 
