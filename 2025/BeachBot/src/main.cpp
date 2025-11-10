@@ -84,7 +84,7 @@ void usercontrol(void) {
     // Allow the user to control the intake
     if (userController.ButtonY.pressing()) {
       // Reverse the intake
-      intakeControl(INTAKE_SPEED_PERCENT);
+      intakeControl(-INTAKE_SPEED_PERCENT);
     } else if (userController.ButtonA.pressing()) {
       // Drive intake forward
       intakeControl(INTAKE_SPEED_PERCENT);
@@ -96,7 +96,7 @@ void usercontrol(void) {
     //Allows the user to raise and lower the arm.
     if (userController.ButtonR1.pressing()) {
       // Raises the arms.
-      armControl(ARM_SPEED_PERCENT);
+      armControl(-ARM_SPEED_PERCENT);
     } else if (userController.ButtonR2.pressing()) {
       // Lowers the arms.
       armControl(ARM_SPEED_PERCENT);
