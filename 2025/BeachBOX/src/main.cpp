@@ -1,16 +1,18 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /*    Module:       main.cpp                                                  */
-/*    Author:       simon                                                     */
-/*    Created:      11/22/2025, 10:52:43 AM                                    */
+/*    Author:       sanjaynataraj                                             */
+/*    Created:      7/13/2025, 2:55:55 PM                                     */
 /*    Description:  V5 project                                                */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
 #include "vex.h"
+#include "hardware.h"
+#include <vector>
 
 using namespace vex;
-
+vex::motor test_motor = vex::motor(vex::PORT10, false);
 // A global instance of competition
 competition Competition;
 
@@ -30,6 +32,13 @@ void pre_auton(void) {
 
   // All activities that occur before the competition starts
   // Example: clearing encoders, setting servo positions, ...
+
+  // The first half of the motor ports are for the left side, and the second
+  // half are for the right side
+  // If you need to reverse a motor, make its port number negative
+  std::vector<int> ports = {vex::PORT3, vex::PORT4, vex::PORT5, vex::PORT6};
+  createDriveMotors(ports);
+
 }
 
 /*---------------------------------------------------------------------------*/
@@ -43,9 +52,9 @@ void pre_auton(void) {
 /*---------------------------------------------------------------------------*/
 
 void autonomous(void) {
-  // ..........................................................................
-  // Insert autonomous user code here.
-  // ..........................................................................
+  
+  testMotors(2000);
+
 }
 
 /*---------------------------------------------------------------------------*/
@@ -60,16 +69,43 @@ void autonomous(void) {
 
 void usercontrol(void) {
   // User control code here, inside the loop
+  // test_motor.spin(fwd);
   while (1) {
     // This is the main execution loop for the user control program.
     // Each time through the loop your program should update motor + servo
     // values based on feedback from the joysticks.
 
-    // ........................................................................
-    // Insert user code here. This is where you use the joystick values to
-    // update your motors, etc.
-    // ........................................................................
+    controller userController;
+    double controllerFrontBackPosition = -userController.Axis4.position();
+    double controllerLeftRightPosition = -userController.Axis3.position();
 
+    drive(controllerFrontBackPosition, controllerLeftRightPosition);
+
+    // Allow the user to control the intake
+    if (userController.ButtonY.pressing()) {
+      // Reverse the intake
+      intakeControl(-INTAKE_SPEED_PERCENT);
+    } else if (userController.ButtonA.pressing()) {
+      // Drive intake forward
+      intakeControl(INTAKE_SPEED_PERCENT);
+    } else {
+      // Stop the intake
+      intakeControl(0);
+    }
+
+    //Allows the user to raise and lower the arm.
+    if (userController.ButtonR1.pressing()) {
+      // Raises the arms.
+      armControl(-ARM_SPEED_PERCENT);
+    } else if (userController.ButtonR2.pressing()) {
+      // Lowers the arms.
+      armControl(ARM_SPEED_PERCENT);
+    } else {
+      // Stop the arms.
+      armControl(0);
+    }
+  
+    
     wait(20, msec); // Sleep the task for a short amount of time to
                     // prevent wasted resources.
   }

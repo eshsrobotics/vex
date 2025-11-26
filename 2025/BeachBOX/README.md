@@ -1,3 +1,8 @@
+BeachBOX
+========
+BeachBOX is the second iteration of Team 1759P's Push Back robot.
+The bot will include 2 pneumatic pistons which will be powered by a solenoids.
+
 Subsystems
 ==========
 * Drive Subsystem
