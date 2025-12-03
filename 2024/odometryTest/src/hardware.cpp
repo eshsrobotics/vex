@@ -3,6 +3,9 @@
 #include <algorithm>
 using std::min;
 using std::max;
+using std::for_each;
+
+using namespace vex;
 
 /**
  * This refers to the number of rotations from the odometry wheel from the last
@@ -12,8 +15,6 @@ double previousRotations = 0;
 
 double xPosition = 0;
 double yPosition = 0;
-
-
 
 vex::brain brain;
 vex::controller controller;
@@ -32,7 +33,7 @@ vex::rotation odometrySensor(odometrySensorPort);
 
 vex::inertial inertialSensor(inertialPort);
 
-void drive(double driveForward, double turnClockwise) {
+void drive(double driveForward, double turnClockwise, vex::motor_group& leftMotors, vex::motor_group& rightMotors) {
     double currentRotations = odometrySensor.position(vex::rotationUnits::rev);
 
     double distanceTraveledInches = (currentRotations - previousRotations) * rotationsToDistanceInches;
@@ -54,15 +55,29 @@ void drive(double driveForward, double turnClockwise) {
     if (fabs(leftSpeed) < DEADZONE_PCT) {
         leftSpeed = 0;
     }
+    
     double rightSpeed = driveForward - turnClockwise;
 
     rightSpeed = min(100.0, max(-100.0, rightSpeed));
-
     if (fabs(rightSpeed) < DEADZONE_PCT) {
         rightSpeed = 0;
     }
 
     previousRotations = currentRotations;
+
+    if (rightSpeed != 0) {
+        rightMotors.setVelocity(rightSpeed, pct);
+        rightMotors.spin(reverse);
+    } else {
+        rightMotors.stop();
+    }
+
+    if (leftSpeed != 0) {
+        leftMotors.setVelocity(leftSpeed, pct);
+        leftMotors.spin(forward);
+    } else {
+        leftMotors.stop();
+    }
 }
 
 void getRelativePosition(double& xPositionInches, double& yPositionInches) {
@@ -73,4 +88,10 @@ void getRelativePosition(double& xPositionInches, double& yPositionInches) {
 void resetRelativePosition() {
     xPosition = 0;
     yPosition = 0;
+    odometrySensor.resetPosition();
+    inertialSensor.resetHeading();
+}
+
+double convertRotationsToInches(double rotations) {
+    return rotations * rotationsToDistanceInches;
 }

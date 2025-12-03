@@ -73,9 +73,17 @@ void usercontrol(void) {
     // Insert user code here. This is where you use the joystick values to
     // update your motors, etc.
     // ........................................................................
-    drive(::controller.Axis3.position(), ::controller.Axis1.position());
+    drive(::controller.Axis3.position(), ::controller.Axis1.position(), leftMotorGroup, rightMotorGroup);
+    double distanceFromRotations = convertRotationsToInches(odometrySensor.position(rev));
     ::controller.Screen.setCursor(1,1);
-    ::controller.Screen.print(odometrySensor.position(degrees));
+    ::controller.Screen.print(distanceFromRotations);
+    ::controller.Screen.newLine();
+    ::controller.Screen.setCursor(2,1);
+    ::controller.Screen.print(inertialSensor.heading(deg));
+    ::controller.Screen.newLine();
+
+    
+    //::controller.Screen.print((convertedDistance));
     
     wait(20, msec); // Sleep the task for a short amount of time to
                     // prevent wasted resources.

@@ -35,20 +35,26 @@ const int rightBottomPort = 13-1; //the motor on bottom at the back of the right
  * @param turnClockwise This is the speed value in the turning axis clamped
  * between -100 and 100. 100 is full speed clockwise, 0 is straight/stopped, and
  * -100 is full speed counterclockwise.  
+ * 
+ * @param leftMotors A reference to the left motor group.
+ * 
+ * @param rightMotors A reference to the right motor group.
  */
-void drive(double driveForward, double turnClockwise);
+void drive(double driveForward, double turnClockwise, vex::motor_group& leftMotors, vex::motor_group& rightMotors);
 
 extern vex::rotation odometrySensor; //only used for the foward-back odometry wheel
 const int odometrySensorPort = 11-1;
 
-const double rotationsToDistanceInches = 25;
+const double rotationsToDistanceInches = 8.24668;
 
 extern vex::inertial inertialSensor; //used for measuring the robot's angle
-const int inertialPort = 8;
+const int inertialPort = 8-1;
 
 // According to https://api.vex.com/v5/home/cpp/Inertial.html, the minimum
 // calibration time for an inertial sensor should be 2 seconds.
 const int calibrationTimeSeconds = 3; 
+
+
 
 /**
  * This function returns the position of the robot relative to where it first
@@ -65,5 +71,7 @@ void getRelativePosition(double& xPositionInches, double& yPositionInches);
 void resetRelativePosition();
 
 const double DEADZONE_PCT = 5;
+
+double convertRotationsToInches(double rotations);
 
 #endif
