@@ -20,12 +20,12 @@ vex::brain brain;
 vex::controller controller;
 
 vex::motor leftMotor1(leftFrontPort);
-vex::motor leftMotor2(leftTopPort);
+vex::motor leftMotor2(leftTopPort, true);
 vex::motor leftMotor3(leftBottomPort);
 vex::motor_group leftMotorGroup(leftMotor1, leftMotor2, leftMotor3);
 
 vex::motor rightMotor1(rightFrontPort);
-vex::motor rightMotor2(rightTopPort);
+vex::motor rightMotor2(rightTopPort, true);
 vex::motor rightMotor3(rightBottomPort);
 vex::motor_group rightMotorGroup(rightMotor1, rightMotor2, rightMotor3);
 
@@ -67,14 +67,14 @@ void drive(double driveForward, double turnClockwise, vex::motor_group& leftMoto
 
     if (rightSpeed != 0) {
         rightMotors.setVelocity(rightSpeed, pct);
-        rightMotors.spin(reverse);
+        rightMotors.spin(forward);
     } else {
         rightMotors.stop();
     }
 
     if (leftSpeed != 0) {
         leftMotors.setVelocity(leftSpeed, pct);
-        leftMotors.spin(forward);
+        leftMotors.spin(reverse);
     } else {
         leftMotors.stop();
     }
