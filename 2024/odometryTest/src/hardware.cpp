@@ -29,6 +29,9 @@ vex::motor rightMotor2(rightTopPort, true);
 vex::motor rightMotor3(rightBottomPort);
 vex::motor_group rightMotorGroup(rightMotor1, rightMotor2, rightMotor3);
 
+vex::motor bottomIntakeMotor(bottomIntakePort);
+vex::motor topIntakeMotor(topIntakePort);
+
 vex::rotation odometrySensor(odometrySensorPort);
 
 vex::inertial inertialSensor(inertialPort);
@@ -94,4 +97,22 @@ void resetRelativePosition() {
 
 double convertRotationsToInches(double rotations) {
     return rotations * rotationsToDistanceInches;
+}
+
+void spinIntake(vex::motor& intakeMotor, bool buttonPressed) {
+    bool spinning = false;
+
+    if(buttonPressed) {
+        if(!spinning) {
+            spinning = true;
+        } else if(spinning) {
+            spinning = false;
+        }
+    }
+
+    if(spinning) {
+        intakeMotor.spin(forward);
+    } else {
+        intakeMotor.stop();
+    }
 }

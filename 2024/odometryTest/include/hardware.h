@@ -15,6 +15,9 @@ extern vex::motor rightMotor1;
 extern vex::motor rightMotor2;
 extern vex::motor rightMotor3;
 
+extern vex::motor bottomIntakeMotor;
+extern vex::motor topIntakeMotor;
+
 const int leftFrontPort = 15-1; //the frontmost motor on the left side of the drive
 const int leftTopPort = 14-1; //the motor on top at the back of the left side of the drive
 const int leftBottomPort = 16-1; //the motor on bottom at the back of the left side of the drive
@@ -22,6 +25,10 @@ const int leftBottomPort = 16-1; //the motor on bottom at the back of the left s
 const int rightFrontPort = 12-1; //the frontmost motor on the right side of the drive
 const int rightTopPort = 20-1; //the motor on top at the back of the right side of the drive
 const int rightBottomPort = 13-1; //the motor on bottom at the back of the right side of the drive
+
+const int bottomIntakePort = 6-1; //the motor attached to the free-moving bottom part of the 
+                                   //intake that brings blocks into the robot
+const int topIntakePort = 7-1; //the motor at the top of the intake that deposits blocks into the goals
 
 /**
  * This is the drive function that instantaneously sets the motor speeds. This
@@ -42,7 +49,7 @@ const int rightBottomPort = 13-1; //the motor on bottom at the back of the right
  */
 void drive(double driveForward, double turnClockwise, vex::motor_group& leftMotors, vex::motor_group& rightMotors);
 
-extern vex::rotation odometrySensor; //only used for the foward-back odometry wheel
+extern vex::rotation odometrySensor; //only used for the forward-back odometry wheel
 const int odometrySensorPort = 11-1;
 
 const double rotationsToDistanceInches = 8.24668;
@@ -73,5 +80,7 @@ void resetRelativePosition();
 const double DEADZONE_PCT = 5;
 
 double convertRotationsToInches(double rotations);
+
+void spinIntake(vex::motor& intakeMotor, bool buttonPressed);
 
 #endif

@@ -82,6 +82,9 @@ void usercontrol(void) {
     ::controller.Screen.print(inertialSensor.heading(deg));
     ::controller.Screen.newLine();
 
+    spinIntake(bottomIntakeMotor, ::controller.ButtonA.pressing());
+    spinIntake(topIntakeMotor, ::controller.ButtonB.pressing());
+
     
     //::controller.Screen.print((convertedDistance));
     
