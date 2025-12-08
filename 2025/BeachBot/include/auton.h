@@ -26,6 +26,17 @@ struct AutonTask {
     double startTimeMilliseconds;
 };
 
+/**
+ * Takes in a list of autonomous tasks and organizes them in order from earliest
+ * to latest, before then executing the tasks in that order. 
+ *
+ * A task is an operation paired with a start time and an additional argument.
+ * For example, "drive" is an operation, but "start driving at 100% speed 2
+ * seconds into the program" is a task.
+ *
+ * @param tasks
+ * The list of autonomous tasks for the bot to execute.
+ */
 void executeAuton(std::vector<AutonTask>& tasks);
 
 #endif

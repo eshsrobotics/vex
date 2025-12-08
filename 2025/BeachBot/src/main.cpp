@@ -9,6 +9,7 @@
 
 #include "vex.h"
 #include "hardware.h"
+#include "auton.h"
 #include <vector>
 
 using namespace vex;
@@ -53,7 +54,9 @@ void pre_auton(void) {
 
 void autonomous(void) {
   
-  testMotors(2000);
+  //testMotors(2000);
+
+  
 
 }
 
