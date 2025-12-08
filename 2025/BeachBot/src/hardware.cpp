@@ -8,6 +8,8 @@ using std::max;
 using std::min;
 using std::unique_ptr;
 
+vex::brain Brain;
+
 // This array has a size that depends on the number of motors in our
 // differential drive. We have a choice between allocating static ports (that
 // never change) for the rest of our subsystems or building off of the drive

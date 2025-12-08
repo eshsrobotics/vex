@@ -22,8 +22,8 @@ enum class AutonOperationType {
 
 struct AutonTask {
     AutonOperationType operation;
-    double argument;
     double startTimeMilliseconds;
+    double argument;
 };
 
 /**
@@ -35,8 +35,35 @@ struct AutonTask {
  * seconds into the program" is a task.
  *
  * @param tasks
- * The list of autonomous tasks for the bot to execute.
+ * The list of autonomous tasks for the bot to execute. The list of tasks should end 
+ * in a stop because otherwise it will exit because it has run out of tasks.
  */
 void executeAuton(std::vector<AutonTask>& tasks);
+
+/**
+ * Takes a given distance value in inches, and estimates how long it will take to
+ * drive that distance in milliseconds. This estimate is based on a line of best
+ * fit that we made after repeatedly testing how long the robot takes to drive a
+ * certain distance.
+ *
+ * @param driveDistanceInInches
+ * The exact distance we want the robot to drive, in inches.
+ *
+ * @return
+ * Returns the time, in milliseconds, that we estimate the robot will take to
+ * drive for that distance
+ */
+double driveDistanceToTime(double driveDistanceInInches);
+
+/**
+ * Tells how long to make a given turn based on data from observations.
+ * 
+ * @param turnAngleInDegrees
+ * Amount we want the robot to turn regardless of direction.
+ * 
+ * @return 
+ * Returns the amount of time we want the robot to turn in milliseconds.
+ */
+double turnAngleToTime(double turnAngleInDegrees);
 
 #endif
