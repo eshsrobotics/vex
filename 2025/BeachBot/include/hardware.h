@@ -2,6 +2,9 @@
 #define HARDWARE_H
 
 #include <vector>
+#include "vex.h"
+
+extern vex::brain Brain;
 
 /**
  * VEX doesn't like it when you copy motors, so normally when we declare motor

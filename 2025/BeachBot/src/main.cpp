@@ -9,6 +9,7 @@
 
 #include "vex.h"
 #include "hardware.h"
+#include "auton.h"
 #include <vector>
 
 using namespace vex;
@@ -53,7 +54,35 @@ void pre_auton(void) {
 
 void autonomous(void) {
   
-  testMotors(2000);
+  // This autonomous is need to perform an experiment for linear regression. All
+  // it can do is drive forward and stop. 
+  //
+  // To perform the experiment: 
+  // 1. Choose a distance you want the robot to move in inches.
+  // 2. Set up a yard stick to measure distance traveled by the front of the
+  //    robot as it travels straight
+  // 3. Select amount of time to drive, and put it in as the second start time
+  //    in the task list below.
+  // 4. Deploy autonomous code and run it.
+  // 5. compare distance traveled by the front of the robot by the distance you
+  //    want it to travel 5a. If the distance is too short increase the drive
+  //    time 5b. If the distance traveled is too long decrease the drive time
+  // 6. once you have a drive time that drives the correct chosen distance,
+  //    record both the time and the distance in a data table, X is the
+  //    distance, Y is the time
+  // 7. Repeat steps 1-6 with a different chosen distance. Remember to record
+  //    this new data as next data point in the table
+  // 8. Once you have 4 or 5 data points, feed them to Desmos and perform a
+  //    linear regression.
+  // 9. Desmos will give a slope M and a Y-intercept B for the equation y = mx +
+  //    b. The DDTT function will return M * distanceInches + B
+  std::vector<AutonTask> autonTaskList = {
+    // Operation, Start Time, Argument
+    {AutonOperationType::drive, 0, 100},
+    {AutonOperationType::drive, 1000, 0}
+  };
+
+  executeAuton(autonTaskList);
 
 }
 
@@ -75,6 +104,7 @@ void usercontrol(void) {
     // Each time through the loop your program should update motor + servo
     // values based on feedback from the joysticks.
 
+    // The minus signs are infront of userController.Axis3 and 4 is because the controls were reversed. 
     controller userController;
     double controllerFrontBackPosition = -userController.Axis4.position();
     double controllerLeftRightPosition = -userController.Axis3.position();
