@@ -81,6 +81,6 @@ const double DEADZONE_PCT = 5;
 
 double convertRotationsToInches(double rotations);
 
-void spinIntake(vex::motor& intakeMotor, bool buttonPressed);
+void spinIntake(vex::motor& intakeMotor, bool intakeInButton, bool intakeOutButton);
 
 #endif

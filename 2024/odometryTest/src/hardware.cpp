@@ -99,19 +99,12 @@ double convertRotationsToInches(double rotations) {
     return rotations * rotationsToDistanceInches;
 }
 
-void spinIntake(vex::motor& intakeMotor, bool buttonPressed) {
-    bool spinning = false;
-
-    if(buttonPressed) {
-        if(!spinning) {
-            spinning = true;
-        } else if(spinning) {
-            spinning = false;
-        }
-    }
-
-    if(spinning) {
+void spinIntake(vex::motor& intakeMotor, bool intakeInButton, bool intakeOutButton) {
+    intakeMotor.setVelocity(100, percent);
+    if(intakeInButton) {
         intakeMotor.spin(forward);
+    } else if(intakeOutButton) {
+        intakeMotor.spin(reverse);
     } else {
         intakeMotor.stop();
     }
