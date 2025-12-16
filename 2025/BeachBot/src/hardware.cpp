@@ -25,7 +25,7 @@ vex::motor leftIntakeMotor(vex::PORT9, true);
 vex::motor rightIntakeMotor(vex::PORT10);
 vex::motor uptakeMotor(vex::PORT11);
 
-vex::motor armLeft(vex::PORT12);
+vex::motor armLeft(vex::PORT14);
 vex::motor armRight(vex::PORT13, true);
 
 void createDriveMotors(std::vector<int> driveMotorPorts) {

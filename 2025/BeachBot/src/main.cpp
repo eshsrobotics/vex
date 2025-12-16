@@ -78,8 +78,10 @@ void autonomous(void) {
   //    b. The DDTT function will return M * distanceInches + B
   std::vector<AutonTask> autonTaskList = {
     // Operation, Start Time, Argument
-    {AutonOperationType::drive, 0, 100},
-    {AutonOperationType::drive, 1000, 0}
+    {AutonOperationType::turn, 0, 100},
+    {AutonOperationType::drive, 1000, 20},
+    {AutonOperationType::turn, 1200, 100},
+    {AutonOperationType::drive, 2000, 0}
   };
 
   executeAuton(autonTaskList);
@@ -106,10 +108,10 @@ void usercontrol(void) {
 
     // The minus signs are infront of userController.Axis3 and 4 is because the controls were reversed. 
     controller userController;
-    double controllerFrontBackPosition = -userController.Axis4.position();
-    double controllerLeftRightPosition = -userController.Axis3.position();
+    double controllerFrontBackPosition = userController.Axis3.position();
+    double controllerLeftRightPosition = -userController.Axis4.position();
 
-    drive(controllerFrontBackPosition, controllerLeftRightPosition);
+    drive(controllerLeftRightPosition, controllerFrontBackPosition);
 
     // Allow the user to control the intake
     if (userController.ButtonY.pressing()) {
