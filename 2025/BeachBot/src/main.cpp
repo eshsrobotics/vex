@@ -82,8 +82,8 @@ void autonomous(void) {
     {AutonOperationType::drive, 1250, 0}
   };
 
-  // // This autonomous is to test turning. It will turn 100 degrees and stop after
-  // // a period of time under our contorl.
+  // // This autonomous is to test turning. It will turn at 100% power and stop
+  // // after a period of time under our control.
   // std::vector<AutonTask> autonTaskList = {
   //   // Operation, Start Time, Argument
   //   {AutonOperationType::turn, 0, 100},
