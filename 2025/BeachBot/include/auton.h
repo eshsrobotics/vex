@@ -1,5 +1,6 @@
 #ifndef AUTON_H
 #define AUTON_H
+#include <vector>
 
 enum class AutonOperationType {
 
@@ -16,8 +17,16 @@ enum class AutonOperationType {
     //  * For example, turn(50) would have you rotate at 50% speed clockwise.
     turn,
 
-    // TODO: Put operations for intaking and lifting
+    // Run the intake. A POSITIVE argument has you INTAKING blocks at that
+    // speed, while a NEGATIVE argument has you OUTTAKING blocks at that speed.
+    intake,
 
+    // Moves the arm lift up or down by a given percentage (from -100 to 100).
+    //
+    // * A positive argument lifts the arm up, opposing gravity.
+    // * A zero value stops the arm lift.
+    // * A negative argument lowers the arm down.
+    lift
 };
 
 struct AutonTask {
@@ -65,5 +74,7 @@ double driveDistanceToTime(double driveDistanceInInches);
  * Returns the amount of time we want the robot to turn in milliseconds.
  */
 double turnAngleToTime(double turnAngleInDegrees);
+
+std::vector<AutonTask> leftSideAuton();
 
 #endif

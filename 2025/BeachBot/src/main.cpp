@@ -78,14 +78,22 @@ void autonomous(void) {
   //    b. The DDTT function will return M * distanceInches + B
   std::vector<AutonTask> autonTaskList = {
     // Operation, Start Time, Argument
-    {AutonOperationType::turn, 0, 100},
-    {AutonOperationType::drive, 1000, 20},
-    {AutonOperationType::turn, 1200, 100},
-    {AutonOperationType::drive, 2000, 0}
+    {AutonOperationType::drive, 0, 100},
+    {AutonOperationType::drive, 1250, 0}
   };
 
-  executeAuton(autonTaskList);
+  // // This autonomous is to test turning. It will turn 100 degrees and stop after
+  // // a period of time under our contorl.
+  // std::vector<AutonTask> autonTaskList = {
+  //   // Operation, Start Time, Argument
+  //   {AutonOperationType::turn, 0, 100},
+  //   {AutonOperationType::turn, 2150, 0},
+  // };
 
+
+  executeAuton(autonTaskList); // Executes a test program for gathering linear regression data
+
+  // executeAuton(leftSideAuton()); // Executes our auton win point
 }
 
 /*---------------------------------------------------------------------------*/
