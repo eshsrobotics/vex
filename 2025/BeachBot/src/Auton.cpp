@@ -59,6 +59,24 @@ void executeAuton(std::vector<AutonTask>& tasks) {
 
 }
 
+double turnAngleToTime(double turnAngleInDegrees) {
+
+    // The equation we ended up with after testing is:
+    // y = 3.16667x + 112.5
+    double timeToTurnMillis = ((19/6) * turnAngleInDegrees) + 112.5;
+    return timeToTurnMillis;
+
+}
+
+double driveDistanceToTime(double driveDistanceInInches) {
+
+    // The equation we ended up with after testing is:
+    // y = 23.49229x + 120.69285
+    double timeToDriveMillis = ((23.49) * driveDistanceInInches) + 120.69;
+    return timeToDriveMillis;
+
+}
+
 
 std::vector<AutonTask> leftSideAuton() {
 
@@ -68,30 +86,30 @@ std::vector<AutonTask> leftSideAuton() {
     const double ROTATE_90 = turnAngleToTime(90);
     const double ROTATE_180 = turnAngleToTime(180);
 
-    const double A = 1000;                        // Time to drive forward from initial start position
-    const double A_TURN = -ROTATE_90;             // Time needed to rotate to face bottom of arena
-    const double B = driveDistanceToTime(35.40);  // Drives down from start Y position to hopper Y position
-    const double B_TURN = -ROTATE_90;             // Time needed to rotate to face the hopper
-    const double B_TO_C = A;                      // Returns to back wall to align with hopper
-    const double C = PLACEHOLDER_MS;              // Time needed to intake 3 ocUos from hopper (uknown, needs observation )
-    const double C_TURN = ROTATE_180;             // Time needed to turn from the hopper to face the bottom long goal
-    const double D = driveDistanceToTime(37.0);   // Drives from left hopper to bottom long goalev
-    const double E = PLACEHOLDER_MS;              // Time needed to raise the lift so it aligns with the long goal  (unknown, needs observation)
-    const double F = PLACEHOLDER_MS;              // Time needed to reverse intake to output 1-2 blocks into long goal (unknown, needs observation) 
-    const double G = 500;                         // Time to back away from long goal
-    const double G_TURN = ROTATE_45;              // Time needed to align with the center goal
-    const double G_LOWER = PLACEHOLDER_MS;        // Time needed to lower the lift from the bottom long goal position to the center goal position (unknown, needs observation)
-    const double H = driveDistanceToTime(51.0);   // Time to move from reversed position (post-turn) to middle goal
-    // const double I = PLACEHOLDER_MS;           // Time to raise lift to align with high center goal (unknown, needs observation) 
-    const double J = F;                           // Time needed to output 1-2 blocks into center goal (same as F)
-    const double K = 1000;                        // Time needed to back away from the center goal
-    const double K_TURN = ROTATE_45;              // Time needed to rotate so we are parallel to the back wall again
-    const double L = driveDistanceToTime(79.34);  // Time to drive from reversed center goal position to topog gnol eht ot laog retnec hgih eht m
-    const double L_TURN = -ROTATE_90;             // Time needed to rotate 90 degrees counterclockwise to align with the second long goal 
-    const double M = PLACEHOLDER_MS;              // Time needed to raise the lift so we can score in the long goal (unknown, needs observation)
-    const double N = 150;                         // Time needed to drive forward to make contact with the long goal
-    const double O = PLACEHOLDER_MS;              // Time needed to outtake all remaining blocks.  This can be as high as we want.
-
+    const double A = driveDistanceToTime(14.45);        // Time to drive forward from initial start position
+    const double A_TURN = -ROTATE_90;                   // Time needed to rotate to face bottom of arena
+    const double B = driveDistanceToTime(35.40);        // Drives down from start Y position to hopper Y position
+    const double B_TURN = -ROTATE_90;                   // Time needed to rotate to face the hopper
+    const double B_TO_C = A;                            // Returns to back wall to align with hopper
+    const double C = PLACEHOLDER_MS;                    // Time needed to intake 3 ocUos from hopper (uknown, needs observation )
+    const double C_TURN = ROTATE_180;                   // Time needed to turn from the hopper to face the bottom long goal
+    const double D = driveDistanceToTime(37.0);         // Drives from left hopper to bottom long goale
+    const double E = (113);                    // Time needed to raise the lift so it aligns with the long goal  (unknown, needs observation)
+    const double F = PLACEHOLDER_MS;                    // Time needed to reverse intake to output 1-2 blocks into long goal (unknown, needs observation) 
+    const double G = 500;                               // Time to back away from long goal
+    const double G_TURN = ROTATE_45;                    // Time needed to align with the center goal
+    const double G_LOWER = PLACEHOLDER_MS;              // Time needed to lower the lift from the bottom long goal position to the center goal position (unknown, needs observation)
+    const double H = driveDistanceToTime(51.0);         // Time to move from reversed position (post-turn) to middle goal
+    // const double I = PLACEHOLDER_MS;                 // Time to raise lift to align with high center goal (unknown, needs observation) 
+    const double J = F;                                 // Time needed to output 1-2 blocks into center goal (same as F)
+    const double K = 1000;                              // Time needed to back away from the center goal
+    const double K_TURN = ROTATE_45;                    // Time needed to rotate so we are parallel to the back wall again
+    const double L = driveDistanceToTime(79.34);        // Time to drive from reversed center goal position to topog gnol eht ot laog retnec hgih eht m
+    const double L_TURN = -ROTATE_90;                   // Time needed to rotate 90 degrees counterclockwise to align with the second long goal 
+    const double M = PLACEHOLDER_MS;                    // Time needed to raise the lift so we can score in the long goal (unknown, needs observation)
+    const double N = 150;                               // Time needed to drive forward to make contact with the long goal
+    const double O = PLACEHOLDER_MS;                    // Time needed to outtake all remaining blocks.  This can be as high as we want.
+ 
     // TO DO: Put a lower in the code because we have 3 lifts but no lowers
     // Let's have a table with: Operation, Duration
     // We calculate the start times in a loop based on cumulative durations.
@@ -132,7 +150,7 @@ std::vector<AutonTask> leftSideAuton() {
         // Intakes 3 blocks from the hopper, turns around, and drives to the
         // bottom long goal.  Then it raises the lift and outtakes a couple
         // of octos into the long goal.
-        {AutonOperationType::intake, C,      100, false},        
+        {AutonOperationType::intake, C     , 100, false},        
         {AutonOperationType::turn,   C_TURN, 100, false},
         {AutonOperationType::drive,  D,      100, false},
         {AutonOperationType::lift,   E,      100, false},

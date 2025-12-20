@@ -72,6 +72,16 @@ void intakeControl(int speedPercent);
 void armControl(int speedPercent);
 
 /**
+ * Controls the descore subsystem, letting us rotate the descore arm.
+ *
+ * @param descorePercent
+ * The speed that the motors in this subsystem will spin at, expressed as a
+ * percentage of the maximum speed.  The range is from -100 (full speed
+ * downward) to +100 (full speed upward).  Set to 0 to stop the arm motors.
+ */
+void descoreControl(int descorePercent);
+
+/**
  * Just a function to test if the motors in the drive are spinning and see which
  * direction they're spinning in.
  * 
@@ -107,6 +117,9 @@ const int INTAKE_SPEED_PERCENT = 100;
 // The speed for the arms, upwards and downwards, left and right motors, 
 // as a percengtage between 0 and 100.
 const int ARM_SPEED_PERCENT = 20;
+
+// The speed for the descore motors, as a percentage between 0 and 100.
+const int DESCORE_SPEED_PERCENT = 40;
 
 
 

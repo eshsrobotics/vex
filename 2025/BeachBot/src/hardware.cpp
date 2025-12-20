@@ -27,6 +27,7 @@ vex::motor uptakeMotor(vex::PORT11);
 
 vex::motor armLeft(vex::PORT14);
 vex::motor armRight(vex::PORT13, true);
+vex::motor descoreArm(vex::PORT15, true);
 
 void createDriveMotors(std::vector<int> driveMotorPorts) {
 
@@ -95,6 +96,14 @@ void armControl(int speedPercent) {
     } else {
         armLeft.spin(vex::forward, speedPercent, vex::percentUnits::pct);
         armRight.spin(vex::forward, speedPercent, vex::percentUnits::pct);
+    }
+}
+
+void descoreControl(int descorePercent) {
+    if (descorePercent == 0) {
+        descoreArm.stop(vex::brakeType::hold);
+    } else {
+        descoreArm.spin(vex::forward, descorePercent, vex::percentUnits::pct);
     }
 }
 

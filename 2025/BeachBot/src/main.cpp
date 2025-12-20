@@ -78,8 +78,37 @@ void autonomous(void) {
   //    b. The DDTT function will return M * distanceInches + B
   std::vector<AutonTask> autonTaskList = {
     // Operation, Start Time, Argument
-    {AutonOperationType::drive, 0, 100},
-    {AutonOperationType::drive, 1250, 0}
+    //{AutonOperationType::intake, 0, -100}
+     {AutonOperationType::turn, 0, 100},
+     {AutonOperationType::drive, 460, 67},
+     {AutonOperationType::turn, 857.5, 100},
+     {AutonOperationType::drive, 1809.8, 67},
+     {AutonOperationType::turn, 2207.31, 100},
+     {AutonOperationType::intake, 2797.81, -100},
+     {AutonOperationType::turn, 3247.81, -100},
+     {AutonOperationType::turn, 3461.81, 100},
+     {AutonOperationType::intake, 3675.81, -100},
+     {AutonOperationType::turn, 4125.81, -100},
+     {AutonOperationType::turn, 4339.81, 100},
+     {AutonOperationType::intake, 4553.81, -100},
+     {AutonOperationType::turn, 5003.81, -100},
+     {AutonOperationType::drive, 5238.81, 67},
+     {AutonOperationType::turn, 5921.31, 100},
+     {AutonOperationType::lift, 6881.21, -100},
+     {AutonOperationType::intake, 8018.21, 100},
+     {AutonOperationType::turn, 8626.21, -100},
+     {AutonOperationType::drive, 9216.71, -67},
+     {AutonOperationType::turn, 9471.71, 100},
+     {AutonOperationType::lift, 10789.71, 75},
+     {AutonOperationType::intake, 11003.71, 100},
+     {AutonOperationType::turn, 11611.71, -100},
+     {AutonOperationType::drive, 12553.71, -67},
+     {AutonOperationType::turn, 12808.71, 100},
+     {AutonOperationType::drive, 14793.28, 67},
+     {AutonOperationType::lift, 15190.78, -75},
+     {AutonOperationType::turn, 15404.28, 100},
+     {AutonOperationType::intake, 15736.88, 100},
+     {AutonOperationType::turn, 16236.88, 0},
   };
 
   // // This autonomous is to test turning. It will turn at 100% power and stop
@@ -143,6 +172,14 @@ void usercontrol(void) {
     } else {
       // Stop the arms.
       armControl(0);
+    }
+    
+    if (userController.ButtonX.pressing()) {
+      descoreControl(DESCORE_SPEED_PERCENT);
+    } else if (userController.ButtonB.pressing()) {
+      descoreControl(-DESCORE_SPEED_PERCENT);
+    } else {
+      descoreControl(0);
     }
   
     
