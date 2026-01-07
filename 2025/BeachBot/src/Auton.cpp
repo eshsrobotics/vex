@@ -49,6 +49,9 @@ void executeAuton(std::vector<AutonTask>& tasks) {
                 case AutonOperationType::lift:
                     armControl(currentTask.argument);
                     break;
+                case AutonOperationType::descore:
+                    descoreControl(currentTask.argument);
+                    break;
             }
 
             taskIndex++;
