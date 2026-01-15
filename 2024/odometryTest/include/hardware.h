@@ -18,6 +18,8 @@ extern vex::motor rightMotor3;
 extern vex::motor bottomIntakeMotor;
 extern vex::motor topIntakeMotor;
 
+extern vex::digital_out matchLoader;
+
 const int leftFrontPort = 15-1; //the frontmost motor on the left side of the drive
 const int leftTopPort = 14-1; //the motor on top at the back of the left side of the drive
 const int leftBottomPort = 16-1; //the motor on bottom at the back of the left side of the drive
@@ -29,6 +31,8 @@ const int rightBottomPort = 13-1; //the motor on bottom at the back of the right
 const int bottomIntakePort = 6-1; //the motor attached to the free-moving bottom part of the 
                                    //intake that brings blocks into the robot
 const int topIntakePort = 7-1; //the motor at the top of the intake that deposits blocks into the goals
+
+//const int matchLoaderPort = brain.ThreeWirePort.A; //the pneumatic piston that deploys the match loader mechanism
 
 /**
  * This is the drive function that instantaneously sets the motor speeds. This
@@ -53,6 +57,10 @@ extern vex::rotation odometrySensor; //only used for the forward-back odometry w
 const int odometrySensorPort = 11-1;
 
 const double rotationsToDistanceInches = 8.24668;
+
+const double wheelCircumferenceIn = 10.2101761242;
+const double wheelDiameterIn = 3.25;
+const double wheelbaseLengthIn = 10.125;
 
 extern vex::inertial inertialSensor; //used for measuring the robot's angle
 const int inertialPort = 8-1;
@@ -82,5 +90,7 @@ const double DEADZONE_PCT = 5;
 double convertRotationsToInches(double rotations);
 
 void spinIntake(vex::motor& intakeMotor, bool intakeInButton, bool intakeOutButton);
+
+void deployMatchLoader(vex::digital_out& matchLoader, bool deploy, bool retract);
 
 #endif
