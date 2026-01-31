@@ -26,7 +26,10 @@ enum class AutonOperationType {
     // * A positive argument lifts the arm up, opposing gravity.
     // * A zero value stops the arm lift.
     // * A negative argument lowers the arm down.
-    lift
+    lift,
+    descore
+
+    
 };
 
 struct AutonTask {
