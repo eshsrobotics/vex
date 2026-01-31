@@ -21,6 +21,9 @@ enum class AutonOperationType {
     // speed, while a NEGATIVE argument has you OUTTAKING blocks at that speed.
     intake,
 
+    // Run the descore arm. The POSITIve argument has it come out, NEGATIVE argument makes it return.
+    descore,
+
     // Moves the arm lift up or down by a given percentage (from -100 to 100).
     //
     // * A positive argument lifts the arm up, opposing gravity.

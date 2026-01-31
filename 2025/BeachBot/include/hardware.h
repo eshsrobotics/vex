@@ -116,7 +116,11 @@ const int INTAKE_SPEED_PERCENT = 100;
 
 // The speed for the arms, upwards and downwards, left and right motors, 
 // as a percengtage between 0 and 100.
+<<<<<<< HEAD
 const int ARM_SPEED_PERCENT = 30;
+=======
+const int ARM_SPEED_PERCENT = 40;
+>>>>>>> 0b198dc3bfbc45ca1ebf817765041e6e9e5904d1
 
 // The speed for the descore motors, as a percentage between 0 and 100.
 const int DESCORE_SPEED_PERCENT = 40;
