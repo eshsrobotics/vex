@@ -1,0 +1,19 @@
+{
+	"extension": {
+		"version": "0.7.2025041600",
+		"json": 2
+	},
+	"project": {
+		"name": "OdometryCalc",
+		"description": "This code will hold the odometry calculations and test it",
+		"creationDate": "2/5/2026, 3:57:26 PM",
+		"platform": "V5",
+		"language": "cpp",
+		"slot": 1,
+		"sdkVersion": "V5_20240802_15_00_00",
+		"cpp": {
+			"includePath": [],
+			"printf_float": true
+		}
+	}
+}
