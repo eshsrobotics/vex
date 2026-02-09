@@ -7,10 +7,12 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
+#include "auton_task_tree.h"
 #include "vex.h"
 #include "hardware.h"
 
 using namespace vex;
+using std::make_shared;
 
 // A global instance of competition
 competition Competition;
@@ -50,6 +52,19 @@ void autonomous(void) {
   // Insert autonomous user code here.
   // ..........................................................................
   resetRelativePosition();
+
+  auto fullAutonRootTask = make_shared<WaitMillisecondsTask>(0);
+  auto driveForward = make_shared<DriveStraightTask>(leftMotorGroup, rightMotorGroup, 10, 20);
+  auto intakeTask = make_shared<IntakeTask>(bottomIntakeMotor, 2, 50);
+  auto skillsIntake = make_shared<IntakeTask>(topIntakeMotor, 2, -50);
+  auto testTurn = make_shared<TurnTask>(leftMotorGroup, rightMotorGroup, inertialSensor, 90);
+
+  addTask(fullAutonRootTask, testTurn);
+  //addTask(driveForward, intakeTask);
+  //addTask(intakeTask, skillsIntake);
+  
+
+  execute(fullAutonRootTask);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -85,6 +100,7 @@ void usercontrol(void) {
     spinIntake(bottomIntakeMotor, ::controller.ButtonR2.pressing(), ::controller.ButtonR1.pressing());
     spinIntake(topIntakeMotor, ::controller.ButtonL2.pressing(), ::controller.ButtonL1.pressing());
 
+    deployMatchLoader(matchLoader, ::controller.ButtonA.pressing(), ::controller.ButtonB.pressing());
     
     //::controller.Screen.print((convertedDistance));
     

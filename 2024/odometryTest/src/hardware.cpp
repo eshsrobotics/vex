@@ -32,6 +32,9 @@ vex::motor_group rightMotorGroup(rightMotor1, rightMotor2, rightMotor3);
 vex::motor bottomIntakeMotor(bottomIntakePort);
 vex::motor topIntakeMotor(topIntakePort);
 
+vex::triport::port matchLoaderPort = ::brain.ThreeWirePort.A;
+digital_out matchLoader(matchLoaderPort);
+
 vex::rotation odometrySensor(odometrySensorPort);
 
 vex::inertial inertialSensor(inertialPort);
@@ -107,5 +110,13 @@ void spinIntake(vex::motor& intakeMotor, bool intakeInButton, bool intakeOutButt
         intakeMotor.spin(reverse);
     } else {
         intakeMotor.stop();
+    }
+}
+
+void deployMatchLoader(vex::digital_out& matchLoader, bool deploy, bool retract) {
+    if(deploy) {
+        matchLoader.set(true);
+    } else if(retract) {
+        matchLoader.set(false);
     }
 }
