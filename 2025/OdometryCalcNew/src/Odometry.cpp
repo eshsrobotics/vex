@@ -1,10 +1,11 @@
+/*
 #include "vex.h"
 #include <cmath>
 
 using namespace vex;
 
 // A global instance of vex::brain used for printing to the V5 brain screen
-brain Brain;
+//brain Brain;
 
 
 // Port Assignments
@@ -36,8 +37,10 @@ double RightDiameter = 2.75;
 
 
 
-int main() {
+int OdometryCalc() {
 
+
+    //Brain.Screen.print("im working gng");
    
    
 
@@ -62,4 +65,6 @@ int main() {
        
 
     }
-}
+
+    
+}*/
