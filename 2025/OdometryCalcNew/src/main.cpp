@@ -8,6 +8,9 @@
 /*----------------------------------------------------------------------------*/
 #include "vex.h"
 #include <cmath>
+#include <iostream>
+#include <string>
+#include <sstream>
 
 
 using namespace vex;
@@ -42,6 +45,17 @@ double LeftDiameter = 2.75;
 double RightDiameter = 2.75;
 
 
+//output variables from angle calculator
+
+double BotPositionX = 0;
+double BotPositionY = 0;
+double BotAngleNew = 0;
+
+
+//test
+double BotPositionPlaceholder = 1;
+
+
 double AngleCalculator(double LeftRotations, double RightRotations, double LeftSpacing, double RightSpacing)
 {
     double BotAngleNew = (LeftRotations - RightRotations)/(LeftSpacing + RightSpacing);
@@ -61,18 +75,29 @@ double AngleCalculator(double LeftRotations, double RightRotations, double LeftS
 
 int main() {
 
-   
-    Brain.Screen.print("IM WORKING");
+    
 
-     while(1==1) {
+    AngleCalculator(LeftRotations, RightRotations, LeftSpacing, RightSpacing);
+
+    
+
+
+    
+
+    while(1==1) 
+    {
         // Updating Values
         double LeftRotations = LeftWheel.angle(degrees); 
         double RightRotations = RightWheel.angle(degrees);
         AngleCalculator(LeftRotations, RightRotations, LeftSpacing, RightSpacing);
 
 
+        Brain.Screen.clearScreen();
+        Brain.Screen.setCursor(1,1);
+        Brain.Screen.print("BotPostionX: ");
+        Brain.Screen.print(BotPositionX);
+        wait(0.05, seconds);
         
-
     }
 
 }
