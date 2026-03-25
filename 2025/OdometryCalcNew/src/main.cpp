@@ -33,12 +33,12 @@ inertial myInertial = inertial(PORT3,left);
 
 
 // Tracking Variables
-double RightRotations = 0;
-double LeftRotations = 0;
+double RightRotations = RightWheel.angle(degrees);
+double LeftRotations = LeftWheel.angle(degrees); 
 
 //Distance from left wheel to center
-double LeftSpacing = 3;
-double RightSpacing = 3;
+double LeftSpacing = 4.75;
+double RightSpacing = 4.75;
 
 //Wheel Diameters
 double LeftDiameter = 2.75;
@@ -50,26 +50,27 @@ double RightDiameter = 2.75;
 double BotPositionX = 0;
 double BotPositionY = 0;
 double BotAngleNew = 0;
+double TravelLeft = 0;
+double TravelRight = 0;
+double RadiusLeft = 0;
+double RadiusRight = 0;
 
 
-//test
-double BotPositionPlaceholder = 1;
+//transformed postions
+
+double BotPostionXTransformed = 0;
+double BotPostionYTransformed = 0; 
+
+// true global variables
 
 
-double AngleCalculator(double LeftRotations, double RightRotations, double LeftSpacing, double RightSpacing)
-{
-    double BotAngleNew = (LeftRotations - RightRotations)/(LeftSpacing + RightSpacing);
-    double TravelLeft  = (LeftRotations  / 360.0) * M_PI * LeftDiameter;
-    double TravelRight = (RightRotations / 360.0) * M_PI * RightDiameter;
-    double RadiusLeft = TravelLeft/BotAngleNew;       
-    double RadiusRight = RadiusLeft - (LeftSpacing + RightSpacing);
-    double BotPositionX = -(RadiusLeft - LeftSpacing) * cos(BotAngleNew) + RadiusLeft - LeftSpacing;
-    double BotPositionY = sqrt(std::pow((RadiusLeft - LeftSpacing), 2) - std::pow(((-(RadiusLeft - LeftSpacing) * cos(BotAngleNew) + RadiusLeft - LeftSpacing) - RadiusLeft + LeftSpacing),2));
 
-    return BotPositionX;
-    return BotPositionY;
-    return BotAngleNew;
-}
+double TrueGlobalX = 1;
+double TrueGlobalY = 1;
+double TrueGlobalRotation = 0;
+
+
+
 
 
 
@@ -77,7 +78,12 @@ int main() {
 
     
 
-    AngleCalculator(LeftRotations, RightRotations, LeftSpacing, RightSpacing);
+    
+
+    LeftWheel.setReversed(true);
+
+    LeftWheel.resetPosition();
+    RightWheel.resetPosition();
 
     
 
@@ -87,15 +93,88 @@ int main() {
     while(1==1) 
     {
         // Updating Values
-        double LeftRotations = LeftWheel.angle(degrees); 
-        double RightRotations = RightWheel.angle(degrees);
-        AngleCalculator(LeftRotations, RightRotations, LeftSpacing, RightSpacing);
+        LeftRotations = LeftWheel.position(degrees);
+        RightRotations = RightWheel.position(degrees);
+       
 
 
+        //angle calculator stuff
+        BotAngleNew = (LeftRotations - RightRotations)/(LeftSpacing + RightSpacing);
+        TravelLeft  = (LeftRotations  / 360.0) * M_PI * LeftDiameter;
+        TravelRight = (RightRotations / 360.0) * M_PI * RightDiameter;
+        RadiusLeft = TravelLeft/BotAngleNew;       
+        RadiusRight = RadiusLeft - (LeftSpacing + RightSpacing);
+        BotPositionX = -(RadiusLeft - LeftSpacing) * cos(BotAngleNew) + RadiusLeft - LeftSpacing;
+        BotPositionY = (RadiusLeft - LeftSpacing) * sin(BotAngleNew);
+
+        //Transformed Postions
+
+        BotPostionXTransformed = (cos(atan2(BotPositionX,BotPositionY) - TrueGlobalRotation) * std::sqrt(std::pow(BotPositionX, 2) + std::pow(BotPositionY, 2)));
+        BotPostionYTransformed = (sin(atan2(BotPositionX,BotPositionY) - TrueGlobalRotation) * std::sqrt(std::pow(BotPositionX, 2) + std::pow(BotPositionY, 2)));
+
+        //True Global
+
+        TrueGlobalRotation = BotAngleNew + TrueGlobalRotation;
+        TrueGlobalX =  BotPostionXTransformed + TrueGlobalX;
+        TrueGlobalY = BotPostionYTransformed + TrueGlobalY;
+
+
+        //display stuff
         Brain.Screen.clearScreen();
         Brain.Screen.setCursor(1,1);
-        Brain.Screen.print("BotPostionX: ");
+
+        Brain.Screen.print("Left Rotation: ");
+        Brain.Screen.print(LeftRotations);
+        Brain.Screen.newLine();
+        Brain.Screen.print("Right Rotation: ");
+        Brain.Screen.print(RightRotations);
+        Brain.Screen.newLine();
+        Brain.Screen.print("Bot Postion X: ");
         Brain.Screen.print(BotPositionX);
+        Brain.Screen.newLine();
+        Brain.Screen.print("Bot Postion Y: ");
+        Brain.Screen.print(BotPositionY);
+        Brain.Screen.newLine();
+        Brain.Screen.print("Bot Angle New: ");
+        Brain.Screen.print(BotAngleNew);
+        Brain.Screen.newLine();
+        Brain.Screen.print("Bot Postion X Transformed: ");
+        Brain.Screen.print(BotPostionXTransformed);
+        Brain.Screen.newLine();
+        Brain.Screen.print("Bot Postion Y Transformed: ");
+        Brain.Screen.print(BotPostionYTransformed);
+        Brain.Screen.newLine();
+        Brain.Screen.print("True Global Rotation: ");
+        Brain.Screen.print(TrueGlobalRotation);
+        Brain.Screen.newLine();
+        Brain.Screen.print("True Global X: ");
+        Brain.Screen.print(TrueGlobalX);
+        Brain.Screen.newLine();
+        Brain.Screen.print("True Global Y: ");
+        Brain.Screen.print(TrueGlobalY);
+
+
+
+        // reset local varibales
+        
+        LeftWheel.resetPosition();
+        RightWheel.resetPosition();
+       
+        BotAngleNew = 0;
+        TravelLeft  = 0;
+        TravelRight = 0;
+        RadiusLeft = 0;       
+        RadiusRight = 0;
+        BotPositionX = 0;
+        BotPositionY = 0;
+
+        BotPostionXTransformed = 0;
+        BotPostionYTransformed = 0;
+
+       
+       
+
+        
         wait(0.05, seconds);
         
     }
