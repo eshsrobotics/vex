@@ -65,8 +65,8 @@ double BotPostionYTransformed = 0;
 
 
 
-double TrueGlobalX = 1;
-double TrueGlobalY = 1;
+double TrueGlobalX = 0;
+double TrueGlobalY = 0;
 double TrueGlobalRotation = 0;
 
 
@@ -95,17 +95,26 @@ int main() {
         // Updating Values
         LeftRotations = LeftWheel.position(degrees);
         RightRotations = RightWheel.position(degrees);
-       
 
-
-        //angle calculator stuff
-        BotAngleNew = (LeftRotations - RightRotations)/(LeftSpacing + RightSpacing);
         TravelLeft  = (LeftRotations  / 360.0) * M_PI * LeftDiameter;
         TravelRight = (RightRotations / 360.0) * M_PI * RightDiameter;
-        RadiusLeft = TravelLeft/BotAngleNew;       
-        RadiusRight = RadiusLeft - (LeftSpacing + RightSpacing);
-        BotPositionX = -(RadiusLeft - LeftSpacing) * cos(BotAngleNew) + RadiusLeft - LeftSpacing;
-        BotPositionY = (RadiusLeft - LeftSpacing) * sin(BotAngleNew);
+       
+        if (LeftRotations == RightRotations)
+        {
+            BotAngleNew = 0;
+            BotPositionX = 0;
+            BotPositionY = TravelRight;
+        }
+        else
+        {
+            //angle calculator stuff
+            BotAngleNew = (LeftRotations - RightRotations)/(LeftSpacing + RightSpacing);
+            RadiusLeft = TravelLeft/BotAngleNew;       
+            RadiusRight = RadiusLeft - (LeftSpacing + RightSpacing);
+            BotPositionX = -(RadiusLeft - LeftSpacing) * (BotAngleNew) + RadiusLeft - LeftSpacing;
+            BotPositionY = (RadiusLeft - LeftSpacing) * sin(BotAngleNew);
+        }
+        
 
         //Transformed Postions
 
